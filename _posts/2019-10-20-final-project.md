@@ -1,4 +1,3 @@
-
 ---
 layout: post
 title: Configuration
@@ -8,7 +7,6 @@ fullview: true
 ---
 
 ### ♯ Final Project - Spring Web Application
-
 In your config file change these settings
 
 {% highlight yaml %}
