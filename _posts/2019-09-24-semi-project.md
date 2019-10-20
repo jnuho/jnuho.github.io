@@ -3,7 +3,7 @@ layout: post
 title: ♯ Semi Project - First Web Application
 categories: [general, demo]
 tags: [demo, dbyll, dbtek]
-description: Sample placeholder post.
+description: Helps to Search for a Parking spot(total of 285) around 25 Districts of Seoul (19.10.09)
 ---
 
 ## Overview
