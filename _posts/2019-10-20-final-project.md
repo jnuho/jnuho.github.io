@@ -20,7 +20,7 @@ Overview
 {% highlight yaml %}
 프로젝트명 : developMental
 Contributors :  
-   LJH, YYS, KJY, CHJ, YWT, OGC
+   이준호, 윤여송, 김준영, 최호준, 오건철, 윤원택
 Skills : 
   Backend: Java, Spring Framework, Maven(+dependencies), Mybatis
   Frontend: Javascript, HTML, CSS, JSP, JSTL, Ajax, Bootstrap 4 Framework
