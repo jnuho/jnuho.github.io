@@ -22,4 +22,4 @@ Soure
   [↳ repository](https://github.com/fggo/food_KH)
 
 Screenshot
-  ![foodemo](/assets/images/fooddemo.gif)
+  ![foodemo](/assets/images/fooddemo.gif){:height="50%" width="50%"}
