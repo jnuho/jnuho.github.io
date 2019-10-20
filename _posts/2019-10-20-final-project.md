@@ -1,6 +1,6 @@
 ---
 layout: post
-title: ♯ 프로젝트 - 스프링 웹 어플리케이션
+title: ♯ Final Project - 스프링 웹 어플리케이션
 categories: [general, setup, demo]
 tags: [demo, dbyll, dbtek, setup]
 fullview: true
