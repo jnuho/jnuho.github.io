@@ -19,20 +19,20 @@ defaults:
 description: Stylish Jekyll Theme
 author:
   name: Jun Ho Lee
-  email: jnuho@outlook.com
+  email: lopehih@gmail.com
   github: fggo
   twitter: 
   pinterest: 
   linkedin: 
   bio: java web developer
-  email_md5: 726351295ec82e145928582f595aa3aa
+  email_md5: dfd301662e74e48b9f250554dd767672
 
 rss_path: feed.xml
 categories_path: categories.html
 tags_path: tags.html
 
 # set it as url of an image
-sidebar_background_image: https://source.unsplash.com/KIr7nPUGkSk
+sidebar_background_image: https://source.unsplash.com/3MNzGlQM7qs
 
 BASE_PATH:
 
