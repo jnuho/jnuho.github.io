@@ -11,6 +11,7 @@ DB서버는 AWS를 가용 현재는 프리웨어 만료로인해 사용중지
   - JAVA, JS, HTML, Jquery, CSS, BootStrap4, JSP, SpringFrameWork, AWS(ubuntu), Tomcat 8.5, Git, Oracle, OpenAPI(REST or JS)
   - Ecripes, vsCode, git Bash, SQL Developer, window10
 ![mainPage](/assets/images/mainPage.png)
+![searchPage](/assets/images/searchPage.png)
 ![reviewPage](/assets/images/reviewPage.png)
 ![myPage1](/assets/images/myPage1.png)
 ![myPage2](/assets/images/myPage2.png)
