@@ -1,10 +1,16 @@
 ---
 layout: post
-title: ♯ Food  - First Java Swing Application
+title: ♯ Food
 categories: [general, setup, demo]
 tags: [demo, dbyll, dbtek, setup]
 fullview: true
 ---
+
+Soure
+  - [:label: ↳ Document](https://jnuho.github.io/food)
+  - [:label: ↳ repository](https://github.com/fggo/food_KH)
+
+First java application. It uses Swing.
 
 {% highlight yaml %}
 프로젝트명 :
@@ -14,10 +20,6 @@ Contributors :
 Skills : 
   - Java Swing, File IO, Inheritance, Polymorphism, Encapsulation
 {% endhighlight %}
-
-Soure
-  - [↳ Document](https://jnuho.github.io/food)
-  - [↳ repository](https://github.com/fggo/food_KH)
 
 Screenshot
   ![foodemo](/assets/images/fooddemo.gif){:height="50%" width="50%"}
