@@ -6,10 +6,10 @@ tags: [demo, dbyll, dbtek, setup]
 fullview: true
 ---
 
-Our application, 'developMental' uses Java Spring Framework to build a website hosted on tomcat server.
-We are junior developers with strong 'Mental' to break into software engineer job market.
-The goal is to encourages developers to share thoughts and useful information and occasionally have meet-ups in cafe around Seoul.
-We also tried to implement 'Trello' like productivity app.
+'developMental' uses Java Spring Framework to build a website hosted on tomcat server.
+We are junior developers with strong mental ability to break into job market.
+Our goal is to encourage developers to share information and thoughts. It has meet-up board to find group study in cafe around Seoul.
+We also tried to implement 'Trello' real-time productivity app.
 
 Overview
 {% highlight yaml %}
