@@ -1,20 +1,21 @@
 
 ---
 layout: post
-title: Sample
+title: ♯ Semi Project - First Web Application
 categories: [general, demo]
 tags: [demo, dbyll, dbtek]
+fullview: true
 description: Sample placeholder post.
 ---
 
-### ♯ Semi Project - First Web Application
-
+Overview
 {% highlight ruby %}
 def foo
   puts 'foo'
 end
 {% endhighlight %}
 
+Source
 - [↳ Document](https://jnuho.github.io/ParkingSpring)
 - [↳ Repository for Spring Ver.](https://github.com/fggo/ParkingSpring)
 - [↳ Repository for Jsp/Servlet Ver.](https://github.com/fggo/Parking)
