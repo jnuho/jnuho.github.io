@@ -1,12 +1,15 @@
 ---
 layout: post
-title: ♯ Final Project - 스프링 웹 어플리케이션
+title: ♯ Final Project
 categories: [general, setup, demo]
 tags: [demo, dbyll, dbtek, setup]
 fullview: true
 ---
 
-### developMental
+Our application, 'developMental' uses Java Spring Framework to build a website hosted on tomcat server.
+We are junior developers with strong 'Mental' to break into software engineer job market.
+The goal is to encourages developers to share thoughts and useful information and occasionally have meet-ups in cafe around Seoul.
+We also tried to implement 'Trello' like productivity app.
 
 Overview
 {% highlight yaml %}
