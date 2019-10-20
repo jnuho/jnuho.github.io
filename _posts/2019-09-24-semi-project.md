@@ -19,7 +19,7 @@ Overview
 {% highlight yaml %}
 Project Name : ParkingSpring
 Contributors :
-   LJH, YYS, CHJ, YWT
+   이준호, 윤여송, 최호준, YWT
 Skills : 
   Backend: Java, Servlet
   Frontend: Javascript, HTML, CSS, JSP, Ajax, Bootstrap 4 Framework
