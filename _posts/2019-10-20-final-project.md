@@ -12,7 +12,7 @@ Overview
 {% highlight yaml %}
 프로젝트명 : developMental
 Contributors :  
-   {% highlight yaml %} LJH {% endhighlight %}, YYS, KJY, CHJ, YWT, OGC
+   LJH, YYS, KJY, CHJ, YWT, OGC
 Skills : 
   Backend: Java, Spring Framework, Maven(+dependencies), Mybatis
   Frontend: Javascript, HTML, CSS, JSP, JSTL, Ajax, Bootstrap 4 Framework
