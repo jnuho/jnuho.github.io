@@ -26,6 +26,10 @@ Source
 - [↳ Repository for Jsp/Servlet Ver.](https://github.com/fggo/Parking)
 
 Screenshots
-  ![pkdemo1](/assets/images/pkdemo1.gif =350x350)
-  ![pkdemo2](/assets/images/pkdemo2.gif)
-  ![pkdemo3](/assets/images/pkdemo3.gif)
+  ![pkdemo1](/assets/images/pkdemo1.gif){:height="50%" width="50%"}
+  ![pkdemo2](/assets/images/pkdemo2.gif){:height="50%" width="50%"}
+  ![pkdemo3](/assets/images/pkdemo3.gif){:height="50%" width="50%"}
+
+/* {:height="50%" width="50%"}
+{:class="img-responsive"}
+{:height="700px" width="400px"}*/
