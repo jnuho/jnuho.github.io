@@ -14,7 +14,7 @@ defaults:
     scope:
       path: "" # empty string for all files
     values:
-      title: Jun Ho Lee
+      title: Portfolio
 
 description: Stylish Jekyll Theme
 author:
@@ -32,7 +32,7 @@ categories_path: categories.html
 tags_path: tags.html
 
 # set it as url of an image
-# sidebar_background_image: https://unsplash.com/photos/Uwrdc3DlGuQ?raw=1
+sidebar_background_image: https://unsplash.com/photos/tPf-9_uMIeU?raw=1
 
 BASE_PATH:
 
