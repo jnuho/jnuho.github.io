@@ -7,8 +7,8 @@ fullview: true
 ---
 
 Soure
-- :label: [↳ Document](https://jnuho.github.io/developmental)
-- :label: [↳ Repository](https://github.com/fggo/developMental)
+- [↳ Document](https://jnuho.github.io/developmental)
+- [↳ Repository](https://github.com/fggo/developMental)
 
 'developMental' uses Java Spring Framework to build a website hosted on tomcat server.<br>
 We are junior developers with strong mental ability to break into job market.<br>
