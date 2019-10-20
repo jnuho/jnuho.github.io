@@ -7,8 +7,8 @@ fullview: true
 ---
 
 Soure
-  - [:label: ↳ Document](https://jnuho.github.io/food)
-  - [:label: ↳ repository](https://github.com/fggo/food_KH)
+  - :label: [↳ Document](https://jnuho.github.io/food)
+  - :label: [↳ repository](https://github.com/fggo/food_KH)
 
 First java application. It uses Swing.
 
