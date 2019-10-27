@@ -1,9 +1,9 @@
-Overview
+Ⅰ Overview
 ```
 First java application. It uses Swing.
 ```
 
-Team
+Ⅱ Team
 ```
 프로젝트명 :
   - Food
@@ -17,6 +17,8 @@ Screenshot
 
   ![foodemo](/assets/images/fooddemo.gif){:height="50%" width="50%"}
 
+
+Ⅲ Java Concept used
 
 ## model.vo 패키지
 1. 데이터 정렬 방법
@@ -110,4 +112,5 @@ Map<GregorianCalendar, Map<Food, Integer>> orderHistory; //User
 Map<GregorianCalen dar, Map<Food, Integer>> salesHistory; //Admin
 ```
 
+Ⅳ Other
 * [RowFilter Api](https://stackoverflow.com/questions/22066387/how-to-search-an-element-in-a-jtable-java)
