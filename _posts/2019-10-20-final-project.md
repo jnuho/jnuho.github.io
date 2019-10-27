@@ -1,6 +1,6 @@
 ---
 layout: post
-title: ♯:dart: Final Project
+title: ¶ Final Project
 categories: [general, setup, demo]
 tags: [demo, dbyll, dbtek, setup]
 fullview: true
