@@ -22,11 +22,13 @@ Our goal is to encourage developers to share information and thoughts through co
 
 Ⅳ Function
 we implemented : 
+```
 - Job board to connect company and job-seekers
 - Meet-up board to find group study around Seoul city
 - QnA/Free board to share any thoughts and ask for help
 - Real-time productivity tool based on 'Trello.com'
 - Admin page to overview members and stats
+```
 
 ⅤⅥ
 
