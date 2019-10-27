@@ -6,23 +6,40 @@ tags: [demo, dbyll, dbtek, setup]
 fullview: true
 ---
 
-Soure
+Ⅰ Source
 - [↳ Document](https://jnuho.github.io/developmental)
+- [↳ Spring Env](https://jnuho.github.io/spring-set-up)
 - [↳ Repository](https://github.com/fggo/developMental)
 
-'developMental' uses Java Spring Framework to build a website hosted on tomcat server.<br>
-We are junior developers with strong mental ability to break into job market.<br>
-Our goal is to encourage developers to share information and thoughts.
-It has meet-up board to find group study in cafe around Seoul.<br>
-We also tried to implement 'Trello' real-time productivity app.<br>
-
-Overview
-{% highlight yaml %}
-프로젝트명 : developMental
-Contributors :  
-   이준호, 윤여송, 김준영, 최호준, 오건철, 윤원택
+Ⅱ Team
+```
+Project : developMental
+Contributors :
+  이준호(github.com/fggo), 윤여송, 김준영, 오건철, 최호준, 윤원택
 Skills : 
   Backend: Java, Spring Framework, Maven(+dependencies), Mybatis
   Frontend: Javascript, HTML, CSS, JSP, JSTL, Ajax, Bootstrap 4 Framework
   Database: Oracle Database 11g, Sql Developer
-{% endhighlight %}
+```
+
+Ⅲ Overview
+```
+'developMental' is my final project for 6 months of Java Spring Framework Course by KH(https://www.iei.or.kr/). It uses Java Spring Framework to build a web application which is hosted on tomcat server.<br>
+Our motivation was 'Junior developers with strong mental ability to break into job market.', therefore 'developMental'.<br>
+```
+
+Ⅳ Goal
+```
+Our goal is to encourage developers to share information and thoughts through collaborating tools and lots of boards.
+```
+
+Ⅴ Function
+we implemented : 
+- Job board to connect company and job-seekers
+- Meet-up board to find group study around Seoul city
+- QnA/Free board to share any thoughts and ask for help
+- Real-time productivity tool based on 'Trello.com'
+- Admin page to overview members and stats
+
+Ⅵ
+
