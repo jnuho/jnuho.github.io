@@ -1,6 +1,6 @@
 ---
 layout: post
-title: 🎯 Java Swing Project
+title: 🎯 Mini Project
 categories: [general, setup, demo]
 tags: [demo, dbyll, dbtek, setup]
 fullview: true
