@@ -1,30 +1,39 @@
 ---
 layout: post
-title: ♯ Semi Project - First Web Application
+title: ♯ Semi Project
 categories: [general, demo]
 tags: [demo, dbyll, dbtek]
 fullview: true
 ---
 
-Source
+Resources
 - [↳ Document](https://jnuho.github.io/parking)
 - [↳ Repository for Spring Ver.](https://github.com/fggo/ParkingSpring)
 - [↳ Repository for Jsp/Servlet Ver.](https://github.com/fggo/Parking)
 
-This application helps users to find Parking spots(total of 285 - 19.10.09) around 25 Districts in Seoul.<br>
-It provides the following functionalities :<br>
-1. search 2. bookmark 3. reserve(kakao pay) 4. review 5. account setting 6. qna board.
-
-Overview
-{% highlight yaml %}
+Team
+```
 Project Name : ParkingSpring
 Contributors :
-   이준호, 윤여송, 최호준, 
+   이준호(https://github.com/fggo), 윤여송, 최호준, 윤원택
 Skills : 
   Backend: Java, Servlet
   Frontend: Javascript, HTML, CSS, JSP, Ajax, Bootstrap 4 Framework
   Database: Oracle Database 11g, Sql Developer
-{% endhighlight %}
+```
+
+Overview
+```
+This application helps users to find Parking spots(total of 285 - 19.10.09) around 25 Districts in Seoul.
+It provides the following functionalities :
+1. Sign in/out/up (+Google Login)
+2. search
+3. bookmark
+4. reserve(Kakao Pay)
+5. review
+6. account setting
+7. qna board
+```
 
 Screenshots<br>
   ![pkdemo1](/assets/images/pkdemo1.gif){:height="50%" width="50%"}
