@@ -6,7 +6,7 @@ tags: [demo, dbyll, dbtek]
 fullview: true
 ---
 
-Resources
+:dart: Resources
 - [↳ Document](https://jnuho.github.io/parking)
 - [↳ Repository for Spring Ver.](https://github.com/fggo/ParkingSpring)
 - [↳ Repository for Jsp/Servlet Ver.](https://github.com/fggo/Parking)
