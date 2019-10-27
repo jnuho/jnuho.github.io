@@ -1,6 +1,6 @@
 ---
 layout: post
-title: ♯:dart: Semi Project
+title: ¶ Semi Project
 categories: [general, demo]
 tags: [demo, dbyll, dbtek]
 fullview: true
