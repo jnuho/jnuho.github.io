@@ -1,19 +1,21 @@
-# developMental
-developer forum / community application created with java spring framework
-
 # Spring environment setup
 
 ## Set encoding(UTF-8)
+```
 Preferences - General - Editors - Spelling
-Workspace
-JSON Files - UTF-8
-Web - css, html, jsp
-XML Files
+  Workspace
+  JSON Files - UTF-8
+  Web - css, html, jsp
+  XML Files
+```
 
-## Add apache tomcat server v8.5
-check "serve modules without publishing"
+## Apache tomcat server v8.5
+```
+Add Server 
+Server db_click -> check "serve modules without publishing"
+```
 
-## Download sts and maven
+## STS and Maven Download
 1. Spring Tool Suite IDE (STS 3.9.10)
 2. Apache Maven (apache-maven-3.6.2-bin.zip)
 ```
@@ -21,26 +23,29 @@ https://spring.io/tools/sts/all
 http://maven.apache.org/
 ```
 
-## maven : setup directory for storing .jar files
+# Spring Legacy Project
+```
+New-> Spring Legacy Project
+Spring MVC Project as 'template', specify top-level package (e.g. com.kh.spring); the last package name i.e. 'spring' becomes root context (http://localhost:9090/spring/)
+```
+
+## Maven : setup directory for storing .jar files
 In order to download spring ```.jar``` files from MAVEN repositories specified in ```pom.xml``` into C:\maven\repository
 
-## Create Spring Legacy Project
-Spring MVC Project as 'template', specify top-level package (e.g. com.kh.spring); the last package name i.e. 'spring' becomes root context (http://localhost:9090/spring/)
-
-## maven
-```C:\Program Files\apache-maven-3.6.2\conf\settings.xml```
+Change maven settings
 ```xml
+<!-- C:\Program Files\apache-maven-3.6.2\conf\settings.xml -->
+
 <settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
           xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
-  <!-- localRepository
-   | The path to the local repository maven will use to store artifacts.
-   |
-   | Default: ${user.home}/.m2/repository
-  -->
-  <localRepository>C:\maven\repository</localRepository>
+<!-- localRepository
+  | The path to the local repository maven will use to store artifacts.
+  |
+  | Default: ${user.home}/.m2/repository
+-->
+<localRepository>C:\maven\repository</localRepository>
 ```
-
 Go to preferences - maven -user settings - change
     from ```C:\Program Files\apache-maven-3.6.2\conf\settings.xml```
     to ```C:\maven\repository from C:\Users\foo\.m2\repository```
@@ -56,6 +61,29 @@ Go to preferences - maven -user settings - change
 ## UTF-8 inside .jsp
 ```jsp
 <%@ page language="java" contentType="text/html; charset=UTF-8" page Encoding="UTF-8"%> 
+```
+
+## Project Facets
+```
+Dynamic Web Module 3.1
+java 1.8
+```
+
+## Build path
+```
+project r_click - congigure build path - java 1.8, apache tomcat, maven
+      Deployment Assembly - add - java build path entries - Maven dependency
+project r_click - maven - update project
+```
+
+## XML catalog
+Preferences - xml - xml catalog - Add
+```
+http://mybatis.org/dtd/mybatis-3-config.dtd
+-//mybatis.org//DTD Config 3.0//EN
+
+http://mybatis.org/dtd/mybatis-3-mapper.dtd
+-//mybatis.org//DTD Mapper 3.0//EN
 ```
 
 ## pom.xml
@@ -82,20 +110,20 @@ Go to preferences - maven -user settings - change
 </dependency>
 
 <!-- DB설정 jar dependency -->
+
+<!-- MyBatis -->
 <!-- https://mvnrepository.com/artifact/org.mybatis/mybatis -->
 <dependency>
   <groupId>org.mybatis</groupId>
   <artifactId>mybatis</artifactId>
   <version>3.4.6</version>
 </dependency>
-  
 <!-- https://mvnrepository.com/artifact/org.mybatis/mybatis-spring -->
 <dependency>
   <groupId>org.mybatis</groupId>
   <artifactId>mybatis-spring</artifactId>
   <version>1.3.2</version>
 </dependency>
-<!-- /mybatis 적용 파일 끝 -->
 
 <!-- common-dbcp DB연결을 위한 connection-pool 라이브러리 -->
 <!-- https://mvnrepository.com/artifact/commons-dbcp/commons-dbcp -->
@@ -105,6 +133,7 @@ Go to preferences - maven -user settings - change
   <version>1.4</version>
 </dependency>
 
+<!-- Spring JDBC -->
 <!-- https://mvnrepository.com/artifact/org.springframework/spring-jdbc -->
 <dependency>
 <groupId>org.springframework</groupId>
@@ -112,7 +141,36 @@ Go to preferences - maven -user settings - change
 <version>${org.springframework-version}</version>
 </dependency>
 
-<!-- spring-loaded 설정하기 : tomcat 서버 재시작 안해도 자동 load 되도록-->
+<!-- change source & target -> 1.8  -->
+<!-- Test -->
+<plugin>
+  <groupId>org.apache.maven.plugins</groupId>
+  <artifactId>maven-compiler-plugin</artifactId>
+  <version>3.6.1</version>
+  <configuration>
+    <source>1.8</source>
+    <target>1.8</target>
+    <compilerArgument>-Xlint:all</compilerArgument>
+    <showWarnings>true</showWarnings>
+    <showDeprecation>true</showDeprecation>
+  </configuration>
+</plugin>
+```
+
+## Spring loaded
+```xml
+<!-- pom.xml -->
+<!-- spring-loaded 설정 : tomcat 서버 재시작 안해도 자동 load 되도록-->
+<!-- tomcat 재시작 안해도 자동 reload되는 dependency 추가 mvnrepository springloaded -->
+<!-- Maven Dependencies에 .jar파일 받아짐
+  Tomcat server double click : Module Auto Reload 해제 uncheck
+ > module 탭에서 edit web module: auto reload (uncheck)
+ > overview탭에서 publishing> Automatically publish when resources change
+ > overview탭에서 open launch configuarton> arguments : 
+
+ -javaagent:C:\maven\repository\org\springframework\springloaded\1.2.8.RELEASE\springloaded-1.2.8.RELEASE.jar -noverify 
+
+ -->
 <!-- https://mvnrepository.com/artifact/org.springframework/springloaded -->
 <dependency>
   <groupId>org.springframework</groupId>
@@ -120,7 +178,15 @@ Go to preferences - maven -user settings - change
   <version>1.2.8.RELEASE</version>
   <scope>provided</scope>
 </dependency>
-  
+```
+
+## Lombok
+```xml
+<!-- pom.xml -->
+<!-- vo 자동 생성 : mvnrepository lombok
+  C:\maven\repository\org\projectlombok\lombok\1.18.10
+  open powershell (shitft+r_click)> java -jar .\lombok-1.18.10.jar - specify location(sts.exe) -->
+
 <!-- lombok library받기 -->
 <!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
 <dependency>
@@ -129,7 +195,10 @@ Go to preferences - maven -user settings - change
   <version>1.18.10</version>
   <scope>provided</scope>
 </dependency>
+```
 
+## Spring security
+```xml
 <!-- Spring Security 스프링 비밀번호 암호화 적용하기 feat security (search: spring-security)-->
 <!-- https://mvnrepository.com/artifact/org.springframework.security/spring-security-core -->
 <dependency>
@@ -149,94 +218,29 @@ Go to preferences - maven -user settings - change
   <artifactId>spring-security-config</artifactId>
   <version>${org.springframework-version}</version>
 </dependency>
-
-<!-- Test -->
-<plugin>
-  <groupId>org.apache.maven.plugins</groupId>
-  <artifactId>maven-compiler-plugin</artifactId>
-  <version>3.6.1</version>
-  <configuration>
-    <source>1.8</source>
-    <target>1.8</target>
-    <compilerArgument>-Xlint:all</compilerArgument>
-    <showWarnings>true</showWarnings>
-    <showDeprecation>true</showDeprecation>
-  </configuration>
-</plugin>
 ```
-
-## Project Facets
-```
-Dynamic Web Module 3.1
-java 1.8
-```
-
-## Build path
-```
-project r_click - congigure build path - java 1.8, apache tomcat, maven
-      Deployment Assembly - add - java build path entries - Maven dependency
-project r_click - maven - update project
-```
-
-## xml catalog
-preferences - xml - xml catalog - Add
-```
-http://mybatis.org/dtd/mybatis-3-config.dtd
--//mybatis.org//DTD Config 3.0//EN
-
-http://mybatis.org/dtd/mybatis-3-mapper.dtd
--//mybatis.org//DTD Mapper 3.0//EN
-```
-
-## 1.lombok 2.springreloaded 3.spring-security
-1. lombok -> vo 자동 생성 : mvnrepository lombok
-```
-* C:\maven\repository\org\projectlombok\lombok\1.18.10
-* open powershell (shitft+r_click)> java -jar .\lombok-1.18.10.jar
-  - specify location(sts.exe)
-```
-
-2. tomcat 재시작 안해도 자동 reload되는 dependency 추가 mvnrepository-> springloaded
 ```xml
-<!-- pom.xml -->
-<!-- https://mvnrepository.com/artifact/org.springframework/springloaded
-  Maven Dependencies에 .jar파일 받아짐
-  Tomcat server double click : Module Auto Reload 해제 uncheck
- > module 탭에서 edit web module: auto reload (uncheck)
- > overview탭에서 publishing> Automatically publish when resources change
- > overview탭에서 open launch configuarton> arguments
- -javaagent:C:\maven\repository\org\springframework\springloaded\1.2.8.RELEASE\springloaded-1.2.8.RELEASE.jar -noverify
--->
-```
-
-3. 암호화 처리 spring security
-* pom.xml : mvnrepository spring-security &lt;dependency&gt; 등록 - .jar파일 다운로드(web/config/core 3개)
-```xml
-<!-- https://mvnrepository.com/artifact/org.springframework.security/spring-security-core -->
-<!-- https://mvnrepository.com/artifact/org.springframework.security/spring-security-web -->
-<!-- https://mvnrepository.com/artifact/org.springframework.security/spring-security-config -->
-```
-
-* security-context.xml : spring folder - new - spring bean configuration -> skip next -> finish
-```xml
+<!-- security-context.xml -->
+<!-- spring folder - new - spring bean configuration -> skip next -> finish -->
 <!-- src/main/resources/security-context.xml -->
 <!-- No such Bean Definition : spring security -->
 <bean id="bcryptPasswordEncoder"
   class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder" />
 ```
 
-* web.xml : security-context.xml -> tomcat에 설정해야함
 ```xml
-  <!-- web.xml -->
-  <!-- The definition of the Root Spring Container shared by all Servlets and Filters -->
-  <context-param>
-    <param-name>contextConfigLocation</param-name>
-    <param-value>
-      /WEB-INF/spring/root-context.xml
-      /WEB-INF/spring/security-context.xml
-    </param-value>
-  </context-param>
+<!-- web.xml -->
+<!-- tomcat에 security-context.xml 설정해야함 -->
+<!-- The definition of the Root Spring Container shared by all Servlets and Filters -->
+<context-param>
+  <param-name>contextConfigLocation</param-name>
+  <param-value>
+    /WEB-INF/spring/root-context.xml
+    /WEB-INF/spring/security-context.xml
+  </param-value>
+</context-param>
 ```
+
 ## web.xml
 ```xml
 <!-- Server web.xml -->
@@ -272,17 +276,15 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/javaee https://java.sun.com/xml/n
 
 ## create index.jsp in webapp folder
 
-## Spring settings
-
+## root-context.xml
 ```xml
-<!-- root-context.xml
-  defines shared resources visible to all other web components.
+<!-- root-context.xml -->
+<!-- Spring settings -->
+<!-- defines shared resources visible to all other web components.
   root-context.xml 은 스프링 돌아가는데 필요한거 다 담고 있다
-  스프링은 객체들에 의해 돌아간다. 여기에 디비에 대한 설정이 들어간다.
--->
+  스프링은 객체들에 의해 돌아간다. 여기에 디비에 대한 설정이 들어간다. -->
 <!-- DB JDBC MYBATIS 설정 (pom.xml에서 필요한 resource 저장해놓음) jar file -> dependency 등록 -->
-<!-- mybatis-config.xml을 spring에 맞게 수정.
-  Spring이 시작하면서 이용할 수 있는 객체로 등록됨
+<!-- spring에 맞게 mybatis-config.xml을 수정. Spring이 시작하면서 이용할 수 있는 객체로 등록됨
   Spring 설정파일: BasicDataSource를 spring/spring 계정에게 부여. spring bean 등록
   close 생성자를 이용해서 destroy. Spring xml 파일을 보고 생성자를 생성. 연결내용.
   DB에 필요한 데이터를 BasicDataSource객체에 값을 넣음 setter(=property)
@@ -293,7 +295,6 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/javaee https://java.sun.com/xml/n
   <property name="username" value="spring"/>
   <property name="password" value="spring"/>
 </bean>
-
 <!-- Mybatis에서 SqlSession 객체를 생성하는 FactoryBean 을 springbean으로 등록 
   Mybatis Spring jar파일에 있는 객체를 씀 객체생성 멤버변수로 BasicDataSource -->
 <bean id="sqlSessionFactoryBean" class="org.mybatis.spring.SqlSessionFactoryBean">
@@ -301,22 +302,52 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/javaee https://java.sun.com/xml/n
   <property name="mapperLocations" value="classpath*:mapper/**/*.xml"/>
   <property name="configLocation" value="classpath:mybatis-config.xml"/>
 </bean>
-
 <!-- SessionTemplate을 springbean으로 등록하여 활용 -->
 <bean id="sqlSessionTemplate" class="org.mybatis.spring.SqlSessionTemplate">
   <constructor-arg index="0" ref="sqlSessionFactoryBean"/>
 </bean>
-
 ```
 
 ## mybatis-config.xml
+```xml
+<!-- connection info는 root-context에서 설정됨. 여기서는 type alias 등 설정 -->
+<configuration>
+  <!-- 쿼리문 where절 parameter에 generic 값들(e.g. NULL, VARCHAR or OTHER)을  허용 -->
+  <settings>
+    <setting name="jdbcTypeForNull" value="NULL"/>
+  </settings>
+
+  <typeAliases>
+    <typeAlias type="com.kh.workman.common.ArrayTypeHandler" alias="arrType" />
+
+    <typeAlias type="com.kh.workman.admin.model.vo.AdminMember" alias="adminMember" />
+    <typeAlias type="com.kh.workman.member.model.vo.Member" alias="member"/>
+    <!-- Collabo -->
+    <typeAlias type="com.kh.workman.collabo.model.vo.CollaboList" alias="collaboList" />
+    <typeAlias type="com.kh.workman.collabo.model.vo.CollaboCard" alias="collaboCard" />
+    <typeAlias type="com.kh.workman.collabo.model.vo.CollaboTool" alias="collaboTool" />
+    <typeAlias type="com.kh.workman.collabo.model.vo.CollaboMember" alias="collaboMember" />
+    <!-- Job -->
+    <typeAlias type="com.kh.workman.job.model.vo.JobBoard" alias="jobBoard" />
+    <typeAlias type="com.kh.workman.job.model.vo.JobApply" alias="jobApply" />
+ </typeAliases>
+
+</configuration>
+```
 
 ## ArrayTypeHandler implements TypeHandler<String[]>
 ```xml
 <!-- member-mapper.xml -->
+<resultMap type="member" id="memberMap">
+  <result column="hobby" property="hobby" typeHandler="arrType" />
+</resultMap>
+
+<select id="selectMember" resultMap="memberMap" parameterType="member">
+  SELECT * FROM MEMBER WHERE USERID=#{userId} <!-- AND PASSWORD=#{password} -->
+</select>
+
 <!-- resultType은 select에서만 필요
-resultType update insert delete 은 디폴트로 _int이므로 생략
-  -->
+resultType update insert delete 은 디폴트로 _int이므로 생략 -->
 <insert id="insertMember" parameterType="member">
   INSERT INTO MEMBER VALUES(
                   #{userId},#{password},#{userName},#{gender},
@@ -326,22 +357,16 @@ resultType update insert delete 은 디폴트로 _int이므로 생략
 </insert>
 ```
 
-## mapper/emp/emp-mapper.xml
-```xml
-<mapper namespace="dev"></mapper>
+## Logger : 등록된 bean과 autowiring된 것들을 생성 및 bean으로 등록된 controller load?
 ```
-
-## SPRING LOG : 등록된 bean과 autowiring된 것들을 생성 및 bean으로 등록된 controller load?
-pom.xml log4j mvnrepository is included in default
-
+log4j is included in pom.xml by default 
+log4j의 구조
 ```
-log4j 구조
-```
-1. Appender 태그 : log출력에 대한 환경설정하는 태그
-  * 로그를 어디로 출력을 할지 : (콘솔/파일/DB)
+1. Appender 태그 : console에 찍음. log출력에 대한 환경설정하는 태그.
+    로그를 어디로 출력을 할지 [콘솔/파일/DB]
 2. Logger 태그 : 어디 부분에서 Appender를 실행 할 지
-  * 어떤 단계에서 실행할지
-3. Root 태그 : 기본적용 Logger (부모; 최상위 객체)
+    어떤 단계에서 실행할지
+3. Root 태그 : 기본적용 Logger [부모; 최상위 객체]
 ```
 기본 패턴설정 : %-5p: %c - %m%n
     이벤트명, 카테고리명, 로그전달메세지 개행
@@ -368,7 +393,6 @@ log4j 구조
 * %% : % 표시를 출력. escaping
 * %r : 어플리케이션 시작 이후 부터 로깅이 발생한 시점의 시간(milliseconds)
 * %X : 로깅이 발생한 thread와 관련된 MDC(mapped diagnostic context)를 출력합니다. %X{key} 형태.
-
 ```xml
 <!-- pom.xml -->
 <!-- Logging -->
@@ -387,88 +411,79 @@ log4j 구조
 </dependency>
 ```
 
-src/main/resources -> log4j.xml
+log4j.xml in src/main/resources/
 ```xml
-<!-- 1. Appender : console에 찍음-->
-<appender name="console" class="org.apache.log4j.ConsoleAppender">
-  <param name="Target" value="System.out" />
-  <!-- 로그가 찍히는 형식 -->
-  <layout class="org.apache.log4j.PatternLayout">
-    <!-- m : message n: newline -->
-    <param name="ConversionPattern" value="[%d{yyyy-MM-dd HH:mm:ss}] %-5p: %l - %m%n" />
-  </layout>
-  <!-- <layout class="org.apache.log4j.HTMLLayout"></layout> -->
-  <!-- <layout class="org.apache.log4j.xml.XMLLayout"></layout> -->
-</appender>
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
 
-<!-- 2. Appender : 파일에 로그 찍기 다른Append를 이용하면됨 -> DailyRollingFileAppender -->
-<appender name="filelogger" class="org.apache.log4j.DailyRollingFileAppender">
-  <param name="file" value="C://logs//spring//spring.log" />
-  <!-- determine log append / replace -->
-  <param name="Append" value="true" />
-  <param name="dataPattern" value=".yyyy-MM-dd" />
-  <layout class="org.apache.log4j.PatternLayout">
+  <!-- 1. Appender 태그 : console에 찍음. log출력에 대한 환경설정하는 태그.
+      로그를 어디로 출력을 할지 [콘솔/파일/DB] -->
+  <appender name="console" class="org.apache.log4j.ConsoleAppender">
+    <param name="Target" value="System.out" />
+    <!-- 로그가 찍히는 형식 -->
+    <layout class="org.apache.log4j.PatternLayout">
+      <!-- m : message n: newline -->
       <param name="ConversionPattern" value="[%d{yyyy-MM-dd HH:mm:ss}] %-5p: %l - %m%n" />
-  </layout>
-</appender>
-<!-- 3. sql구문 로그 남기기  -->
-<appender name="sqlLogger" class="org.apache.log4j.ConsoleAppender">
-  <layout class="org.apache.log4j.PatternLayout">
-    <param name="ConversionPattern" value="%-5p: %m%n" />
-  </layout>
-</appender>
+    </layout>
+    <!-- <layout class="org.apache.log4j.HTMLLayout"></layout> -->
+    <!-- <layout class="org.apache.log4j.xml.XMLLayout"></layout> -->
+  </appender>
 
-<!-- Application Loggers -->
-<logger name="jdbc.sqlonly" additivity="false">
-  <level value="INFO" />
-  <appender-ref ref="sqlLogger" />
-</logger>
-<logger name="jdbc.resultsettable" additivity="false">
-  <level value="INFO" />
-  <appender-ref ref="sqlLogger" />
-</logger>
+  <!-- 파일에 로그 찍기 다른Append를 이용하면됨 -> DailyRollingFileAppender -->
+  <appender name="filelogger" class="org.apache.log4j.DailyRollingFileAppender">
+    <!--  <param name="file" value="C://logs//spring//spring.log" /> -->
+    <!-- determine log append or replace -->
+    <param name="Append" value="true" />
+    <param name="dataPattern" value=".yyyy-MM-dd" />
+    <layout class="org.apache.log4j.PatternLayout">
+      <param name="ConversionPattern" value="[%d{yyyy-MM-dd HH:mm:ss}] %-5p: %l - %m%n" />
+    </layout>
+  </appender>
 
-<!-- Application Loggers -->
-<logger name="com.kh.dm">
-  <!-- <level value="info" /> -->
-  <level value="debug" />
-  <!-- name에 해당 하는 패키지의 모든 로그가 level INFO이상의 로그를 찍음
-          TRACE
-          DEBUG(개발시 사용하는 로그들)
-          INFO(RUNTIME 중 상태변경, 정보성 메시지를 담을때)
-          WARN(프로그램 실행시 문제가 없지만, 향후 시스템에서 error의 원인이 될 수 있다는 경고메시지)
-          ERROR(어떤 요청을 처리할때 발생한 문제, 프로그램 동작안함)
-          FATAL(심각한 에러, 메모리에 대한 손상, 운영체제 손상)
-          : 개발자가 직접 에러 레벨 정함
-    -->
-</logger>
+  <!-- 2. Application Loggers
+        어느 부분에서 어떤 단계에서 Appender를 실행 할 지 결정 -->
+  <logger name="com.kh.workman">
+    <level value="debug" />
+    <!-- <level value="info" /> -->
+    <!-- name(com.kh.workman)에 해당 하는 패키지의 모든 로그가 level INFO이상의 로그를 찍음
+            TRACE
+            DEBUG(개발시 사용하는 로그들)
+            INFO(RUNTIME 중 상태변경, 정보성 메시지를 담을때)
+            WARN(프로그램 실행시 문제가 없지만, 향후 시스템에서 error의 원인이 될 수 있다는 경고메시지)
+            ERROR(어떤 요청을 처리할때 발생한 문제, 프로그램 동작안함)
+            FATAL(심각한 에러, 메모리에 대한 손상, 운영체제 손상)
+          :  개발자가 직접 에러 레벨 정함
+      -->
+  </logger>
 
-<!-- 3rdparty Loggers -->
-<logger name="org.springframework.core">
-  <level value="info" />
-</logger>
+  <!-- 3rdparty Loggers -->
+  <logger name="org.springframework.core">
+    <level value="info" />
+  </logger>
 
-<logger name="org.springframework.beans">
-  <level value="info" />
-</logger>
+  <logger name="org.springframework.beans">
+    <level value="info" />
+  </logger>
 
-<logger name="org.springframework.context">
-  <level value="info" />
-</logger>
+  <logger name="org.springframework.context">
+    <level value="info" />
+  </logger>
 
-<logger name="org.springframework.web">
-  <level value="info" />
-</logger>
+  <logger name="org.springframework.web">
+    <level value="info" />
+  </logger>
 
-<!-- Root Logger -->
-<root>
-  <priority value="warn" />
-  <appender-ref ref="console" />
-  <appender-ref ref="filelogger" />
-</root>
+  <!-- Root Logger -->
+  <!-- 3. Root 태그 : 기본적용 Logger [부모; 최상위 객체] -->
+  <root>
+    <priority value="warn" />
+    <appender-ref ref="console" />
+    <appender-ref ref="filelogger" />
+  </root>
+
+</log4j:configuration>
 ```
 
-## add log4jdbc-remix to pom.xml
+## log4jdbc-remix to pom.xml
 ```xml
 <!--  DB쿼리문, 결과를 log로 출력하는 라이브러리 추가 log4jdbc-remix -->
 <!-- https://mvnrepository.com/artifact/org.lazyluke/log4jdbc-remix -->
@@ -479,22 +494,54 @@ src/main/resources -> log4j.xml
 </dependency>
 ```
 
-com.kh.spring.logger.LoggerInterceptor(superclass as HandlerInterceptorAdapter)
+## LoggerInterceptor
+```java
+// 구현 : HandlerInterceptorAdapter (as a Super class) 상속
+//   com.kh.workman.common.interceptor.LoggerInterceptor
+//   method mapping 실행 전후, 응답완료 후 -> filter대신에 interception 사용
+
+// 전처리(preHandler) : dispatcherServlet이 컨트롤러가 매핑된 메소드 호출전에 실행되는 로직구현
+// 후처리(postHandler) : 컨트롤러가 매핑된 메소드 실행 후 실행되는 로직 구현
+// 뷰처리후(afterCompletion) : 응답까지 완료된 후 실행되는 매소드 구현
+
+package com.kh.workman.common.interceptor;
+
+// import ...;
+public class LoggerInterceptor extends HandlerInterceptorAdapter {
+  private Logger logger=LoggerFactory.getLogger(LoggerInterceptor.class);
+  //전 처리용 매소드
+//  @Override
+//  public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+//    // TODO Auto-generated method stub
+//    logger.debug("======================start======================");
+//    logger.debug(request.getRequestURI());
+//    logger.debug("-------------------------------------------------");
+//
+//    return super.preHandle(request, response, handler);
+//  }
+  
+//  후 처리용 매소드
+//  @Override
+//  public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler,
+//      ModelAndView modelAndView) throws Exception {
+//    // TODO Auto-generated method stub
+//    super.postHandle(request, response, handler, modelAndView);
+//  }
+}
 ```
-method mapping 실행전,후, 응답완료후,  -> filter대신에 interception 사용
 
-interceptor
-구현 : HandlerInterceptorAdapter를 상속해서 구현
-
-전처리(preHandler) : dispatcherServlet이 컨트롤러가 매핑된 메소드 호출전에 실행되는 로직구현
-후처리(postHandler) : 컨트롤러가 매핑된 메소드 실행 후 실행되는 로직 구현
-뷰처리후(afterCompletion) : 응답까지 완료된 후 실행되는 매소드 구현
-
-1. intercepter클래스를 등록을 해야함
-  -> servlet-context.xml에 등록!
+Intercepter클래스를 등록을 해야함 -> servlet-context.xml에 등록!
+```xml
+<!-- servlet-context.xml -->
+<!-- 인터셉터 등록하기 -->
+<interceptors>
+  <interceptor>
+    <mapping path="/**" />
+    <beans:bean id="loggerInterceptor" class="com.kh.workman.common.interceptor.LoggerInterceptor" />
+  </interceptor>
+</interceptors>
 ```
-
-```text
+```
 10월 08, 2019 9:10:58 오전 org.apache.catalina.core.ApplicationContext log
 정보: Initializing Spring FrameworkServlet 'appServlet'
 INFO : org.springframework.web.context.support.XmlWebApplicationContext - Refreshing WebApplicationContext for namespace 'appServlet-servlet': startup date [Tue Oct 08 09:10:58 KST 2019]; parent: Root WebApplicationContext
@@ -534,35 +581,11 @@ d. Advice
    공통 모듈 로직
 ```
 
-```
-AOP적용
-1. 선언적방식 : XML에서 설정
-```
-e.g.
+## AOP적용
+1. 선언적방식 (XML) : aspect-context.xml 설정
+pom.xml 파일에 dependency 추가
 ```xml
-<!-- spring/appServlet/aspect-context.xml -->
-<aop:config>
-  <aop:aspect id="test" ref="loggerAspect" >
-    <aop:pointcut
-        expression="execution(접근제한자 클래스명(패키지포함) method param)" id="pc" />
-    <aop:after|before|around method="loggerAspect의 메소드" pointcut="pc" />
-  </aop:aspect>
-</aop:config>
-
-```
-2. Annotation : 클래스 내부에서 Annotation 구현
-annotation을 검색할수 있게 설정 *xml파일에 반드시 있어야함
-```xml
-<aop:aspectj-autoproxy/>
-```
-```java
-aop설정 메소드에 어노테이션 표시
-@Pointcut("execution(public**(..))")
-메소드명
-```
-
-## aop -> pom.xml
-```xml
+<!-- pom.xml -->
 <!-- mvnrepository : search for "AspectJ Weaver" -->
 <!-- https://mvnrepository.com/artifact/org.aspectj/aspectjweaver -->
 <dependency>
@@ -571,12 +594,82 @@ aop설정 메소드에 어노테이션 표시
   <version>1.6.10</version>
 </dependency>
 ```
+root-context.xml namespace탭에서 aop 체크
+```xml
+<!-- root-context.xml -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:security="http://www.springframework.org/schema/security"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-5.0.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
+```
 
-## appServlet 밑에 spring bean configuration file (xml)
-```aspect-context-xml```
+```xml
+<!-- aspect-context.xml 생성 : New - spring bean configuration file
+  WEB-INF/spring/appServlet/aspect-context.xml -->
+<!-- bottom tab(namespace) - check [aop, beans] -->
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:aop="http://www.springframework.org/schema/aop"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd">
 
+  <!-- aspect객체 spring bean(POJO 객체)으로 등록하기  -->
 
-## paging
+  <!-- ..* 모든 클래스 모든 메소드 모든 매개변수 -->
+  <aop:pointcut expression="execution(* com.kh.workman.job..*(..))" id="loggerTest"/>
+
+  <aop:around method="loggerAdvice" pointcut-ref="loggerTest"/>
+  <!-- 위에 등록된 aspect객체 이용하여 aop를 적용함 -->
+
+  <!--  <bean id="loggerAspect" class="com.kh.spring.common.aop.LoggerAspect" />을 등록 , 참조 -->
+  <bean id="loggerAspect" class="com.kh.workman.common.aop.LoggerAspect" />
+
+  <aop:config>
+    <aop:aspect id="test" ref="loggerAspect" >
+      <aop:pointcut
+          expression="execution(접근제한자 클래스명(패키지포함) method param)" id="pc" />
+      <aop:after|before|around method="loggerAspect의 메소드" pointcut="pc" />
+    </aop:aspect>
+  </aop:config>
+
+  <!-- dao에 있는 모든 패키지 loggerTest 밑에 모든 매소드 가져오고 실행전에 loggerAdvice()실행 해! -->
+  <aop:config>
+    <aop:aspect ref="loggerAspect">
+      <aop:pointcut expression="execution(* com.kh.workman.job.model.dao..*(..))" id="loggerTest"/>
+      <aop:before method="before" pointcut-ref="loggerTest"/>
+    </aop:aspect>
+  </aop:config>
+  <!-- annotation방식 ajo적용하기 -->
+  <!-- <aop:aspectj-autoproxy /> -->
+</beans>
+```
+
+2. Annotation : 클래스 내부에서 Annotation 구현
+annotation을 검색할수 있게 설정 *xml파일에 반드시 있어야함
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:aop="http://www.springframework.org/schema/aop"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd">
+
+  <!-- annotation방식 ajo적용하기 -->
+  <aop:aspectj-autoproxy />
+</beans>
+```
+
+```java
+aop설정 메소드에 어노테이션 표시
+@Pointcut("execution(public**(..))")
+메소드명
+```
+
+## Pagination
 ```xml
 <!-- board들어갈떄 로그인유저만 servlet-context.xml -->
   <!-- 인터셉터 등록하기 -->
@@ -600,11 +693,11 @@ aop설정 메소드에 어노테이션 표시
 
 ```
 
-## file upload
+## File upload
 mvnrepository 
 
 
-## transaction manager 
+## Transaction manager 
 insert into attachmet : tablename ('attachmet') exception :
 board is still inserted & committed
 
@@ -621,13 +714,11 @@ jsp, 하이버네이트, mybatis 여러가지 라이브러리, 프레임워크�
 적용할 수 있기 때문에, 이를 통합적으로 관리 할 수있는 관리자를 둔것임
 ```
 
-트렌젝션 처리하는 방법:
-```xml
-<!--
+## 트렌젝션 처리하는 방법:
 1. 선언적 방법: -> xml설정
- - transaction 관리하는 xml을 만들어서 처리
-  root-context.xml에 태그를 추가해서
--->
+```xml
+<!-- transaction 관리하는 xml을 만들어서 처리:
+root-context.xml에 태그를 추가 -->
 <tx:advice transaction-Manager="transactionManager">
   <tx:attributes>
     <!-- 해당하는 메소드 지정 -->
@@ -639,16 +730,18 @@ jsp, 하이버네이트, mybatis 여러가지 라이브러리, 프레임워크�
 <!-- runtime exception 발생했을때 처리 기본적으로 기능 있음
 syntax 에러 및 다른 에러 처리도 범위 확장/축소 가능 -->
 <bean id="transactionManager" class="a123asdf" >
-
-<!--
-2. 어노테이션 방법(programatic) - 소스코드상에 @으로 처리
--->
-1) root-context.xml : 어노테이션 살펴봐. servlet-context : 어노테이션 driven
- -> annotation표시를 검색할 수 있게 설정
-<tx:annotation-driven transaction-manager="" />
-2) Service 객체 트렌젝션 처리
-메소드 마다 -> insert, update, delete 메소드에 트랜젝션
 ```
+
+2. 어노테이션 방법(programatic) -> 소스코드상에 @으로 처리
+```xml
+<!-- 1) root-context.xml : 어노테이션 살펴봐. servlet-context : 어노테이션 driven
+ -> annotation표시를 검색할 수 있게 설정 -->
+<tx:annotation-driven transaction-manager="" />
+
+<!-- 2) Service 객체 트렌젝션 처리: 
+메소드 마다 -> insert, update, delete 메소드에 트랜젝션 -->
+```
+
 ```java
 @Service
 class EmpService{
@@ -658,9 +751,7 @@ class EmpService{
   // @Transactional([옵션])
   // @Transactional(rollback-for="Exception.class")
   // @Transactional(rollback-for="타임아웃:일정시간 지나면 rollback")
-  public int insertEmp(){
-
-  }
+  public int insertEmp(){}
 }
 ```
 
@@ -699,20 +790,21 @@ propatation 트랜젝션.
     격리수준 가장 강력(READ 못하게), 성능을 떨어뜨림... 자주 사용 안함
 
   기타: TIMEOUT 커밋하는 기간을 정해놓음, READONLY
- ```
- ```xml
-    <!-- https://mvnrepository.com/artifact/org.aspectj/aspectjweaver -->
-    <dependency>
-      <groupId>org.aspectj</groupId>
-      <artifactId>aspectjweaver</artifactId>
-      <version>1.6.10</version>
-    </dependency>
-기존에 추가한 aspectjweaver 사용함 
+```
+```xml
+<!-- pom.xml -->
+<!-- 기존에 추가한 aspectjweaver 사용함  -->
+<!-- https://mvnrepository.com/artifact/org.aspectj/aspectjweaver -->
+<dependency>
+  <groupId>org.aspectj</groupId>
+  <artifactId>aspectjweaver</artifactId>
+  <version>1.6.10</version>
+</dependency>
+```
 
- ```
- namespace탭에서 tx 체크하기
- ```java
- // boardServiceImpl.java
+## namespace탭에서 tx 체크하기
+```java
+  // boardServiceImpl.java
   //  @Transactional //트랜젝션의 기준이 되는 것 : RunTimeException 발생시! Exception으로 하면 안됨
   //  @Transactional(rollbackFor = Exception.class) //트랜젝션의 기준이 되는 것 : 모든 에러 Exception (RunTimeException 포함) 발생시!
   //annotation 방식 말고 root-context.xml에 등록가능
@@ -730,92 +822,89 @@ propatation 트랜젝션.
         result = dao.insertAttachment(sqlSession, a);
       }
     }
-    
     return result;
   }
-  
-
- ```
-
- ```xml
- <!-- root-context.xml -->
-   <!-- annotation 방식으로 처리하기 -->
-  <!-- tx는 namespace에 있는 것: namespace 등록하기 -->
-  <!-- <tx:annotation-driven transaction-manager="transactionManager" /> -->
-  
-  <!-- 선언적 방식으로 Transaction 처리 -->
-  <tx:advice id="txAdvice" transaction-manager="transactionManager">
-    <tx:attributes>
-      <tx:method name="insert*" rollback-for="Exception" />
-    </tx:attributes>
-  </tx:advice>
-
-  <!-- aop와 연결하여 트랜젝션을 적용 -->
-  <aop:config>
-    <aop:pointcut expression="execution(* com.kh.spring..*ServiceImpl.*(..))" id="serviceMethod" />
-    <aop:advisor advice-ref="txAdvice" pointcut-ref="serviceMethod" />
-  </aop:config>
-
-
- ```
-
- ## 스프링 Ajax 처리하기
- 3가지 방법 있음
- ```
- 1. ServletOutStream 이용하는 방법
- 2. ModelAndView 객체를 반환형으로 하고, viewResolver를 이용하는 방법
- 3. @Repository 어노테이션을 이용하는 방법
-
-  2~3 jackson ObjectMapper를 이용함
- ```
-
-
-mvnrepository - Json Lib4Spring 1.0.2
-```
- json-lib-ext-spring
 ```
 
 ```xml
-  <!-- servlet-context.xml -->
-  <!-- jsonView 등록하기 -->
-  <beans:bean id="viewResolver" class="org.springframework.web.servlet.view.BeanNameViewResolver">
-  </beans:bean>
+<!-- root-context.xml -->
+<!-- annotation 방식으로 처리하기 -->
+<!-- tx는 namespace에 있는 것: namespace 등록하기 -->
+<!-- <tx:annotation-driven transaction-manager="transactionManager" /> -->
 
+<!-- 선언적 방식으로 Transaction 처리 -->
+<tx:advice id="txAdvice" transaction-manager="transactionManager">
+  <tx:attributes>
+    <tx:method name="insert*" rollback-for="Exception" />
+  </tx:attributes>
+</tx:advice>
+
+<!-- aop와 연결하여 트랜젝션을 적용 -->
+<aop:config>
+  <aop:pointcut expression="execution(* com.kh.spring..*ServiceImpl.*(..))" id="serviceMethod" />
+  <aop:advisor advice-ref="txAdvice" pointcut-ref="serviceMethod" />
+</aop:config>
 ```
 
-## jackson-databind
-mvnrepo jackson-databind
+## 스프링 Ajax 처리하기
+3가지 방법 있음
+```
+1. ServletOutStream 이용하는 방법
+2. ModelAndView 객체를 반환형으로 하고, viewResolver를 이용하는 방법
+3. @Repository 어노테이션을 이용하는 방법
+
+=> 2~3 jackson ObjectMapper를 이용함
+```
+
+## JSON Lib4Spring 1.0.2 : mvnrepository - json-lib-ext-spring
+```xml
+<!-- pom.xml -->
+<!-- https://mvnrepository.com/artifact/net.sf.json-lib/json-lib-ext-spring -->
+<dependency>
+  <groupId>net.sf.json-lib</groupId>
+  <artifactId>json-lib-ext-spring</artifactId>
+  <version>1.0.2</version>
+</dependency>
+```
+```xml
+<!-- servlet-context.xml -->
+<!-- ajax viewResolver jasonView 등록 -->
+<!-- jsonView 등록하기 -->
+<beans:bean id="viewResolver" class="org.springframework.web.servlet.view.BeanNameViewResolver">
+</beans:bean>
+```
+
+## Jackson-databind
+mvnrepository jackson-databind
 ```xml
 <!-- pom.xml -->
 <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind -->
 <dependency>
-    <groupId>com.fasterxml.jackson.core</groupId>
-    <artifactId>jackson-databind</artifactId>
-    <version>2.9.10</version>
+  <groupId>com.fasterxml.jackson.core</groupId>
+  <artifactId>jackson-databind</artifactId>
+  <version>2.9.10</version>
 </dependency>
-
 ```
-
 ```xml
 <!-- servlet-context.xml -->
-  <!-- jackson -->
-  <beans:bean id="jacksonMessageConverter" class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
-  </beans:bean>
-  
-  <!-- jackson handler -->
-  <beans:bean id="" class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
-    <beans:property name="messageConverters">
-      <beans:list>
-        <beans:ref bean="jacksonMessageConverter" />
-      </beans:list>
-    </beans:property>
-  </beans:bean>
+<!-- jackson -->
+<beans:bean id="jacksonMessageConverter" class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+</beans:bean>
+<!-- jackson handler -->
+<beans:bean id="" class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
+  <beans:property name="messageConverters">
+    <beans:list>
+      <beans:ref bean="jacksonMessageConverter" />
+    </beans:list>
+  </beans:property>
+</beans:bean>
 ```
 
 ## Changing Context root
+1. project r_click -> Web project setting -> edit context path
+2. tomcat server.xml path
 ```xml
-<!-- project r_click -> Web project setting -> edit context path
-Servers/server.xml -->
-<Context docBase="ParkingSpring" path="/parking" reloadable="true" source="org.eclipse.jst.jee.server:ParkingSpring"/></Host>
+<!-- Servers/server.xml -->
+<!-- <Context docBase="ParkingSpring" path="/parking" reloadable="true" source="org.eclipse.jst.jee.server:ParkingSpring"/> -->
+<Context docBase="ParkingSpring" path="/" reloadable="true" source="org.eclipse.jst.jee.server:ParkingSpring"/>
 ```
-
