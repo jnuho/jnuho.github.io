@@ -401,6 +401,18 @@ log4j의 구조
   <artifactId>slf4j-api</artifactId>
   <version>${org.slf4j-version}</version>
 </dependency>
+<dependency>
+  <groupId>org.slf4j</groupId>
+  <artifactId>jcl-over-slf4j</artifactId>
+  <version>${org.slf4j-version}</version>
+  <scope>runtime</scope>
+</dependency>
+<dependency>
+  <groupId>org.slf4j</groupId>
+  <artifactId>slf4j-log4j12</artifactId>
+  <version>${org.slf4j-version}</version>
+  <scope>runtime</scope>
+</dependency>
 
 <dependency>
   <groupId>log4j</groupId>
@@ -416,43 +428,58 @@ log4j.xml in src/main/resources/
 <log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
 
   <!-- 1. Appender 태그 : console에 찍음. log출력에 대한 환경설정하는 태그.
-      로그를 어디로 출력을 할지 [콘솔/파일/DB] -->
+          로그를 어디로 출력을 할지 [콘솔/파일/DB] -->
   <appender name="console" class="org.apache.log4j.ConsoleAppender">
     <param name="Target" value="System.out" />
-    <!-- 로그가 찍히는 형식 -->
+    <!-- 로그가 찍히는 형식  m : message n: newline -->
     <layout class="org.apache.log4j.PatternLayout">
-      <!-- m : message n: newline -->
       <param name="ConversionPattern" value="[%d{yyyy-MM-dd HH:mm:ss}] %-5p: %l - %m%n" />
     </layout>
     <!-- <layout class="org.apache.log4j.HTMLLayout"></layout> -->
     <!-- <layout class="org.apache.log4j.xml.XMLLayout"></layout> -->
   </appender>
 
-  <!-- 파일에 로그 찍기 다른Append를 이용하면됨 -> DailyRollingFileAppender -->
+  <!-- 2. 파일에 로그 찍기 다른 Append를 이용하면됨 -> DailyRollingFileAppender -->
   <appender name="filelogger" class="org.apache.log4j.DailyRollingFileAppender">
-    <!--  <param name="file" value="C://logs//spring//spring.log" /> -->
-    <!-- determine log append or replace -->
+    <param name="file" value="C://logs//spring//spring.log" />
+    <!-- determine log append / replace -->
     <param name="Append" value="true" />
     <param name="dataPattern" value=".yyyy-MM-dd" />
     <layout class="org.apache.log4j.PatternLayout">
-      <param name="ConversionPattern" value="[%d{yyyy-MM-dd HH:mm:ss}] %-5p: %l - %m%n" />
+       <param name="ConversionPattern" value="[%d{yyyy-MM-dd HH:mm:ss}] %-5p: %l - %m%n" />
+    </layout>
+  </appender>
+  
+  <!-- 3. sql구문 로그 남기기  -->
+  <appender name="sqlLogger" class="org.apache.log4j.ConsoleAppender">
+    <layout class="org.apache.log4j.PatternLayout">
+      <param name="ConversionPattern" value="%-5p: %m%n" />
     </layout>
   </appender>
 
-  <!-- 2. Application Loggers
-        어느 부분에서 어떤 단계에서 Appender를 실행 할 지 결정 -->
-  <logger name="com.kh.workman">
-    <level value="debug" />
+  <!-- Application Loggers 
+      어느 부분에서 어떤 단계에서 Appender를 실행 할 지 결정 -->
+  <logger name="jdbc.sqlonly" additivity="false">
+    <level value="INFO" />
+    <appender-ref ref="sqlLogger" />
+  </logger>
+  <logger name="jdbc.resultsettable" additivity="false">
+    <level value="INFO" />
+    <appender-ref ref="sqlLogger" />
+  </logger>
+
+  <!-- Application Loggers -->
+  <logger name="com.kh.spring">
     <!-- <level value="info" /> -->
-    <!-- name(com.kh.workman)에 해당 하는 패키지의 모든 로그가 level INFO이상의 로그를 찍음
-            TRACE
-            DEBUG(개발시 사용하는 로그들)
-            INFO(RUNTIME 중 상태변경, 정보성 메시지를 담을때)
-            WARN(프로그램 실행시 문제가 없지만, 향후 시스템에서 error의 원인이 될 수 있다는 경고메시지)
-            ERROR(어떤 요청을 처리할때 발생한 문제, 프로그램 동작안함)
-            FATAL(심각한 에러, 메모리에 대한 손상, 운영체제 손상)
-          :  개발자가 직접 에러 레벨 정함
-      -->
+    <level value="debug" />
+    <!-- name(com.kh.spring)에 해당 하는 패키지의 모든 로그가 level INFO이상의 로그를 찍음
+     trace -> DEBUG(개발시 사용하는 로그들)
+           -> INFO(RUNTIME 중 상태변경, 정보성 메시지를 담을때)
+           -> WARN(프로그램 실행시 문제가 없지만, 향후 시스템에서 error의 원인이 될 수 있다는 경고메시지)
+           -> ERROR(어떤 요청을 처리할때 발생한 문제, 프로그램 동작안함)
+           -> FATAL(심각한 에러, 메모리에 대한 손상, 운영체제 손상)
+     => 개발자가 직접 에러 레벨 정함
+     -->
   </logger>
 
   <!-- 3rdparty Loggers -->
@@ -473,7 +500,7 @@ log4j.xml in src/main/resources/
   </logger>
 
   <!-- Root Logger -->
-  <!-- 3. Root 태그 : 기본적용 Logger [부모; 최상위 객체] -->
+  <!-- Root 태그 : 기본적용 Logger [부모; 최상위 객체] -->
   <root>
     <priority value="warn" />
     <appender-ref ref="console" />
@@ -693,9 +720,31 @@ aop설정 메소드에 어노테이션 표시
 
 ```
 
-## File upload
-mvnrepository 
+## Multiple File Upload
+mvnrepository : commons-io + commons-fileuload -> pom.xml
+```xml
+<!-- pom.xml -->
+<!-- file upload libraries -->
+<!-- https://mvnrepository.com/artifact/commons-io/commons-io -->
+<dependency>
+  <groupId>commons-io</groupId>
+  <artifactId>commons-io</artifactId>
+  <version>2.6</version>
+</dependency>
 
+<!-- https://mvnrepository.com/artifact/commons-fileupload/commons-fileupload -->
+<dependency>
+  <groupId>commons-fileupload</groupId>
+  <artifactId>commons-fileupload</artifactId>
+  <version>1.3.3</version>
+</dependency>
+```
+```xml
+<!-- servlet-context -->
+<beans:bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver" >
+  <beans:property name="maxUploadSize" value="1048750" />
+</beans:bean>
+```
 
 ## Transaction manager 
 insert into attachmet : tablename ('attachmet') exception :
@@ -715,30 +764,41 @@ jsp, 하이버네이트, mybatis 여러가지 라이브러리, 프레임워크�
 ```
 
 ## 트렌젝션 처리하는 방법
-
-1. 선언적 방법: -> xml설정
 ```xml
-<!-- transaction 관리하는 xml을 만들어서 처리:
-root-context.xml에 태그를 추가 -->
-<tx:advice transaction-Manager="transactionManager">
+<!-- root-context.xml -->
+<!-- 트렌잭션을 처리할 bean을 등록을 해줌, 이건, spring 제공 -->
+<bean id="transactionManager" 
+class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+  <property name="dataSource" ref="dataSource"/>
+</bean>
+
+<!-- 1.선언적방식으로 트랜잭션처리 : xml 설정 -->
+<tx:advice id="txAdvice" transaction-manager="transactionManager">
   <tx:attributes>
     <!-- 해당하는 메소드 지정 -->
     <!-- => 트랜젝션 매니져를 통해 관리되야할 메소드 -->
-    <!-- insert로 시작되는 메소드를 매니져 관리 안으로 집어 넣음 -->
-    <tx:method name="insert*" rollback-for="Exception" />
+    <!-- insert/update/delete 로 시작되는 메소드를 매니져 관리 안으로 집어 넣음 -->
+    <tx:method name="insert*" rollback-for="Exception"/>
+    <tx:method name="update*" rollback-for="Exception"/>
+    <tx:method name="delete*" rollback-for="Exception"/>
   </tx:attributes>
 </tx:advice>
 <!-- runtime exception 발생했을때 처리 기본적으로 기능 있음
 syntax 에러 및 다른 에러 처리도 범위 확장/축소 가능 -->
-<bean id="transactionManager" class="a123asdf" >
-```
+<bean id="transactionManager" class="a123asdf" />
 
-2. 어노테이션 방법(programatic) -> 소스코드상에 @으로 처리
-```xml
+
+<!-- aop와 연결하여 트랜잭션을 적용 -->
+<aop:config>
+  <aop:pointcut expression="execution(* com.kh.spring..*ServiceImpl.*(..))" 
+  id="serviceMethod"/>
+  <aop:advisor advice-ref="txAdvice" pointcut-ref="serviceMethod"/>
+</aop:config>
+
+<!-- 2.어노테이션방식(programatic)으로 처리하기 :소스코드상에 @으로 처리 -->
 <!-- 1) root-context.xml : 어노테이션 살펴봐. servlet-context : 어노테이션 driven
  -> annotation표시를 검색할 수 있게 설정 -->
-<tx:annotation-driven transaction-manager="" />
-
+<!-- <tx:annotation-driven transaction-manager="transactionManager"/> -->
 <!-- 2) Service 객체 트렌젝션 처리: 
 메소드 마다 -> insert, update, delete 메소드에 트랜젝션 -->
 ```
@@ -799,11 +859,12 @@ propatation 트랜젝션.
 <dependency>
   <groupId>org.aspectj</groupId>
   <artifactId>aspectjweaver</artifactId>
-  <version>1.6.10</version>
+  <!-- <version>1.6.10</version> -->
+  <version>${org.aspectj-version}</version>
 </dependency>
 ```
 
-## namespace탭에서 tx 체크하기
+## root-context.xml namespace탭에서 tx 체크하기
 ```java
   // boardServiceImpl.java
   //  @Transactional //트랜젝션의 기준이 되는 것 : RunTimeException 발생시! Exception으로 하면 안됨
@@ -847,6 +908,11 @@ propatation 트랜젝션.
 </aop:config>
 ```
 
+
+
+
+
+
 ## 스프링 Ajax 처리하기
 3가지 방법 있음
 ```
@@ -872,7 +938,9 @@ propatation 트랜젝션.
 <!-- ajax viewResolver jasonView 등록 -->
 <!-- jsonView 등록하기 -->
 <beans:bean id="viewResolver" class="org.springframework.web.servlet.view.BeanNameViewResolver">
+  <beans:property name="order" value="1" />
 </beans:bean>
+<beans:bean id="jasonView" class="net.sf.json.spring.web.servlet.view.JsonView" />
 ```
 
 ## Jackson-databind
