@@ -7,24 +7,24 @@ highlighter: rouge
 markdown: kramdown
 disqus: dbyll
 google_analytics: dbyll
-title: JunHo's Portfolio
+title: Lee Jun Ho
 
 defaults:
   -
     scope:
       path: "" # empty string for all files
     values:
-      title: Portfolio
+      title: Lee Jun Ho
 
 description: Stylish Jekyll Theme
 author:
-  name: Jun Ho Lee
+  name: Lee Jun Ho
   email: jnuho@outlook.com
-  github: fggo
+  github: jnuho
   twitter: 
   pinterest: 
   linkedin: 
-  bio: https://github.com/fggo, https://github.com/jnuho
+  bio: Java | 스프링FW | REST API | OAUTH 2.0
   email_md5: dfd301662e74e48b9f250554dd767672
 
 rss_path: feed.xml
