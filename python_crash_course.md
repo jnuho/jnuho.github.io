@@ -3909,6 +3909,7 @@ the kind of info that goes in the content block
 {% endraw %}
 ```
 ```html
+{% raw %}
 <!--index.html-->
 {% extends "learning_logs/base.html" %}
 
@@ -3916,6 +3917,7 @@ the kind of info that goes in the content block
   <p>Learning Log helps you keep track of your learning, for any topic
     you're learning about.</p>
 {% endblock content %}
+{% endraw %}
 ```
 
 The Topics Page
@@ -3957,6 +3959,7 @@ def topics(request):
 
 The Topics Template
 ```html
+{% raw %}
 <!--topics.html-->
 <!--wrap the variable name in double braces; indicate to Django that 
 we’re using a template variable.-->
@@ -3973,14 +3976,17 @@ we’re using a template variable.-->
   </ul>
 
 {% endblock comment %}
+{% endraw %}
 ```
 ```html
+{% raw %}
 <!--base.html-->
 <p>
   <a href="{% url 'learning_logs:index' %}">Learning Log</a> -
   <a href="{% url 'learning_logs:topics' %}">Topics</a>
 </p>
 {% block comment %}{% endblock comment %}
+{% endraw %}
 ```
 
 Individual Topic Pages
@@ -4036,6 +4042,7 @@ def topic(request, topic_id):
 
 The Topic Template
 ```html
+{% raw %}
 <!--topic.html-->
 <!--a vertical line, |, represents a template filter—a function that 
 modifies the value in a template variable.
@@ -4060,10 +4067,12 @@ filter linebreaks ensures that long text entries include line breaks-->
   </ul>
 
 {% endblock comment %}
+{% endraw %}
 ```
 
 Links from the Topics Page
 ```html
+{% raw %}
 <!--topics.html-->
 <!--modify existing topics.html to display links to each topic. URL 
 template tag to generate the proper link, based on the URL pattern 
@@ -4085,6 +4094,7 @@ template tag-->
   </ul>
 
 {% endblock comment %}
+{% endraw %}
 ```
 
 ## User Accounts
@@ -4173,6 +4183,7 @@ Depending on the request, we’ll know whether the user is requesting a blank fo
 
 The new_topic Template
 ```html
+{% raw %}
 <!--new_topic.html-->
 <!--'action' tells the server where to send the data submitted in the 
 form; in this case, we send it back to the view function new_topic()
@@ -4190,10 +4201,12 @@ as_p modifier to render all form elements in paragraph format-->
   </form>
 
 {% endblock comment %}
+{% endraw %}
 ```
 
 Linking to the new_topic Page
 ```html
+{% raw %}
 <!--topics.html-->
 {% extends "learning_logs/base.html" %}
 
@@ -4205,6 +4218,7 @@ Linking to the new_topic Page
   <a href="{% url 'learning_logs:new_topic' %}">Add a new topic:</a>
 
 {% endblock content %}
+{% endraw %}
 ```
 
 #### Adding New Entries
@@ -4260,6 +4274,7 @@ def new_entry(request, topic_id):
 
 The new_entry Template
 ```html
+{% raw %}
 <!--new_entry.html-->
 {% extends 'learning_logs/base.html' %}
 
@@ -4273,10 +4288,12 @@ The new_entry Template
     <button name="submit">add entry</button>
   </form>
 {% endblock comment %}
+{% endraw %}
 ```
 
 Linking to the new_entry Page
 ```html
+{% raw %}
 <!--topic.html-->
 {% extends "learning_logs/base.html" %}
 
@@ -4291,6 +4308,7 @@ Linking to the new_entry Page
   </ul>
 
 {% endblock comment %}
+{% endraw %}
 ```
 
 #### Editing Entries
@@ -4394,6 +4412,7 @@ urlpatterns = [
 
 The login template
 ```html
+{% raw %}
 <!--login.html-->
 <!--the value argument tells Django where to redirect the user after 
 they’ve logged in successfully; redirect to learning_logs home-->
@@ -4412,10 +4431,12 @@ they’ve logged in successfully; redirect to learning_logs home-->
            value="{% url 'learning_logs:index' %}" />
   </form>
 {% endblock content %}
+{% endraw %}
 ```
 
 Linking to the Login Page
 ```html
+{% raw %}
 <!--base.html-->
 <!--In Django’s authentication system, every template has user variable
 available, which always has an is_authenticated attribute set-->
@@ -4430,6 +4451,7 @@ available, which always has an is_authenticated attribute set-->
 </p>
 
 {% block content %}{% endblock content %}
+{% endraw %}
 ```
 
 #### Logging Out
@@ -4464,6 +4486,7 @@ def logout_view(request):
 
 Linking to the logout View
 ```html
+{% raw %}
 <!--base.html-->
 <p>
   <a href="{% url 'learning_logs:index' %}">Learning Log</a> -
@@ -4478,6 +4501,7 @@ Linking to the logout View
 </p>
 
 {% block content %}{% endblosck content %}
+{% endraw %}
 ```
 
 #### The Registration Page
@@ -4530,6 +4554,7 @@ def register(request):
 
 The register Template
 ```html
+{% raw %}
 <!--users/register.html-->
 {% extends 'learning_logs/base.html' %}
 
@@ -4543,10 +4568,12 @@ The register Template
   </form>
 
 {% endblock content %}
+{% endraw %}
 ```
 
 Linking to the Registration Page
 ```html
+{% raw %}
 <!--base.html-->
 <p>
   <a href="{% url 'learning_logs:index' %}">Learning Log</a> -
@@ -4561,6 +4588,7 @@ Linking to the Registration Page
 </p>
 
 {% block content %}{% endblock content %}
+{% endraw %}
 ```
 
 ### Allowing Users to Own Their Data
@@ -4800,6 +4828,7 @@ BOOTSTRAP3 = {
 #### Modifying base.html
 
 ```html
+{% raw %}
 <!--base.html-->
 {% load bootstrap3 %}
 
@@ -4860,11 +4889,13 @@ BOOTSTRAP3 = {
     
   </body>
 </html>
+{% endraw %}
 ```
 
 #### Styling the Home Page Using a Jumbotron
 Let’s update the home page using the newly defined header block and another Bootstrap element called a jumbotron—a large box that will stand out from the rest of the page and can contain anything you want. It’s typically used on home pages to hold a brief description of the overall project.
 ```html
+{% raw %}
 <!--index.html-->
 {% extends 'learning_logs/base.html' %}
 
@@ -4884,10 +4915,12 @@ Let’s update the home page using the newly defined header block and another Bo
     summarizing what you've learned.
   </h2>
 {% endblock content %}
+{% endraw %}
 ```
 
 #### Styling the Login Page
 ```html
+{% raw %}
 <!--login.html-->
 <!--form.errors validation check is handled by django-bootstrap3-->
 {% extends 'learning_logs/base.html' %}
@@ -4911,10 +4944,12 @@ Let’s update the home page using the newly defined header block and another Bo
   </form>
   
 {% endblock content %}
+{% endraw %}
 ```
 
 #### Styling the new_topic Page
 ```html
+{% endraw %}
 <!--new_topic.html-->
 {% extends 'learning_logs/base.html' %}
 {% load bootstrap3 %}
@@ -4934,10 +4969,12 @@ Let’s update the home page using the newly defined header block and another Bo
   </form>
 
 {% endblock content %}
+{% endraw %}
 ```
 
 #### Styling the Topics Page
 ```html
+{% raw %}
 {% extends 'learning_logs/base.html' %}
 
 {% block header %}
@@ -4962,10 +4999,12 @@ Let’s update the home page using the newly defined header block and another Bo
   </h3>
   
 {% endblock content %}
+{% endraw %}
 ```
 
 #### Styling the Entries on the Topic Page
 ```html
+{% raw %}
 <!--topic.html-->
 {% extends 'learning_logs/base.html' %}
 
@@ -4997,6 +5036,7 @@ Let’s update the home page using the newly defined header block and another Bo
   {% endfor %}
 
 {% endblock content %}
+{% endraw %}
 ```
 
 ### Deploying Learning Log
@@ -5319,6 +5359,7 @@ A 404 error usually means your Django code is correct, but the object being requ
 
 Making Custom Templates
 ```html
+{% raw %}
 <!--404.html-->
 <!--in /learning_log/learning_log/templates/-->
 {% extends 'learning_logs/base.html' %}
@@ -5334,6 +5375,7 @@ Making Custom Templates
 {% block header %}
   <h2>There has been an internal error. (500)</h2>
 {% endblock header %}
+{% endraw %}
 ```
 
 ```python
