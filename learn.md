@@ -1,3 +1,11 @@
+---
+layout: post
+title: 개인 study
+categories: [general, setup, demo]
+tags: [demo, dbyll, dbtek, setup]
+fullview: true
+comments: true
+---
 
 [leetcode.com](https://leetcode.com/problemset/all/)<br>
 [programmers.co.kr](https://programmers.co.kr/learn/challenges)<br>
