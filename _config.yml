@@ -14,7 +14,7 @@ defaults:
     scope:
       path: "" # empty strisg for all files
     values:
-      title: portfolio
+      title: 
 
 description: Stylish Jekyll Theme
 author:

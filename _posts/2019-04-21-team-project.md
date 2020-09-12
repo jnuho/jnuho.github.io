@@ -1,6 +1,6 @@
 ---
 layout: post
-title: '19-team-project
+title: 2019-team-project
 categories: [general, setup, demo]
 tags: [demo, dbyll, dbtek, setup]
 fullview: true
