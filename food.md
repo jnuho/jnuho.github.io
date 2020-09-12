@@ -36,18 +36,21 @@ Screenshot
         오버라이드 메소드 compareTo 에 의해 key값(User, Food)으로 TreeMap의 데이터 정렬(natural ordering)
         
     natural ordering 대신에 TreeMap 생성인자로 Comparator inner class를 전달하여 정렬방법 변경
-    ```java
+
+    {% highlight java %}
     Map<Food, Integer> orderList = new TreeMap<Food, Integer>(new Comparator<Food>(){
         @Override
         public int compare(Food o1, Food o2){
             return o1.getMenuPrice() - o2.getMenuPrice();
         }
     });
-    ```
+    {% endhighlight %}
+
     FoodMenu는 음식메뉴 List를 정의하는 클래스로, 이 List는 Collections의 sort를 이용하여 정렬
-    ```java
+
+    {% highlight java %}
     List<Food> foodMenuList;
-    ```
+    {% endhighlight %}
     
     Admin클래스에 있는 메뉴별 매출(salesResult)은 TreeMap의 자동정렬 특성과, Food의 compareTo에 정의된 
     규칙에 따라, 메뉴 알파벳 순 정렬 하였습니다. 다만 매출량을 조회시에 가장 많이 팔린 개수(Integer) 기준으로

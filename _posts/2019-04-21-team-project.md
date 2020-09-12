@@ -4,6 +4,7 @@ title: 2019-team-project
 categories: [general, setup, demo]
 tags: [demo, dbyll, dbtek, setup]
 fullview: true
+comments: true
 ---
 
 Team projects 04.22 ~ 11.15<br>
