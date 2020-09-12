@@ -1,3 +1,8 @@
+
+Resources
+  - [↳ Document](https://jnuho.github.io/food)
+  - [↳ repository](https://github.com/fggo/food_KH)
+
 Ⅰ Overview
 ```
 First java application. It uses Swing.

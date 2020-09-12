@@ -1,3 +1,8 @@
+Resources
+- [↳ Document](https://jnuho.github.io/developmental)
+- [↳ Spring Env](https://jnuho.github.io/spring-set-up)
+- [↳ Repository](https://github.com/fggo/developMental)
+
 Ⅰ Team
 ```
 Project : developMental
