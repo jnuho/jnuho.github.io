@@ -598,20 +598,63 @@ while True:
     arr.append(int(v))
     i += 1
 
+    
 print(f'{i}개 입력완료')
 print(f'최대값은 {max_of(arr)}')
 ```
 
     배열의 최대값을 구합니다 (q 입력 시 프로그램 종료)
-    x[0] = 4
-    x[1] = 2
-    x[2] = -1
-    x[3] = 33
-    x[4] = 2
-    x[5] = 0
-    x[6] = q
-    6개 입력완료
-    최대값은 33
+    x[0] = 20
+    x[1] = 1
+    x[2] = -2
+    x[3] = q
+    3개 입력완료
+    최대값은 20
+
+
+
+```python
+from chap02.max import max_of
+
+print('배열의 최대값을 구합니다 (q 입력 시 프로그램 종료)')
+
+i = 0
+arr = []
+
+num = int(input('배열 크기 : '))
+lo = int(input('난수 최소 : '))
+hi = int(input('난수 최대 : '))
+
+for i in range(num):
+    arr.append(random.randint(lo, hi))
+
+print(f'{i}개 입력완료')
+print(f'최대값은 {max_of(arr)}')
+```
+
+    배열의 최대값을 구합니다 (q 입력 시 프로그램 종료)
+    배열 크기 : 10
+    난수 최소 : 1
+    난수 최대 : 99
+    9개 입력완료
+    최대값은 88
+
+
+
+```python
+from chap02.max import max_of
+t = (4, 7, 5.6, 2, 3.14, 1)
+s = 'string'
+a = ['DTS', 'AAC', 'FLAC']
+
+print(f'{t}의 최대값은 {max_of(t)}입니다.')
+print(f'{s}의 최대값은 {max_of(s)}입니다.')
+print(f'{a}의 최대값은 {max_of(a)}입니다.')
+```
+
+    (4, 7, 5.6, 2, 3.14, 1)의 최대값은 7입니다.
+    string의 최대값은 t입니다.
+    ['DTS', 'AAC', 'FLAC']의 최대값은 FLAC입니다.
 
 
 
