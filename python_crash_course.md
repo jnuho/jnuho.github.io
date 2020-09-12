@@ -3887,14 +3887,17 @@ Although it may seem a complicated process for creating one page, this separatio
 We'll build two pages. For each of these pages, we’ll specify a URL pattern, write a view function, and write a template. But before we do this, we’ll create a base template that all templates in the project can inherit from.
 
 Template Inheritance
-```html
-<!--base.html-->
-<!--the template tag {% url 'learning_logs:index' %} generates a URL 
+```
+the template tag {% url 'learning_logs:index' %} generates a URL 
 matching the URL pattern defined in learning_logs/urls.py with the
 name 'index'. (learning_logs: namespace, index: uniquely named URL 
 pattern in that namespace.) We insert a pair of block tags, named 
 content. This block is a placeholder; the child template will define 
-the kind of info that goes in the content block-->
+the kind of info that goes in the content block
+```
+
+```html
+<!--base.html-->
 <p>
   <a hred ="{% url 'learning_logs:index' %}">Learning Log</a>
 </p>
@@ -5394,7 +5397,6 @@ heroku apps:destroy --app appname
 ```
 
 
-
 ```python
 name = "A"
 ```
@@ -5614,7 +5616,7 @@ plt.show()
 
 
     
-![png](output_211_0.png)
+![png](output_212_0.png)
     
 
 
