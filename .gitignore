@@ -1,4 +1,9 @@
-_config.yml
 _site/*
 *Thumbs.db
 Gemfile.lock
+out
+.idea
+bin
+venv
+.vscode
+__pycache__
