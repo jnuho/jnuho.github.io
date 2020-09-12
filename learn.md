@@ -1,11 +1,6 @@
----
-layout: post
-title: 
-categories: [learn]
-tags: [java, backend, learn]
-fullview: true
-comments: true
----
+
+[leetcode.com](https://leetcode.com/problemset/all/)<br>
+[programmers.co.kr](https://programmers.co.kr/learn/challenges)<br>
 
 ## 개인 study
 - [자바](README_java)
@@ -13,6 +8,3 @@ comments: true
 - [파이썬.코딩 테스트](python_coding_test)
 - [파이썬.자료구조 알고리즘](https://jnuho.github.io/python_ds_algorithm)
 
-
-[leetcode.com](https://leetcode.com/problemset/all/)<br>
-[programmers.co.kr](https://programmers.co.kr/learn/challenges)<br>
