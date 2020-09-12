@@ -1,8 +1,8 @@
 ---
 layout: post
 title: 팀 프로젝트
-categories: [general, setup, demo]
-tags: [demo, dbyll, dbtek, setup]
+categories: [project]
+tags: [team, spring, java, web, project]
 fullview: true
 comments: true
 ---
