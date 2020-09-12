@@ -3888,7 +3888,7 @@ We'll build two pages. For each of these pages, we’ll specify a URL pattern, w
 
 Template Inheritance
 ```
-the template tag {% url 'learning_logs:index' %} generates a URL 
+the template tag {\% url 'learning_logs:index' \%} generates a URL 
 matching the URL pattern defined in learning_logs/urls.py with the
 name 'index'. (learning_logs: namespace, index: uniquely named URL 
 pattern in that namespace.) We insert a pair of block tags, named 
