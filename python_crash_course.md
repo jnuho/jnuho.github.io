@@ -4949,7 +4949,7 @@ Let’s update the home page using the newly defined header block and another Bo
 
 #### Styling the new_topic Page
 ```html
-{% endraw %}
+{% raw %}
 <!--new_topic.html-->
 {% extends 'learning_logs/base.html' %}
 {% load bootstrap3 %}
