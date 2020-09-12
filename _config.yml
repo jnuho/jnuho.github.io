@@ -7,18 +7,18 @@ highlighter: rouge
 markdown: kramdown
 disqus: dbyll
 google_analytics: dbyll
-title: Lee Jun Ho
+title: portfolio
 
 defaults:
   -
     scope:
       path: "" # empty string for all files
     values:
-      title: Lee Jun Ho
+      title: 
 
 description: Stylish Jekyll Theme
 author:
-  name: Lee Jun Ho
+  name: 이준호
   email: jnuho@outlook.com
   github: jnuho
   twitter: 
