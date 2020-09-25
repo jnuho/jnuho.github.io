@@ -8,6 +8,6 @@ comments: true
 ---
 
 **팀 프로젝트** <i>'19.04.22 ~ '19.11.15</i><br><br>
-[↳ Java Swing App](https://jnuho.github.io/food)<br>
-[↳ Web App](https://jnuho.github.io/parking)<br>
-[↳ Spring Web App](https://jnuho.github.io/developmental)<br>
+- [Java Swing App](https://jnuho.github.io/food)
+- [Web App](https://jnuho.github.io/parking)
+- [Spring Web App](https://jnuho.github.io/developmental)
