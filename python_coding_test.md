@@ -1,226 +1,3 @@
-# 00 파이썬 기초
-
-- 자료형
-  - 정수형 ```a= 1000```
-  - 실수형 ```a= 3.1415 b= -.7 c=5. d=1e9 ```
-  : 컴퓨터 수처리 방식은 2진수 이기 때문에 실수형을 저장할때, 4또는 8바이트라는
-  고정된 크기의 메모리를 할당함. 예를들어 컴퓨터가 .3+.6=.9를 표현할때 미세한 오차가 존재
-  (.89999...)
-
-
-```python
-a = 1e9
-print(a)
-
-b = 75.25e1
-print(b)
-
-c = 3954e-3
-print(c)
-
-a = .3 + .6
-print(a)
-
-b = round(a, 4)
-if round(a, 4) == .9:
-    print(True)
-else:
-    print(False)
-
-```
-
-    1000000000.0
-    752.5
-    3.954
-    0.8999999999999999
-    True
-    
-
-- 연산
-  - 나누기 /
-  - 나머지 %
-  - 몫 //
-  - 거듭제곱 **
-
-
-```python
-a = 7
-b = 3
-
-print(a / b)
-print(a % b)
-print(a // b)
-print(a ** b)
-
-
-```
-
-    2.3333333333333335
-    1
-    2
-    343
-    
-
-- 리스트
-
-함수명 | 사용법 | 설명 | 시간복잡도
----|---|---|---
-append() | 변수.append() | 리스트에 원소하나 삽입 | O(1)
-sort() | 변수.sort() | 기본정렬기능 오름차순 | O(NlogN)
-sort() | 변수.sort(reverse=True) | 내림차순정렬 | O(NlogN)
-reverse() | 변수.reverse() | 리스트 원소순서 뒤집음 | O(N)
-insert() | 변수.insert(index, value) | 특정 인덱스위치 value 삽입 | O(N)
-count() | 변수.count(value) | 리스트에서 value 해당 데이터 수 | O(N)
-remove() | 변수.remove(value) | 리스트에서 value 해당 '첫번째' 데이터만 제거. | O(N)
-
-
-```python
-a = []
-print(a)
-
-n = 10
-a = [0]*n
-print(a)
-
-a = [1,2,3,4,5,6,7,8,9]
-print(a)
-
-# 리스트 인덱싱, 슬라이싱
-print(a[-1])
-print(a[-3])
-print(a[1:4]) # [2,3,4]
-
-# 리스트 컴프리 헨션
-# 0~19중 홀수만
-array = [i for i in range(20) if i%2 == 1]
-print(array)
-# 같은 결과
-array = []
-for i in range(20):
-  if i%2 == 1:
-    array.append(i)
-print(array)
-
-# 1~9 제곱값
-array = [i*i for i in range(1,10)]
-print(array)
-# 2차원 리스트 N by M
-n = 3
-m = 3
-array = [[0]*m for _ in range(n)]
-print(array)
-
-a = [1,4,3]
-print("기본: ", a)
-
-a.append(2)
-print("a.append(2): ", a)
-
-a.sort()
-print("a.sort(): ", a)
-
-a.sort(reverse=True)
-print("a.sort(reverse=True): ", a)
-
-a.reverse()
-print("a.reverse(): ", a)
-
-a.insert(1, 3)
-print("a.insert(1, 3): ", a)
-
-print("a.count(3): ", a.count(3))
-
-a.remove(3)
-print("a.remove(3) ", a)
-
-# 특정 값 '모두' 제거
-a = [1,2,3,4,5,5,5]
-remove_set = {3, 5}
-print(a)
-a = [i for i in a if i not in remove_set]
-print(a)
-```
-
-    []
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-    [1, 2, 3, 4, 5, 6, 7, 8, 9]
-    9
-    7
-    [2, 3, 4]
-    [1, 3, 5, 7, 9, 11, 13, 15, 17, 19]
-    [1, 3, 5, 7, 9, 11, 13, 15, 17, 19]
-    [1, 4, 9, 16, 25, 36, 49, 64, 81]
-    [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
-    기본:  [1, 4, 3]
-    a.append(2):  [1, 4, 3, 2]
-    a.sort():  [1, 2, 3, 4]
-    a.sort(reverse=True):  [4, 3, 2, 1]
-    a.reverse():  [1, 2, 3, 4]
-    a.insert(1, 3):  [1, 3, 2, 3, 4]
-    a.count(3):  2
-    a.remove(3)  [1, 2, 3, 4]
-    [1, 2, 3, 4, 5, 5, 5]
-    [1, 2, 4]
-    
-
-- 문자열
-
-
-```python
-data = 'Hello World'
-print(data)
-data = "Dont't you know \"Python\"?"
-print(data)
-
-a = "Hello"
-b = "World"
-print(a+" "+b)
-print(a*3)
-
-a = "ABCDEF"
-print(a[2:4]) # CD
-
-```
-
-    Hello World
-    Dont't you know "Python"?
-    Hello World
-    HelloHelloHello
-    CD
-    
-
-- 튜플
-  - 한번 선언된 값 변경 불가능
-  - 튜플은 소괄호 ```()```
-  - 그래프 알고리즘 구현 시 자주 사용 (다익스트라 최단경로 알고리즘에서, 우선순위 queue에 한번 들어간 값은 변경 되지 않기 때문에, 우선순위 큐에 들어가는 데이터는 튜플로 선언)
-  - 다익스트라 최단경로 알고리즘에서 (비용, 노드번호) 형태로 묶어 관리
-  - 리스트에 비해 공간 효율적
-  - 각 원소 성질이 서로 다를때 주로 사용
-
-
-```python
-a = (1,2,3,4)
-# a[2] = 7 # ERROR!
-
-```
-
-- 사전
-  - key,value 쌍
-  - 내부적으로 Hash Table을 이용하므로 데이터 검색, 수정은 O(1) 리스트보다 훨씬 빠름
-
-
-```python
-data = dict()
-data['사과'] = 'Apple'
-data['바나나'] = 'Banana'
-data['코코넛'] = 'Coconut'
-
-print(data)
-```
-
-    {'사과': 'Apple', '바나나': 'Banana', '코코넛': 'Coconut'}
-    
-
 # 01 코딩테스트 개요
 
 ## 복잡도 Big-O
@@ -247,15 +24,15 @@ for i in array:
 
 $O(N)$ 최악의 경우로 복잡도 고려
 
-|빅오 표기법 | 명칭 |
-|:---|:-------|
-|$O(1)$ | 상수시간 (Constant time)|
-|$O(logN)$ |  로그시간 (Log Time) |
-|$O(N)$ | 선형 시간  |
-|O($NlogN$)| 로그 선형 시간 |
-|$O(N^{2})$ |  이차 시간 |
-|$O(N^{3})$ | 삼차 시간  |
-|$O(2^{n})$ | 지수 시간 |
+빅오 표기법 | 명칭
+---|---
+$O(1)$ | 상수시간 (Constant time)
+$O(logN)$ | 로그시간 (Log Time)
+$O(N)$ | 선형 시간
+O($NlogN$) | 로그 선형 시간
+$O(N^{2})$ |  이차 시간
+$O(N^{3})$ | 삼차 시간
+$O(2^{n})$ | 지수 시간
 
 Big-O는 최악의 경우 시간복잡도 e.g.Quick Sort O(NlogN)~O(N^2)
 
@@ -268,9 +45,7 @@ import time
 # 측정 시작
 start_time = time.time()
 
-'''
-프로그램 소스코드
-'''
+# 프로그램 소스코드
 
 # 측정 종료
 end_time = time.time()
@@ -323,6 +98,10 @@ elapsed_time = end_time - start_time
 print(f"기본 정렬 걸린 시간 : {elapsed_time}")
 ```
 
+    선택 정렬 걸린 시간 : 7.645506143569946
+    기본 정렬 걸린 시간 : 0.0
+    
+
 # 02 코딩 테스트 유형 분석
 
 - 알고리즘 기반, Greedy, Implmentation, DFS/BFS 탐색
@@ -342,17 +121,32 @@ print(f"기본 정렬 걸린 시간 : {elapsed_time}")
 
 Upper Bound : 문제 해결 역량 & 코드포스 블루이상, ACM-ICPC 서울지역 대회 본선 수준
 
-| | 날짜 | 풀이 시간 | 문제 개수 | 커트라인 | 주요 문제 유형 | 시험 유형|
-|:---|:---|:---|:---|:---|:---|:---|
-|라인| 상반기<br>(2020-04-05)| 2시간 30분| 6문제| 4문제|구현, 문자열, 자료구조| 온라인|
-|삼성전자| 상반기<br>(2020-06-07)| 3시간| 2문제| 2문제|완전탐색, 시뮬레이션, DFS/BFS| 오프라인|
+기업 | 날짜 | 풀이 시간 | 문제 개수 | 커트라인 | 주요 문제 유형 | 시험 유형
+---|---|---| ---| ---|---|---
+라인| 상반기<br>(2020-04-05)| 2시간 30분| 6문제| 4문제|구현, 문자열, 자료구조| 온라인
+삼성전자| 상반기<br>(2020-06-07)| 3시간| 2문제| 2문제|완전탐색, 시뮬레이션, DFS/BFS| 오프라인
+
+
+- 알고리즘 문제풀이 사이트
+  - 코드시그널 https://app.codesignal.com
+  - 코드포스 https://codeforces.com
+  - 정올 http://www.jungol.com
+  - 생활코딩 https://opentutorials.org
+  - BOJ Slack https://acmicpc.slack.com
 
 
 # 03 Greedy 알고리즘
+- 현재 상황에서 가장 좋아 보이는 것만을 선택하는 알고리즘
+- 매 순간 가장 좋아 보이는 것을 선택하며, 현재 선택이 나중에 미칠 영향은 고려 X
+- 그리디 알고리즘 정당성 검토 필수 e.g. 큰단위 동전에 작은 단위 동전의 배수 일때만 가능 500, 400, 100는 적용 X
+  - 배수가 아닌 무작위 동전 종류인 경우 다이나믹 프로그래밍으로 해결 가능: Ch8
+
 
 
 ```python
-# 가장 적은 수의 거스름돈
+# 거스름돈 N원 일 때, 가장 적은 수의 거스름돈 동전 개수는?
+# '가장 큰 화폐 단위부터' 돈 거슬러 줘야 함
+# O(N) N: 거스름돈 종류 수
 n = 1260
 coins = [500, 100, 50, 10]
 
@@ -362,15 +156,48 @@ for coin in coins:
     n %= coin
 
 print(count)
+
 ```
+
+    6
+    
 
 
 ```python
-# 큰 수의 법칙
+# 크기 N 숫자 배열에서 주어진 수들을 M번 더하여 가장 큰수 만들기
+# 특정 인덱스 해당 수가 연속 K번 초과하면 안됨
+# 다른 인덱스에 해당수가 같은 경우도 서로 다른 것으로 간주
 n, m, k = map(int, input().split())
 
 data = list(map(int, input().split()))
 data.sort(reverse=True)
 
 
+sum = 0
+count = 0
+
+idx = 0
+
+for _ in range(m):
+
+  for _ in range(k):
+    count = count+1
+    if count >m:
+      break
+
+    sum += data[idx]
+    if idx %2 == 1:
+      break
+
+  if count >m:
+    break
+
+  idx = (idx+1) % 2
+
+print(sum)
 ```
+
+    5 8 3
+    2 4 5 4 6
+    46
+    
