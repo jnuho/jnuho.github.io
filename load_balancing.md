@@ -38,3 +38,13 @@ the Least Time algorithm, if so configured).
 
 
 ## ELB (Elastic Load Balancing)
+
+- Cloudwatch metrics
+- RDS/EC2 CPUUtilization
+    - rds CPU 사용%
+    - was-asg CPU 사용%
+- ALB WAS/WEB
+    - ActiveConnectionCount The total number of concurrent TCP connections active from clients to the load balancer and from the load balancer to targets.
+    - RequestCount The number of requests processed over IPv4 and IPv6.
+    - RequestCountPerTarget The average number of requests received by each target in a target group. You must specify the target group using the TargetGroup dimension. This metric does not apply if the target is a Lambda function.
+- ALB Response Time    
