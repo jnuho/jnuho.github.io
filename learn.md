@@ -7,5 +7,6 @@
 - [파이썬.baekjun](python_baekjun)
 - [자바](README_java)
 
-## CS
+## 프로그래밍 terms
 - [Load Balancing](load_balancing)
+- [Auto Scaling](auto_scaling)
