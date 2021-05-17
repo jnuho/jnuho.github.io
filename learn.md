@@ -10,3 +10,5 @@
 ## 프로그래밍 terms
 - [Load Balancing](load_balancing)
 - [Auto Scaling](auto_scaling)
+- [MySQL EXPLAIN](mysql_explain)
+
