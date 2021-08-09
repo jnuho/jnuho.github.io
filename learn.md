@@ -12,4 +12,5 @@
 - [Auto Scaling](auto_scaling)
 - [MySQL EXPLAIN](mysql_explain)
 - [ElastiCache](elasticache)
+- [DIDs](did)
 
