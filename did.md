@@ -36,7 +36,42 @@ decentralized solution for
 ```
 
 ## 2 The basic building blocks of SSI
-ighResolutionFigures/figure_2-11.png)
+
+SSI is a set of technologies that build on core concepts in identity management, distributed computing, blockchain or distributed ledger technology (DLT), and cryptography.
+
+- 2.1 Verifiable credentials (aka digital credentials)
+- 2.2 The trust triangle: issuers, holders, and verifiers
+- 2.3 Digital wallets
+- 2.4 Digital agents
+
+- 2.5 Decentralized identifiers (DIDs)
+
+Knowing the IP address of a machine on the internet doesn’t tell you anything about the identity of the person, organization, or thing controlling that machine.
+To do that, the controller (the identity holder) needs to be able to provide proof
+about their identity, attributes, relationships, or entitlements.
+And that proof has to be verifiable in some way.
+
+We’ve had technology for creating digital proofs for decades now
+: **Public/private key cryptography**
+The owner of a private key uses it to sign messages, and anyone else can verify this signature
+using the owner’s corresponding public key.
+The signature verification shows that the signature was created by the owner of
+the private key and the message has not been tampered with since.
+
+However, to rely on this verification, the verifier must know the correct public key for the owner.
+So, for decentralized messaging between digital agents and wallets to be secure
+—and for agents to be able to send cryptographically verifiable proofs of VCs to each other
+—we need a strong, secure, scalable way for identity holders and their agents to prove ownership of their public keys.
+
+The solution has been public key infrastructure (PKI)
+: The system of obtaining public key certificates from a small set of certification authorities (CAs) around the world.
+: which is also TOO centralized 
+=> DIDs, a new identifier (permanent, resolvable, cryptographically verifiable, decentralized)
+
+An example of a decentralized identifier (DID) and the associated public and private keys.
+A DID functions as the address of a public key on a blockchain (or other decentralized network.)
+In most cases, a DID can also be used to locate an agent for the DID subject (the entity identified by the DID).
+![Figure2.11](https://drek4537l1klr.cloudfront.net/preukschat/HighResolutionFigures/figure_2-11.png)
 
 
 
