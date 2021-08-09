@@ -17,8 +17,9 @@
   - Not account-based
   - peer-to-peer relationship, neither of you has an 'account'; both share a 'connection'
 
-![Figure1.4](https://drek4537l1klr.cloudfront.net/preukschat/HighResolutionFigures/figure_1-4.png)
-
+<div>
+<img src="https://drek4537l1klr.cloudfront.net/preukschat/HighResolutionFigures/figure_1-4.png" height="25%" width="25%" alt="Figure1.4">
+</div>
 
 - Blockchain for decentralized identity model
 
@@ -71,7 +72,10 @@ The solution has been public key infrastructure (PKI)
 An example of a decentralized identifier (DID) and the associated public and private keys.
 A DID functions as the address of a public key on a blockchain (or other decentralized network.)
 In most cases, a DID can also be used to locate an agent for the DID subject (the entity identified by the DID).
-![Figure2.11](https://drek4537l1klr.cloudfront.net/preukschat/HighResolutionFigures/figure_2-11.png)
+
+<div>
+<img src="https://drek4537l1klr.cloudfront.net/preukschat/HighResolutionFigures/figure_2-11.png" height="50%" width="50%" alt="Figure2.11">
+</div>
 
 
 
@@ -157,7 +161,9 @@ which must define the following aspects of the DID method:
 - Four basic operations can be executed on a DID: CRUD
 - Security and privacy considerations specific to the DID method
 
-![Figure8.7](https://drek4537l1klr.cloudfront.net/preukschat/HighResolutionFigures/figure_8-7.png)
+<div>
+<img src="https://drek4537l1klr.cloudfront.net/preukschat/HighResolutionFigures/figure_8-7.png" height="70%" width="70%" alt="Figure8.7">
+</div>
 
 It is difficult to make generic statements about the four DID operations
 since DID methods can be designed in very different ways.
