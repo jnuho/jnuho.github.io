@@ -74,14 +74,16 @@ A DID functions as the address of a public key on a blockchain (or other decentr
 In most cases, a DID can also be used to locate an agent for the DID subject (the entity identified by the DID).
 
 <div>
-<img src="https://drek4537l1klr.cloudfront.net/preukschat/HighResolutionFigures/figure_2-11.png" height="50%" width="50%" alt="Figure2.11">
+<img src="https://drek4537l1klr.cloudfront.net/preukschat/HighResolutionFigures/figure_2-11.png"
+height="50%" width="50%" alt="Figure2.11">
 </div>
 
 
 
 ## 8 Decentralized Identifiers
 
-A new type of globally unique identifier
+- A new type of globally unique identifier
+
 ![figure8.2](https://drek4537l1klr.cloudfront.net/preukschat/HighResolutionFigures/figure_8-2.png)
 
 A DID is a URI that can be either a URL or a URN and that can be looked up (resolved)
@@ -128,7 +130,10 @@ For example, a DID for a person (the DID subject) has an associated DID document
 that typically contains cryptographic keys, authentication methods,
 and other metadata describing how to engage in trusted interactions with that person. 
 
-![Figure8.6](https://drek4537l1klr.cloudfront.net/preukschat/HighResolutionFigures/figure_8-6.png)
+<div>
+<img src="https://drek4537l1klr.cloudfront.net/preukschat/HighResolutionFigures/figure_8-6.png"
+height="70%" width="70%" alt="Figure8.6">
+</div>
 
 DID document contains :
 - Public keys that can be used to authenticate the DID subject during an interaction; the essence of the DPKI
@@ -176,8 +181,20 @@ Other DID methods do not use a blockchain; they implement the four DID operation
 The process of obtaining the DID document associated with a DID
 
 
-![Figure8.8](https://drek4537l1klr.cloudfront.net/preukschat/Figures/CH08_F08_Preukschat.png)
-![Figure8.9](https://drek4537l1klr.cloudfront.net/preukschat/HighResolutionFigures/figure_8-9.png)
+
+<div>
+<img
+src="https://drek4537l1klr.cloudfront.net/preukschat/Figures/CH08_F08_Preukschat.png"
+height="70%" width="70%" alt="Figure8.8">
+</div>
+
+<br>
+<div>
+<img
+src="https://drek4537l1klr.cloudfront.net/preukschat/HighResolutionFigures/figure_8-9.png"
+height="50%" width="50%" alt="Figure8.9">
+</div>
+
 
 
 8.2.4 DID URLs
