@@ -18,7 +18,7 @@
   - peer-to-peer relationship, neither of you has an 'account'; both share a 'connection'
 
 <div>
-<img src="https://drek4537l1klr.cloudfront.net/preukschat/HighResolutionFigures/figure_1-4.png" height="25%" width="25%" alt="Figure1.4">
+<img src="https://drek4537l1klr.cloudfront.net/preukschat/HighResolutionFigures/figure_1-4.png" height="20%" width="20%" alt="Figure1.4">
 </div>
 
 - Blockchain for decentralized identity model
