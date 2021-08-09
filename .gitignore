@@ -7,3 +7,4 @@ bin
 venv
 .vscode
 __pycache__
+*.swp
