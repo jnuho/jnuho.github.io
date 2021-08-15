@@ -4,6 +4,8 @@
 
 ![VPC with public and private subnets](https://docs.aws.amazon.com/vpc/latest/userguide/images/nat-gateway-diagram.png)
 
+- ElastiCache클러스터를 스타패스 was와 EC2와 같은 VPC에 배정
+
 ![elasticache_and_ec2](https://docs.aws.amazon.com/AmazonElastiCache/latest/mem-ug/images/ElastiCache-inVPC-AccessedByEC2-SameVPC.png)
 
 
