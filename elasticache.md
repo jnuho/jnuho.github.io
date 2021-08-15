@@ -11,7 +11,6 @@
 
 ![diagram](./assets/images/ElastiCache.jpg)
 
-
 #### VPC
 - CIDR 172.20.0.0/16
 - e.g. 172.20.0.0 ~ 172.20.255.255
@@ -62,7 +61,7 @@ sudo apt install redis
 
 
 #### ElastiCache-redis 생성
-- 서브넷그룹은 위에서 생성된 VPC, 퍼블릭서브넷을 선택
+- 서브넷그룹은 starpass-was-00, starpass-bastion 과 같은 VPC, 프라이빗 서브넷 선택
 
 #### 테스트
 - 위의 VPC, 퍼블릭서브넷으로 생성된 EC2에서만 ElasticCache접근 확인
