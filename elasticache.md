@@ -2,27 +2,37 @@
 
 ## ElastiCache
 
-### VPC 생성
-- VPC : CIDR 172.10.0.0/16
 
-### Internet Gateway 생성
+
+
+![VPC with public and private subnets](https://docs.aws.amazon.com/vpc/latest/userguide/images/nat-gateway-diagram.png)
+
+### VPC
+- VPC : CIDR 172.10.0.0/16 (e.g. 172.10.0.0~172.10.255.255)
+
+
+### 인터넷 게이트웨이
 - VPC에 Attach
 
-### 서브넷-public
-- Subnet : CIDR 172.10.0.0/24 (현재는 VPC 내 로컬에서만 접근 가능-private)
-- Route Tables : click rt > 라우팅 > 퍼블릭으로 만듦 (타겟 'igw-071ed7e5e7b2b8385' 추가)
-- Route Tables : click rt > 서브넷연결 > 위의 Subnet 연결하여 public화
+### 서브넷, 라우트테이블
+- 퍼블릭
+  - 서브넷 : CIDR 172.10.0.0/24 (현재는 VPC 내 로컬에서만 접근 가능-private)
+  - 라우트테이블
+  - '라우트' 탭 > 추가 '0.0.0.0/0', 'igw-071ed7e5e7b2b8385'
+  - '서브넷연결' 탭 > 위의 서브넷 연결하여 퍼블릭으로 만듦
 
-### 서브넷-private
-- Subnet : CIDR 172.10.1.0/24
-- Route Tables : click rt > 서브넷연결 > 위의 Subnet 연결하여 private화
+- 프라이빗
+  - 서브넷 : CIDR 172.10.1.0/24
+  - 라우트테이블
+    - '서브넷연결' 탭 > 위의 서브넷 연결하여 프라이빗으로 만듦
 
-### 보안그룹-EC2용
-- SG (TCP port 6379 open) with a VPC above for ElastiCache cluster
+### 보안그룹
+- EC2용
+  - SG (TCP port 6379 open) with a VPC above for ElastiCache cluster
 
-### 보안그룹-ElastiCache용
-- ElastiCache : with SG above && create subnetgroup that uses same VPC as above
-- EC2 : with a new SG with inbound port 22 for SSH
+- ElastiCache용
+  - ElastiCache : with SG above && create subnetgroup that uses same VPC as above
+  - EC2 : with a new SG with inbound port 22 for SSH
 
 ### EC2
 - 퍼블릭 IP자동할당 : 'Enable'
