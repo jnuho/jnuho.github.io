@@ -5,7 +5,10 @@
 
 <!-- ![elasticache_and_ec2](https://docs.aws.amazon.com/AmazonElastiCache/latest/mem-ug/images/ElastiCache-inVPC-AccessedByEC2-SameVPC.png) -->
 
-- ElastiCache클러스터를 EC2(starpass-was-00)와 같은 VPC에 배정
+- ElastiCache클러스터 EC2와 같은 VPC:
+  - ElastiCache
+  - EC2 starpass-was-00
+  - EC2 starpass-bastion
 
 ![diagram](./assets/images/ElastiCache.jpg)
 
