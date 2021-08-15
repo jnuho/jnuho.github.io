@@ -2,16 +2,16 @@
 
 ## ElastiCache
 
+<!-- ![VPC with public and private subnets](https://docs.aws.amazon.com/vpc/latest/userguide/images/nat-gateway-diagram.png) -->
 
+![elasticache_and_ec2](https://docs.aws.amazon.com/AmazonElastiCache/latest/mem-ug/images/ElastiCache-inVPC-AccessedByEC2-SameVPC.png)
 
-
-![VPC with public and private subnets](https://docs.aws.amazon.com/vpc/latest/userguide/images/nat-gateway-diagram.png)
 
 ### VPC
 - VPC : CIDR 172.10.0.0/16 (e.g. 172.10.0.0~172.10.255.255)
 
 
-### 인터넷 게이트웨이
+### 인터넷게이트웨이
 - VPC에 Attach
 
 ### 서브넷, 라우트테이블
