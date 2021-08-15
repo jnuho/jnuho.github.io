@@ -12,15 +12,15 @@
 ![diagram](./assets/images/ElastiCache.jpg)
 
 
-### VPC
-- VPC : CIDR 172.20.0.0/16
-  - e.g. 172.20.0.0 ~ 172.20.255.255
+#### VPC
+- CIDR 172.20.0.0/16
+- e.g. 172.20.0.0 ~ 172.20.255.255
 
 
-### 인터넷게이트웨이
+#### 인터넷 게이트웨이
 - VPC에 Attach
 
-### 서브넷, 라우트테이블
+#### 서브넷, 라우팅 테이블
 - 퍼블릭
   - 서브넷 : CIDR 172.20.0.0/24 (현재는 VPC 내 로컬에서만 접근 가능-private)
   - 라우트테이블
@@ -32,7 +32,7 @@
   - 라우트테이블
     - '서브넷연결' 탭 > 위의 서브넷 연결하여 프라이빗으로 만듦
 
-### 보안그룹
+#### 보안 그룹
 - EC2용
   - SG (TCP port 6379 open) with a VPC above for ElastiCache cluster
 
@@ -40,7 +40,7 @@
   - ElastiCache : with SG above && create subnetgroup that uses same VPC as above
   - EC2 : with a new SG with inbound port 22 for SSH
 
-### EC2
+#### EC2
 - 퍼블릭 IP자동할당 : 'Enable'
 - 다음 커멘드 라인으로 redis클라이언트 설치
 
@@ -61,9 +61,9 @@ sudo apt install redis
 ```
 
 
-### ElastiCache-redis 생성
+#### ElastiCache-redis 생성
 - 서브넷그룹은 위에서 생성된 VPC, 퍼블릭서브넷을 선택
 
-### 테스트
+#### 테스트
 - 위의 VPC, 퍼블릭서브넷으로 생성된 EC2에서만 ElasticCache접근 확인
 - 다른 VPC 또는 프라이빗서브넷으로 생성된 EC2에서는 접근 불가
