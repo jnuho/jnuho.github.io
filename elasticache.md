@@ -1,26 +1,18 @@
 
 
-## ElastiCache
+<!-- ![VPC with public and private subnets](https://docs.aws.amazon.com/vpc/latest/userguide/images/nat-gateway-diagram.png) -->
 
-![VPC with public and private subnets](https://docs.aws.amazon.com/vpc/latest/userguide/images/nat-gateway-diagram.png)
 
-- ElastiCache클러스터를 스타패스 was와 EC2와 같은 VPC에 배정
+<!-- ![elasticache_and_ec2](https://docs.aws.amazon.com/AmazonElastiCache/latest/mem-ug/images/ElastiCache-inVPC-AccessedByEC2-SameVPC.png) -->
 
-![elasticache_and_ec2](https://docs.aws.amazon.com/AmazonElastiCache/latest/mem-ug/images/ElastiCache-inVPC-AccessedByEC2-SameVPC.png)
+- ElastiCache클러스터를 EC2(starpass-was-00)와 같은 VPC에 배정
 
-![diagram](./assets/ElastiCache.png)
-
-- 운영환경 
-starpass-bastion
-  sg-01cb2c501938ed0e6 (starpass-bastion)
-  sg-043e09614a44c4048 (Zabbix)
-starpass-was-00
-  sg-06f2620c6de5e4e69 (starpass-was)
-  sg-043e09614a44c4048 (Zabbix)
+![diagram](./assets/images/ElastiCache.jpg)
 
 
 ### VPC
-- VPC : CIDR 172.10.0.0/16 (e.g. 172.10.0.0~172.10.255.255)
+- VPC : CIDR 172.20.0.0/16
+  - e.g. 172.20.0.0 ~ 172.20.255.255
 
 
 ### 인터넷게이트웨이
@@ -28,13 +20,13 @@ starpass-was-00
 
 ### 서브넷, 라우트테이블
 - 퍼블릭
-  - 서브넷 : CIDR 172.10.0.0/24 (현재는 VPC 내 로컬에서만 접근 가능-private)
+  - 서브넷 : CIDR 172.20.0.0/24 (현재는 VPC 내 로컬에서만 접근 가능-private)
   - 라우트테이블
   - '라우트' 탭 > 추가 '0.0.0.0/0', 'igw-071ed7e5e7b2b8385'
   - '서브넷연결' 탭 > 위의 서브넷 연결하여 퍼블릭으로 만듦
 
 - 프라이빗
-  - 서브넷 : CIDR 172.10.1.0/24
+  - 서브넷 : CIDR 172.20.1.0/24
   - 라우트테이블
     - '서브넷연결' 탭 > 위의 서브넷 연결하여 프라이빗으로 만듦
 
