@@ -8,6 +8,16 @@
 
 ![elasticache_and_ec2](https://docs.aws.amazon.com/AmazonElastiCache/latest/mem-ug/images/ElastiCache-inVPC-AccessedByEC2-SameVPC.png)
 
+![diagram](./assets/ElastiCache.png)
+
+- 운영환경 
+starpass-bastion
+  sg-01cb2c501938ed0e6 (starpass-bastion)
+  sg-043e09614a44c4048 (Zabbix)
+starpass-was-00
+  sg-06f2620c6de5e4e69 (starpass-was)
+  sg-043e09614a44c4048 (Zabbix)
+
 
 ### VPC
 - VPC : CIDR 172.10.0.0/16 (e.g. 172.10.0.0~172.10.255.255)
