@@ -5,13 +5,12 @@
 
 <!-- ![elasticache_and_ec2](https://docs.aws.amazon.com/AmazonElastiCache/latest/mem-ug/images/ElastiCache-inVPC-AccessedByEC2-SameVPC.png) -->
 
-- ElastiCache클러스터 EC2와 같은 VPC:
-  - ElastiCache
-  - EC2 starpass-was-00
-  - EC2 starpass-bastion
-
 ![diagram](./assets/images/ElastiCache.jpg)
 
+- 같은 VPC 공유:
+  - ElastiCache 클러스터
+  - EC2 starpass-was-00
+  - EC2 starpass-bastion
 
 ### VPC
 - VPC : CIDR 172.20.0.0/16
