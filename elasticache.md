@@ -1,4 +1,8 @@
 
+- 같은 VPC 공유:
+  - ElastiCache 클러스터
+  - EC2 starpass-was-00
+  - EC2 starpass-bastion
 
 <!-- ![VPC with public and private subnets](https://docs.aws.amazon.com/vpc/latest/userguide/images/nat-gateway-diagram.png) -->
 
@@ -7,10 +11,6 @@
 
 ![diagram](./assets/images/ElastiCache.jpg)
 
-- 같은 VPC 공유:
-  - ElastiCache 클러스터
-  - EC2 starpass-was-00
-  - EC2 starpass-bastion
 
 ### VPC
 - VPC : CIDR 172.20.0.0/16
