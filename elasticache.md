@@ -48,22 +48,6 @@
 - 퍼블릭 IP자동할당 : 'Enable'
 - 다음 커멘드 라인으로 redis클라이언트 설치
 
-```sh
-# Linux in general
-wget http://download.redis.io/redis-stable.tar.gz
-tar -xvzf redis-stable.tar.gz
-cd redis-stable
-make && make install
-redis-cli -h {ElastiCache_Endpoint} -p {port configured in SG above;6379}
-
-# Ubuntu
-sudo apt update
-sudo apt install redis
-
-> flushall
-> keys *
-```
-
 
 #### ElastiCache-redis 생성
 - 서브넷그룹은 starpass-was-00, starpass-bastion 과 같은 VPC, 프라이빗 서브넷 선택
@@ -74,5 +58,24 @@ sg-03ceb4c49e904f0aa (starpass-redis)
 ```
 
 #### 테스트
-- 위의 VPC, 퍼블릭서브넷으로 생성된 EC2에서만 ElasticCache접근 확인
-- 다른 VPC 또는 프라이빗서브넷으로 생성된 EC2에서는 접근 불가
+- 위의 VPC, 프라이빗 서브넷으로 생성된 EC2(starpass-was)에서만 ElasticCache접근 확인
+- 보안그룹 인바운드 규칙에 정의된 호스트 이외 ip에서는 접근 불가 확인
+- 스프링 환경에서 jedis를 접근가능 한지 여부 확인하기 위해, 해당 EC2에서 redis-cli로 접속 테스트
+
+```sh
+# Linux in general
+wget http://download.redis.io/redis-stable.tar.gz
+tar -xvzf redis-stable.tar.gz
+cd redis-stable
+make && make install
+
+# Ubuntu
+sudo apt update
+sudo apt install redis
+
+# ElastiCache 접속 시도
+redis-cli -h {ElastiCache 엔드포인트} -p {보안그룹에 정의된 포트 6379}
+
+> flushall
+> keys *
+```
