@@ -27,17 +27,22 @@
   - '서브넷연결' 탭 > 위의 서브넷 연결하여 퍼블릭으로 만듦
 
 - 프라이빗
-  - 서브넷 : CIDR 172.20.1.0/24
+  - 서브넷 : CIDR 172.20.10.0/23
   - 라우트테이블
     - '서브넷연결' 탭 > 위의 서브넷 연결하여 프라이빗으로 만듦
 
 #### 보안 그룹
-- EC2용
-  - SG (TCP port 6379 open) with a VPC above for ElastiCache cluster
+같은 VPC내 보안 그룹 구분
+
+- EC2-public(bastion)
+  - inbound: SSH 오피스ip:22
+
+- EC2-private(was)
+  - with a new SG with inbound port 22 for SSH
+  - inbound: sg_bastion (SSH 22, TCP 8080), starpass-internal-elb-was(TCP 8080)
 
 - ElastiCache용
-  - ElastiCache : with SG above && create subnetgroup that uses same VPC as above
-  - EC2 : with a new SG with inbound port 22 for SSH
+  - inbound: sg_was/web/bastion (TCP 6379)
 
 #### EC2
 - 퍼블릭 IP자동할당 : 'Enable'
@@ -62,6 +67,11 @@ sudo apt install redis
 
 #### ElastiCache-redis 생성
 - 서브넷그룹은 starpass-was-00, starpass-bastion 과 같은 VPC, 프라이빗 서브넷 선택
+```
+vpc-0b4163a5f741002f8 (starpass-vpc) 
+subnet-01ab087db1ecc6748 (starpass-private-was-a) 
+sg-03ceb4c49e904f0aa (starpass-redis)
+```
 
 #### 테스트
 - 위의 VPC, 퍼블릭서브넷으로 생성된 EC2에서만 ElasticCache접근 확인
