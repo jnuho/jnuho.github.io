@@ -4,7 +4,7 @@
   - ElastiCache 클러스터는 미생성 상태이지만, 보안그룹은 생성되어 있음 (인바운드 포트6379)
   - 클러스터 생성 시 VPC, 서브넷그룹 선택필요
     - VPC: EC2와 같은 VPC 선택
-    - 서브넷그룹: 프라이빗 서브넷 선택 [_A subnet group is a collection of subnets (typically private)_](https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/SubnetGroups.html)
+    - [서브넷그룹](https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/SubnetGroups.html): 프라이빗 서브넷 선택 
 
 <!-- ![VPC with public and private subnets](https://docs.aws.amazon.com/vpc/latest/userguide/images/nat-gateway-diagram.png) -->
 
@@ -14,8 +14,7 @@
 <!-- ![diagram](./assets/images/ElastiCache.jpg) -->
 ![diagram](https://d2cg24p20j4o18.cloudfront.net/playvote/000/20210819/82331f92-bc8c-403e-a1d1-5d51bc6fec79.jpg)
 
-- 인프라 구축 테스트 과정 
-  - [참고링크](https://github.com/ROWEM-Development/dev-infra-info/blob/main/jenkins/01-jenkins.md)
+- 인프라 구축 테스트 과정 - [참고링크](https://github.com/ROWEM-Development/dev-infra-info/blob/main/jenkins/01-jenkins.md)
   1. [VPC](#vpc)
   2. [인터넷 게이트웨이](#인터넷-게이트웨이)
   3. [서브넷, 라우팅 테이블](#서브넷-라우팅-테이블)
@@ -47,19 +46,18 @@
 같은 VPC내 보안 그룹 구분
 
 - EC2-public(bastion)
-  - inbound: SSH 오피스ip:22
+  - 인바운드: SSH 오피스ip:22
 
 - EC2-private(was)
   - with a new SG with inbound port 22 for SSH
-  - inbound: sg_bastion (SSH 22, TCP 8080), starpass-internal-elb-was(TCP 8080)
+  - 인바운드: sg_bastion (SSH 22, TCP 8080), starpass-internal-elb-was(TCP 8080)
 
 - ElastiCache용
-  - inbound: sg_was/web/bastion (TCP 6379)
+  - 인바운드: sg_was/web/bastion (TCP 6379)
 
 #### EC2
 - 퍼블릭 IP자동할당 : 'Enable'
-- 다음 커멘드 라인으로 redis클라이언트 설치
-
+- redis클라이언트 설치
 
 #### ElastiCache
 - redis 선택

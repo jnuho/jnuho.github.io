@@ -77,13 +77,16 @@ Four properties of DID:
 1. Permanent
 2. Resolvable
 3. Cryptographically verifiable Identifier : You can prove control using cryptography
+
 ```
   cryptography is used to generate the DID.
   since the DID is now associated with exactly one public/private key pair,
   the controller of the private key can prove that they are also the controller of the DID.
 
 ```
+
 4. Decentralized : No centralized registration autority is required
+
 ```
   cryptography eliminates the need for centralized registration authorities
   cryptographic algorithms for public/private key pairs
