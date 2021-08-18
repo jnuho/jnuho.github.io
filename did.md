@@ -160,7 +160,7 @@ which must define the following aspects of the DID method:
 - Security and privacy considerations specific to the DID method
 
 <div>
-<img src="https://drek4537l1klr.cloudfront.net/preukschat/HighResolutionFigures/figure_8-7.png" height="70%" width="70%" alt="Figure8.7">
+<img src="https://drek4537l1klr.cloudfront.net/preukschat/HighResolutionFigures/figure_8-7.png" height="40%" width="40%" alt="Figure8.7">
 </div>
 
 It is difficult to make generic statements about the four DID operations since DID methods can be designed in very different ways.
@@ -176,7 +176,7 @@ The process of obtaining the DID document associated with a DID
 <div>
 <img
 src="https://drek4537l1klr.cloudfront.net/preukschat/Figures/CH08_F08_Preukschat.png"
-height="70%" width="70%" alt="Figure8.8">
+height="40%" width="40%" alt="Figure8.8">
 </div>
 
 <br>
