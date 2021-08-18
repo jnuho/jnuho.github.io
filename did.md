@@ -120,7 +120,7 @@ and other metadata describing how to engage in trusted interactions with that pe
 
 <div>
 <img src="https://drek4537l1klr.cloudfront.net/preukschat/HighResolutionFigures/figure_8-6.png"
-height="70%" width="70%" alt="Figure8.6">
+height="40%" width="40%" alt="Figure8.6">
 </div>
 
 DID document contains :
