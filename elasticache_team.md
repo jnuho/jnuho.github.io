@@ -1,0 +1,53 @@
+
+- 인프라 OverView
+  - 현재 같은 VPC 내에, 퍼블릭/프라이빗 서브넷으로 구분되어 있음
+  - ElastiCache 클러스터는 미생성 상태이지만, 보안그룹은 생성되어 있음 (인바운드 포트6379)
+  - 클러스터 생성 시 VPC, 서브넷그룹 선택필요
+    - VPC: EC2와 같은 VPC 선택
+    - [서브넷그룹](https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/SubnetGroups.html): 프라이빗 서브넷 선택 
+
+![diagram](https://d2cg24p20j4o18.cloudfront.net/playvote/000/20210819/82331f92-bc8c-403e-a1d1-5d51bc6fec79.jpg)
+
+- 인프라 구축 테스트 과정 - [참고링크](https://github.com/ROWEM-Development/dev-infra-info/blob/main/jenkins/01-jenkins.md)
+  1. [VPC](#vpc)
+  2. [인터넷 게이트웨이](#인터넷-게이트웨이)
+  3. [서브넷, 라우팅 테이블](#서브넷-라우팅-테이블)
+  4. [보안 그룹](#보안-그룹)
+  5. [EC2](#ec2)
+  5. [ElastiCache](#elasticache)
+
+
+#### EC2
+- redis클라이언트 설치
+
+#### ElastiCache
+- redis 선택
+- 서브넷그룹은 starpass-was-00, starpass-bastion 과 같은 VPC, 프라이빗 서브넷 선택
+```
+vpc-0b4163a5f741002f8 (starpass-vpc) 
+subnet-01ab087db1ecc6748 (starpass-private-was-a) 
+sg-03ceb4c49e904f0aa (starpass-redis)
+```
+
+#### 테스트
+- 위의 VPC, 프라이빗 서브넷으로 생성된 EC2(starpass-was)에서만 ElasticCache접근 확인
+- 보안그룹 인바운드 규칙에 정의된 호스트 이외 ip에서는 접근 불가 확인
+- 스프링 환경에서 jedis를 접근가능 한지 여부 확인하기 위해, 해당 EC2에서 redis-cli로 접속 테스트
+
+```sh
+# Linux in general
+wget http://download.redis.io/redis-stable.tar.gz
+tar -xvzf redis-stable.tar.gz
+cd redis-stable
+make && make install
+
+# Ubuntu
+sudo apt update
+sudo apt install redis
+
+# ElastiCache 접속 시도
+redis-cli -h {ElastiCache 엔드포인트} -p {보안그룹에 정의된 포트 6379}
+
+> flushall
+> keys *
+```
