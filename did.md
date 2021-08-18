@@ -1,82 +1,74 @@
 
-## 1 Three models of digital identity
-- The centralized identity model
+### 디지털 신원인증 모델
+- Centralized
   - e.g. Account-based website
-  - [You] &ndash;account&rarr; [Org]
+  - [You] &rarr; [Org]
 
+- Federated
+  - service/identity provider (IDP) in the middle
+  - The collection of all the sites that use the same IDP (or group of IDPs) is called a federation.
+  - [You] &rarr; [IDP] &rarr; [Org]
 
-- The federated identity model
-  - The basic idea is to insert a service provider called an identity provider (IDP) in the middle
-  - e.g. SAML, OAuth, OpenID Connect, SSO
-  - [You] &ndash;account&rarr; [IDP] &rarr; [Org]
+- **Decentralized**
+  - A new model, inspired by blockchain technology, since 2015
+  - peer-to-peer
+  - _```blockchain```_ is used based on _```public/private key cryptography```_ which secures direct and private connections
+  - 블록체인 기술을 암호화폐가 아닌, DPKI (Decentralized PKI)에 적용
+    - 공개키를 직접 교환 하여 거래 당사자(peer) 간에 private and secure 연결 생성 가능
+    - 공개키를 공개 블록체인에 저장하여 디지털 신원 자격(VC)에 있는 서명 증명
+      - VC(verifiable credentials): 실생활에서 신원증명 제공을 위해 교환 가능한 자격 증명
+      - e.g. DID의 개인키는 디지털지갑, 공개키는 블록체인에 저장
 
-
-- **The decentralized identity model**
-  - A new model, inspired by blockchain technology, surfaced in 2015
-  - DIDs as a new decentralized identity standard.
-  - Not account-based
-  - The peer-to-peer relationship enabled by the decentralized identity model—returning people to direct, private connections secured by public/private key cryptography
-  - Neither of you has an 'account'; both share a 'connection'
 <div>
-<img src="https://drek4537l1klr.cloudfront.net/preukschat/HighResolutionFigures/figure_1-4.png" height="20%" width="20%" alt="Figure1.4">
+<img src="https://drek4537l1klr.cloudfront.net/preukschat/HighResolutionFigures/figure_1-4.png"
+height="20%" width="20%" alt="Figure1.4">
 </div>
 
-- **Why does it need Blockchain technology?**
-  - Public/private key cryptography is a way of securing data via mathematical
-algorithms based on cyptographic keys held by each party.
-  - Instead of using blockchain technology for cryptocurrency, identity management uses it for decentralized public key infrastructure (DPKI).
+### Basic cryptography techniques for SSI
+- Asymmetric-key cryptography
+  - e.g. DID의 개인키는 디지털지갑, 공개키는 블록체인에 저장
+- Digital signatures
+  - rely on _public-key cryptography_
+  - created using the private key of a key pair, and verified using the associated public key. 
 
-  - Blockchain technology and other decentralized network technologies can give us a strong, decentralized solution for
-    - Exchanging public keys directly to form private, secure connections between any two peers
-    - Storing some of these public keys on public blockchains to verify the signatures on digital identity credentials (aka verifiable credentials) that peers can exchange to provide proof of real-world identity
 
-## 2 The basic building blocks of SSI
+### Decentralized identifiers (DIDs)
 
-SSI is a set of technologies that build on core concepts in identity management, distributed computing, blockchain or distributed ledger technology (DLT), and cryptography.
+- The IP address itself doesn’t tell you anything about the identity holder.
+- _public/private key cryptography_ provided digital proof that is verifiable
+  - message is signed with private key and verified using public key
+  - verifier must know the correct public key of the owner : ```PKI``` as a solution
 
-- 2.1 Verifiable credentials (aka digital credentials)
-- 2.2 The trust triangle: issuers, holders, and verifiers
-- 2.3 Digital wallets
-- 2.4 Digital agents
+- ***PKI*** 공개 키 기반 구조 - 중앙 집권형
+  - proves _```ownership of their public keys.```_
+  - obtain public key certificates from CAs around the world (_very centralized._)
+  - 개인들이 여러개의 cryptographic 키set을 가지고 있는 SSI환경에서 쓰이기에는 한계 있음
 
-- 2.5 Decentralized identifiers (DIDs)
-
-Knowing the IP address of a machine on the internet doesn’t tell you anything about the identity of the person, organization, or thing controlling that machine.
-To do that, the controller (the identity holder) needs to be able to provide proof about their identity, attributes, relationships, or entitlements. And that proof has to be verifiable in some way.
-
-We’ve had technology for creating digital proofs for decades now : **Public/private key cryptography**
-```
-The owner of a private key uses it to sign messages, and anyone else can verify this signature
-using the owner’s corresponding public key.
-The signature verification shows that the signature was created by the owner of
-the private key and the message has not been tampered with since.
-```
-
-However, to rely on this verification, the verifier must know the correct public key for the owner.
-So, for decentralized messaging between digital agents and wallets to be secure
-—and for agents to be able to send cryptographically verifiable proofs of VCs to each other
-—we need a strong, secure, scalable way for identity holders and their agents to prove ownership of their public keys.
-
-The solution has been public key infrastructure (PKI)
-: The system of obtaining public key certificates from a small set of certification authorities (CAs) around the world, which is also very centralized.
-=> DIDs, a new identifier (permanent, resolvable, cryptographically verifiable, decentralized)
-
-An example of a decentralized identifier (DID) and the associated public and private keys.
-A DID functions as the address of a public key on a blockchain (or other decentralized network.)
-In most cases, a DID can also be used to locate an agent for the DID subject (the entity identified by the DID).
+- 분산 신원인증 DIDs
+  - permanent
+  - resolvable
+  - cryptographically verifiable (identity holder can cryptographically prove using pk)
+  - decentralized (decentralized network such as blockchain instead of relying on CAs)
 
 <div>
 <img src="https://drek4537l1klr.cloudfront.net/preukschat/HighResolutionFigures/figure_2-11.png"
-height="50%" width="50%" alt="Figure2.11">
+height="35%" width="35%" alt="Figure2.11">
+
+A DID functions as the address of a public key on a blockchain.
+DID can also be used to locate an agent for the DID subject (the entity identified by the DID).
+It is designed to take advantage of blockchain, DLT, etc, via a DID method
+The DID method defines four atomic operations on any DID: CRUD 
 </div>
 
+<!-- ### 8 Decentralized Identifiers -->
 
-
-## 8 Decentralized Identifiers
-
+- DIDs are the cryptographic counterpart to verifiable credentials (VCs)
 - A new type of globally unique identifier
 
-![figure8.2](https://drek4537l1klr.cloudfront.net/preukschat/HighResolutionFigures/figure_8-2.png)
+<div>
+<img src="https://drek4537l1klr.cloudfront.net/preukschat/HighResolutionFigures/figure_8-2.png"
+height="30%" width="30%" alt="Figure8.2">
+</div>
 
 A DID is a URI that can be either a URL or a URN and that can be looked up (resolved)
 to get a standardized set of information (metadata) about the resource identified by the DID.
