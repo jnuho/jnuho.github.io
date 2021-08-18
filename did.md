@@ -52,7 +52,7 @@ height="20%" width="20%" alt="Figure1.4">
 
 <div>
 <img src="https://drek4537l1klr.cloudfront.net/preukschat/HighResolutionFigures/figure_2-11.png"
-height="35%" width="35%" alt="Figure2.11">
+height="35%" width="35%" alt="Figure2.11"><br>
 
 A DID functions as the address of a public key on a blockchain.
 DID can also be used to locate an agent for the DID subject (the entity identified by the DID).
@@ -120,7 +120,7 @@ and other metadata describing how to engage in trusted interactions with that pe
 
 <div>
 <img src="https://drek4537l1klr.cloudfront.net/preukschat/HighResolutionFigures/figure_8-6.png"
-height="40%" width="40%" alt="Figure8.6">
+height="55%" width="55%" alt="Figure8.6">
 </div>
 
 DID document contains :
@@ -160,7 +160,7 @@ which must define the following aspects of the DID method:
 - Security and privacy considerations specific to the DID method
 
 <div>
-<img src="https://drek4537l1klr.cloudfront.net/preukschat/HighResolutionFigures/figure_8-7.png" height="40%" width="40%" alt="Figure8.7">
+<img src="https://drek4537l1klr.cloudfront.net/preukschat/HighResolutionFigures/figure_8-7.png" height="35%" width="35%" alt="Figure8.7">
 </div>
 
 It is difficult to make generic statements about the four DID operations since DID methods can be designed in very different ways.
