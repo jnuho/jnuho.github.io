@@ -8,9 +8,9 @@ comments: true
 ---
 
 **교육기관 프로젝트** <i>'19.04.22 ~ '19.11.15</i>
-- [Java Swing App](https://jnuho.github.io/food)
-- [Web App](https://jnuho.github.io/parking)
-- [Spring Web App](https://jnuho.github.io/developmental)
+- [Java Swing App](food)
+- [Web App](parking)
+- [Spring Web App](developmental)
 
 **팀 프로젝트** <i>'19.11.15 ~ </i>
 - [Java]()
