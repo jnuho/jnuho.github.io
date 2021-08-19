@@ -11,6 +11,7 @@
   - [You] &rarr; [IDP] &rarr; [Org]
 
 - **Decentralized**
+  - A new model, inspired by blockchain technology, since 2015
   - peer-to-peer
   - _```공개/개인키 암호화 기법```_ 에 기반한 _```블록체인```_ 사용
   - 블록체인 기술을 암호화폐가 아닌, DPKI (Decentralized PKI)에 적용
@@ -21,7 +22,7 @@
 
 <div>
 <img src="https://drek4537l1klr.cloudfront.net/preukschat/HighResolutionFigures/figure_1-4.png"
-height="23%" width="23%" alt="Figure1.4">
+height="20%" width="20%" alt="Figure1.4">
 </div>
 
 #### 암호화 기법
@@ -58,7 +59,7 @@ height="23%" width="23%" alt="Figure1.4">
 
 <div>
 <img src="https://drek4537l1klr.cloudfront.net/preukschat/HighResolutionFigures/figure_2-11.png"
-height="35%" width="35%" alt="Figure2.11"><br>
+height="32%" width="32%" alt="Figure2.11"><br>
 
 - DID는 블록체인에 공개키 주소로서 역할을 하며, DID 대상(subject)의 agent를 찾는데도 사용
 - DID 메소드를 통해 블록체인, DLT 등을 이용할 수 있도록 설계됨
@@ -73,7 +74,7 @@ height="35%" width="35%" alt="Figure2.11"><br>
 
 <div>
 <img src="https://drek4537l1klr.cloudfront.net/preukschat/HighResolutionFigures/figure_8-2.png"
-height="35%" width="35%" alt="Figure8.2">
+height="30%" width="30%" alt="Figure8.2">
 </div>
 
 - 소프트웨어를 통해 누구나 DID 메소드(sov,btcr,ethr, ...)를 사용하여 중앙기관 통제 없이 DID 발행 및 사용가능
@@ -89,7 +90,7 @@ height="35%" width="35%" alt="Figure8.2">
 
 <div>
 <img src="https://drek4537l1klr.cloudfront.net/preukschat/HighResolutionFigures/figure_8-6.png"
-height="60%" width="60%" alt="Figure8.6">
+height="50%" width="50%" alt="Figure8.6">
 </div>
 
 - DID document가 포함 하고 있는 요소들:
@@ -154,9 +155,8 @@ height="40%" width="40%" alt="Figure8.8">
 <div>
 <img
 src="https://drek4537l1klr.cloudfront.net/preukschat/HighResolutionFigures/figure_8-9.png"
-height="50%" width="50%" alt="Figure8.9">
+height="45%" width="45%" alt="Figure8.9">
 </div>
-
 
 
 ##### _DID URLs_
