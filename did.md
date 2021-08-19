@@ -25,6 +25,9 @@
 height="20%" width="20%" alt="Figure1.4">
 </div>
 
+<br>
+<br>
+
 #### 암호화 기법
 - 비대칭 키 (Asymmetric-key cryptography)
   - e.g. DID의 개인키는 디지털지갑, 공개키는 블록체인에 저장
@@ -32,6 +35,7 @@ height="20%" width="20%" alt="Figure1.4">
   - 키페어 중 개인키로 생성, 공개키로 검증
   - _공개키 암호화 기법_ 에 기반
 
+<br>
 
 #### DID 배경
 
