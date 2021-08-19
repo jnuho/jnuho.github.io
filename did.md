@@ -22,7 +22,7 @@
 
 <div>
 <img src="https://drek4537l1klr.cloudfront.net/preukschat/HighResolutionFigures/figure_1-4.png"
-height="20%" width="20%" alt="Figure1.4">
+height="17%" width="17%" alt="Figure1.4">
 </div>
 
 <br>
