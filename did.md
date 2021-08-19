@@ -42,20 +42,20 @@ height="17%" width="17%" alt="Figure1.4">
 - _공개/개인키 암호화기법_ 으로 증명가능 한 디지털 proof 제공
   - 개인키로 _메시지_ 서명(sign), 공개키로 검증(verify)
 - 공개 키 기반 구조 ***PKI*** 도입
-  - 신원 검증자가 신원 대상자의 공개키가 실제 소유자의 것인지 - _```공개키의 소유권```_ 을 검증할 수 있게 됨
-  - 검증된 CA기관들로 부터 공개키 인증서(public key certificates) 발행
-  - 중앙집권형 이기 때문에 개인들이 여러개의 암호화 키페어를 가지고 있는 환경(SSI)에 한계
+  - 신원 검증자가 신원 대상자의 공개키가 실제로 소유자의 것인지 - _```공개키의 소유권```_ 을 검증할 수 있게 됨
+  - 검증된 CA기관들로 부터 공개키 인증서(public key certificates) 발행하는
+  - 중앙집권형 시스템이므로 개인들이 여러개의 암호화 키페어를 가지고 있는 환경(SSI)에 한계가 있음
 
-- 탈중앙화 신원인증 DIDs 도입
-  - permanent
-  - resolvable
-  - cryptographically verifiable
+- 탈중앙 인증 식별자 DIDs 도입
+  - 영속성 (permanent)
+  - 분해성 (resolvable to document)
+  - 암호화기법으로 검증 가능 (cryptographically verifiable)
     - 신원 소유자가 암호화 기법으로 개인키 검증가능
     - 암호화기법으로 DID 생성
     - DID는 1개의 공개/개인키와 연결되므로 개인키 소유자(controller)가 DID 소유자(controller)임 증명 가능
-  - decentralized
-    - 암호화기법을 사용하여 중앙 신원 인증 기관이 필요없고, CA대신 블록체인 등 탈중앙화 네트워크에 기반
-    - 공개/개인키 생성하는 암호화 알고리즘은 프라임넘버, 랜덤숫자생성기, 타원곡선 암호학에 기반하여 globally 고유한 식별자를 만들기 때문에 중앙기관 없이 uniqueness 검증가능
+  - 탈중앙화 (decentralized)
+    - 암호화기법을 사용하여 중앙 신원인증 기관들(CAs)의 통제 없이, 블록체인 등 탈중앙화 네트워크에 기반함
+    - 공개/개인키 생성하는 암호화 알고리즘은 프라임넘버, 랜덤숫자생성기, 타원곡선 암호학에 기반하여 globally 고유한 식별자를 만들기 때문에 중앙기관 없이 고유성 검증가능
 
 
 <div>
@@ -87,11 +87,11 @@ height="30%" width="30%" alt="Figure8.2">
 
 - _DID &rarr; DID resolver(software/hardware) &rarr; DID document_
   - 디지털 신원인증 앱, 디지털 지갑, 또는 에이전트 등에서 인증을 위한 기초 빌딩블록 으로 사용
-  - DID는 DID document와 1:1 대응
+  - DID &leftrightarrow; DID document (1대1 대응)
 - DID document는 표준화된 규격 구조(json)를 가지고 있으며 다음을 포함 :
   - 공개키: 거래시 DID subject를 검증하기 위함
-  - Services: 프로토콜을 통한 거래 시에 사용 할 DID subject 관련 서비스들
-  - 메타데이터: 타임스탬프, 디지털서명, 암호학proof, deleation 및 인증 관련 메타데이터
+  - 서비스: 프로토콜을 통한 거래 시에 사용 할 DID subject 관련 서비스들
+  - 메타데이터: 타임스탬프, 디지털서명, 암호학적proof, deleation 및 인증 관련 메타데이터
 
 <div>
 <img src="https://drek4537l1klr.cloudfront.net/preukschat/HighResolutionFigures/figure_8-6.png"
@@ -99,7 +99,6 @@ height="45%" width="45%" alt="Figure8.6">
 </div>
 <br>
 <br>
-
 
 ```json
 // 1개의 공개키와 1개의 서비스를 가진 DID document 구조
@@ -129,11 +128,10 @@ height="45%" width="45%" alt="Figure8.6">
 
 ##### _2. DID methods_
 
-Each DID method is required to have its own technical specification,
-which must define the following aspects of the DID method:
-- Method-specific identifier (sov,btcr,v1,ethr,jolo,...)
-- Four basic operations can be executed on a DID: CRUD
-- Security and privacy considerations specific to the DID method
+- 각 DID 메소드는 다음과 같은 기술적 스펙 정의가 요구됨:
+  - 메소드 고유 식별 (예: sov,btcr,v1,ethr,jolo,...)
+  - DID에 대한 CRUD 4가지 operation 수행 가능
+  - 메소드에 맞는 보안 및 개인정보 보호에 대한 장치
 
 <div>
 <img src="https://drek4537l1klr.cloudfront.net/preukschat/HighResolutionFigures/figure_8-7.png" height="35%" width="35%" alt="Figure8.7">
@@ -150,7 +148,12 @@ Other DID methods do not use a blockchain; they implement the four DID operation
 
 ##### _3. DID resolution_
 
-The process of obtaining the DID document associated with a DID
+- DID로부터 DID document를 얻는 과정
+- DID관련 앱이나 서비스가 DID대상(subject)와 관련된 메타데이터를 얻어서 다음과 같은 추가 상호작용 :
+  1. VC 발행자로 부터의 디지털 서명을 검증할 공개키 조회
+  2. DID 컨트롤러가 웹사이트나 앱에 로그인해야할 때 검증 진행
+  3. 웹사이트, 소셜 네트워크 또는 라이선스 기관과 같은 DID 컨트롤러와 관련된 잘 알려진 서비스를 검색하고 액세스
+  4. DID 컨트롤러로 DID-to-DID 연결을 요청
 
 <div>
 <img
