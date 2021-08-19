@@ -61,7 +61,8 @@ height="20%" width="20%" alt="Figure1.4">
 <img src="https://drek4537l1klr.cloudfront.net/preukschat/HighResolutionFigures/figure_2-11.png"
 height="32%" width="32%" alt="Figure2.11"><br>
 </div>
-
+<br>
+<br>
 
 #### DID 정의
 
@@ -81,20 +82,20 @@ height="30%" width="30%" alt="Figure8.2">
 ##### _1. DID documents_
 
 - _DID &rarr; DID resolver(software/hardware) &rarr; DID document_
-- DID document는 표준화된 규격 구조 (json)
   - 디지털 신원인증 앱, 디지털 지갑, 또는 에이전트 등에서 인증을 위한 기초 빌딩블록 으로 사용
   - DID는 DID document와 1:1 대응
-- 관계도 DID, DID document, DID subject (DID subject가 DID controller와 같은 케이스)
-
-<div>
-<img src="https://drek4537l1klr.cloudfront.net/preukschat/HighResolutionFigures/figure_8-6.png"
-height="50%" width="50%" alt="Figure8.6">
-</div>
-
-- DID document가 포함 하고 있는 요소들:
+- DID document는 표준화된 규격 구조(json)를 가지고 있으며 다음을 포함 :
   - 공개키: 거래시 DID subject를 검증하기 위함
   - Services: 프로토콜을 통한 거래 시에 사용 할 DID subject 관련 서비스들
   - 메타데이터: 타임스탬프, 디지털서명, 암호학proof, deleation 및 인증 관련 메타데이터
+
+<div>
+<img src="https://drek4537l1klr.cloudfront.net/preukschat/HighResolutionFigures/figure_8-6.png"
+height="45%" width="45%" alt="Figure8.6">
+</div>
+<br>
+<br>
+
 
 ```json
 // 1개의 공개키와 1개의 서비스를 가진 DID document 구조
@@ -120,6 +121,8 @@ height="50%" width="50%" alt="Figure8.6">
 }
 ```
 
+<br>
+
 ##### _2. DID methods_
 
 Each DID method is required to have its own technical specification,
@@ -139,7 +142,7 @@ Other DID methods do not use a blockchain; they implement the four DID operation
 
 “Rubric” document to help adopters evaluate how well a particular DID method will meet the needs of a particular user community: https://w3c.github.io/did-rubric
 
-##### _DID resolution_
+##### _3. DID resolution_
 
 The process of obtaining the DID document associated with a DID
 
@@ -157,4 +160,4 @@ height="45%" width="45%" alt="Figure8.9">
 </div>
 
 
-##### _DID URLs_
+##### _4. DID URLs_
