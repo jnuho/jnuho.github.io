@@ -56,16 +56,15 @@ height="20%" width="20%" alt="Figure1.4">
     - 암호화기법을 사용하여 중앙 신원 인증 기관이 필요없고, CA대신 블록체인 등 탈중앙화 네트워크에 기반
     - 공개/개인키 생성하는 암호화 알고리즘은 프라임넘버, 랜덤숫자생성기, 타원곡선 암호학에 기반하여 globally 고유한 식별자를 만들기 때문에 중앙기관 없이 uniqueness 검증가능
 
+- DID는 블록체인에 공개키 주소로서 역할을 하며, DID subject의 agent를 찾는데도 사용
+- DID 메소드를 통해 블록체인, DLT 등을 이용할 수 있도록 설계됨
+- DID 메소드는 DID에 대한 CRUD 기능을 수행 가능
 
 <div>
 <img src="https://drek4537l1klr.cloudfront.net/preukschat/HighResolutionFigures/figure_2-11.png"
 height="32%" width="32%" alt="Figure2.11"><br>
-
-- DID는 블록체인에 공개키 주소로서 역할을 하며, DID 대상(subject)의 agent를 찾는데도 사용
-- DID 메소드를 통해 블록체인, DLT 등을 이용할 수 있도록 설계됨
-- DID 메소드는 DID에 대한 CRUD 기능을 수행 가능
-
 </div>
+
 
 #### DID 정의
 
@@ -78,7 +77,7 @@ height="30%" width="30%" alt="Figure8.2">
 </div>
 
 - 소프트웨어를 통해 누구나 DID 메소드(sov,btcr,ethr, ...)를 사용하여 중앙기관 통제 없이 DID 발행 및 사용가능
-- DID를 생성하는 것은 비트코인이나 이더리움 블록체인에 공개 지갑 주소를 생성하는 것과 동일한 프로세스 - DID 탈중앙화의 핵심
+- DID를 생성하는 것은 비트코인이나 이더리움 블록체인에 공개 지갑 주소를 생성하는 것과 동일한 프로세스 - DID 탈중앙화 핵심
 
 ##### _1. DID documents_
 
