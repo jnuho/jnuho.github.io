@@ -47,8 +47,6 @@ height="20%" width="20%" alt="Figure1.4">
   - 검증된 CA기관들로 부터 공개키 인증서(public key certificates) 발행
   - 중앙집권형 이기 때문에 개인들이 여러개의 암호화 키페어를 가지고 있는 환경(SSI)에 한계
 
-<br>
-
 - 탈중앙화 신원인증 DIDs 도입
   - permanent
   - resolvable
