@@ -1,3 +1,4 @@
+junho-rowem 2021-08-19
 
 - 인프라 OverView
   - 같은 VPC 내에, 퍼블릭/프라이빗 서브넷으로 구분
@@ -72,11 +73,6 @@ redis-cli -h {ElastiCache 엔드포인트} -p {보안그룹에 정의된 포트 
 - 보안그룹 sg-starpass-redis 선택 
 - 자동 백업 활성화 체크해제
 
-```
-vpc-0b4163a5f741002f8 (starpass-vpc) 
-subnet-01ab087db1ecc6748 (starpass-private-was-a) 
-sg-03ceb4c49e904f0aa (starpass-redis)
-```
 
 #### 테스트
 - ElastiCache접근은 보안그룹에 인바운드 규칙에 정의된 호스트 이외 ip에서는 접근 불가
