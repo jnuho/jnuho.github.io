@@ -26,7 +26,6 @@ height="20%" width="20%" alt="Figure1.4">
 </div>
 
 <br>
-<br>
 
 #### 암호화 기법
 - 비대칭 키 (Asymmetric-key cryptography)
@@ -65,6 +64,7 @@ height="32%" width="32%" alt="Figure2.11"><br>
 </div>
 <br>
 <br>
+<br>
 
 #### DID 정의
 
@@ -81,7 +81,6 @@ height="30%" width="30%" alt="Figure8.2">
 - 소프트웨어를 통해 누구나 DID 메소드(sov,btcr,ethr, ...)를 사용하여 중앙기관 통제 없이 DID 발행 및 사용가능
 - DID를 생성하는 것은 비트코인이나 이더리움 블록체인에 공개 지갑 주소를 생성하는 것과 동일한 프로세스 - DID 탈중앙화 핵심
 
-<br>
 <br>
 
 ##### _1. DID documents_
@@ -127,7 +126,6 @@ height="45%" width="45%" alt="Figure8.6">
 ```
 
 <br>
-<br>
 
 ##### _2. DID methods_
 
@@ -149,7 +147,6 @@ Other DID methods do not use a blockchain; they implement the four DID operation
 “Rubric” document to help adopters evaluate how well a particular DID method will meet the needs of a particular user community: https://w3c.github.io/did-rubric
 
 <br>
-<br>
 
 ##### _3. DID resolution_
 
@@ -168,7 +165,6 @@ src="https://drek4537l1klr.cloudfront.net/preukschat/HighResolutionFigures/figur
 height="45%" width="45%" alt="Figure8.9">
 </div>
 
-<br>
 <br>
 
 ##### _4. DID URLs_
