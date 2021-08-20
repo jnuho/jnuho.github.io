@@ -87,7 +87,7 @@ height="30%" width="30%" alt="Figure8.2">
 
 - _DID &rarr; DID resolver(software/hardware) &rarr; DID document_
   - 디지털 신원인증 앱, 디지털 지갑, 또는 에이전트 등에서 인증을 위한 기초 빌딩블록 으로 사용
-  - DID &leftrightarrow; DID document (1대1 대응)
+  - DID ↔ DID document (1대1 대응)
 - DID document는 표준화된 규격 구조(json)를 가지고 있으며 다음을 포함 :
   - 공개키: 거래시 DID subject를 검증하기 위함
   - 서비스: 프로토콜을 통한 거래 시에 사용 할 DID subject 관련 서비스들
