@@ -183,7 +183,7 @@ height="45%" width="45%" alt="Figure8.9">
 
 #### _4. DID URLs_
 
-#### _5. Types of DIDs_
+#### _5. DIDs 타입 _
 
 Category | Description and examples
 ---|---
@@ -194,11 +194,20 @@ Static DIDs | There is a category of DID methods that are “static”, i.e. the
 Alternative DIDs | A number of other innovative DID methods have been developed that do not fall into any of the previous categories. They demonstrate that DID identification architecture is flexible enough to be layered on top of existing internet protocols, such as Git, the Interplanetary File System (IPFS), or even the web itself: <br> did:git:625557b5a9cdf399205820a2a716da897e2f9657 <br> did:ipid:QmYA7p467t4BGgBL4NmyHtsXMoPrYH9b3kSG6dbgFYskJm <br> did:web:uport.me
 
 
-### The architectural level: Why DIDs work
+### DIDs가 작동하는 이유 - 아키텍쳐 관점
 
-#### The core problem of Public Key Infrastructure (PKI)
+- Public Key Infrastructure (PKI)의 문제점
+  - 해결책 1: 전통적 PKI 모델
+  - 해결책 2: web-of-trust 모델
+  - 해결책 3: 공개키 기반 식별자 (Public key-based identifiers)
+  - 해결책 4: DIDs and DID documents
+- DIDs의 4가지 장점 (that go beyond PKI)
+  - 1: Guardianship and controllership
+  - 2: Service endpoint discovery
+  - 3: DID-to-DID connections
+  - 4: Privacy by design at scale
 
-### The semantic level: What DIDs mean
+### DIDs의 의미
 
 - 주소는 자체적으로 존재하지 않으며, 그것들을 사용하는 네트워크의 컨텍스트에서만 존재
 
@@ -210,3 +219,5 @@ Origin | Address type | Network
 2009 | Blockchain address | Blockchain or distributed ledger network
 2016 | DID | DID network
 
+
+- [SSI Resources](https://ssimeetup.org/decentralized-identifiers-dids-fundamentals-identitybook-info-drummond-reed-markus-sabadello-webinar-46)
