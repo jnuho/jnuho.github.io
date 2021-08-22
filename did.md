@@ -220,6 +220,7 @@ Origin | Address type | Network
 2009 | Blockchain address | Blockchain or distributed ledger network
 2016 | DID | DID network
 
+<br>
 
-- [SSI Resources](https://ssimeetup.org/decentralized-identifiers-dids-fundamentals-identitybook-info-drummond-reed-markus-sabadello-webinar-46)
+- SSI Resources - [webinar](https://ssimeetup.org/decentralized-identifiers-dids-fundamentals-identitybook-info-drummond-reed-markus-sabadello-webinar-46)
 
