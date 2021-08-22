@@ -20,6 +20,8 @@
       - VC(verifiable credentials): 실생활에서 신원증명 제공을 위해 교환 가능한 자격 증명
     - 개인키는 디지털 지갑에 저장
 
+- [블록체인 사용 이유](https://stackoverflow.com/a/66515581)
+
 <div>
 <img src="https://drek4537l1klr.cloudfront.net/preukschat/HighResolutionFigures/figure_1-4.png"
 height="17%" width="17%" alt="Figure1.4">
