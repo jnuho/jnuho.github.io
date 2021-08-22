@@ -1,6 +1,6 @@
 - From the book self-sovereign identity
 
-#### 디지털 신원인증 모델
+### 디지털 신원인증 모델
 - Centralized
   - e.g. Account-based website
   - [You] &rarr; [Org]
@@ -27,7 +27,7 @@ height="17%" width="17%" alt="Figure1.4">
 
 <br>
 
-#### 암호화 기법
+### 암호화 기법
 - 비대칭 키 (Asymmetric-key cryptography)
   - e.g. DID의 개인키는 디지털지갑, 공개키는 블록체인에 저장
 - 디지털 서명
@@ -36,7 +36,7 @@ height="17%" width="17%" alt="Figure1.4">
 
 <br>
 
-#### DID 배경
+### DID 배경
 
 - ip주소 자체는 해당 ip를 소유한 신원 대상에 대한 어떠한 정보도 제공하지 않음: 디지털 proof필요
 - _공개/개인키 암호화기법_ 으로 증명가능 한 디지털 proof 제공
@@ -66,7 +66,7 @@ height="32%" width="32%" alt="Figure2.11"><br>
 <br>
 <br>
 
-#### DID 정의
+### DID 정의
 
 - 새로운 타입의 _globally unique identifier_
 - DIDs are the cryptographic counterpart to verifiable credentials (VCs)
@@ -83,7 +83,7 @@ height="30%" width="30%" alt="Figure8.2">
 
 <br>
 
-##### _1. DID documents_
+#### _1. DID documents_
 
 - _DID &rarr; DID resolver(software/hardware) &rarr; DID document_
   - 디지털 신원인증 앱, 디지털 지갑, 또는 에이전트 등에서 인증을 위한 기초 빌딩블록 으로 사용
@@ -126,7 +126,7 @@ height="45%" width="45%" alt="Figure8.6">
 
 <br>
 
-##### _2. DID methods_
+#### _2. DID methods_
 
 - 각 DID 메소드는 다음과 같은 기술적 스펙 정의가 요구됨:
   - 메소드 고유 식별 (예: sov,btcr,v1,ethr,jolo,...)
@@ -142,7 +142,7 @@ height="45%" width="45%" alt="Figure8.6">
 
 <br>
 
-##### _3. DID resolution_
+#### _3. DID resolution_
 
 - DID로부터 DID document를 얻는 과정
   - Example1 :
@@ -181,4 +181,19 @@ height="45%" width="45%" alt="Figure8.9">
 
 <br>
 
-##### _4. DID URLs_
+#### _4. DID URLs_
+
+#### _5. Types of DIDs_
+
+Category | Description and examples
+---|---
+Ledger-based DIDs | The original category of DID methods involves a blockchain or other distributed ledger technology (DLT), which serves the purpose of a registry that is not controlled by a single authority. This registry is typically public and globally accessible. A DID is created/updated/ deactivated by writing a transaction to the ledger, which is signed with the DID controller’s private key: <br> did:sov:WRfXPg8dantKVubE3HX8pw <br> did:btcr:xz35-jzv2-qqs2-9wjt <br> did:ethr:0xE6Fe788d8ca214A080b0f6aC7F48480b2AEfa9a6 <br> did:v1:test:nym:3AEJTDMSxDDQpyUftjuoeZ2Bazp4Bswj1ce7FJGybCUu
+Ledger middleware (Layer 2) DIDs | An improvement to classic ledger-based DID methods, this category adds an additional storage layer such as a distributed hash table (DHT) or traditional replicated database system on top of the base layer blockchain. DIDs can be created/updated/deactivated at this second layer without requiring a base layer ledger transaction every time. Instead, multiple DID operations are batched into a single ledger transaction, increasing performance and decreasing cost:<br> did:ion:test:EiDk2RpPVuC4wNANUTn_4YXJczjzi10zLG1XE4AjkcGOLA <br> did:elem:EiB9htZdL3stukrklAnJ0hrWuCdXwR27TNDO7Fh9HGWDGg
+Peer DIDs | This special category of DID method does not require a globally shared registration layer such as a blockchain. Instead, a DID is created and subsequently shared with only one other peer (or a relatively small group of peers). The DIDs that are part of the relationship are exchanged via a peer-to-peer protocol, resulting in private connections between the participants (see https://identity.foundation/peer-did-method-spec/index.html): <br> did:peer:1zQmZMygzYqNwU6Uhmewx5Xepf2VLp5S4HLSwwgf2aiKZuwa
+Static DIDs | There is a category of DID methods that are “static”, i.e. they enable a DID to be created and resolved, but not updated or deactivated. Such DID methods tend to not require complex protocols or storage infrastructure. For example, a DID may simply be a “wrapped” public key, from which an entire DID document can be resolved algorithmically, without requiring any data other than the DID itself: <br> did:key:z6Mkfriq1MqLBoPWecGoDLjguo1sB9brj6wT3qZ5BxkKpuP6
+Alternative DIDs | A number of other innovative DID methods have been developed that do not fall into any of the previous categories. They demonstrate that DID identification architecture is flexible enough to be layered on top of existing internet protocols, such as Git, the Interplanetary File System (IPFS), or even the web itself: <br> did:git:625557b5a9cdf399205820a2a716da897e2f9657 <br> did:ipid:QmYA7p467t4BGgBL4NmyHtsXMoPrYH9b3kSG6dbgFYskJm <br> did:web:uport.me
+
+
+### The architectural level: Why DIDs work
+
+#### The core problem of Public Key Infrastructure (PKI)
