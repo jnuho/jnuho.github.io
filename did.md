@@ -89,7 +89,7 @@ height="30%" width="30%" alt="Figure8.2">
   - 디지털 신원인증 앱, 디지털 지갑, 또는 에이전트 등에서 인증을 위한 기초 빌딩블록 으로 사용
   - DID ↔ DID document (1대1 대응)
 - DID document는 표준화된 규격 구조(json)를 가지고 있으며 다음을 포함 :
-  - 공개키: 거래시 DID subject를 검증하기 위함
+  - 공개키: 거래시 DID subject를 검증하기 위함 - essence of DPKI
   - 서비스: 프로토콜을 통한 거래 시에 사용 할 DID subject 관련 서비스들
   - 메타데이터: 타임스탬프, 디지털서명, 암호학적proof, deleation 및 인증 관련 메타데이터
 
@@ -131,16 +131,12 @@ height="45%" width="45%" alt="Figure8.6">
 - 각 DID 메소드는 다음과 같은 기술적 스펙 정의가 요구됨:
   - 메소드 고유 식별 (예: sov,btcr,v1,ethr,jolo,...)
   - DID에 대한 CRUD 4가지 operation 수행 가능
+    블록체인이나, 분산 ledger시스템에 기반한 DID메소드의 경우 create/update시에 해당 ledger에 트랜젝션 기록
   - 메소드에 맞는 보안 및 개인정보 보호에 대한 장치
 
 <div>
 <img src="https://drek4537l1klr.cloudfront.net/preukschat/HighResolutionFigures/figure_8-7.png" height="35%" width="35%" alt="Figure8.7">
 </div>
-
-It is difficult to make generic statements about the four DID operations since DID methods can be designed in very different ways.
-For example, some DID methods are based on blockchains or other distributed ledgers.
-In this case, creating or updating a DID typically involves writing a transaction to that ledger.
-Other DID methods do not use a blockchain; they implement the four DID operations in other ways (see section 8.2.7).
 
 “Rubric” document to help adopters evaluate how well a particular DID method will meet the needs of a particular user community: https://w3c.github.io/did-rubric
 
@@ -149,19 +145,19 @@ Other DID methods do not use a blockchain; they implement the four DID operation
 ##### _3. DID resolution_
 
 - DID로부터 DID document를 얻는 과정
-  - Example:
-  - 디지털 지갑 앱 개인키 저장
-  - 공개키 &rarr; 블록체인 (sovrin, bitcoin, ethereum, ...)
-  - 공개키를 암호화하여 트랜젝션을 통해 블록체인에 저장
-  - 블록체인은 응답으로 DID 생성 및 반환
-  - 은행 로그인 시 DID를 개인키로 서명하여 요청
-  - 은행은 블록체인에서 DID와 연관된 트렌젝션 조회 & 공개키 조회
-  - 공개키로 서명 검증 및 로그인 완료처리
+  - Example1 :
+    - 디지털 지갑 앱 개인키 저장
+    - 공개키 &rarr; 블록체인 (sovrin, bitcoin, ethereum, ...)
+    - 공개키를 암호화하여 트랜젝션을 통해 블록체인에 저장
+    - 블록체인은 응답으로 DID 생성 및 반환
+    - 은행 로그인 시 DID를 개인키로 서명하여 요청
+    - 은행은 블록체인에서 DID와 연관된 트렌젝션 조회 & 공개키 조회
+    - 공개키로 서명 검증 및 로그인 완료처리
   - Example2:
-  - 학생정보 입력하여 학교웹사이트 로그인
-  - 나의페이지 Dashboard에서 제공하는 고유 디지털 ID를 디지털 지갑 앱으로 스캔및 bio인증하여 고유 식별자(DID) 생성
-  (개인키 생성 및 블록체인에 공개키저장하여 DID 생성)
-  - 온라인서적 사이트에서 DID로그인
+    - 학생정보 입력하여 학교웹사이트 로그인
+    - 나의페이지 Dashboard에서 제공하는 고유 디지털 ID를 디지털 지갑 앱으로 스캔및 bio인증하여 고유 식별자(DID) 생성
+    (개인키 생성 및 블록체인에 공개키저장하여 DID 생성)
+    - 온라인서적 사이트에서 DID로그인
 
 - DID관련 앱이나 서비스가 DID대상(subject)와 관련된 메타데이터를 얻어서 다음과 같은 추가 상호작용 :
   1. VC 발행자로 부터의 디지털 서명을 검증할 공개키 조회
