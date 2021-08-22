@@ -197,3 +197,16 @@ Alternative DIDs | A number of other innovative DID methods have been developed 
 ### The architectural level: Why DIDs work
 
 #### The core problem of Public Key Infrastructure (PKI)
+
+### The semantic level: What DIDs mean
+
+- 주소는 자체적으로 존재하지 않으며, 그것들을 사용하는 네트워크의 컨텍스트에서만 존재
+
+Origin | Address type | Network
+---|---|---
+1994 | Persistent address (URN) | World Wide Web (machine-friendly)
+1994 | Web address (URL) | World Wide Web (human-friendly)
+2003 | Social network address | Social network
+2009 | Blockchain address | Blockchain or distributed ledger network
+2016 | DID | DID network
+
