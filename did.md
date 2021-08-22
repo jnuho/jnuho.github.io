@@ -1,6 +1,6 @@
 - From the book self-sovereign identity
 
-### 디지털 신원인증 모델
+#### 디지털 신원인증 모델
 - Centralized
   - e.g. Account-based website
   - [You] &rarr; [Org]
@@ -27,7 +27,7 @@ height="17%" width="17%" alt="Figure1.4">
 
 <br>
 
-### 암호화 기법
+#### 암호화 기법
 - 비대칭 키 (Asymmetric-key cryptography)
   - e.g. DID의 개인키는 디지털지갑, 공개키는 블록체인에 저장
 - 디지털 서명
@@ -36,7 +36,7 @@ height="17%" width="17%" alt="Figure1.4">
 
 <br>
 
-### DID 배경
+#### DID 배경
 
 - ip주소 자체는 해당 ip를 소유한 신원 대상에 대한 어떠한 정보도 제공하지 않음: 디지털 proof필요
 - _공개/개인키 암호화기법_ 으로 증명가능 한 디지털 proof 제공
@@ -66,7 +66,7 @@ height="32%" width="32%" alt="Figure2.11"><br>
 <br>
 <br>
 
-### DID 정의
+#### DID 정의
 
 - 새로운 타입의 _globally unique identifier_
 - DIDs are the cryptographic counterpart to verifiable credentials (VCs)
@@ -194,7 +194,7 @@ Static DIDs | There is a category of DID methods that are “static”, i.e. the
 Alternative DIDs | A number of other innovative DID methods have been developed that do not fall into any of the previous categories. They demonstrate that DID identification architecture is flexible enough to be layered on top of existing internet protocols, such as Git, the Interplanetary File System (IPFS), or even the web itself: <br> did:git:625557b5a9cdf399205820a2a716da897e2f9657 <br> did:ipid:QmYA7p467t4BGgBL4NmyHtsXMoPrYH9b3kSG6dbgFYskJm <br> did:web:uport.me
 
 
-### DIDs가 작동하는 이유 - 아키텍쳐 관점
+#### DIDs가 작동하는 이유 - 아키텍쳐 관점
 
 - Public Key Infrastructure (PKI)의 문제점
   - 해결책 1: 전통적 PKI 모델
@@ -207,7 +207,7 @@ Alternative DIDs | A number of other innovative DID methods have been developed 
   - 3: DID-to-DID connections
   - 4: Privacy by design at scale
 
-### DIDs의 의미
+#### DIDs의 의미
 
 - 주소는 자체적으로 존재하지 않으며, 그것들을 사용하는 네트워크의 컨텍스트에서만 존재
 
@@ -221,3 +221,4 @@ Origin | Address type | Network
 
 
 - [SSI Resources](https://ssimeetup.org/decentralized-identifiers-dids-fundamentals-identitybook-info-drummond-reed-markus-sabadello-webinar-46)
+
