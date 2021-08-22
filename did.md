@@ -222,5 +222,6 @@ Origin | Address type | Network
 
 <br>
 
-- SSI Resources - [webinar](https://ssimeetup.org/decentralized-identifiers-dids-fundamentals-identitybook-info-drummond-reed-markus-sabadello-webinar-46)
+- SSI Resources
+  - [webinar](https://ssimeetup.org/decentralized-identifiers-dids-fundamentals-identitybook-info-drummond-reed-markus-sabadello-webinar-46)
 
