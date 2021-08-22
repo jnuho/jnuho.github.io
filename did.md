@@ -131,14 +131,15 @@ height="45%" width="45%" alt="Figure8.6">
 - 각 DID 메소드는 다음과 같은 기술적 스펙 정의가 요구됨:
   - 메소드 고유 식별 (예: sov,btcr,v1,ethr,jolo,...)
   - DID에 대한 CRUD 4가지 operation 수행 가능
-    블록체인이나, 분산 ledger시스템에 기반한 DID메소드의 경우 create/update시에 해당 ledger에 트랜젝션 기록
-  - 메소드에 맞는 보안 및 개인정보 보호에 대한 장치
+    - 블록체인이나, 분산 ledger시스템에 기반한 DID메소드의 경우 create/update시 ledger에 트랜젝션 기록
+  - 메소드에 따른 보안 및 개인정보보호 장치
 
 <div>
 <img src="https://drek4537l1klr.cloudfront.net/preukschat/HighResolutionFigures/figure_8-7.png" height="35%" width="35%" alt="Figure8.7">
 </div>
 
-“Rubric” document to help adopters evaluate how well a particular DID method will meet the needs of a particular user community: https://w3c.github.io/did-rubric
+- https://w3c.github.io/did-rubric
+  - “Rubric” document to help adopters evaluate how well a particular DID method will meet the needs of a particular user community:
 
 <br>
 
