@@ -62,7 +62,7 @@ tar -xvzf redis-stable.tar.gz
 cd redis-stable
 make && make install
 
-# 우부투 환경
+# 우분투 환경
 sudo apt update
 sudo apt install redis
 
@@ -90,3 +90,63 @@ sg-03ceb4c49e904f0aa (starpass-redis)
 - ElastiCache접근은 보안그룹에 인바운드 규칙에 정의된 호스트 이외 ip에서는 접근 불가
 - 스프링 환경에서 jedis를 접근가능 한지 여부 확인하기 위해, 해당 EC2에서 redis-cli로 접속 테스트
 - EC2환경에 아파치서버 구동하여 캐시저장 조회 테스트 필요
+
+
+
+#### 개발
+
+- redis서버 설정 수정
+  - 서버(EC2또는 아이넷호스트 머신)에 설치된 redis서버를 외부에서 접근할 수 있도록 설정 변경
+    - EC2: 보안그룹의 인바운드규칙 TCP 6379 0.0.0.0 추가
+    - 아이넷호스트: 마이페이지 > 방화벽요청
+      - Source: ANY
+      - Destination: 210.116.91.135
+      - 서비스/포트 프로토콜: Redis/6379 TCP
+  - https://stackoverflow.com/a/6910506/9122475
+
+```sh
+vim /etc/redis/redis.conf
+# bind 0.0.0.0
+# protected-mode no
+/etc/init.d/redis-server restart
+```
+
+```java
+import io.lettuce.core.RedisClient;
+import io.lettuce.core.api.StatefulRedisConnection;
+import io.lettuce.core.api.async.RedisAsyncCommands;
+
+public class LettuceConnection {
+
+	// String.format("redis://%s:%d/0", hostname, port)
+//	private static final String REDIS_CON_URL = "redis://192.168.56.1:6379/0"; // 로컬 redis 0번 사용
+	private static final String REDIS_CON_URL = "redis://13.209.76.95:6379/0"; // 준호EC2 redis
+//	private static final String REDIS_CON_URL = "redis://210.116.91.135:6379/0"; // 스타패스 개발서버 redis
+//	private static final String REDIS_CON_URL = "elasticache-junho-0813.eo7tpf.0001.apn2.cache.amazonaws.com:6379";
+
+	public static void main(String[] args) {
+		RedisClient redisClient = RedisClient.create(REDIS_CON_URL);
+		StatefulRedisConnection<String, String> connection = redisClient.connect();
+		RedisAsyncCommands<String, String> async = connection.async();
+
+		final String[] result = new String[1];
+
+		async.set("foo", "bar")
+				.thenComposeAsync(ok -> async.get("foo"))
+				.thenAccept(s -> result[0] = s)
+				.toCompletableFuture()
+				.join();
+
+		connection.close();
+		redisClient.shutdown();
+
+		System.out.println(result[0]); // "bar"
+	}
+}
+```
+
+- 서버의 redis클라이언트로 데이터 확인
+```sh
+redis-cli
+keys *
+```
