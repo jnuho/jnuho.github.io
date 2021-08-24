@@ -24,7 +24,7 @@
 
 <div>
 <img src="https://drek4537l1klr.cloudfront.net/preukschat/HighResolutionFigures/figure_1-4.png"
-height="17%" width="17%" alt="Figure1.4">
+height="20%" width="20%" alt="Figure1.4">
 </div>
 
 <br>
@@ -62,7 +62,7 @@ height="17%" width="17%" alt="Figure1.4">
 
 <div>
 <img src="https://drek4537l1klr.cloudfront.net/preukschat/HighResolutionFigures/figure_2-11.png"
-height="32%" width="32%" alt="Figure2.11"><br>
+height="45%" width="45%" alt="Figure2.11"><br>
 </div>
 <br>
 <br>
@@ -79,7 +79,7 @@ height="32%" width="32%" alt="Figure2.11"><br>
 
 <div>
 <img src="https://drek4537l1klr.cloudfront.net/preukschat/HighResolutionFigures/figure_8-2.png"
-height="30%" width="30%" alt="Figure8.2">
+height="40%" width="40%" alt="Figure8.2">
 </div>
 
 - DID 예시
@@ -112,7 +112,7 @@ height="30%" width="30%" alt="Figure8.2">
 
 <div>
 <img src="https://drek4537l1klr.cloudfront.net/preukschat/HighResolutionFigures/figure_8-6.png"
-height="45%" width="45%" alt="Figure8.6">
+height="70%" width="70%" alt="Figure8.6">
 </div>
 <br>
 <br>
@@ -152,7 +152,7 @@ height="45%" width="45%" alt="Figure8.6">
   - 메소드에 따른 보안 및 개인정보보호 장치
 
 <div>
-<img src="https://drek4537l1klr.cloudfront.net/preukschat/HighResolutionFigures/figure_8-7.png" height="35%" width="35%" alt="Figure8.7">
+<img src="https://drek4537l1klr.cloudfront.net/preukschat/HighResolutionFigures/figure_8-7.png" height="60%" width="60%" alt="Figure8.7">
 </div>
 
 - https://w3c.github.io/did-rubric
@@ -173,14 +173,14 @@ height="45%" width="45%" alt="Figure8.6">
 <div>
 <img
 src="https://drek4537l1klr.cloudfront.net/preukschat/Figures/CH08_F08_Preukschat.png"
-height="40%" width="40%" alt="Figure8.8">
+height="70%" width="70%" alt="Figure8.8">
 </div>
 
 <br>
 <div>
 <img
 src="https://drek4537l1klr.cloudfront.net/preukschat/HighResolutionFigures/figure_8-9.png"
-height="45%" width="45%" alt="Figure8.9">
+height="55%" width="55%" alt="Figure8.9">
 </div>
 
 <br>
