@@ -150,3 +150,7 @@ public class LettuceConnection {
 redis-cli
 keys *
 ```
+
+#### 레디스 포트 오픈 후 Unknown Traffic
+- 
+- 
