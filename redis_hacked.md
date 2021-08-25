@@ -1,6 +1,7 @@
 
 - 레디스 기본포트 오픈 후 Unknown Traffic
   - /var/tmp/.system에 Monero마이닝 스크립트 및 실행 프로세스 탐지
+  - LKM rootkit (malware)관련 파일확인 ```/var/tmp/.../diamorphine```, ```/var/tmp/.alsp```
   - 아웃바운드 트래픽 발생
 
 ![1](./assets/images/hacked1.jpg)
