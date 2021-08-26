@@ -215,6 +215,7 @@ height="60%" width="60%" alt="Table8.4">
 
 #### DIDs가 작동하는 이유 (아키텍쳐 관점)
 
+- identity보다 cryptography의 관점에서 DID가 왜 작동하는지
 - Public Key Infrastructure (PKI)의 문제점
   - 해결책 1: 전통적 PKI 모델
   - 해결책 2: web-of-trust 모델
