@@ -205,6 +205,11 @@ Peer DIDs | This special category of DID method does not require a globally shar
 Static DIDs | There is a category of DID methods that are “static”, i.e. they enable a DID to be created and resolved, but not updated or deactivated. Such DID methods tend to not require complex protocols or storage infrastructure. For example, a DID may simply be a “wrapped” public key, from which an entire DID document can be resolved algorithmically, without requiring any data other than the DID itself: <br> did:key:z6Mkfriq1MqLBoPWecGoDLjguo1sB9brj6wT3qZ5BxkKpuP6
 Alternative DIDs | A number of other innovative DID methods have been developed that do not fall into any of the previous categories. They demonstrate that DID identification architecture is flexible enough to be layered on top of existing internet protocols, such as Git, the Interplanetary File System (IPFS), or even the web itself: <br> did:git:625557b5a9cdf399205820a2a716da897e2f9657 <br> did:ipid:QmYA7p467t4BGgBL4NmyHtsXMoPrYH9b3kSG6dbgFYskJm <br> did:web:uport.me
 
+<div>
+<img
+src="https://drek4537l1klr.cloudfront.net/preukschat/HighResolutionFigures/table_8-4.png"
+height="60%" width="60%" alt="Table8.4">
+</div>
 <br>
 
 #### DIDs가 작동하는 이유 (아키텍쳐 관점)
