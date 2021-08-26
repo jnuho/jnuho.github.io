@@ -49,7 +49,7 @@
   - 인바운드: sg-bastion (SSH 22, TCP 8080)
 
 - sg-starpass-redis
-  - 인바운드: sg-was/web/bastion (TCP 6379)
+  - 인바운드: sg-was/web/bastion (TCP 7379)
 
 #### EC2
 - 퍼블릭 IP자동할당 : 'Enable'
@@ -67,7 +67,7 @@ sudo apt update
 sudo apt install redis
 
 # 접속 시도
-redis-cli -h {ElastiCache 엔드포인트} -p {보안그룹에 정의된 포트 6379}
+redis-cli -h {ElastiCache 엔드포인트} -p {보안그룹에 정의된 포트 7379}
 
 > flushall
 > keys *
@@ -87,21 +87,21 @@ sg-03ceb4c49e904f0aa (starpass-redis)
 ```
 
 #### 테스트
-- ElastiCache접근은 보안그룹에 인바운드 규칙에 정의된 호스트 이외 ip에서는 접근 불가
-- 스프링 환경에서 jedis를 접근가능 한지 여부 확인하기 위해, 해당 EC2에서 redis-cli로 접속 테스트
-- EC2환경에 아파치서버 구동하여 캐시저장 조회 테스트 필요
-
+- ElastiCache접근은 보안그룹에 인바운드 규칙에 정의된 EC2(private subnet) 이외 ip에서는 접근 불가
+- 개발/운영 환경 분리하여 캐시 관리
+  - 개발: 개발서버에 redis-server 설치하여 캐시저장
+  - 운영: ElastiCache 클러스터 생성하여 EC2->ElastiCache
 
 
 #### 개발
 
 - redis서버 설정 수정
   - 서버(EC2또는 아이넷호스트 머신)에 설치된 redis서버를 외부에서 접근할 수 있도록 설정 변경
-    - EC2: 보안그룹의 인바운드규칙 TCP 6379 0.0.0.0 추가
+    - EC2: 보안그룹의 인바운드규칙 TCP 7379 0.0.0.0 추가
     - 아이넷호스트: 마이페이지 > 방화벽요청
       - Source: ANY
       - Destination: 210.116.91.135
-      - 서비스/포트 프로토콜: Redis/6379 TCP
+      - 서비스/포트 프로토콜: Redis/7379 TCP
   - https://stackoverflow.com/a/6910506/9122475
 
 ```sh

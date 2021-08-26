@@ -16,7 +16,7 @@
   - peer-to-peer
   - _```공개/개인키 암호화 기법```_ 기반 _```블록체인```_ 사용
   - 블록체인 기술을 암호화폐가 아닌, DPKI (Decentralized PKI)에 적용
-    - 공개키를 직접 교환 하여 private하고 안전한 peer-to-peer 연결 생성
+    - 공개키를 직접 교환 하여 안전한 peer-to-peer 연결 생성
     - 공개키를 블록체인에 저장하여 디지털 신원 자격(VC) 서명(signature) 증명
       - VC(verifiable credentials): 실생활에서 신원증명 제공을 위해 교환 가능한 자격 증명
     - 개인키는 디지털 지갑에 저장
@@ -34,8 +34,7 @@ height="20%" width="20%" alt="Figure1.4">
 - 비대칭 키 (Asymmetric-key cryptography)
   - e.g. DID의 개인키는 디지털지갑, 공개키는 블록체인에 저장
 - 디지털 서명
-  - 키페어 중 개인키로 생성, 공개키로 검증
-  - _공개키 암호화 기법_ 에 기반
+  - _공개키 암호화 기법_ 기반 : 메시지를 개인키로 암호화하여 디지털 서명 생성, 공개키로 서명 검증
 
 <br>
 
@@ -85,7 +84,7 @@ height="40%" width="40%" alt="Figure8.2">
 
 - DID 예시
   - 예시 1
-    - 디지털 지갑 앱 개인키 저장
+    - 개인키 &rarr; 디지털 지갑 앱
     - 공개키 &rarr; 블록체인 (sovrin, bitcoin, ethereum, ...)
     - 공개키를 암호화하여 트랜젝션을 통해 블록체인에 저장
     - 블록체인은 응답으로 DID 생성 및 반환
@@ -93,10 +92,10 @@ height="40%" width="40%" alt="Figure8.2">
     - 은행은 블록체인에서 DID와 연관된 트렌젝션 조회 & 공개키 조회
     - 공개키로 서명 검증 및 로그인 완료처리
   - 예시 2
-    - 학생정보 입력하여 학교웹사이트 로그인
-    - 나의페이지 Dashboard에서 제공하는 고유 디지털 ID를 디지털 지갑 앱으로 스캔및 bio인증하여 고유 식별자(DID) 생성
-    (개인키 생성 및 블록체인에 공개키저장하여 DID 생성)
-    - 온라인서적 사이트에서 DID로그인
+    - 학생정보 입력하여 학교 웹사이트 로그인
+    - 대시보드에서 고유 디지털 ID 스캔 및 인증 &rarr; DID 고유 식별자 생성
+    (개인키 생성 및 블록체인에 공개키 저장하여 DID 생성)
+    - 온라인서적 사이트에서 DID 로그인
 
 
 <br>
@@ -156,7 +155,7 @@ height="70%" width="70%" alt="Figure8.6">
 <img src="https://drek4537l1klr.cloudfront.net/preukschat/HighResolutionFigures/figure_8-7.png" height="60%" width="60%" alt="Figure8.7">
 </div>
 
-- https://w3c.github.io/did-rubric
+- [did-rubric](https://w3c.github.io/did-rubric)
   - “Rubric” document to help adopters evaluate how well a particular DID method will meet the needs of a particular user community:
 
 <br>
@@ -164,9 +163,10 @@ height="70%" width="70%" alt="Figure8.6">
 #### _3. DID resolution_
 
 - DID로부터 DID document를 얻는 과정
-- DID관련 앱이나 서비스가 DID대상(subject)와 관련된 메타데이터를 얻어서 다음과 같은 추가 상호작용 :
+- DID관련 앱이나 서비스가 DID document에서 DID subject 관련 메타데이터를 얻어 추가 상호작용 가능:
   1. VC 발행자로 부터의 디지털 서명을 검증할 공개키 조회
   2. DID 컨트롤러가 웹사이트나 앱에 로그인해야할 때 검증 진행
+    - 로그인 요청자의 DID resolve한 document에 있는 공개키로, 요청자의 proof 검증
   3. 웹사이트, 소셜 네트워크 또는 라이선스 기관과 같은 DID 컨트롤러와 관련된 잘 알려진 서비스를 검색하고 액세스
   4. DID 컨트롤러로 DID-to-DID 연결을 요청
   
@@ -187,6 +187,13 @@ height="55%" width="55%" alt="Figure8.9">
 <br>
 
 #### _4. DID URLs_
+
+<div>
+<img
+src="https://drek4537l1klr.cloudfront.net/preukschat/HighResolutionFigures/table_8-1.png"
+height="60%" width="60%" alt="Table8.1">
+</div>
+<br>
 
 #### _5. DIDs 타입_
 
