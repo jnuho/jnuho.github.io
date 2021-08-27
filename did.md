@@ -105,8 +105,9 @@ height="40%" width="40%" alt="Figure8.2">
 - DID &rarr; DID resolver(software/hardware) &rarr; DID document
   - 디지털 신원인증 앱, 디지털 지갑, 또는 에이전트 등에서 인증을 위한 기초 빌딩블록 으로 사용
   - DID ↔ DID document (1대1 대응)
+- DID document는 공개되어 있으므로 개인적인 데이터는 포함 자제
 - DID document는 표준화된 규격 구조(json)를 가지고 있으며 다음을 포함 :
-  - 공개키: 거래시 DID subject를 검증하기 위함 - essence of DPKI
+  - 공개키: 1개 이상의 DID subject의 공개키; 거래시 공개키로 subject 검증 - essence of DPKI, SSI
   - 서비스: 프로토콜을 통한 거래 시에 사용 할 DID subject 관련 서비스들
   - 메타데이터: 타임스탬프, 디지털서명, 암호학적proof, deleation 및 인증 관련 메타데이터
 
@@ -165,6 +166,7 @@ height="70%" width="70%" alt="Figure8.6">
 - DID로부터 DID document를 얻는 과정
 - DID관련 앱이나 서비스가 DID document에서 DID subject 관련 메타데이터를 얻어 추가 상호작용 가능:
   1. VC 발행자로 부터의 디지털 서명을 검증할 공개키 조회
+    - VC의 "issuer"가 DID subject이고 proof를 DID subject의 공개키로 검증하는 예시
   2. DID 컨트롤러가 웹사이트나 앱에 로그인해야할 때 검증 진행
     - 로그인 요청자의 DID resolve한 document에 있는 공개키로, 요청자의 proof 검증
   3. 웹사이트, 소셜 네트워크 또는 라이선스 기관과 같은 DID 컨트롤러와 관련된 잘 알려진 서비스를 검색하고 액세스
@@ -188,11 +190,14 @@ height="55%" width="55%" alt="Figure8.9">
 
 #### DID URLs
 
-<div>
-<img
+<div> <img
 src="https://drek4537l1klr.cloudfront.net/preukschat/HighResolutionFigures/table_8-1.png"
-height="60%" width="60%" alt="Table8.1">
-</div>
+height="60%" width="60%" alt="Table8.1"></div>
+<br>
+
+<div> <img
+src="https://drek4537l1klr.cloudfront.net/preukschat/Figures/CH08_F11_Preukschat.png"
+height="50%" width="50%" alt="Figure8.11"></div>
 <br>
 
 #### DID 타입
