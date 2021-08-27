@@ -100,9 +100,9 @@ height="40%" width="40%" alt="Figure8.2">
 
 <br>
 
-#### _1. DID documents_
+#### DID documents
 
-- _DID &rarr; DID resolver(software/hardware) &rarr; DID document_
+- DID &rarr; DID resolver(software/hardware) &rarr; DID document
   - 디지털 신원인증 앱, 디지털 지갑, 또는 에이전트 등에서 인증을 위한 기초 빌딩블록 으로 사용
   - DID ↔ DID document (1대1 대응)
 - DID document는 표준화된 규격 구조(json)를 가지고 있으며 다음을 포함 :
@@ -143,7 +143,7 @@ height="70%" width="70%" alt="Figure8.6">
 
 <br>
 
-#### _2. DID methods_
+#### DID methods
 
 - 각 DID 메소드는 다음과 같은 기술적 스펙 정의가 요구됨:
   - 메소드 고유 식별 (예: sov,btcr,v1,ethr,jolo,...)
@@ -160,7 +160,7 @@ height="70%" width="70%" alt="Figure8.6">
 
 <br>
 
-#### _3. DID resolution_
+#### DID resolution
 
 - DID로부터 DID document를 얻는 과정
 - DID관련 앱이나 서비스가 DID document에서 DID subject 관련 메타데이터를 얻어 추가 상호작용 가능:
@@ -186,7 +186,7 @@ height="55%" width="55%" alt="Figure8.9">
 
 <br>
 
-#### _4. DID URLs_
+#### DID URLs
 
 <div>
 <img
@@ -195,7 +195,7 @@ height="60%" width="60%" alt="Table8.1">
 </div>
 <br>
 
-#### _5. DIDs 타입_
+#### DID 타입
 
 <!-- 
 Category | Description and examples
@@ -213,7 +213,7 @@ height="60%" width="60%" alt="Table8.4">
 </div>
 <br>
 
-#### DIDs가 작동하는 이유 (아키텍쳐 관점)
+#### DID가 작동하는 이유 (아키텍쳐 관점)
 
 - identity보다 cryptography의 관점에서 DID가 왜 작동하는지
 - Public Key Infrastructure (PKI)의 문제점
@@ -227,7 +227,7 @@ height="60%" width="60%" alt="Table8.4">
   - 3: DID-to-DID connections
   - 4: Privacy by design at scale
 
-#### DIDs의 의미
+#### DID의 의미
 
 - 주소는 자체적으로 존재하지 않으며, 그것들을 사용하는 네트워크의 컨텍스트에서만 존재
 
