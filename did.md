@@ -226,11 +226,10 @@ height="60%" width="60%" alt="Table8.4">
   - 해결책 2: web-of-trust 모델
   - 해결책 3: 공개키 기반 식별자 (Public key-based identifiers)
   - 해결책 4: DIDs and DID documents
-    - DID controller generates the original public/private key pair and the DID
-    - DID document = DID + public key
-    - DID controller public/private key rotation
-      - create new DID document and sign it with the previous private key (chain of trust)
-      - DID document serves as a digital certificate for the new public key without any CA
+    - DID controller 공개/개인키 기반 식별자 (DID) 생성
+    - DID controller 공개/개인키 변경 시
+      - 새로운 DID document를 이전 document의 개인키로 서명 (chain of trust)
+      - DID document는 CA없이도 공개키에 대한 digital certificate 역할 수행
 - DIDs의 4가지 장점 (that go beyond PKI)
   - 1: Guardianship and controllership
   - 2: Service endpoint discovery
@@ -239,7 +238,7 @@ height="60%" width="60%" alt="Table8.4">
 
 #### DID의 의미
 
-- 주소는 자체적으로 존재하지 않으며, 그것들을 사용하는 네트워크의 컨텍스트에서만 존재
+- 주소는 자체적으로 존재하지 않으며, 그것들을 사용하는 네트워크의 컨텍스트에서 존재
 
 Origin | Address type | Network
 ---|---|---

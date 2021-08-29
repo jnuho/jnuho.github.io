@@ -34,7 +34,6 @@ tags_path: tags.html
 # set it as url of an image
 # https://source.unsplash.com/qL4QF9Urxdg
 # sidebar_background_image: https://source.unsplash.com/26jRVKxOUZI
-# sidebar_background_image: https://source.unsplash.com/uNliRqlmBdg
 sidebar_background_image: https://source.unsplash.com/uL_divT0jCQ
 
 BASE_PATH:
