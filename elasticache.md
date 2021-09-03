@@ -51,29 +51,8 @@
 - sg-starpass-redis
   - 인바운드: sg-was/web/bastion (TCP 7379)
 
-#### EC2
-- 퍼블릭 IP자동할당 : 'Enable'
-- starpass-was-00에 redis클라이언트 설치
 
-```sh
-# 리눅스 환경
-wget http://download.redis.io/redis-stable.tar.gz
-tar -xvzf redis-stable.tar.gz
-cd redis-stable
-make && make install
-
-# 우분투 환경
-sudo apt update
-sudo apt install redis
-
-# 접속 시도
-redis-cli -h {ElastiCache 엔드포인트} -p {보안그룹에 정의된 포트 7379}
-
-> flushall
-> keys *
-```
-
-#### ElastiCache
+#### 운영환경 - ElastiCache
 - redis 선택
 - 노드유형: r5,m5,r4,m4,r3,m3,t3,t2 메모리 및 네트워크 성능 선택
 - 서브넷그룹 '생성' starpass-was-00, starpass-bastion와 같은 VPC, 프라이빗 서브넷 선택
@@ -86,12 +65,36 @@ subnet-01ab087db1ecc6748 (starpass-private-was-a)
 sg-03ceb4c49e904f0aa (starpass-redis)
 ```
 
-#### 테스트
-- ElastiCache접근은 보안그룹에 인바운드 규칙에 정의된 EC2(private subnet) 이외 ip에서는 접근 불가
-- 개발/운영 환경 분리하여 캐시 관리
-  - 개발: 개발서버에 redis-server 설치하여 캐시저장
-  - 운영: ElastiCache 클러스터 생성하여 EC2->ElastiCache
+#### 개발환경 - 레디스서버 (EC2/아이넷호스트)
 
+- redis 서버 설치
+- yum install 또는 make install으로 루트 시스템에 설치하지 않고, 다음 방법 선택
+- starpass 유저 로그인 후, redis 소스 다운로드, redis.conf 설정 변경
+    - 로컬 에서만 redis 서버 접근 가능하도록 bind 127.0.0.1
+    - requirepass, port 설정 추가
+
+```sh
+# 소스 다운로드
+$ su starpass
+$ cd ~starpass/
+$ wget http://download.redis.io/redis-stable.tar.gz
+$ tar -xvzf redis-stable.tar.gz
+$ vim redis-stable/redis.conf
+# bind 127.0.0.1 로컬(톰캣)에서만 접근
+# requirepass [your_password]
+# port [your_port]
+$ cd redis-stable/src
+$ ./redis-server /home/starpass/redis-stable/redis.conf &
+
+# 접속 시도
+redis-cli -h {ElastiCache 엔드포인트} -p {보안그룹에 정의된 포트 7379}
+
+```
+
+```sh
+> flushall
+> keys *
+```
 
 #### 개발
 
@@ -151,6 +154,8 @@ redis-cli
 keys *
 ```
 
-#### 레디스 포트 오픈 후 Unknown Traffic
-- 
-- 
+#### 테스트
+- ElastiCache접근은 보안그룹에 인바운드 규칙에 정의된 EC2(private subnet) 이외 ip에서는 접근 불가
+- 개발/운영 환경 분리하여 캐시 관리
+  - 개발: 개발서버에 redis-server 설치하여 캐시저장
+  - 운영: ElastiCache 클러스터 생성하여 EC2->ElastiCache
