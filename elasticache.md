@@ -51,27 +51,6 @@
 - sg-starpass-redis
   - 인바운드: sg-was/web/bastion (TCP 7379)
 
-#### EC2
-- 퍼블릭 IP자동할당 : 'Enable'
-- starpass-was-00에 redis클라이언트 설치
-
-```sh
-# 리눅스 환경
-wget http://download.redis.io/redis-stable.tar.gz
-tar -xvzf redis-stable.tar.gz
-cd redis-stable
-make && make install
-
-# 우분투 환경
-sudo apt update
-sudo apt install redis
-
-# 접속 시도
-redis-cli -h {ElastiCache 엔드포인트} -p {보안그룹에 정의된 포트 7379}
-
-> flushall
-> keys *
-```
 
 #### ElastiCache
 - redis 선택
@@ -93,22 +72,36 @@ sg-03ceb4c49e904f0aa (starpass-redis)
   - 운영: ElastiCache 클러스터 생성하여 EC2->ElastiCache
 
 
-#### 개발
-
+#### EC2
 - redis서버 설정 수정
   - 서버(EC2또는 아이넷호스트 머신)에 설치된 redis서버를 외부에서 접근할 수 있도록 설정 변경
-    - EC2: 보안그룹의 인바운드규칙 TCP 7379 0.0.0.0 추가
-    - 아이넷호스트: 마이페이지 > 방화벽요청
-      - Source: ANY
-      - Destination: 210.116.91.135
-      - 서비스/포트 프로토콜: Redis/7379 TCP
-  - https://stackoverflow.com/a/6910506/9122475
+    - EC2: 보안그룹의 인바운드규칙 TCP 7379 127.0.0.1
+    - 아이넷호스트: redis.conf 수정
+
+- 퍼블릭 IP자동할당 : 'Enable'
+- yum install 또는 make install으로 루트 시스템에 설치하지 않고, 다음 방법 선택
+- starpass 유저로 소스만 받아, redis.conf 설정 추가:
+    - 로컬 에서만 redis 접근 가능하도록 bind 제한
+    - requirepass, port 설정 추가
+- redis-server 스크립트 redis.conf 설정 반영하여 실행
 
 ```sh
-vim /etc/redis/redis.conf
-# bind 0.0.0.0
-# protected-mode no
-/etc/init.d/redis-server restart
+su starpass
+cd ~starpass/
+wget http://download.redis.io/redis-stable.tar.gz
+tar -xvzf redis-stable.tar.gz
+vim redis-stable/redis.conf
+# bind 127.0.0.1 로컬(톰캣)에서만 접근
+# requirepass [your_password]
+# port [your_port]
+cd redis-stable/src
+./redis-server /home/starpass/redis-stable/redis.conf &
+
+# 접속 시도
+redis-cli -h {ElastiCache 엔드포인트} -p {보안그룹에 정의된 포트 7379}
+
+> flushall
+> keys *
 ```
 
 ```java
