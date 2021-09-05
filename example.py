@@ -1,9 +1,16 @@
-change_amt = 1650
-coins = [500, 100, 50, 10]
 
-count = 0
-for c in coins:
-    count += change_amt // c
-    change_amt %= c
+N,M,K = map(int,input().split())
+arr= list(map(int, input().split()))
+sum = 0
+arr.sort(reverse=True)
 
-print(count)
+if len(arr) <= 1:
+  sum = M*arr[0]
+else:
+  n1= arr[0]
+  n2= arr[1]
+  count = (M // (K+1))*K + M % (K+1)
+  sum += count * n1
+  sum += (M-count) * n2
+
+print(sum)
