@@ -52,11 +52,7 @@
   - 인바운드: sg-was/web/bastion (TCP 7379)
 
 
-<<<<<<< HEAD
-#### ElastiCache
-=======
 #### 운영환경 - ElastiCache
->>>>>>> f185cdbea6d4c6cf4d17dc074f10c43f25ee1c40
 - redis 선택
 - 노드유형: r5,m5,r4,m4,r3,m3,t3,t2 메모리 및 네트워크 성능 선택
 - 서브넷그룹 '생성' starpass-was-00, starpass-bastion와 같은 VPC, 프라이빗 서브넷 선택
