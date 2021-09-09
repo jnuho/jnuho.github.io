@@ -136,9 +136,7 @@ import io.lettuce.core.api.async.RedisAsyncCommands;
 public class LettuceConnection {
 
 	// String.format("redis://%s:%d/0", hostname, port)
-//	private static final String REDIS_CON_URL = "redis://192.168.56.1:6379/0"; // 로컬 redis 0번 사용
 	private static final String REDIS_CON_URL = "redis://13.209.76.95:6379/0"; // 준호EC2 redis
-//	private static final String REDIS_CON_URL = "redis://210.116.91.135:6379/0"; // 스타패스 개발서버 redis
 //	private static final String REDIS_CON_URL = "elasticache-junho-0813.eo7tpf.0001.apn2.cache.amazonaws.com:6379";
 
 	public static void main(String[] args) {
