@@ -9,7 +9,7 @@
 Trade-off Example: memoization 메모리를 많이 사용하여 시간을 비약적으로 줄이는 방법 Ch8
 
 
-```
+```python
 array = [3, 5, 1, 2, 4]
 summary = 0
 
@@ -41,7 +41,7 @@ Big-O는 최악의 경우 시간복잡도 e.g.Quick Sort O(NlogN)~O(N^2)
 ## 시간과 메모리 측정
 
 
-```
+```python
 import time
 
 # 측정 시작
@@ -56,11 +56,14 @@ elapsed_time = end_time - start_time
 print(f"Time elapsed : {elapsed_time}")
 ```
 
+    Time elapsed : 2.7894973754882812e-05
+
+
 - 선택정렬의 경우 최악 $O(N^{2})$
 - 파이썬 기본정렬 라이브러리 최악의 경우 $O(N\log{}N)$
 
 
-```
+```python
 from random import randint
 import time
 
@@ -99,6 +102,10 @@ end_time = time.time()
 elapsed_time = end_time - start_time
 print(f"기본 정렬 걸린 시간 : {elapsed_time}")
 ```
+
+    선택 정렬 걸린 시간 : 6.075755834579468
+    기본 정렬 걸린 시간 : 7.939338684082031e-05
+
 
 # 02 코딩 테스트 유형 분석
 
@@ -141,7 +148,7 @@ Upper Bound : 문제 해결 역량 & 코드포스 블루이상, ACM-ICPC 서울�
 
 
 
-```
+```python
 # 거스름돈 N원 일 때, 가장 적은 수의 거스름돈 동전 개수는?
 # '가장 큰 화폐 단위부터' 돈 거슬러 줘야 함
 # O(N) N: 거스름돈 종류 수
@@ -158,7 +165,7 @@ print(count)
 ```
 
 
-```
+```python
 # 크기 N 숫자 배열에서 주어진 수들을 M번 더하여 가장 큰수 만들기
 # 특정 인덱스 해당 수가 연속 K번 초과하면 안됨
 # 다른 인덱스에 해당수가 같은 경우도 서로 다른 것으로 간주
@@ -210,12 +217,12 @@ print(sum)
 ```
 
 
-```
+```python
 
 ```
 
 
-```
+```python
 # 숫자 카드게임 N x M (1+100)
 # 규칙: 행선택 후 행에서 가장 작은 수를 뽑음
 # 최종적으로 가장 큰 숫자를 뽑도록 프로그램 작성
@@ -240,7 +247,7 @@ print(result)
 ```
 
 
-```
+```python
 # N이 1이 될때까지
 # (1번) N = N-1
 # (2번) N을 K로 나눈다
@@ -269,7 +276,7 @@ print(count)
 ```
 
 
-```
+```python
 # top left (1,1) bottom right (N,N)
 # 계획서 띄어쓰기 기준 L R U D 문자들이 반복적으로 적혀있음
 # 움직일수 없는 곳 이동명령은 무시 됨
@@ -297,7 +304,7 @@ print(r, c)
 ```
 
 
-```
+```python
 # 00시00분00초~N시59분59초 3이 하나라도 포함되는 경우의 수
 # 0<=N<=23
 
@@ -315,7 +322,7 @@ print(count)
 ```
 
 
-```
+```python
 # 체스판에서 (a~h, 1~8)
 # 나이트 위치가 주어졌을때, 이동 가능한 경우의 수
 pos = input()
@@ -331,3 +338,9 @@ for move in moves:
     count +=1
 print(count)
 ```
+
+# DFS
+
+
+
+
