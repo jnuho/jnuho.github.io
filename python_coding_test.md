@@ -56,9 +56,6 @@ elapsed_time = end_time - start_time
 print(f"Time elapsed : {elapsed_time}")
 ```
 
-    Time elapsed : 5.340576171875e-05
-
-
 - 선택정렬의 경우 최악 $O(N^{2})$
 - 파이썬 기본정렬 라이브러리 최악의 경우 $O(N\log{}N)$
 
@@ -102,10 +99,6 @@ end_time = time.time()
 elapsed_time = end_time - start_time
 print(f"기본 정렬 걸린 시간 : {elapsed_time}")
 ```
-
-    선택 정렬 걸린 시간 : 7.340810298919678
-    기본 정렬 걸린 시간 : 9.417533874511719e-05
-
 
 # 02 코딩 테스트 유형 분석
 
@@ -164,9 +157,6 @@ print(count)
 
 ```
 
-    6
-
-
 
 ```
 # 크기 N 숫자 배열에서 주어진 수들을 M번 더하여 가장 큰수 만들기
@@ -218,22 +208,6 @@ else:
 
 print(sum)
 ```
-
-
-    ---------------------------------------------------------------------------
-
-    ValueError                                Traceback (most recent call last)
-
-    <ipython-input-5-3bf64dddd656> in <module>
-          3 # 다른 인덱스에 해당수가 같은 경우도 서로 다른 것으로 간주
-          4 #
-    ----> 5 n, m, k = map(int, input().split())
-          6 
-          7 data = list(map(int, input().split()))
-
-
-    ValueError: not enough values to unpack (expected 3, got 0)
-
 
 
 ```
@@ -289,6 +263,8 @@ while N > 1:
     N= N-1
   count+=1
 
+print(count)
+
 
 ```
 
@@ -296,38 +272,28 @@ while N > 1:
 ```
 # top left (1,1) bottom right (N,N)
 # 계획서 띄어쓰기 기준 L R U D 문자들이 반복적으로 적혀있음
-# (1,)에서 U,D는 무시 됨
+# 움직일수 없는 곳 이동명령은 무시 됨
 # 5
 # R R R U D D
 # 3 4
 N = int(input())
-r = 1
-c = 1
-orders = list(input().split())
+# LRUD
+inst = list(input().split())
 
-for o in orders:
-	if o == 'L':
-		if c == 1:
-			continue
-		else:
-			r -= 1
-	elif o== 'R':
-		if c== N:
-			continue
-		else:
-			c +=1
-	elif o =='U':
-		if r== 1:
-			continue
-		else:
-			r -=1
-	elif o =='D':
-		if r ==N:
-			continue
-		else:
-			r+=1
+r=1
+c=1
+for s in inst:
+  if s=='L' and c>1:
+    c-=1
+  elif s=='R' and c<N:
+    c+=1
+  elif s=='U' and r>1:
+    r-=1
+  elif s=='D' and r<N:
+    r+=1
 
 print(f'{r} {c}')
+print(r, c)
 ```
 
 
@@ -339,10 +305,10 @@ N = int(input())
 count = 0
 
 for h in range(N+1):
-	for m in range(60):
-		for s in range(60):
-			if '3' in str(h) or '3' in str(m) or '3' in str(s):
-				count+=1
+  for m in range(60):
+    for s in range(60):
+      if '3' in str(h) + str(m) + str(s):
+        count+=1
 
 print(count)
 
@@ -352,23 +318,16 @@ print(count)
 ```
 # 체스판에서 (a~h, 1~8)
 # 나이트 위치가 주어졌을때, 이동 가능한 경우의 수
-str = input()
+pos = input()
+x= int(ord(pos[0]))-int(ord('a'))+1
+y = int(pos[1])
+moves = [(2,-1),(2,1),(-2,1),(-2,1),(1,2),(1,-2), (-1,2),(-1,-2)]
 
-r = ord(str[0])-96
-c = int(str[1])
-
-
-list =[(2,-1), (2,1), (-2,-1), (-2,1), (1,-2), (1,2), (-1,-2), (-1,2)]
 count = 0
-
-for t in list:
-	if r+t[0] >= 1 and  r+t[0] <= 8 and c+t[1] >=1 and c+t[1] <= 8:
-		count += 1
-
+for move in moves:
+  dx = x+move[0]
+  dy = y+move[1]
+  if dx >=1 and dx <=8 and dy>=1 and dy <=8:
+    count +=1
 print(count)
-```
-
-
-```
-
 ```

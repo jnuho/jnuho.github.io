@@ -1,11 +1,13 @@
-# 00:00:00 ~ N:59:59
-# 3포함 개수
-N = int(input())
-count = 0
-for h in range(0, N+1):
-  for m in range(0, 60):
-    for s in range(0, 60):
-      if '3' in str(h) + str(m) + str(s):
-        count+=1
+# a~h, 1~8
+pos = input()
+x= int(ord(pos[0]))-int(ord('a'))+1
+y = int(pos[1])
+moves = [(2,-1),(2,1),(-2,1),(-2,1),(1,2),(1,-2), (-1,2),(-1,-2)]
 
+count = 0
+for move in moves:
+  dx = x+move[0]
+  dy = y+move[1]
+  if dx >=1 and dx <=8 and dy>=1 and dy <=8:
+    count +=1
 print(count)
