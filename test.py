@@ -1,13 +1,21 @@
-# a~h, 1~8
-pos = input()
-x= int(ord(pos[0]))-int(ord('a'))+1
-y = int(pos[1])
-moves = [(2,-1),(2,1),(-2,1),(-2,1),(1,2),(1,-2), (-1,2),(-1,-2)]
+from collections import deque
 
-count = 0
-for move in moves:
-  dx = x+move[0]
-  dy = y+move[1]
-  if dx >=1 and dx <=8 and dy>=1 and dy <=8:
-    count +=1
-print(count)
+# BFS 메소드
+def bfs(graph, start, visited):
+  queue = deque([start])
+
+
+graph = [
+  []
+  , [2,3,8]
+  , [1,7]
+  , [1,4,5]
+  , [3,5]
+  , [3,4]
+  , [7]
+  , [2,6,8]
+  , [1,7]
+]
+visited = [False]*9
+
+bfs(graph,1,visited)
