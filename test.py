@@ -1,21 +1,27 @@
-from collections import deque
 
-# BFS 메소드
-def bfs(graph, start, visited):
-  queue = deque([start])
 
+
+
+def dfs(graph, v, visited):
+  visited[v] = True
+  print(v, end=' ')
+  for i in graph[v]:
+    if not visited[i]:
+      dfs(graph, i, visited)
 
 graph = [
   []
-  , [2,3,8]
-  , [1,7]
-  , [1,4,5]
-  , [3,5]
-  , [3,4]
-  , [7]
-  , [2,6,8]
-  , [1,7]
+  , [2,5,9]
+  , [1,3]
+  , [2,4]
+  , [3]
+  , [1,6,8]
+  , [5,7]
+  , [6]
+  , [5,6]
+  , [1,10]
+  , [9]
 ]
-visited = [False]*9
+visited = [False]*11
 
-bfs(graph,1,visited)
+dfs(graph, 1, visited)
