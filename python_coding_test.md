@@ -56,9 +56,6 @@ elapsed_time = end_time - start_time
 print(f"Time elapsed : {elapsed_time}")
 ```
 
-    Time elapsed : 2.7894973754882812e-05
-
-
 - 선택정렬의 경우 최악 $O(N^{2})$
 - 파이썬 기본정렬 라이브러리 최악의 경우 $O(N\log{}N)$
 
@@ -102,10 +99,6 @@ end_time = time.time()
 elapsed_time = end_time - start_time
 print(f"기본 정렬 걸린 시간 : {elapsed_time}")
 ```
-
-    선택 정렬 걸린 시간 : 6.075755834579468
-    기본 정렬 걸린 시간 : 7.939338684082031e-05
-
 
 # 02 코딩 테스트 유형 분석
 
@@ -218,11 +211,6 @@ print(sum)
 
 
 ```python
-
-```
-
-
-```python
 # 숫자 카드게임 N x M (1+100)
 # 규칙: 행선택 후 행에서 가장 작은 수를 뽑음
 # 최종적으로 가장 큰 숫자를 뽑도록 프로그램 작성
@@ -274,6 +262,8 @@ print(count)
 
 
 ```
+
+# 04 구현
 
 
 ```python
@@ -339,8 +329,198 @@ for move in moves:
 print(count)
 ```
 
-# DFS
+# 05 DFS/BFS
+
+### 자료구조 기초
+- Search 탐색
+- Data Structure
+    - Stack
+    - Queue
 
 
 
 
+
+```python
+# 1. Stack
+stack = []
+# 5-2-3-7
+stack.append(5)
+stack.append(2)
+stack.append(3)
+stack.append(7)
+# 5-2-3
+stack.pop()
+
+# 5-2-3-1-4
+stack.append(1)
+stack.append(4)
+# 5-2-3-1
+stack.pop()
+print(stack)
+
+# 2.Queue
+from collections import deque
+queue = deque()
+# 5-2-3-7
+queue.append(5)
+queue.append(2)
+queue.append(3)
+queue.append(7)
+# 2-3-7
+queue.popleft()
+# 2-3-7-1-4
+queue.append(1)
+queue.append(4)
+# 3-7-1-4
+queue.popleft()
+```
+
+### 재귀 함수
+
+
+```python
+def recursive_function(i):
+    if i==5:
+        return
+    print(i, '번째 재귀함수에서', i+1, '번째 재귀 함수를 호출합니다.')
+    recursive_function(i+1)
+    print(i, '번째 재귀 함수를 종료합니다')
+
+recursive_function(1)
+
+def factorial(n):
+    if n <=1:
+        return 1
+    return n* factorial(n-1)
+
+print(factorial(5))
+```
+
+
+-| 메모리| 속도
+---|---|---
+인접 행렬 | 노드많을 수록 메모리 증가 |
+인접 리스트 | 연결된 정보만 저장하므로 효율적 메모리 사용 | 두 노드 연결여부 확인 느림
+
+
+
+```python
+# 1-(7)-0-(5)-2
+
+# 인접 행렬
+#   0  1  2
+# 0 0  7  5
+# 1 7  0  INF
+# 2 5 INF 0
+INF = 999999999
+graph = [
+  [0,7,5]
+  , [7, 0 ,INF]
+  , [5, INF ,0]
+]
+print(graph)
+
+
+# 인접 리스트
+# 0->1_7->2_5
+# 1->0_7
+# 2->0_5
+graph = [[] for _ in range(3)]
+
+graph[0].append((1,7))
+graph[0].append((2,5))
+
+graph[1].append((0,7))
+
+graph[2].append((0,5))
+
+print(graph)
+```
+
+### DFS
+
+- Depth-First Search
+    - 깊이 우선 탐색
+    - 탐색 시작노드 스택삽입 & 방문처리
+    - -> 스택 최상단 노드에 미방문 인접노드(일반적으로 인접노드들 중 가장 작은 숫자 먼저처리) 있으면 그 인접노드를 스택에 넣고 방문처리
+    - -> 방문하지 않은 인접노드가 없으면 스택에서 최상단 노드를 꺼냄
+    - 인접 행렬
+    - 인접 리스트
+
+
+
+```python
+def dfs(graph, v, visited):
+  visited[v] = True
+  print(v, end=' ')
+  for i in graph[v]:
+    if not visited[i]:
+      dfs(graph, i, visited)
+
+# DFS 메소드 (인접리스트- 2차원리스트 활용)
+graph = [
+  []
+  , [2,3,8]
+  , [1,7]
+  , [1,4,5]
+  , [3,5]
+  , [3,4]
+  , [7]
+  , [2,6,8]
+  , [1,7]
+]
+visited = [False]*9
+
+dfs(graph,1,visited)
+```
+
+    1 2 7 6 8 3 4 5 
+
+### BFS
+
+- Breath-First Search
+    - 너비 우선 탐색. 가까운 노드부터 탐색
+    - 탐색 시작노드 큐 삽입 & 방문처리
+    - -> 큐에서 노드를 꺼내 미방문 인접노드 모두 큐에 삽입 및 방문처리
+    - 인접 행렬
+    - 인접 리스트
+
+
+
+```python
+from collections import deque
+
+def bfs(graph, start, visited):
+  # 큐Queue 구현을 위해 deque 라이브러리 사용사용
+  queue = deque([start])
+  # 현재 노드 방문 처리
+  visited[start] = True
+  # 큐가 빌 때까지 반복
+  while queue:
+    # 큐에서 하나의 원소를 뽑아 출력
+    v = queue.popleft()
+    print(v, end=' ')
+    for i in graph[v]:
+      if not visited[i]:
+        queue.append(i)
+        visited[i] = True
+
+
+graph = [
+  []
+  , [2,3,8]
+  , [1,7]
+  , [1,4,5]
+  , [3,5]
+  , [3,4]
+  , [7]
+  , [2,6,8]
+  , [1,7]
+]
+visited = [False]*9
+
+bfs(graph, 1, visited)
+```
+
+    1 2 3 8 7 4 5 6 
