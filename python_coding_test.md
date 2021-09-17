@@ -448,6 +448,7 @@ print(graph)
     - 인접 행렬
     - 인접 리스트
 
+![graph](./assets/images/graph.png)
 
 
 ```python
@@ -524,3 +525,105 @@ bfs(graph, 1, visited)
 ```
 
     1 2 3 8 7 4 5 6 
+
+-|DFS|BFS
+---|---|---
+동작원리 | 스택|큐
+구현방법|재귀함수 이용 | 큐 자료구조
+
+
+```python
+
+
+# 선택 정렬
+def selection_sort(arr):
+  for i in range(len(arr)):
+    min_idx = i
+    for j in range(i+1, len(arr)):
+      if arr[j] < arr[min_idx]:
+        arr[j], arr[min_idx] = arr[min_idx], arr[j]
+  print(arr)
+
+# 삽입 정렬
+def insertion_sort(arr):
+  for i in range(len(arr)):
+    for j in range(i,0,-1):
+      if arr[j] < arr[j-1]:
+        arr[j], arr[j-1] = arr[j-1], arr[j]
+      else:
+        break 
+  print(arr)
+
+# 퀵 정렬
+# def quick_sort(arr, start, end):
+#   if start >= end:
+#     return
+#   pivot = start
+#   left = start+1
+#   right = end
+
+#   while left <= right:
+#     while left <= end and arr[left] <= arr[pivot]:
+#       left += 1
+#     while right > start and arr[right] >= arr[pivot]:
+#       right -=1
+#     if left > right:
+#       arr[right], arr[pivot] = arr[pivot], arr[right]
+#     else:
+#       arr[right], arr[left] = arr[left], arr[right]
+
+#   quick_sort(arr, start, right-1)
+#   quick_sort(arr, right+1, end)
+def quick_sort(arr):
+  if len(arr) <= 1:
+    return arr
+  
+  pivot = arr[0]
+  tail = arr[1:]
+
+  left_side = [x for x in tail if x <= pivot]
+  right_side = [x for x in tail if x > pivot]
+
+  return quick_sort(left_side) + [pivot] + quick_sort(right_side)
+
+def counting_sort(arr):
+  count_arr = [0] * (max(arr)+1)
+
+  for i in arr:
+    count_arr[i] += 1
+
+  for i in range(len(count_arr)):
+    for j in range(count_arr[i]):
+      print(i, end=' ')
+
+
+
+
+arr = [7, 5, 9, 0, 3, 1, 6, 2, 4, 8]
+selection_sort(arr)
+
+arr = [7, 5, 9, 0, 3, 1, 6, 2, 4, 8]
+insertion_sort(arr)
+
+arr = [5, 7, 9, 0, 3, 1, 6, 2, 4, 8]
+arr = quick_sort(arr)
+print(arr)
+
+arr = [7, 5, 9, 0, 3, 1, 6, 2, 9, 1, 4, 8, 0, 5, 2]
+counting_sort(arr)
+
+```
+
+    [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+    [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+    [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+    0 0 1 1 2 2 3 4 5 5 6 7 8 9 9 
+
+- 선택 정렬 O(N^2)
+- 삽입 정렬 O(N^2)
+- 퀵 정렬 O(NlogN)
+- 계수 정렬 O(N+K) : 모든 데이터가 양의 정수, 데이터수 N, 최대정수값 K
+- 파이썬 정렬 라이브러리 O(NlogN)
+  - sorted
+  - sort
+  - key매개변수를 이용한 정렬기준 설정 가능
