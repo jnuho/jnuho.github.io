@@ -1,8 +1,14 @@
-N = int(input())
+N, K = map(int, input().split())
 
-def setting(data):
-  return data[1]
+A = list(map(int, input().split()))
+B = list(map(int, input().split()))
 
-arr = []
+A.sort()
+B.sort(reverse=True)
 for i in range(N):
-  name,score = input().split()
+  tempA = A[i]
+  tempB = B[i]
+  A[i] = tempB
+  B[i] = tempA
+
+print(sum(A))
