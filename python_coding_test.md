@@ -627,3 +627,86 @@ counting_sort(arr)
   - sorted
   - sort
   - key매개변수를 이용한 정렬기준 설정 가능
+
+
+```python
+N = int(input())
+
+arr = []
+for i in range(N):
+  arr.append(int(input()))
+
+arr.sort(reverse=True)
+
+for i in arr:
+  print(i, end=' ')
+
+```
+
+    27 15 12 
+
+
+```python
+
+N = int(input())
+
+arr = []
+for i in range(N):
+  arr.append(input().split())
+
+arr = sorted(arr,key=lambda x: x[1])
+
+for i in arr:
+  print(i[0], end=' ')
+```
+
+    이순신 홍길동 
+
+
+```python
+
+N, K = map(int, input().split())
+
+A = list(map(int, input().split()))
+B = list(map(int, input().split()))
+
+A.sort()
+B.sort(reverse=True)
+for i in range(K):
+  if A[i] <B[i]:
+    A[i], B[i] = A[i], B[i]
+  else:
+    break
+
+print(sum(A))
+```
+
+    26
+
+
+
+```python
+def binary_search(array, target, start, end):
+  if start > end:
+      return None
+  mid = (start+end)//2
+  if array[mid] == target:
+    return mid
+  elif array[mid] > target:
+    return binary_search(array,target, start, mid-1)
+  else:
+    return binary_search(array, target, mid+1,end)
+
+N, target = map(int, input().split())
+array = list(map(int, input().split()))
+
+result = binary_search(array, target, 0, N-1)
+if result == None:
+  print("원소가 존재하지 않습니다.")
+else:
+  print(result+1)
+
+```
+
+    4
+
