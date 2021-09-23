@@ -80,3 +80,43 @@ rm ~/{myfile-1, myfile-2}
 printenv | grep PATH
 echo $PATH
 ```
+
+- Links
+  - Symbolic Links
+  - Hard Links
+  - [Difference between soft vs hard](https://stackoverflow.com/a/185903)
+
+```sh
+# Soft Link
+# ln -s [original_filename] [link_filename]
+touch a.txt
+ln -s a.txt b.txt
+echo "aaa" >> a.txt
+cat a.txt
+cat b.txt
+# return the name of the file the symbolic link points to
+readlink b.txt
+
+# Hard Link
+# different virtual file that points to the original file
+# they are physically the same
+touch a.txt
+ln a.txt b.txt
+echo "aaa" >> a.txt
+cat a.txt
+cat b.txt
+readlink b.txt
+
+# more detailed info-name,size,type
+stat a.txt
+# report type of a file
+file a.txt
+```
+
+
+- `less` print one page and allows navigation
+- `head` print first 10 lines
+- `tail` print last 10 lines
+  - `-f` output appends as the file grows
+
+
