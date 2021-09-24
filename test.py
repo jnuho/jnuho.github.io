@@ -1,20 +1,7 @@
-def binary_search(array, target, start, end):
-	if start > end:
-			return None
-	mid = (start+end)//2
-	if array[mid] == target:
-		return mid
-	elif array[mid] > target:
-		return binary_search(array,target, start, mid-1)
-	else:
-		return binary_search(array, target, mid+1,end)
+import sys
 
-N, target = map(int, input().split())
-array = list(map(int, input().split()))
+# 하나의 문자열 데이터 입력
+input_data = sys.stdin.readline().rstrip()
 
-result = binary_search(array, target, 0, N-1)
-if result == None:
-	print("원소가 존재하지 않습니다.")
-else:
-	print(result+1)
-
+# 입력 받은 문자열 그대로 출력
+print(input_data)
