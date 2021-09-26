@@ -35,6 +35,8 @@ sudo yum install curl-devel expat-devel gettext-devel openssl-devel zlib-devel
 # 소스코드 배포할 디렉터리
 cd /var
 mkdir www
+
+# 코드관리는 일반유저로
 sudo chown centos www
 cd /var/www
 git clone https://github.com/deopard/aws-exercise-a.git
