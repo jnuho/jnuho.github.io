@@ -2,17 +2,17 @@
 - From the book self-sovereign identity
 
 #### 디지털 신원인증 모델
-- Centralized
+- 중앙집권형 - Centralized
   - e.g. Account-based website
   - [You] &rarr; [Org]
 
-- Federated
+- 연합형 - Federated
   - service/identity provider (IDP) in the middle
   - "federation": collection of all the sites that use the same IDP (or group of IDPs)
   - [You] &rarr; [IDP] &rarr; [Org]
 
 - **Decentralized**
-  - A new model, inspired by blockchain technology, since 2015
+  - 블록체인 기술에 영감 받은 탈중앙화 모델
   - peer-to-peer
   - _```공개/개인키 암호화 기법```_ 기반 _```블록체인```_ 사용
   - 블록체인 기술을 암호화폐가 아닌, DPKI (Decentralized PKI)에 적용
