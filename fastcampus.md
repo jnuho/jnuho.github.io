@@ -111,3 +111,9 @@ aws ec2 describe-availability-zones help
 aws sts get-caller-identity --debug
 ```
 
+
+
+- Auto Scaling
+  - increase ec2 machine count
+- Elastic Load Balancing
+  - distribute network
