@@ -117,3 +117,14 @@ aws sts get-caller-identity --debug
   - increase ec2 machine count
 - Elastic Load Balancing
   - distribute network
+
+- IPV4
+  - 2^32
+  - 서브넷을 통해 추가 세분화
+  - A클래스 큰 네트워크 - 국가수준
+  - 211.11.124.2
+
+```sh
+# IGW -> VPC
+aws ec2 attach-internet-gateway --vpc-id "vpc-025bb54e5d273c193" --internet-gateway-id "igw-09fe226851efbc823" --region ap-northeast-2
+```
