@@ -20,9 +20,9 @@
       - VC(verifiable credentials): 실생활에서 신원증명 제공을 위해 교환 가능한 자격 증명
     - 개인키는 디지털 지갑에 저장
   - [블록체인 사용 이유](https://stackoverflow.com/a/66515581)
-    - Ex) 운전 면허증
-      - 중앙형 : 발행기관(지방경찰청)
-      - 블록체인 이용한 탈중앙형 : DID에 퍼블릭키 정보를 담아 블록체인에 저장. VC(신원자격 증명)은 디지털 형태로 개인기기 저장
+    - ex. 운전 면허증 '중앙형' vs '블록체인 이용한 탈중앙형'
+      - '중앙형' : 발행기관(지방경찰청)
+      - '블록체인 이용한 탈중앙형' : DID에 퍼블릭키 정보를 담아 블록체인에 저장. VC(신원자격 증명)은 디지털 형태로 개인기기 저장
 
 <div>
 <img src="https://drek4537l1klr.cloudfront.net/preukschat/HighResolutionFigures/figure_1-4.png"
@@ -53,7 +53,7 @@ height="25%" width="25%" alt="Figure1.4">
   - 검증된 CA기관들로 부터 공개키 인증서 발행하는 중앙집권형 시스템이므로
   - 개인들이 여러개의 암호화 키페어를 가지고 있는 환경(SSI)에 한계가 있음
 <br>
-- 탈중앙 인증 식별자 DIDs 도입하게 되었으며, 다음 네가지 특성을 가집니다 :
+- 탈중앙 인증 식별자 DIDs 도입으로 위의 한계 해결. 네가지 특성 :
   - 영속성 - Permanent
   - 분해성 - Resolvable to document
   - 암호화기법으로 검증 가능 - Cryptographically verifiable
@@ -70,8 +70,7 @@ height="25%" width="25%" alt="Figure1.4">
 <img src="https://drek4537l1klr.cloudfront.net/preukschat/HighResolutionFigures/figure_2-11.png"
 height="45%" width="45%" alt="Figure2.11"><br>
 </div>
-<br>
-<br>
+
 <br>
 
 #### DID 정의
@@ -91,15 +90,15 @@ height="50%" width="50%" alt="Figure8.2">
 - DID 예시
   - 예시 1
     - 개인키/공개키 페어 생성
-    - 개인키 &rarr; 디지털 지갑 앱
-    - 공개키 &rarr; 블록체인 (sovrin, bitcoin, ethereum, ...) 트랜젝션을 통해 암호화하여 저장
+    - 개인키 $\rightarrow$ 디지털 지갑 앱
+    - 공개키 $\rightarrow$ 블록체인 (sovrin, bitcoin, ethereum, ...) 트랜젝션을 통해 암호화하여 저장
     - 블록체인은 응답으로 DID를 생성하여 반환
       - 은행 로그인 시 DID를 개인키로 서명하여 요청
       - 은행은 블록체인에서 DID와 연관된 트렌젝션 조회 & 공개키 조회
       - 공개키로 서명 검증 및 로그인 완료처리
   - 예시 2
     - 학생정보 입력하여 학교 웹사이트 로그인
-    - 대시보드에서 고유 디지털 ID 스캔 및 인증 &rarr; DID 고유 식별자 생성
+    - 대시보드에서 고유 디지털 ID 스캔 및 인증 $\rightarrow$ DID 고유 식별자 생성
     (개인키 생성 및 블록체인에 공개키 저장하여 DID 생성)
     - 온라인서적 사이트에서 DID 로그인
 
@@ -111,7 +110,7 @@ height="50%" width="50%" alt="Figure8.2">
 - DID $\xrightarrow[\text{}]{\text{DID resolver(software/hardware)}}$ DID document
   - 디지털 신원인증 앱, 디지털 지갑, 또는 에이전트 등에서 인증을 위한 기초 빌딩블록 으로 사용
   - DID $\xleftrightarrow[\text{}]{\text{}}$ DID document (1-1 대응)
-- DID document는 공개되어 있으므로 개인정보와 관련된 데이터는 넣지 않습니다
+- DID document는 퍼블릭 이므로 개인정보와 관련된 데이터는 넣지 않습니다
 - DID document는 표준화된 규격 구조(json)를 가지고 있으며 다음 데이터를 포함 합니다 :
   - 공개키: 1개 이상의 DID subject의 공개키; 거래시 공개키로 subject 검증 - essence of DPKI, SSI
   - 서비스: 프로토콜을 통한 거래 시에 사용 할 DID subject 관련 서비스들
@@ -127,19 +126,25 @@ height="70%" width="70%" alt="Figure8.6">
 ```json
 // 1개의 공개키와 1개의 서비스를 가진 DID document 구조
 {
-  // The first line is the JSON-LD context statement,
+  // JSON-LD context statement,
   // required in JSON-LD documents (but not in other DID document representations).
   "@context": "https://www.w3.org/ns/did/v1",
-  // DID being described
+
+  // DID subject (필수)
   "id": "did:example:123456789abcdefghi",
-  // public key for authenticating the DID subject.
+
+  // DID controller (옵션): DID document 변경 권한을 가짐
+  "controller": "did:example:bcehfew7h32f32h7af3",
+
+  // public key for authenticating the DID subject. (옵션)
   "authentication": [{
     "id": "did:example:123456789abcdefghi#keys-1",
     "type": "Ed25519VerificationKey2018",
     "controller": "did:example:123456789abcdefghi",
     "publicKeyBase58" : "H3C2AVvLMv6gmMNam3uVAjZpfkcJCwDwnZn6z3wXmqPV"
   }],
-  // service endpoint for exchanging verifiable credentials.
+  // 서비스 service endpoint(옵션) for exchanging verifiable credentials.
+  // DID subject와 communication하는 방법
   "service": [{
     "id":"did:example:123456789abcdefghi#vcs",
     "type": "VerifiableCredentialService",
@@ -169,7 +174,7 @@ height="70%" width="70%" alt="Figure8.6">
 
 #### DID resolution
 
-- DID로부터 DID document를 얻는 과정
+- DID로부터 DID method의 "Read" 오퍼레이션을 통해 DID document를 얻는 과정
 - DID관련 앱이나 서비스가 DID document에서 DID subject 관련 메타데이터를 얻어 추가 상호작용 가능:
   1. VC 발행자로 부터의 디지털 서명을 검증할 공개키 조회
     - VC의 "issuer"가 DID subject이고 proof를 DID subject의 공개키로 검증하는 예시
