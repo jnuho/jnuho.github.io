@@ -196,6 +196,15 @@ height="70%" width="70%" alt="Figure8.8">
 src="https://drek4537l1klr.cloudfront.net/preukschat/HighResolutionFigures/figure_8-9.png"
 height="55%" width="55%" alt="Figure8.9">
 </div>
+<br>
+
+### Architectural View
+
+<div>
+<img
+src="https://www.w3.org/TR/did-core/diagrams/did_detailed_architecture_overview.svg"
+height="70%" width="70%" alt="w3-Figure7">
+</div>
 
 <br>
 
