@@ -1,38 +1,42 @@
 
-- From the book self-sovereign identity
+- From the book <i>"Self-Sovereign Identity"</i>
 
 #### 디지털 신원인증 모델
-- 중앙집권형 - Centralized
-  - e.g. Account-based website
-  - [You] &rarr; [Org]
-
+- 중앙형 - Centralized
+  - ex. 계정 가입 웹사이트
+  - You $\xrightarrow[\text{계정}]{\text{}}$ Org
+<br>
 - 연합형 - Federated
-  - service/identity provider (IDP) in the middle
-  - "federation": collection of all the sites that use the same IDP (or group of IDPs)
-  - [You] &rarr; [IDP] &rarr; [Org]
-
-- **Decentralized**
-  - 블록체인 기술에 영감 받은 탈중앙화 모델
-  - peer-to-peer
-  - _```공개/개인키 암호화 기법```_ 기반 _```블록체인```_ 사용
+  - 서비스, 신원 제공자 IDP (ex. google, facebook, kakao)
+  - 연합 : 같은 IDP를 사용하는 사이트들의 집합 (or group of IDPs)
+  - You $\xrightarrow[\text{계정}]{\text{}}$ IDP $\xrightarrow[\text{}]{\text{}}$ Org
+<br>
+- 탈중앙형 - Decentralized
+  - Peer-to-Peer
+  - ```공개/개인키 암호화 기법``` 기반 ```블록체인``` 사용
   - 블록체인 기술을 암호화폐가 아닌, DPKI (Decentralized PKI)에 적용
-    - 공개키를 직접 교환 하여 안전한 peer-to-peer 연결 생성
+    - 공개키를 직접 교환 하여 안전한 Peer-to-Peer 연결 생성
     - 공개키를 블록체인에 저장하여 디지털 신원 자격(VC) 서명(signature) 증명
       - VC(verifiable credentials): 실생활에서 신원증명 제공을 위해 교환 가능한 자격 증명
     - 개인키는 디지털 지갑에 저장
-
-- [블록체인 사용 이유](https://stackoverflow.com/a/66515581)
+  - [블록체인 사용 이유](https://stackoverflow.com/a/66515581)
+    - Ex) 운전 면허증
+      - 중앙형 : 발행기관(지방경찰청)
+      - 블록체인 이용한 탈중앙형 : DID에 퍼블릭키 정보를 담아 블록체인에 저장. VC(신원자격 증명)은 디지털 형태로 개인기기 저장
 
 <div>
 <img src="https://drek4537l1klr.cloudfront.net/preukschat/HighResolutionFigures/figure_1-4.png"
-height="20%" width="20%" alt="Figure1.4">
+height="25%" width="25%" alt="Figure1.4">
 </div>
 
 <br>
 
 #### 암호화 기법
-- 비대칭 키 (Asymmetric-key cryptography)
-  - e.g. DID의 개인키는 디지털지갑, 공개키는 블록체인에 저장
+
+기존의 PKI에 사용되는 암호화 기법 사용
+
+- 비대칭 키 기법 Asymmetric-key cryptography
+  - ex. DID의 개인키는 디지털지갑, 공개키는 블록체인에 저장
 - 디지털 서명
   - _공개키 암호화 기법_ 기반 : 메시지를 개인키로 암호화하여 디지털 서명 생성, 공개키로 서명 검증
 
@@ -40,24 +44,26 @@ height="20%" width="20%" alt="Figure1.4">
 
 #### DID 배경
 
-- ip주소 자체는 해당 ip를 소유한 신원 대상에 대한 어떠한 정보도 제공하지 않음: 디지털 proof필요
-- _공개/개인키 암호화기법_ 으로 증명가능 한 디지털 proof 제공
+- Ip 주소 자체는 해당 ip를 소유한 신원 대상에 대한 어떠한 정보도 제공하지 않으므로,
+- 신원 대상자(Controller)는 본인 임을 증명 할 수 있는, 디지털 Proof를 제공 해야함:
+  - _공개/개인키 암호화기법_ 으로 증명가능 한 디지털 Proof 제공
   - 개인키로 *메시지* 서명(sign), 공개키로 검증(verify)
 - 공개 키 기반 구조 ***PKI*** 도입
-  - 신원 검증자가 신원 대상자의 공개키가 실제로 소유자의 것인지 - *```공개키의 소유권```* 을 검증할 수 있게 됨
-  - 검증된 CA기관들로 부터 공개키 인증서(public key certificates) 발행하는
-  - 중앙집권형 시스템이므로 개인들이 여러개의 암호화 키페어를 가지고 있는 환경(SSI)에 한계가 있음
-
-- 탈중앙 인증 식별자 DIDs 도입
-  - 영속성 (permanent)
-  - 분해성 (resolvable to document)
-  - 암호화기법으로 검증 가능 (cryptographically verifiable)
+  - *```공개키의 소유권```* 을 검증할 수 있게 됨 - 신원 대상자의 공개키가 실제로 소유자의 것인지 여부
+  - 검증된 CA기관들로 부터 공개키 인증서 발행하는 중앙집권형 시스템이므로
+  - 개인들이 여러개의 암호화 키페어를 가지고 있는 환경(SSI)에 한계가 있음
+<br>
+- 탈중앙 인증 식별자 DIDs 도입하게 되었으며, 다음 네가지 특성을 가집니다 :
+  - 영속성 - Permanent
+  - 분해성 - Resolvable to document
+  - 암호화기법으로 검증 가능 - Cryptographically verifiable
     - 신원 소유자가 암호화 기법으로 개인키 검증가능
     - 암호화기법으로 DID 생성
     - DID는 1개의 공개/개인키와 연결되므로 개인키 소유자(controller)가 DID 소유자(controller)임 증명 가능
-  - 탈중앙화 (decentralized)
+  - 탈중앙화 - Decentralized
     - 암호화기법을 사용하여 중앙 신원인증 기관들(CAs)의 통제 없이, 블록체인 등 탈중앙화 네트워크에 기반함
-    - 공개/개인키 생성하는 암호화 알고리즘은 프라임넘버, 랜덤숫자생성기, 타원곡선 암호학에 기반하여 globally 고유한 식별자를 만들기 때문에 중앙기관 없이 고유성 검증가능
+    - 공개/개인키 생성하는 암호화 알고리즘은 프라임넘버, 랜덤숫자생성기, 타원곡선 암호학에 기반하여
+    - globally 고유한 식별자를 만들기 때문에 중앙기관 없이 Uniqueness 검증가능
 
 
 <div>
@@ -70,27 +76,27 @@ height="45%" width="45%" alt="Figure2.11"><br>
 
 #### DID 정의
 
-- 새로운 타입의 _globally unique identifier_
-- DIDs are the cryptographic counterpart to verifiable credentials (VCs)
-- DID는 블록체인에 공개키 주소로서 역할을 하며, DID subject의 agent를 찾는데도 사용
-- DID 메소드를 통해 블록체인, DLT 등을 이용할 수 있도록 설계됨
+- 새로운 타입의 고유 식별자 _globally unique identifier_
+- DIDs 는 VC(신원자격 증명)을 암호화한 형태라고 볼 수 있습니다.(cryptographic counterpart to VCs)
+- DID는 블록체인에 공개키 주소로서 역할을 하며, DID subject의 agent를 찾는데도 사용 됩니다
+- DID 메소드를 통해 블록체인, DLT(Distributed Ledger Technology) 등을 이용할 수 있도록 설계됨
 - 소프트웨어를 통해 누구나 DID 메소드(sov,btcr,ethr, ...)를 사용하여 중앙기관 통제 없이 DID 발행 및 사용가능
 - DID를 생성하는 것은 비트코인이나 이더리움 블록체인에 공개 지갑 주소를 생성하는 것과 동일한 프로세스 - DID 탈중앙화 핵심
 
 <div>
 <img src="https://drek4537l1klr.cloudfront.net/preukschat/HighResolutionFigures/figure_8-2.png"
-height="40%" width="40%" alt="Figure8.2">
+height="50%" width="50%" alt="Figure8.2">
 </div>
 
 - DID 예시
   - 예시 1
+    - 개인키/공개키 페어 생성
     - 개인키 &rarr; 디지털 지갑 앱
-    - 공개키 &rarr; 블록체인 (sovrin, bitcoin, ethereum, ...)
-    - 공개키를 암호화하여 트랜젝션을 통해 블록체인에 저장
-    - 블록체인은 응답으로 DID 생성 및 반환
-    - 은행 로그인 시 DID를 개인키로 서명하여 요청
-    - 은행은 블록체인에서 DID와 연관된 트렌젝션 조회 & 공개키 조회
-    - 공개키로 서명 검증 및 로그인 완료처리
+    - 공개키 &rarr; 블록체인 (sovrin, bitcoin, ethereum, ...) 트랜젝션을 통해 암호화하여 저장
+    - 블록체인은 응답으로 DID를 생성하여 반환
+      - 은행 로그인 시 DID를 개인키로 서명하여 요청
+      - 은행은 블록체인에서 DID와 연관된 트렌젝션 조회 & 공개키 조회
+      - 공개키로 서명 검증 및 로그인 완료처리
   - 예시 2
     - 학생정보 입력하여 학교 웹사이트 로그인
     - 대시보드에서 고유 디지털 ID 스캔 및 인증 &rarr; DID 고유 식별자 생성
@@ -102,11 +108,11 @@ height="40%" width="40%" alt="Figure8.2">
 
 #### DID documents
 
-- DID &rarr; DID resolver(software/hardware) &rarr; DID document
+- DID $\xrightarrow[\text{}]{\text{DID resolver(software/hardware)}}$ DID document
   - 디지털 신원인증 앱, 디지털 지갑, 또는 에이전트 등에서 인증을 위한 기초 빌딩블록 으로 사용
-  - DID ↔ DID document (1대1 대응)
-- DID document는 공개되어 있으므로 개인적인 데이터는 포함 자제
-- DID document는 표준화된 규격 구조(json)를 가지고 있으며 다음을 포함 :
+  - DID $\xleftrightarrow[\text{}]{\text{}}$ DID document (1-1 대응)
+- DID document는 공개되어 있으므로 개인정보와 관련된 데이터는 넣지 않습니다
+- DID document는 표준화된 규격 구조(json)를 가지고 있으며 다음 데이터를 포함 합니다 :
   - 공개키: 1개 이상의 DID subject의 공개키; 거래시 공개키로 subject 검증 - essence of DPKI, SSI
   - 서비스: 프로토콜을 통한 거래 시에 사용 할 DID subject 관련 서비스들
   - 메타데이터: 타임스탬프, 디지털서명, 암호학적proof, deleation 및 인증 관련 메타데이터
@@ -192,12 +198,12 @@ height="55%" width="55%" alt="Figure8.9">
 
 <div> <img
 src="https://drek4537l1klr.cloudfront.net/preukschat/HighResolutionFigures/table_8-1.png"
-height="60%" width="60%" alt="Table8.1"></div>
+height="70%"rwidth="70%" alt="Table8.1"></div>
 <br>
 
 <div> <img
 src="https://drek4537l1klr.cloudfront.net/preukschat/Figures/CH08_F11_Preukschat.png"
-height="50%" width="50%" alt="Figure8.11"></div>
+height="90%" width="90%" alt="Figure8.11"></div>
 <br>
 
 #### DID 타입
@@ -214,7 +220,7 @@ Alternative DIDs | A number of other innovative DID methods have been developed 
 <div>
 <img
 src="https://drek4537l1klr.cloudfront.net/preukschat/HighResolutionFigures/table_8-4.png"
-height="60%" width="60%" alt="Table8.4">
+height="80%" width="80%" alt="Table8.4">
 </div>
 <br>
 

@@ -1,0 +1,663 @@
+<!DOCTYPE html><html><head>
+      <title>did</title>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      
+      <link rel="stylesheet" href="file:////home/foo/.vscode/extensions/shd101wyy.markdown-preview-enhanced-0.6.0/node_modules/@shd101wyy/mume/dependencies/katex/katex.min.css">
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      <style>
+      /**
+ * prism.js Github theme based on GitHub's theme.
+ * @author Sam Clarke
+ */
+code[class*="language-"],
+pre[class*="language-"] {
+  color: #333;
+  background: none;
+  font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
+  text-align: left;
+  white-space: pre;
+  word-spacing: normal;
+  word-break: normal;
+  word-wrap: normal;
+  line-height: 1.4;
+
+  -moz-tab-size: 8;
+  -o-tab-size: 8;
+  tab-size: 8;
+
+  -webkit-hyphens: none;
+  -moz-hyphens: none;
+  -ms-hyphens: none;
+  hyphens: none;
+}
+
+/* Code blocks */
+pre[class*="language-"] {
+  padding: .8em;
+  overflow: auto;
+  /* border: 1px solid #ddd; */
+  border-radius: 3px;
+  /* background: #fff; */
+  background: #f5f5f5;
+}
+
+/* Inline code */
+:not(pre) > code[class*="language-"] {
+  padding: .1em;
+  border-radius: .3em;
+  white-space: normal;
+  background: #f5f5f5;
+}
+
+.token.comment,
+.token.blockquote {
+  color: #969896;
+}
+
+.token.cdata {
+  color: #183691;
+}
+
+.token.doctype,
+.token.punctuation,
+.token.variable,
+.token.macro.property {
+  color: #333;
+}
+
+.token.operator,
+.token.important,
+.token.keyword,
+.token.rule,
+.token.builtin {
+  color: #a71d5d;
+}
+
+.token.string,
+.token.url,
+.token.regex,
+.token.attr-value {
+  color: #183691;
+}
+
+.token.property,
+.token.number,
+.token.boolean,
+.token.entity,
+.token.atrule,
+.token.constant,
+.token.symbol,
+.token.command,
+.token.code {
+  color: #0086b3;
+}
+
+.token.tag,
+.token.selector,
+.token.prolog {
+  color: #63a35c;
+}
+
+.token.function,
+.token.namespace,
+.token.pseudo-element,
+.token.class,
+.token.class-name,
+.token.pseudo-class,
+.token.id,
+.token.url-reference .token.variable,
+.token.attr-name {
+  color: #795da3;
+}
+
+.token.entity {
+  cursor: help;
+}
+
+.token.title,
+.token.title .token.punctuation {
+  font-weight: bold;
+  color: #1d3e81;
+}
+
+.token.list {
+  color: #ed6a43;
+}
+
+.token.inserted {
+  background-color: #eaffea;
+  color: #55a532;
+}
+
+.token.deleted {
+  background-color: #ffecec;
+  color: #bd2c00;
+}
+
+.token.bold {
+  font-weight: bold;
+}
+
+.token.italic {
+  font-style: italic;
+}
+
+
+/* JSON */
+.language-json .token.property {
+  color: #183691;
+}
+
+.language-markup .token.tag .token.punctuation {
+  color: #333;
+}
+
+/* CSS */
+code.language-css,
+.language-css .token.function {
+  color: #0086b3;
+}
+
+/* YAML */
+.language-yaml .token.atrule {
+  color: #63a35c;
+}
+
+code.language-yaml {
+  color: #183691;
+}
+
+/* Ruby */
+.language-ruby .token.function {
+  color: #333;
+}
+
+/* Markdown */
+.language-markdown .token.url {
+  color: #795da3;
+}
+
+/* Makefile */
+.language-makefile .token.symbol {
+  color: #795da3;
+}
+
+.language-makefile .token.variable {
+  color: #183691;
+}
+
+.language-makefile .token.builtin {
+  color: #0086b3;
+}
+
+/* Bash */
+.language-bash .token.keyword {
+  color: #0086b3;
+}
+
+/* highlight */
+pre[data-line] {
+  position: relative;
+  padding: 1em 0 1em 3em;
+}
+pre[data-line] .line-highlight-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: transparent;
+  display: block;
+  width: 100%;
+}
+
+pre[data-line] .line-highlight {
+  position: absolute;
+  left: 0;
+  right: 0;
+  padding: inherit 0;
+  margin-top: 1em;
+  background: hsla(24, 20%, 50%,.08);
+  background: linear-gradient(to right, hsla(24, 20%, 50%,.1) 70%, hsla(24, 20%, 50%,0));
+  pointer-events: none;
+  line-height: inherit;
+  white-space: pre;
+}
+
+pre[data-line] .line-highlight:before, 
+pre[data-line] .line-highlight[data-end]:after {
+  content: attr(data-start);
+  position: absolute;
+  top: .4em;
+  left: .6em;
+  min-width: 1em;
+  padding: 0 .5em;
+  background-color: hsla(24, 20%, 50%,.4);
+  color: hsl(24, 20%, 95%);
+  font: bold 65%/1.5 sans-serif;
+  text-align: center;
+  vertical-align: .3em;
+  border-radius: 999px;
+  text-shadow: none;
+  box-shadow: 0 1px white;
+}
+
+pre[data-line] .line-highlight[data-end]:after {
+  content: attr(data-end);
+  top: auto;
+  bottom: .4em;
+}html body{font-family:"Helvetica Neue",Helvetica,"Segoe UI",Arial,freesans,sans-serif;font-size:16px;line-height:1.6;color:#333;background-color:#fff;overflow:initial;box-sizing:border-box;word-wrap:break-word}html body>:first-child{margin-top:0}html body h1,html body h2,html body h3,html body h4,html body h5,html body h6{line-height:1.2;margin-top:1em;margin-bottom:16px;color:#000}html body h1{font-size:2.25em;font-weight:300;padding-bottom:.3em}html body h2{font-size:1.75em;font-weight:400;padding-bottom:.3em}html body h3{font-size:1.5em;font-weight:500}html body h4{font-size:1.25em;font-weight:600}html body h5{font-size:1.1em;font-weight:600}html body h6{font-size:1em;font-weight:600}html body h1,html body h2,html body h3,html body h4,html body h5{font-weight:600}html body h5{font-size:1em}html body h6{color:#5c5c5c}html body strong{color:#000}html body del{color:#5c5c5c}html body a:not([href]){color:inherit;text-decoration:none}html body a{color:#08c;text-decoration:none}html body a:hover{color:#00a3f5;text-decoration:none}html body img{max-width:100%}html body>p{margin-top:0;margin-bottom:16px;word-wrap:break-word}html body>ul,html body>ol{margin-bottom:16px}html body ul,html body ol{padding-left:2em}html body ul.no-list,html body ol.no-list{padding:0;list-style-type:none}html body ul ul,html body ul ol,html body ol ol,html body ol ul{margin-top:0;margin-bottom:0}html body li{margin-bottom:0}html body li.task-list-item{list-style:none}html body li>p{margin-top:0;margin-bottom:0}html body .task-list-item-checkbox{margin:0 .2em .25em -1.8em;vertical-align:middle}html body .task-list-item-checkbox:hover{cursor:pointer}html body blockquote{margin:16px 0;font-size:inherit;padding:0 15px;color:#5c5c5c;background-color:#f0f0f0;border-left:4px solid #d6d6d6}html body blockquote>:first-child{margin-top:0}html body blockquote>:last-child{margin-bottom:0}html body hr{height:4px;margin:32px 0;background-color:#d6d6d6;border:0 none}html body table{margin:10px 0 15px 0;border-collapse:collapse;border-spacing:0;display:block;width:100%;overflow:auto;word-break:normal;word-break:keep-all}html body table th{font-weight:bold;color:#000}html body table td,html body table th{border:1px solid #d6d6d6;padding:6px 13px}html body dl{padding:0}html body dl dt{padding:0;margin-top:16px;font-size:1em;font-style:italic;font-weight:bold}html body dl dd{padding:0 16px;margin-bottom:16px}html body code{font-family:Menlo,Monaco,Consolas,'Courier New',monospace;font-size:.85em !important;color:#000;background-color:#f0f0f0;border-radius:3px;padding:.2em 0}html body code::before,html body code::after{letter-spacing:-0.2em;content:"\00a0"}html body pre>code{padding:0;margin:0;font-size:.85em !important;word-break:normal;white-space:pre;background:transparent;border:0}html body .highlight{margin-bottom:16px}html body .highlight pre,html body pre{padding:1em;overflow:auto;font-size:.85em !important;line-height:1.45;border:#d6d6d6;border-radius:3px}html body .highlight pre{margin-bottom:0;word-break:normal}html body pre code,html body pre tt{display:inline;max-width:initial;padding:0;margin:0;overflow:initial;line-height:inherit;word-wrap:normal;background-color:transparent;border:0}html body pre code:before,html body pre tt:before,html body pre code:after,html body pre tt:after{content:normal}html body p,html body blockquote,html body ul,html body ol,html body dl,html body pre{margin-top:0;margin-bottom:16px}html body kbd{color:#000;border:1px solid #d6d6d6;border-bottom:2px solid #c7c7c7;padding:2px 4px;background-color:#f0f0f0;border-radius:3px}@media print{html body{background-color:#fff}html body h1,html body h2,html body h3,html body h4,html body h5,html body h6{color:#000;page-break-after:avoid}html body blockquote{color:#5c5c5c}html body pre{page-break-inside:avoid}html body table{display:table}html body img{display:block;max-width:100%;max-height:100%}html body pre,html body code{word-wrap:break-word;white-space:pre}}.markdown-preview{width:100%;height:100%;box-sizing:border-box}.markdown-preview .pagebreak,.markdown-preview .newpage{page-break-before:always}.markdown-preview pre.line-numbers{position:relative;padding-left:3.8em;counter-reset:linenumber}.markdown-preview pre.line-numbers>code{position:relative}.markdown-preview pre.line-numbers .line-numbers-rows{position:absolute;pointer-events:none;top:1em;font-size:100%;left:0;width:3em;letter-spacing:-1px;border-right:1px solid #999;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}.markdown-preview pre.line-numbers .line-numbers-rows>span{pointer-events:none;display:block;counter-increment:linenumber}.markdown-preview pre.line-numbers .line-numbers-rows>span:before{content:counter(linenumber);color:#999;display:block;padding-right:.8em;text-align:right}.markdown-preview .mathjax-exps .MathJax_Display{text-align:center !important}.markdown-preview:not([for="preview"]) .code-chunk .btn-group{display:none}.markdown-preview:not([for="preview"]) .code-chunk .status{display:none}.markdown-preview:not([for="preview"]) .code-chunk .output-div{margin-bottom:16px}.scrollbar-style::-webkit-scrollbar{width:8px}.scrollbar-style::-webkit-scrollbar-track{border-radius:10px;background-color:transparent}.scrollbar-style::-webkit-scrollbar-thumb{border-radius:5px;background-color:rgba(150,150,150,0.66);border:4px solid rgba(150,150,150,0.66);background-clip:content-box}html body[for="html-export"]:not([data-presentation-mode]){position:relative;width:100%;height:100%;top:0;left:0;margin:0;padding:0;overflow:auto}html body[for="html-export"]:not([data-presentation-mode]) .markdown-preview{position:relative;top:0}@media screen and (min-width:914px){html body[for="html-export"]:not([data-presentation-mode]) .markdown-preview{padding:2em calc(50% - 457px + 2em)}}@media screen and (max-width:914px){html body[for="html-export"]:not([data-presentation-mode]) .markdown-preview{padding:2em}}@media screen and (max-width:450px){html body[for="html-export"]:not([data-presentation-mode]) .markdown-preview{font-size:14px !important;padding:1em}}@media print{html body[for="html-export"]:not([data-presentation-mode]) #sidebar-toc-btn{display:none}}html body[for="html-export"]:not([data-presentation-mode]) #sidebar-toc-btn{position:fixed;bottom:8px;left:8px;font-size:28px;cursor:pointer;color:inherit;z-index:99;width:32px;text-align:center;opacity:.4}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] #sidebar-toc-btn{opacity:1}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc{position:fixed;top:0;left:0;width:300px;height:100%;padding:32px 0 48px 0;font-size:14px;box-shadow:0 0 4px rgba(150,150,150,0.33);box-sizing:border-box;overflow:auto;background-color:inherit}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc::-webkit-scrollbar{width:8px}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc::-webkit-scrollbar-track{border-radius:10px;background-color:transparent}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc::-webkit-scrollbar-thumb{border-radius:5px;background-color:rgba(150,150,150,0.66);border:4px solid rgba(150,150,150,0.66);background-clip:content-box}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc a{text-decoration:none}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc ul{padding:0 1.6em;margin-top:.8em}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc li{margin-bottom:.8em}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc ul{list-style-type:none}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .markdown-preview{left:300px;width:calc(100% -  300px);padding:2em calc(50% - 457px -  150px);margin:0;box-sizing:border-box}@media screen and (max-width:1274px){html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .markdown-preview{padding:2em}}@media screen and (max-width:450px){html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .markdown-preview{width:100%}}html body[for="html-export"]:not([data-presentation-mode]):not([html-show-sidebar-toc]) .markdown-preview{left:50%;transform:translateX(-50%)}html body[for="html-export"]:not([data-presentation-mode]):not([html-show-sidebar-toc]) .md-sidebar-toc{display:none}
+/* Please visit the URL below for more information: */
+/*   https://shd101wyy.github.io/markdown-preview-enhanced/#/customize-css */
+
+      </style>
+    </head>
+    <body for="html-export">
+      <div class="mume markdown-preview  ">
+      <ul>
+<li>From the book <i>&quot;Self-Sovereign Identity&quot;</i></li>
+</ul>
+<h4 class="mume-header" id="%EB%94%94%EC%A7%80%ED%84%B8-%EC%8B%A0%EC%9B%90%EC%9D%B8%EC%A6%9D-%EB%AA%A8%EB%8D%B8">&#xB514;&#xC9C0;&#xD138; &#xC2E0;&#xC6D0;&#xC778;&#xC99D; &#xBAA8;&#xB378;</h4>
+
+<ul>
+<li>&#xC911;&#xC559;&#xD615; - Centralized
+<ul>
+<li>ex. &#xACC4;&#xC815; &#xAC00;&#xC785; &#xC6F9;&#xC0AC;&#xC774;&#xD2B8;</li>
+<li>You <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><munderover><mo stretchy="true" minsize="3.0em">&#x2192;</mo><mpadded width="+0.6em" lspace="0.3em"><mtext>&#xACC4;&#xC815;</mtext></mpadded><mpadded width="+0.6em" lspace="0.3em"><mrow></mrow></mpadded></munderover></mrow><annotation encoding="application/x-tex">\xrightarrow[\text{&#xACC4;&#xC815;}]{\text{}}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.2223309999999998em;vertical-align:-0.6003309999999998em;"></span><span class="mrel x-arrow"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.622em;"><span style="top:-3.322em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight x-arrow-pad"><span class="mord mtight"><span class="mord text mtight"></span></span></span></span><span class="svg-align" style="top:-2.689em;"><span class="pstrut" style="height:2.7em;"></span><span class="hide-tail" style="height:0.522em;min-width:1.469em;"><svg width="400em" height="0.522em" viewBox="0 0 400000 522" preserveAspectRatio="xMaxYMin slice"><path d="M0 241v40h399891c-47.3 35.3-84 78-110 128
+-16.7 32-27.7 63.7-33 95 0 1.3-.2 2.7-.5 4-.3 1.3-.5 2.3-.5 3 0 7.3 6.7 11 20
+ 11 8 0 13.2-.8 15.5-2.5 2.3-1.7 4.2-5.5 5.5-11.5 2-13.3 5.7-27 11-41 14.7-44.7
+ 39-84.5 73-119.5s73.7-60.2 119-75.5c6-2 9-5.7 9-11s-3-9-9-11c-45.3-15.3-85
+-40.5-119-75.5s-58.3-74.8-73-119.5c-4.7-14-8.3-27.3-11-40-1.3-6.7-3.2-10.8-5.5
+-12.5-2.3-1.7-7.5-2.5-15.5-2.5-14 0-21 3.7-21 11 0 2 2 10.3 6 25 20.7 83.3 67
+ 151.7 139 205zm0 0v40h399900v-40z"/></svg></span></span><span style="top:-2.0996690000000005em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight x-arrow-pad"><span class="mord mtight"><span class="mord text mtight"><span class="mord hangul_fallback mtight">&#xACC4;&#xC815;</span></span></span></span></span></span><span class="vlist-s">&#x200B;</span></span><span class="vlist-r"><span class="vlist" style="height:0.6003309999999998em;"><span></span></span></span></span></span></span></span></span> Org<br>
+<br></li>
+</ul>
+</li>
+<li>&#xC5F0;&#xD569;&#xD615; - Federated
+<ul>
+<li>&#xC11C;&#xBE44;&#xC2A4;, &#xC2E0;&#xC6D0; &#xC81C;&#xACF5;&#xC790; IDP (ex. google, facebook, kakao)</li>
+<li>&#xC5F0;&#xD569; : &#xAC19;&#xC740; IDP&#xB97C; &#xC0AC;&#xC6A9;&#xD558;&#xB294; &#xC0AC;&#xC774;&#xD2B8;&#xB4E4;&#xC758; &#xC9D1;&#xD569; (or group of IDPs)</li>
+<li>You <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><munderover><mo stretchy="true" minsize="3.0em">&#x2192;</mo><mpadded width="+0.6em" lspace="0.3em"><mtext>&#xACC4;&#xC815;</mtext></mpadded><mpadded width="+0.6em" lspace="0.3em"><mrow></mrow></mpadded></munderover></mrow><annotation encoding="application/x-tex">\xrightarrow[\text{&#xACC4;&#xC815;}]{\text{}}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.2223309999999998em;vertical-align:-0.6003309999999998em;"></span><span class="mrel x-arrow"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.622em;"><span style="top:-3.322em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight x-arrow-pad"><span class="mord mtight"><span class="mord text mtight"></span></span></span></span><span class="svg-align" style="top:-2.689em;"><span class="pstrut" style="height:2.7em;"></span><span class="hide-tail" style="height:0.522em;min-width:1.469em;"><svg width="400em" height="0.522em" viewBox="0 0 400000 522" preserveAspectRatio="xMaxYMin slice"><path d="M0 241v40h399891c-47.3 35.3-84 78-110 128
+-16.7 32-27.7 63.7-33 95 0 1.3-.2 2.7-.5 4-.3 1.3-.5 2.3-.5 3 0 7.3 6.7 11 20
+ 11 8 0 13.2-.8 15.5-2.5 2.3-1.7 4.2-5.5 5.5-11.5 2-13.3 5.7-27 11-41 14.7-44.7
+ 39-84.5 73-119.5s73.7-60.2 119-75.5c6-2 9-5.7 9-11s-3-9-9-11c-45.3-15.3-85
+-40.5-119-75.5s-58.3-74.8-73-119.5c-4.7-14-8.3-27.3-11-40-1.3-6.7-3.2-10.8-5.5
+-12.5-2.3-1.7-7.5-2.5-15.5-2.5-14 0-21 3.7-21 11 0 2 2 10.3 6 25 20.7 83.3 67
+ 151.7 139 205zm0 0v40h399900v-40z"/></svg></span></span><span style="top:-2.0996690000000005em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight x-arrow-pad"><span class="mord mtight"><span class="mord text mtight"><span class="mord hangul_fallback mtight">&#xACC4;&#xC815;</span></span></span></span></span></span><span class="vlist-s">&#x200B;</span></span><span class="vlist-r"><span class="vlist" style="height:0.6003309999999998em;"><span></span></span></span></span></span></span></span></span> IDP <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><munderover><mo stretchy="true" minsize="3.0em">&#x2192;</mo><mpadded width="+0.6em" lspace="0.3em"><mrow></mrow></mpadded><mpadded width="+0.6em" lspace="0.3em"><mrow></mrow></mpadded></munderover></mrow><annotation encoding="application/x-tex">\xrightarrow[\text{}]{\text{}}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.744em;vertical-align:-0.122em;"></span><span class="mrel x-arrow"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.622em;"><span style="top:-3.144em;"><span class="pstrut" style="height:2.5220000000000002em;"></span><span class="sizing reset-size6 size3 mtight x-arrow-pad"><span class="mord mtight"><span class="mord text mtight"></span></span></span></span><span class="svg-align" style="top:-2.511em;"><span class="pstrut" style="height:2.5220000000000002em;"></span><span class="hide-tail" style="height:0.522em;min-width:1.469em;"><svg width="400em" height="0.522em" viewBox="0 0 400000 522" preserveAspectRatio="xMaxYMin slice"><path d="M0 241v40h399891c-47.3 35.3-84 78-110 128
+-16.7 32-27.7 63.7-33 95 0 1.3-.2 2.7-.5 4-.3 1.3-.5 2.3-.5 3 0 7.3 6.7 11 20
+ 11 8 0 13.2-.8 15.5-2.5 2.3-1.7 4.2-5.5 5.5-11.5 2-13.3 5.7-27 11-41 14.7-44.7
+ 39-84.5 73-119.5s73.7-60.2 119-75.5c6-2 9-5.7 9-11s-3-9-9-11c-45.3-15.3-85
+-40.5-119-75.5s-58.3-74.8-73-119.5c-4.7-14-8.3-27.3-11-40-1.3-6.7-3.2-10.8-5.5
+-12.5-2.3-1.7-7.5-2.5-15.5-2.5-14 0-21 3.7-21 11 0 2 2 10.3 6 25 20.7 83.3 67
+ 151.7 139 205zm0 0v40h399900v-40z"/></svg></span></span><span style="top:-2.4000000000000004em;"><span class="pstrut" style="height:2.5220000000000002em;"></span><span class="sizing reset-size6 size3 mtight x-arrow-pad"><span class="mord mtight"><span class="mord text mtight"></span></span></span></span></span><span class="vlist-s">&#x200B;</span></span><span class="vlist-r"><span class="vlist" style="height:0.122em;"><span></span></span></span></span></span></span></span></span> Org<br>
+<br></li>
+</ul>
+</li>
+<li>&#xD0C8;&#xC911;&#xC559;&#xD615; - Decentralized
+<ul>
+<li>Peer-to-Peer</li>
+<li><code>&#xACF5;&#xAC1C;/&#xAC1C;&#xC778;&#xD0A4; &#xC554;&#xD638;&#xD654; &#xAE30;&#xBC95;</code> &#xAE30;&#xBC18; <code>&#xBE14;&#xB85D;&#xCCB4;&#xC778;</code> &#xC0AC;&#xC6A9;</li>
+<li>&#xBE14;&#xB85D;&#xCCB4;&#xC778; &#xAE30;&#xC220;&#xC744; &#xC554;&#xD638;&#xD654;&#xD3D0;&#xAC00; &#xC544;&#xB2CC;, DPKI (Decentralized PKI)&#xC5D0; &#xC801;&#xC6A9;
+<ul>
+<li>&#xACF5;&#xAC1C;&#xD0A4;&#xB97C; &#xC9C1;&#xC811; &#xAD50;&#xD658; &#xD558;&#xC5EC; &#xC548;&#xC804;&#xD55C; Peer-to-Peer &#xC5F0;&#xACB0; &#xC0DD;&#xC131;</li>
+<li>&#xACF5;&#xAC1C;&#xD0A4;&#xB97C; &#xBE14;&#xB85D;&#xCCB4;&#xC778;&#xC5D0; &#xC800;&#xC7A5;&#xD558;&#xC5EC; &#xB514;&#xC9C0;&#xD138; &#xC2E0;&#xC6D0; &#xC790;&#xACA9;(VC) &#xC11C;&#xBA85;(signature) &#xC99D;&#xBA85;
+<ul>
+<li>VC(verifiable credentials): &#xC2E4;&#xC0DD;&#xD65C;&#xC5D0;&#xC11C; &#xC2E0;&#xC6D0;&#xC99D;&#xBA85; &#xC81C;&#xACF5;&#xC744; &#xC704;&#xD574; &#xAD50;&#xD658; &#xAC00;&#xB2A5;&#xD55C; &#xC790;&#xACA9; &#xC99D;&#xBA85;</li>
+</ul>
+</li>
+<li>&#xAC1C;&#xC778;&#xD0A4;&#xB294; &#xB514;&#xC9C0;&#xD138; &#xC9C0;&#xAC11;&#xC5D0; &#xC800;&#xC7A5;</li>
+</ul>
+</li>
+<li><a href="https://stackoverflow.com/a/66515581">&#xBE14;&#xB85D;&#xCCB4;&#xC778; &#xC0AC;&#xC6A9; &#xC774;&#xC720;</a>
+<ul>
+<li>Ex) &#xC6B4;&#xC804; &#xBA74;&#xD5C8;&#xC99D;
+<ul>
+<li>&#xC911;&#xC559;&#xD615; : &#xBC1C;&#xD589;&#xAE30;&#xAD00;(&#xC9C0;&#xBC29;&#xACBD;&#xCC30;&#xCCAD;)</li>
+<li>&#xBE14;&#xB85D;&#xCCB4;&#xC778; &#xC774;&#xC6A9;&#xD55C; &#xD0C8;&#xC911;&#xC559;&#xD615; : DID&#xC5D0; &#xD37C;&#xBE14;&#xB9AD;&#xD0A4; &#xC815;&#xBCF4;&#xB97C; &#xB2F4;&#xC544; &#xBE14;&#xB85D;&#xCCB4;&#xC778;&#xC5D0; &#xC800;&#xC7A5;. VC(&#xC2E0;&#xC6D0;&#xC790;&#xACA9; &#xC99D;&#xBA85;)&#xC740; &#xB514;&#xC9C0;&#xD138; &#xD615;&#xD0DC;&#xB85C; &#xAC1C;&#xC778;&#xAE30;&#xAE30; &#xC800;&#xC7A5;</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<div>
+<img src="https://drek4537l1klr.cloudfront.net/preukschat/HighResolutionFigures/figure_1-4.png" height="25%" width="25%" alt="Figure1.4">
+</div>
+<br>
+<h4 class="mume-header" id="%EC%95%94%ED%98%B8%ED%99%94-%EA%B8%B0%EB%B2%95">&#xC554;&#xD638;&#xD654; &#xAE30;&#xBC95;</h4>
+
+<p>&#xAE30;&#xC874;&#xC758; PKI&#xC5D0; &#xC0AC;&#xC6A9;&#xB418;&#xB294; &#xC554;&#xD638;&#xD654; &#xAE30;&#xBC95; &#xC0AC;&#xC6A9;</p>
+<ul>
+<li>&#xBE44;&#xB300;&#xCE6D; &#xD0A4; &#xAE30;&#xBC95; Asymmetric-key cryptography
+<ul>
+<li>ex. DID&#xC758; &#xAC1C;&#xC778;&#xD0A4;&#xB294; &#xB514;&#xC9C0;&#xD138;&#xC9C0;&#xAC11;, &#xACF5;&#xAC1C;&#xD0A4;&#xB294; &#xBE14;&#xB85D;&#xCCB4;&#xC778;&#xC5D0; &#xC800;&#xC7A5;</li>
+</ul>
+</li>
+<li>&#xB514;&#xC9C0;&#xD138; &#xC11C;&#xBA85;
+<ul>
+<li><em>&#xACF5;&#xAC1C;&#xD0A4; &#xC554;&#xD638;&#xD654; &#xAE30;&#xBC95;</em> &#xAE30;&#xBC18; : &#xBA54;&#xC2DC;&#xC9C0;&#xB97C; &#xAC1C;&#xC778;&#xD0A4;&#xB85C; &#xC554;&#xD638;&#xD654;&#xD558;&#xC5EC; &#xB514;&#xC9C0;&#xD138; &#xC11C;&#xBA85; &#xC0DD;&#xC131;, &#xACF5;&#xAC1C;&#xD0A4;&#xB85C; &#xC11C;&#xBA85; &#xAC80;&#xC99D;</li>
+</ul>
+</li>
+</ul>
+<br>
+<h4 class="mume-header" id="did-%EB%B0%B0%EA%B2%BD">DID &#xBC30;&#xACBD;</h4>
+
+<ul>
+<li>Ip &#xC8FC;&#xC18C; &#xC790;&#xCCB4;&#xB294; &#xD574;&#xB2F9; ip&#xB97C; &#xC18C;&#xC720;&#xD55C; &#xC2E0;&#xC6D0; &#xB300;&#xC0C1;&#xC5D0; &#xB300;&#xD55C; &#xC5B4;&#xB5A0;&#xD55C; &#xC815;&#xBCF4;&#xB3C4; &#xC81C;&#xACF5;&#xD558;&#xC9C0; &#xC54A;&#xC73C;&#xBBC0;&#xB85C;,</li>
+<li>&#xC2E0;&#xC6D0; &#xB300;&#xC0C1;&#xC790;(Controller)&#xB294; &#xBCF8;&#xC778; &#xC784;&#xC744; &#xC99D;&#xBA85; &#xD560; &#xC218; &#xC788;&#xB294;, &#xB514;&#xC9C0;&#xD138; Proof&#xB97C; &#xC81C;&#xACF5; &#xD574;&#xC57C;&#xD568;:
+<ul>
+<li><em>&#xACF5;&#xAC1C;/&#xAC1C;&#xC778;&#xD0A4; &#xC554;&#xD638;&#xD654;&#xAE30;&#xBC95;</em> &#xC73C;&#xB85C; &#xC99D;&#xBA85;&#xAC00;&#xB2A5; &#xD55C; &#xB514;&#xC9C0;&#xD138; Proof &#xC81C;&#xACF5;</li>
+<li>&#xAC1C;&#xC778;&#xD0A4;&#xB85C; <em>&#xBA54;&#xC2DC;&#xC9C0;</em> &#xC11C;&#xBA85;(sign), &#xACF5;&#xAC1C;&#xD0A4;&#xB85C; &#xAC80;&#xC99D;(verify)</li>
+</ul>
+</li>
+<li>&#xACF5;&#xAC1C; &#xD0A4; &#xAE30;&#xBC18; &#xAD6C;&#xC870; <em><strong>PKI</strong></em> &#xB3C4;&#xC785;
+<ul>
+<li><em><code>&#xACF5;&#xAC1C;&#xD0A4;&#xC758; &#xC18C;&#xC720;&#xAD8C;</code></em> &#xC744; &#xAC80;&#xC99D;&#xD560; &#xC218; &#xC788;&#xAC8C; &#xB428; - &#xC2E0;&#xC6D0; &#xB300;&#xC0C1;&#xC790;&#xC758; &#xACF5;&#xAC1C;&#xD0A4;&#xAC00; &#xC2E4;&#xC81C;&#xB85C; &#xC18C;&#xC720;&#xC790;&#xC758; &#xAC83;&#xC778;&#xC9C0; &#xC5EC;&#xBD80;</li>
+<li>&#xAC80;&#xC99D;&#xB41C; CA&#xAE30;&#xAD00;&#xB4E4;&#xB85C; &#xBD80;&#xD130; &#xACF5;&#xAC1C;&#xD0A4; &#xC778;&#xC99D;&#xC11C; &#xBC1C;&#xD589;&#xD558;&#xB294; &#xC911;&#xC559;&#xC9D1;&#xAD8C;&#xD615; &#xC2DC;&#xC2A4;&#xD15C;&#xC774;&#xBBC0;&#xB85C;</li>
+<li>&#xAC1C;&#xC778;&#xB4E4;&#xC774; &#xC5EC;&#xB7EC;&#xAC1C;&#xC758; &#xC554;&#xD638;&#xD654; &#xD0A4;&#xD398;&#xC5B4;&#xB97C; &#xAC00;&#xC9C0;&#xACE0; &#xC788;&#xB294; &#xD658;&#xACBD;(SSI)&#xC5D0; &#xD55C;&#xACC4;&#xAC00; &#xC788;&#xC74C;<br>
+<br></li>
+</ul>
+</li>
+<li>&#xD0C8;&#xC911;&#xC559; &#xC778;&#xC99D; &#xC2DD;&#xBCC4;&#xC790; DIDs &#xB3C4;&#xC785;&#xD558;&#xAC8C; &#xB418;&#xC5C8;&#xC73C;&#xBA70;, &#xB2E4;&#xC74C; &#xB124;&#xAC00;&#xC9C0; &#xD2B9;&#xC131;&#xC744; &#xAC00;&#xC9D1;&#xB2C8;&#xB2E4; :
+<ul>
+<li>&#xC601;&#xC18D;&#xC131; - Permanent</li>
+<li>&#xBD84;&#xD574;&#xC131; - Resolvable to document</li>
+<li>&#xC554;&#xD638;&#xD654;&#xAE30;&#xBC95;&#xC73C;&#xB85C; &#xAC80;&#xC99D; &#xAC00;&#xB2A5; - Cryptographically verifiable
+<ul>
+<li>&#xC2E0;&#xC6D0; &#xC18C;&#xC720;&#xC790;&#xAC00; &#xC554;&#xD638;&#xD654; &#xAE30;&#xBC95;&#xC73C;&#xB85C; &#xAC1C;&#xC778;&#xD0A4; &#xAC80;&#xC99D;&#xAC00;&#xB2A5;</li>
+<li>&#xC554;&#xD638;&#xD654;&#xAE30;&#xBC95;&#xC73C;&#xB85C; DID &#xC0DD;&#xC131;</li>
+<li>DID&#xB294; 1&#xAC1C;&#xC758; &#xACF5;&#xAC1C;/&#xAC1C;&#xC778;&#xD0A4;&#xC640; &#xC5F0;&#xACB0;&#xB418;&#xBBC0;&#xB85C; &#xAC1C;&#xC778;&#xD0A4; &#xC18C;&#xC720;&#xC790;(controller)&#xAC00; DID &#xC18C;&#xC720;&#xC790;(controller)&#xC784; &#xC99D;&#xBA85; &#xAC00;&#xB2A5;</li>
+</ul>
+</li>
+<li>&#xD0C8;&#xC911;&#xC559;&#xD654; - Decentralized
+<ul>
+<li>&#xC554;&#xD638;&#xD654;&#xAE30;&#xBC95;&#xC744; &#xC0AC;&#xC6A9;&#xD558;&#xC5EC; &#xC911;&#xC559; &#xC2E0;&#xC6D0;&#xC778;&#xC99D; &#xAE30;&#xAD00;&#xB4E4;(CAs)&#xC758; &#xD1B5;&#xC81C; &#xC5C6;&#xC774;, &#xBE14;&#xB85D;&#xCCB4;&#xC778; &#xB4F1; &#xD0C8;&#xC911;&#xC559;&#xD654; &#xB124;&#xD2B8;&#xC6CC;&#xD06C;&#xC5D0; &#xAE30;&#xBC18;&#xD568;</li>
+<li>&#xACF5;&#xAC1C;/&#xAC1C;&#xC778;&#xD0A4; &#xC0DD;&#xC131;&#xD558;&#xB294; &#xC554;&#xD638;&#xD654; &#xC54C;&#xACE0;&#xB9AC;&#xC998;&#xC740; &#xD504;&#xB77C;&#xC784;&#xB118;&#xBC84;, &#xB79C;&#xB364;&#xC22B;&#xC790;&#xC0DD;&#xC131;&#xAE30;, &#xD0C0;&#xC6D0;&#xACE1;&#xC120; &#xC554;&#xD638;&#xD559;&#xC5D0; &#xAE30;&#xBC18;&#xD558;&#xC5EC;</li>
+<li>globally &#xACE0;&#xC720;&#xD55C; &#xC2DD;&#xBCC4;&#xC790;&#xB97C; &#xB9CC;&#xB4E4;&#xAE30; &#xB54C;&#xBB38;&#xC5D0; &#xC911;&#xC559;&#xAE30;&#xAD00; &#xC5C6;&#xC774; Uniqueness &#xAC80;&#xC99D;&#xAC00;&#xB2A5;</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<div>
+<img src="https://drek4537l1klr.cloudfront.net/preukschat/HighResolutionFigures/figure_2-11.png" height="45%" width="45%" alt="Figure2.11"><br>
+</div>
+<br>
+<br>
+<br>
+<h4 class="mume-header" id="did-%EC%A0%95%EC%9D%98">DID &#xC815;&#xC758;</h4>
+
+<ul>
+<li>&#xC0C8;&#xB85C;&#xC6B4; &#xD0C0;&#xC785;&#xC758; &#xACE0;&#xC720; &#xC2DD;&#xBCC4;&#xC790; <em>globally unique identifier</em></li>
+<li>DIDs &#xB294; VC(&#xC2E0;&#xC6D0;&#xC790;&#xACA9; &#xC99D;&#xBA85;)&#xC744; &#xC554;&#xD638;&#xD654;&#xD55C; &#xD615;&#xD0DC;&#xB77C;&#xACE0; &#xBCFC; &#xC218; &#xC788;&#xC2B5;&#xB2C8;&#xB2E4;.(cryptographic counterpart to VCs)</li>
+<li>DID&#xB294; &#xBE14;&#xB85D;&#xCCB4;&#xC778;&#xC5D0; &#xACF5;&#xAC1C;&#xD0A4; &#xC8FC;&#xC18C;&#xB85C;&#xC11C; &#xC5ED;&#xD560;&#xC744; &#xD558;&#xBA70;, DID subject&#xC758; agent&#xB97C; &#xCC3E;&#xB294;&#xB370;&#xB3C4; &#xC0AC;&#xC6A9; &#xB429;&#xB2C8;&#xB2E4;</li>
+<li>DID &#xBA54;&#xC18C;&#xB4DC;&#xB97C; &#xD1B5;&#xD574; &#xBE14;&#xB85D;&#xCCB4;&#xC778;, DLT(Distributed Ledger Technology) &#xB4F1;&#xC744; &#xC774;&#xC6A9;&#xD560; &#xC218; &#xC788;&#xB3C4;&#xB85D; &#xC124;&#xACC4;&#xB428;</li>
+<li>&#xC18C;&#xD504;&#xD2B8;&#xC6E8;&#xC5B4;&#xB97C; &#xD1B5;&#xD574; &#xB204;&#xAD6C;&#xB098; DID &#xBA54;&#xC18C;&#xB4DC;(sov,btcr,ethr, ...)&#xB97C; &#xC0AC;&#xC6A9;&#xD558;&#xC5EC; &#xC911;&#xC559;&#xAE30;&#xAD00; &#xD1B5;&#xC81C; &#xC5C6;&#xC774; DID &#xBC1C;&#xD589; &#xBC0F; &#xC0AC;&#xC6A9;&#xAC00;&#xB2A5;</li>
+<li>DID&#xB97C; &#xC0DD;&#xC131;&#xD558;&#xB294; &#xAC83;&#xC740; &#xBE44;&#xD2B8;&#xCF54;&#xC778;&#xC774;&#xB098; &#xC774;&#xB354;&#xB9AC;&#xC6C0; &#xBE14;&#xB85D;&#xCCB4;&#xC778;&#xC5D0; &#xACF5;&#xAC1C; &#xC9C0;&#xAC11; &#xC8FC;&#xC18C;&#xB97C; &#xC0DD;&#xC131;&#xD558;&#xB294; &#xAC83;&#xACFC; &#xB3D9;&#xC77C;&#xD55C; &#xD504;&#xB85C;&#xC138;&#xC2A4; - DID &#xD0C8;&#xC911;&#xC559;&#xD654; &#xD575;&#xC2EC;</li>
+</ul>
+<div>
+<img src="https://drek4537l1klr.cloudfront.net/preukschat/HighResolutionFigures/figure_8-2.png" height="50%" width="50%" alt="Figure8.2">
+</div>
+<ul>
+<li>DID &#xC608;&#xC2DC;
+<ul>
+<li>&#xC608;&#xC2DC; 1
+<ul>
+<li>&#xAC1C;&#xC778;&#xD0A4;/&#xACF5;&#xAC1C;&#xD0A4; &#xD398;&#xC5B4; &#xC0DD;&#xC131;</li>
+<li>&#xAC1C;&#xC778;&#xD0A4; &#x2192; &#xB514;&#xC9C0;&#xD138; &#xC9C0;&#xAC11; &#xC571;</li>
+<li>&#xACF5;&#xAC1C;&#xD0A4; &#x2192; &#xBE14;&#xB85D;&#xCCB4;&#xC778; (sovrin, bitcoin, ethereum, ...) &#xD2B8;&#xB79C;&#xC81D;&#xC158;&#xC744; &#xD1B5;&#xD574; &#xC554;&#xD638;&#xD654;&#xD558;&#xC5EC; &#xC800;&#xC7A5;</li>
+<li>&#xBE14;&#xB85D;&#xCCB4;&#xC778;&#xC740; &#xC751;&#xB2F5;&#xC73C;&#xB85C; DID&#xB97C; &#xC0DD;&#xC131;&#xD558;&#xC5EC; &#xBC18;&#xD658;
+<ul>
+<li>&#xC740;&#xD589; &#xB85C;&#xADF8;&#xC778; &#xC2DC; DID&#xB97C; &#xAC1C;&#xC778;&#xD0A4;&#xB85C; &#xC11C;&#xBA85;&#xD558;&#xC5EC; &#xC694;&#xCCAD;</li>
+<li>&#xC740;&#xD589;&#xC740; &#xBE14;&#xB85D;&#xCCB4;&#xC778;&#xC5D0;&#xC11C; DID&#xC640; &#xC5F0;&#xAD00;&#xB41C; &#xD2B8;&#xB80C;&#xC81D;&#xC158; &#xC870;&#xD68C; &amp; &#xACF5;&#xAC1C;&#xD0A4; &#xC870;&#xD68C;</li>
+<li>&#xACF5;&#xAC1C;&#xD0A4;&#xB85C; &#xC11C;&#xBA85; &#xAC80;&#xC99D; &#xBC0F; &#xB85C;&#xADF8;&#xC778; &#xC644;&#xB8CC;&#xCC98;&#xB9AC;</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>&#xC608;&#xC2DC; 2
+<ul>
+<li>&#xD559;&#xC0DD;&#xC815;&#xBCF4; &#xC785;&#xB825;&#xD558;&#xC5EC; &#xD559;&#xAD50; &#xC6F9;&#xC0AC;&#xC774;&#xD2B8; &#xB85C;&#xADF8;&#xC778;</li>
+<li>&#xB300;&#xC2DC;&#xBCF4;&#xB4DC;&#xC5D0;&#xC11C; &#xACE0;&#xC720; &#xB514;&#xC9C0;&#xD138; ID &#xC2A4;&#xCE94; &#xBC0F; &#xC778;&#xC99D; &#x2192; DID &#xACE0;&#xC720; &#xC2DD;&#xBCC4;&#xC790; &#xC0DD;&#xC131;<br>
+(&#xAC1C;&#xC778;&#xD0A4; &#xC0DD;&#xC131; &#xBC0F; &#xBE14;&#xB85D;&#xCCB4;&#xC778;&#xC5D0; &#xACF5;&#xAC1C;&#xD0A4; &#xC800;&#xC7A5;&#xD558;&#xC5EC; DID &#xC0DD;&#xC131;)</li>
+<li>&#xC628;&#xB77C;&#xC778;&#xC11C;&#xC801; &#xC0AC;&#xC774;&#xD2B8;&#xC5D0;&#xC11C; DID &#xB85C;&#xADF8;&#xC778;</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<br>
+<h4 class="mume-header" id="did-documents">DID documents</h4>
+
+<ul>
+<li>DID <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><munderover><mo stretchy="true" minsize="3.0em">&#x2192;</mo><mpadded width="+0.6em" lspace="0.3em"><mrow></mrow></mpadded><mpadded width="+0.6em" lspace="0.3em"><mtext>DID&#xA0;resolver(software/hardware)</mtext></mpadded></munderover></mrow><annotation encoding="application/x-tex">\xrightarrow[\text{}]{\text{DID resolver(software/hardware)}}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.269em;vertical-align:-0.12199999999999989em;"></span><span class="mrel x-arrow"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.147em;"><span style="top:-3.322em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight x-arrow-pad"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">DID&#xA0;resolver(software/hardware)</span></span></span></span></span><span class="svg-align" style="top:-2.689em;"><span class="pstrut" style="height:2.7em;"></span><span class="hide-tail" style="height:0.522em;min-width:1.469em;"><svg width="400em" height="0.522em" viewBox="0 0 400000 522" preserveAspectRatio="xMaxYMin slice"><path d="M0 241v40h399891c-47.3 35.3-84 78-110 128
+-16.7 32-27.7 63.7-33 95 0 1.3-.2 2.7-.5 4-.3 1.3-.5 2.3-.5 3 0 7.3 6.7 11 20
+ 11 8 0 13.2-.8 15.5-2.5 2.3-1.7 4.2-5.5 5.5-11.5 2-13.3 5.7-27 11-41 14.7-44.7
+ 39-84.5 73-119.5s73.7-60.2 119-75.5c6-2 9-5.7 9-11s-3-9-9-11c-45.3-15.3-85
+-40.5-119-75.5s-58.3-74.8-73-119.5c-4.7-14-8.3-27.3-11-40-1.3-6.7-3.2-10.8-5.5
+-12.5-2.3-1.7-7.5-2.5-15.5-2.5-14 0-21 3.7-21 11 0 2 2 10.3 6 25 20.7 83.3 67
+ 151.7 139 205zm0 0v40h399900v-40z"/></svg></span></span><span style="top:-2.5780000000000003em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight x-arrow-pad"><span class="mord mtight"><span class="mord text mtight"></span></span></span></span></span><span class="vlist-s">&#x200B;</span></span><span class="vlist-r"><span class="vlist" style="height:0.12199999999999989em;"><span></span></span></span></span></span></span></span></span> DID document
+<ul>
+<li>&#xB514;&#xC9C0;&#xD138; &#xC2E0;&#xC6D0;&#xC778;&#xC99D; &#xC571;, &#xB514;&#xC9C0;&#xD138; &#xC9C0;&#xAC11;, &#xB610;&#xB294; &#xC5D0;&#xC774;&#xC804;&#xD2B8; &#xB4F1;&#xC5D0;&#xC11C; &#xC778;&#xC99D;&#xC744; &#xC704;&#xD55C; &#xAE30;&#xCD08; &#xBE4C;&#xB529;&#xBE14;&#xB85D; &#xC73C;&#xB85C; &#xC0AC;&#xC6A9;</li>
+<li>DID <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><munderover><mo stretchy="true" minsize="3.0em">&#x2194;</mo><mpadded width="+0.6em" lspace="0.3em"><mrow></mrow></mpadded><mpadded width="+0.6em" lspace="0.3em"><mrow></mrow></mpadded></munderover></mrow><annotation encoding="application/x-tex">\xleftrightarrow[\text{}]{\text{}}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.744em;vertical-align:-0.122em;"></span><span class="mrel x-arrow"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.622em;"><span style="top:-3.144em;"><span class="pstrut" style="height:2.5220000000000002em;"></span><span class="sizing reset-size6 size3 mtight x-arrow-pad"><span class="mord mtight"><span class="mord text mtight"></span></span></span></span><span class="svg-align" style="top:-2.511em;"><span class="pstrut" style="height:2.5220000000000002em;"></span><span class="stretchy" style="height:0.522em;min-width:1.75em;"><span class="halfarrow-left" style="height:0.522em;"><svg width="400em" height="0.522em" viewBox="0 0 400000 522" preserveAspectRatio="xMinYMin slice"><path d="M400000 241H110l3-3c68.7-52.7 113.7-120
+ 135-202 4-14.7 6-23 6-25 0-7.3-7-11-21-11-8 0-13.2.8-15.5 2.5-2.3 1.7-4.2 5.8
+-5.5 12.5-1.3 4.7-2.7 10.3-4 17-12 48.7-34.8 92-68.5 130S65.3 228.3 18 247
+c-10 4-16 7.7-18 11 0 8.7 6 14.3 18 17 47.3 18.7 87.8 47 121.5 85S196 441.3 208
+ 490c.7 2 1.3 5 2 9s1.2 6.7 1.5 8c.3 1.3 1 3.3 2 6s2.2 4.5 3.5 5.5c1.3 1 3.3
+ 1.8 6 2.5s6 1 10 1c14 0 21-3.7 21-11 0-2-2-10.3-6-25-20-79.3-65-146.7-135-202
+ l-3-3h399890zM100 241v40h399900v-40z"/></svg></span><span class="halfarrow-right" style="height:0.522em;"><svg width="400em" height="0.522em" viewBox="0 0 400000 522" preserveAspectRatio="xMaxYMin slice"><path d="M0 241v40h399891c-47.3 35.3-84 78-110 128
+-16.7 32-27.7 63.7-33 95 0 1.3-.2 2.7-.5 4-.3 1.3-.5 2.3-.5 3 0 7.3 6.7 11 20
+ 11 8 0 13.2-.8 15.5-2.5 2.3-1.7 4.2-5.5 5.5-11.5 2-13.3 5.7-27 11-41 14.7-44.7
+ 39-84.5 73-119.5s73.7-60.2 119-75.5c6-2 9-5.7 9-11s-3-9-9-11c-45.3-15.3-85
+-40.5-119-75.5s-58.3-74.8-73-119.5c-4.7-14-8.3-27.3-11-40-1.3-6.7-3.2-10.8-5.5
+-12.5-2.3-1.7-7.5-2.5-15.5-2.5-14 0-21 3.7-21 11 0 2 2 10.3 6 25 20.7 83.3 67
+ 151.7 139 205zm0 0v40h399900v-40z"/></svg></span></span></span><span style="top:-2.4000000000000004em;"><span class="pstrut" style="height:2.5220000000000002em;"></span><span class="sizing reset-size6 size3 mtight x-arrow-pad"><span class="mord mtight"><span class="mord text mtight"></span></span></span></span></span><span class="vlist-s">&#x200B;</span></span><span class="vlist-r"><span class="vlist" style="height:0.122em;"><span></span></span></span></span></span></span></span></span> DID document (1-1 &#xB300;&#xC751;)</li>
+</ul>
+</li>
+<li>DID document&#xB294; &#xACF5;&#xAC1C;&#xB418;&#xC5B4; &#xC788;&#xC73C;&#xBBC0;&#xB85C; &#xAC1C;&#xC778;&#xC815;&#xBCF4;&#xC640; &#xAD00;&#xB828;&#xB41C; &#xB370;&#xC774;&#xD130;&#xB294; &#xB123;&#xC9C0; &#xC54A;&#xC2B5;&#xB2C8;&#xB2E4;</li>
+<li>DID document&#xB294; &#xD45C;&#xC900;&#xD654;&#xB41C; &#xADDC;&#xACA9; &#xAD6C;&#xC870;(json)&#xB97C; &#xAC00;&#xC9C0;&#xACE0; &#xC788;&#xC73C;&#xBA70; &#xB2E4;&#xC74C; &#xB370;&#xC774;&#xD130;&#xB97C; &#xD3EC;&#xD568; &#xD569;&#xB2C8;&#xB2E4; :
+<ul>
+<li>&#xACF5;&#xAC1C;&#xD0A4;: 1&#xAC1C; &#xC774;&#xC0C1;&#xC758; DID subject&#xC758; &#xACF5;&#xAC1C;&#xD0A4;; &#xAC70;&#xB798;&#xC2DC; &#xACF5;&#xAC1C;&#xD0A4;&#xB85C; subject &#xAC80;&#xC99D; - essence of DPKI, SSI</li>
+<li>&#xC11C;&#xBE44;&#xC2A4;: &#xD504;&#xB85C;&#xD1A0;&#xCF5C;&#xC744; &#xD1B5;&#xD55C; &#xAC70;&#xB798; &#xC2DC;&#xC5D0; &#xC0AC;&#xC6A9; &#xD560; DID subject &#xAD00;&#xB828; &#xC11C;&#xBE44;&#xC2A4;&#xB4E4;</li>
+<li>&#xBA54;&#xD0C0;&#xB370;&#xC774;&#xD130;: &#xD0C0;&#xC784;&#xC2A4;&#xD0EC;&#xD504;, &#xB514;&#xC9C0;&#xD138;&#xC11C;&#xBA85;, &#xC554;&#xD638;&#xD559;&#xC801;proof, deleation &#xBC0F; &#xC778;&#xC99D; &#xAD00;&#xB828; &#xBA54;&#xD0C0;&#xB370;&#xC774;&#xD130;</li>
+</ul>
+</li>
+</ul>
+<div>
+<img src="https://drek4537l1klr.cloudfront.net/preukschat/HighResolutionFigures/figure_8-6.png" height="70%" width="70%" alt="Figure8.6">
+</div>
+<br>
+<br>
+<pre data-role="codeBlock" data-info="json" class="language-json"><span class="token comment">// 1&#xAC1C;&#xC758; &#xACF5;&#xAC1C;&#xD0A4;&#xC640; 1&#xAC1C;&#xC758; &#xC11C;&#xBE44;&#xC2A4;&#xB97C; &#xAC00;&#xC9C4; DID document &#xAD6C;&#xC870;</span>
+<span class="token punctuation">{</span>
+  <span class="token comment">// The first line is the JSON-LD context statement,</span>
+  <span class="token comment">// required in JSON-LD documents (but not in other DID document representations).</span>
+  <span class="token property">&quot;@context&quot;</span><span class="token operator">:</span> <span class="token string">&quot;https://www.w3.org/ns/did/v1&quot;</span><span class="token punctuation">,</span>
+  <span class="token comment">// DID being described</span>
+  <span class="token property">&quot;id&quot;</span><span class="token operator">:</span> <span class="token string">&quot;did:example:123456789abcdefghi&quot;</span><span class="token punctuation">,</span>
+  <span class="token comment">// public key for authenticating the DID subject.</span>
+  <span class="token property">&quot;authentication&quot;</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token punctuation">{</span>
+    <span class="token property">&quot;id&quot;</span><span class="token operator">:</span> <span class="token string">&quot;did:example:123456789abcdefghi#keys-1&quot;</span><span class="token punctuation">,</span>
+    <span class="token property">&quot;type&quot;</span><span class="token operator">:</span> <span class="token string">&quot;Ed25519VerificationKey2018&quot;</span><span class="token punctuation">,</span>
+    <span class="token property">&quot;controller&quot;</span><span class="token operator">:</span> <span class="token string">&quot;did:example:123456789abcdefghi&quot;</span><span class="token punctuation">,</span>
+    <span class="token property">&quot;publicKeyBase58&quot;</span> <span class="token operator">:</span> <span class="token string">&quot;H3C2AVvLMv6gmMNam3uVAjZpfkcJCwDwnZn6z3wXmqPV&quot;</span>
+  <span class="token punctuation">}</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+  <span class="token comment">// service endpoint for exchanging verifiable credentials.</span>
+  <span class="token property">&quot;service&quot;</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token punctuation">{</span>
+    <span class="token property">&quot;id&quot;</span><span class="token operator">:</span><span class="token string">&quot;did:example:123456789abcdefghi#vcs&quot;</span><span class="token punctuation">,</span>
+    <span class="token property">&quot;type&quot;</span><span class="token operator">:</span> <span class="token string">&quot;VerifiableCredentialService&quot;</span><span class="token punctuation">,</span>
+    <span class="token property">&quot;serviceEndpoint&quot;</span><span class="token operator">:</span> <span class="token string">&quot;https://example.com/vc/&quot;</span>
+  <span class="token punctuation">}</span><span class="token punctuation">]</span>
+<span class="token punctuation">}</span>
+</pre><br>
+<h4 class="mume-header" id="did-methods">DID methods</h4>
+
+<ul>
+<li>&#xAC01; DID &#xBA54;&#xC18C;&#xB4DC;&#xB294; &#xB2E4;&#xC74C;&#xACFC; &#xAC19;&#xC740; &#xAE30;&#xC220;&#xC801; &#xC2A4;&#xD399; &#xC815;&#xC758;&#xAC00; &#xC694;&#xAD6C;&#xB428;:
+<ul>
+<li>&#xBA54;&#xC18C;&#xB4DC; &#xACE0;&#xC720; &#xC2DD;&#xBCC4; (&#xC608;: sov,btcr,v1,ethr,jolo,...)</li>
+<li>DID&#xC5D0; &#xB300;&#xD55C; CRUD 4&#xAC00;&#xC9C0; operation &#xC218;&#xD589; &#xAC00;&#xB2A5;
+<ul>
+<li>&#xBE14;&#xB85D;&#xCCB4;&#xC778;&#xC774;&#xB098;, &#xBD84;&#xC0B0; ledger&#xC2DC;&#xC2A4;&#xD15C;&#xC5D0; &#xAE30;&#xBC18;&#xD55C; DID&#xBA54;&#xC18C;&#xB4DC;&#xC758; &#xACBD;&#xC6B0; create/update&#xC2DC; ledger&#xC5D0; &#xD2B8;&#xB79C;&#xC81D;&#xC158; &#xAE30;&#xB85D;</li>
+</ul>
+</li>
+<li>&#xBA54;&#xC18C;&#xB4DC;&#xC5D0; &#xB530;&#xB978; &#xBCF4;&#xC548; &#xBC0F; &#xAC1C;&#xC778;&#xC815;&#xBCF4;&#xBCF4;&#xD638; &#xC7A5;&#xCE58;</li>
+</ul>
+</li>
+</ul>
+<div>
+<img src="https://drek4537l1klr.cloudfront.net/preukschat/HighResolutionFigures/figure_8-7.png" height="60%" width="60%" alt="Figure8.7">
+</div>
+<ul>
+<li><a href="https://w3c.github.io/did-rubric">did-rubric</a>
+<ul>
+<li>&#x201C;Rubric&#x201D; document to help adopters evaluate how well a particular DID method will meet the needs of a particular user community:</li>
+</ul>
+</li>
+</ul>
+<br>
+<h4 class="mume-header" id="did-resolution">DID resolution</h4>
+
+<ul>
+<li>DID&#xB85C;&#xBD80;&#xD130; DID document&#xB97C; &#xC5BB;&#xB294; &#xACFC;&#xC815;</li>
+<li>DID&#xAD00;&#xB828; &#xC571;&#xC774;&#xB098; &#xC11C;&#xBE44;&#xC2A4;&#xAC00; DID document&#xC5D0;&#xC11C; DID subject &#xAD00;&#xB828; &#xBA54;&#xD0C0;&#xB370;&#xC774;&#xD130;&#xB97C; &#xC5BB;&#xC5B4; &#xCD94;&#xAC00; &#xC0C1;&#xD638;&#xC791;&#xC6A9; &#xAC00;&#xB2A5;:
+<ol>
+<li>VC &#xBC1C;&#xD589;&#xC790;&#xB85C; &#xBD80;&#xD130;&#xC758; &#xB514;&#xC9C0;&#xD138; &#xC11C;&#xBA85;&#xC744; &#xAC80;&#xC99D;&#xD560; &#xACF5;&#xAC1C;&#xD0A4; &#xC870;&#xD68C;</li>
+</ol>
+<ul>
+<li>VC&#xC758; &quot;issuer&quot;&#xAC00; DID subject&#xC774;&#xACE0; proof&#xB97C; DID subject&#xC758; &#xACF5;&#xAC1C;&#xD0A4;&#xB85C; &#xAC80;&#xC99D;&#xD558;&#xB294; &#xC608;&#xC2DC;</li>
+</ul>
+<ol start="2">
+<li>DID &#xCEE8;&#xD2B8;&#xB864;&#xB7EC;&#xAC00; &#xC6F9;&#xC0AC;&#xC774;&#xD2B8;&#xB098; &#xC571;&#xC5D0; &#xB85C;&#xADF8;&#xC778;&#xD574;&#xC57C;&#xD560; &#xB54C; &#xAC80;&#xC99D; &#xC9C4;&#xD589;</li>
+</ol>
+<ul>
+<li>&#xB85C;&#xADF8;&#xC778; &#xC694;&#xCCAD;&#xC790;&#xC758; DID resolve&#xD55C; document&#xC5D0; &#xC788;&#xB294; &#xACF5;&#xAC1C;&#xD0A4;&#xB85C;, &#xC694;&#xCCAD;&#xC790;&#xC758; proof &#xAC80;&#xC99D;</li>
+</ul>
+<ol start="3">
+<li>&#xC6F9;&#xC0AC;&#xC774;&#xD2B8;, &#xC18C;&#xC15C; &#xB124;&#xD2B8;&#xC6CC;&#xD06C; &#xB610;&#xB294; &#xB77C;&#xC774;&#xC120;&#xC2A4; &#xAE30;&#xAD00;&#xACFC; &#xAC19;&#xC740; DID &#xCEE8;&#xD2B8;&#xB864;&#xB7EC;&#xC640; &#xAD00;&#xB828;&#xB41C; &#xC798; &#xC54C;&#xB824;&#xC9C4; &#xC11C;&#xBE44;&#xC2A4;&#xB97C; &#xAC80;&#xC0C9;&#xD558;&#xACE0; &#xC561;&#xC138;&#xC2A4;</li>
+<li>DID &#xCEE8;&#xD2B8;&#xB864;&#xB7EC;&#xB85C; DID-to-DID &#xC5F0;&#xACB0;&#xC744; &#xC694;&#xCCAD;</li>
+</ol>
+</li>
+</ul>
+<div>
+<img src="https://drek4537l1klr.cloudfront.net/preukschat/Figures/CH08_F08_Preukschat.png" height="70%" width="70%" alt="Figure8.8">
+</div>
+<br>
+<div>
+<img src="https://drek4537l1klr.cloudfront.net/preukschat/HighResolutionFigures/figure_8-9.png" height="55%" width="55%" alt="Figure8.9">
+</div>
+<br>
+<h4 class="mume-header" id="did-urls">DID URLs</h4>
+
+<div> <img src="https://drek4537l1klr.cloudfront.net/preukschat/HighResolutionFigures/table_8-1.png" height="70%" rwidth="70%" alt="Table8.1"></div>
+<br>
+<div> <img src="https://drek4537l1klr.cloudfront.net/preukschat/Figures/CH08_F11_Preukschat.png" height="90%" width="90%" alt="Figure8.11"></div>
+<br>
+<h4 class="mume-header" id="did-%ED%83%80%EC%9E%85">DID &#xD0C0;&#xC785;</h4>
+
+<div>
+<img src="https://drek4537l1klr.cloudfront.net/preukschat/HighResolutionFigures/table_8-4.png" height="80%" width="80%" alt="Table8.4">
+</div>
+<br>
+<h4 class="mume-header" id="did%EA%B0%80-%EC%9E%91%EB%8F%99%ED%95%98%EB%8A%94-%EC%9D%B4%EC%9C%A0-%EC%95%84%ED%82%A4%ED%85%8D%EC%B3%90-%EA%B4%80%EC%A0%90">DID&#xAC00; &#xC791;&#xB3D9;&#xD558;&#xB294; &#xC774;&#xC720; (&#xC544;&#xD0A4;&#xD14D;&#xCCD0; &#xAD00;&#xC810;)</h4>
+
+<ul>
+<li>identity&#xBCF4;&#xB2E4; cryptography&#xC758; &#xAD00;&#xC810;&#xC5D0;&#xC11C; DID&#xAC00; &#xC65C; &#xC791;&#xB3D9;&#xD558;&#xB294;&#xC9C0;</li>
+<li>Public Key Infrastructure (PKI)&#xC758; &#xBB38;&#xC81C;&#xC810;
+<ul>
+<li>&#xD574;&#xACB0;&#xCC45; 1: &#xC804;&#xD1B5;&#xC801; PKI &#xBAA8;&#xB378;</li>
+<li>&#xD574;&#xACB0;&#xCC45; 2: web-of-trust &#xBAA8;&#xB378;</li>
+<li>&#xD574;&#xACB0;&#xCC45; 3: &#xACF5;&#xAC1C;&#xD0A4; &#xAE30;&#xBC18; &#xC2DD;&#xBCC4;&#xC790; (Public key-based identifiers)</li>
+<li>&#xD574;&#xACB0;&#xCC45; 4: DIDs and DID documents
+<ul>
+<li>DID controller &#xACF5;&#xAC1C;/&#xAC1C;&#xC778;&#xD0A4; &#xAE30;&#xBC18; &#xC2DD;&#xBCC4;&#xC790; (DID) &#xC0DD;&#xC131;</li>
+<li>DID controller &#xACF5;&#xAC1C;/&#xAC1C;&#xC778;&#xD0A4; &#xBCC0;&#xACBD; &#xC2DC;
+<ul>
+<li>&#xC0C8;&#xB85C;&#xC6B4; DID document&#xB97C; &#xC774;&#xC804; document&#xC758; &#xAC1C;&#xC778;&#xD0A4;&#xB85C; &#xC11C;&#xBA85; (chain of trust)</li>
+<li>DID document&#xB294; CA&#xC5C6;&#xC774;&#xB3C4; &#xACF5;&#xAC1C;&#xD0A4;&#xC5D0; &#xB300;&#xD55C; digital certificate &#xC5ED;&#xD560; &#xC218;&#xD589;</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>DIDs&#xC758; 4&#xAC00;&#xC9C0; &#xC7A5;&#xC810; (that go beyond PKI)
+<ul>
+<li>1: Guardianship and controllership</li>
+<li>2: Service endpoint discovery</li>
+<li>3: DID-to-DID connections</li>
+<li>4: Privacy by design at scale</li>
+</ul>
+</li>
+</ul>
+<h4 class="mume-header" id="did%EC%9D%98-%EC%9D%98%EB%AF%B8">DID&#xC758; &#xC758;&#xBBF8;</h4>
+
+<ul>
+<li>&#xC8FC;&#xC18C;&#xB294; &#xC790;&#xCCB4;&#xC801;&#xC73C;&#xB85C; &#xC874;&#xC7AC;&#xD558;&#xC9C0; &#xC54A;&#xC73C;&#xBA70;, &#xADF8;&#xAC83;&#xB4E4;&#xC744; &#xC0AC;&#xC6A9;&#xD558;&#xB294; &#xB124;&#xD2B8;&#xC6CC;&#xD06C;&#xC758; &#xCEE8;&#xD14D;&#xC2A4;&#xD2B8;&#xC5D0;&#xC11C; &#xC874;&#xC7AC;</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Origin</th>
+<th>Address type</th>
+<th>Network</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1994</td>
+<td>Persistent address (URN)</td>
+<td>World Wide Web (machine-friendly)</td>
+</tr>
+<tr>
+<td>1994</td>
+<td>Web address (URL)</td>
+<td>World Wide Web (human-friendly)</td>
+</tr>
+<tr>
+<td>2003</td>
+<td>Social network address</td>
+<td>Social network</td>
+</tr>
+<tr>
+<td>2009</td>
+<td>Blockchain address</td>
+<td>Blockchain or distributed ledger network</td>
+</tr>
+<tr>
+<td>2016</td>
+<td>DID</td>
+<td>DID network</td>
+</tr>
+</tbody>
+</table>
+<br>
+<ul>
+<li>SSI Resources
+<ul>
+<li><a href="https://ssimeetup.org/decentralized-identifiers-dids-fundamentals-identitybook-info-drummond-reed-markus-sabadello-webinar-46">webinar</a></li>
+</ul>
+</li>
+</ul>
+
+      </div>
+      
+      
+    
+    
+    
+    
+    
+    
+    
+    
+  
+    </body></html>
