@@ -54,7 +54,6 @@
 인스턴스 보안 설정 방법
 - NACL - stateless
 - 보안 그룹 - stateful
-
 - 프라이빗 nacl (VPC 생성시 디폴트 생성 됨) > 서브넷 연결
 - 퍼블릭 nacl > 서브넷 연결
   - 인바운드 22번포트는 Allow
