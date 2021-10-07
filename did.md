@@ -187,7 +187,7 @@ height="70%" width="70%" alt="Figure8.6">
 <div>
 <img
 src="https://drek4537l1klr.cloudfront.net/preukschat/Figures/CH08_F08_Preukschat.png"
-height="70%" width="70%" alt="Figure8.8">
+alt="Figure8.8">
 </div>
 
 <br>
