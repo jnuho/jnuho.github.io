@@ -30,7 +30,7 @@ print(b)
     3.954
     0.8999999999999999
     0.9
-    
+
 
 - 연산
   - 나누기 /
@@ -53,7 +53,7 @@ print(a ** b)
     1
     2
     343
-    
+
 
 - 리스트
 
@@ -105,7 +105,7 @@ print(a[1:4]) # [2,3,4]
     a.remove(3)  [1, 2, 3, 4]
     [1, 2, 3, 4, 5, 5, 5]
     [1, 2, 4]
-    
+
 
 
 ```python
@@ -175,7 +175,7 @@ print(a)
     a.remove(3)  [1, 2, 3, 4]
     [1, 2, 3, 4, 5, 5, 5]
     [1, 2, 4]
-    
+
 
 - 문자열
 
@@ -201,11 +201,11 @@ print(a[2:4]) # CD
     Hello World
     HelloHelloHello
     CD
-    
+
 
 - 튜플
   - 한번 선언된 값 변경 불가능
-  - 튜플은 소괄호 ```()```
+  - 튜플은 소괄호 `()`: 생략가능 `a=1,2,3`
   - 그래프 알고리즘 구현 시 자주 사용 (다익스트라 최단경로 알고리즘에서, 우선순위 queue에 한번 들어간 값은 변경 되지 않기 때문에, 우선순위 큐에 들어가는 데이터는 튜플로 선언)
   - 다익스트라 최단경로 알고리즘에서 (비용, 노드번호) 형태로 묶어 관리
   - 리스트에 비해 공간 효율적
@@ -215,8 +215,12 @@ print(a[2:4]) # CD
 ```python
 a = (1,2,3,4)
 # a[2] = 7 # ERROR!
-
+a = 1,2,3
+print(a)
 ```
+
+    (1, 2, 3)
+
 
 - 사전
   - key,value 쌍
@@ -250,7 +254,7 @@ for key in key_list:
     사과: Apple
     바나나: Banana
     코코넛: Coconut
-    
+
 
 - 집합 자료형
   - 중복을 허용하지 않는다.
@@ -300,7 +304,7 @@ print(data)
     {1, 2, 3, 4}
     {1, 2, 3, 4, 5, 6}
     {1, 2, 4, 5, 6}
-    
+
 
 - 조건문
   - if cond1: do1
@@ -344,7 +348,7 @@ print(result)
 
     Success
     [1, 2, 4]
-    
+
 
 - 반복문
   - for
@@ -400,7 +404,7 @@ for i in range(2,4):
     3 X 8 = 24
     3 X 9 = 27
     
-    
+
 
 - 함수
 
@@ -419,7 +423,7 @@ print(divide(b=3,a=7))
     10
     10
     10
-    
+
 
 
 ```python
@@ -438,7 +442,7 @@ print(a)
 ```
 
     10
-    
+
 
 
 ```python
@@ -476,7 +480,7 @@ print(data)
 ```
 
     [2]
-    
+
 
 
 ```python
@@ -487,7 +491,7 @@ print(n, m, k)
 ```
 
     32 23 1
-    
+
 
 
 ```python
@@ -518,7 +522,7 @@ print(' '.join(scores))
     ----> 7 N,x = map(int, sys.stdin.readline().strip().split())
           8 
           9 scores = [i for i in sys.stdin.readline().strip().split() if int(i) < x]
-    
+
 
     ValueError: not enough values to unpack (expected 2, got 0)
 
@@ -539,7 +543,7 @@ print(f"a는 {a}, b는 {b}")
     a는 1, b는 2
     a는 1 , b는 2
     a는 1, b는 2
-    
+
 
 - 주요 라이브러리 문법
   - https://docs.python.org/ko/3/library/index.html
@@ -586,7 +590,7 @@ print(data)
     [9, 8, 5, 4, 1]
     [('이순신', 75), ('아무개', 50), ('홍길동', 35)]
     [1, 4, 5, 8, 9]
-    
+
 
 
 ```python
@@ -622,7 +626,7 @@ print(f"3C2 (repeat=2): {result}")
     3C2: [('A', 'B'), ('A', 'C'), ('B', 'C')]
     3P2 (repeat=2): [('A', 'A'), ('A', 'B'), ('A', 'C'), ('B', 'A'), ('B', 'B'), ('B', 'C'), ('C', 'A'), ('C', 'B'), ('C', 'C')]
     3C2 (repeat=2): [('A', 'A'), ('A', 'B'), ('A', 'C'), ('B', 'B'), ('B', 'C'), ('C', 'C')]
-    
+
 
 - heapq
   - heap 기능을 위해 사용
@@ -680,7 +684,7 @@ print(result)
     [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
     [9, 8, 7, 6, 5, 4, 3, 2, 1, 0]
     [0, 1, 2, 6, 3, 5, 4, 7, 8, 9]
-    
+
 
 - bisect
   - 이진탐색 구현한 라이브러리
@@ -703,7 +707,7 @@ print(bisect_right(a,x))
 
     2
     2
-    
+
 
 
 ```python
@@ -728,7 +732,7 @@ print(count_by_range(a, -1, 3))
 
     2
     6
-    
+
 
 - collections: 유용한 자료구조 제공 라이브러리
   - list: append(), pop()은 가장 뒤쪽 원소 기준. 앞쪽 원소 제거시 O(N) 오래걸림
@@ -762,7 +766,7 @@ print(list(data)) # 리스트형 변환
 
     deque([1, 2, 3, 4, 5])
     [1, 2, 3, 4, 5]
-    
+
 
 
 ```python
@@ -778,7 +782,7 @@ print(dict(counter)) # 사전 자료형으로 변환
     3
     1
     {'red': 2, 'blue': 3, 'green': 1}
-    
+
 
 
 ```python
@@ -796,7 +800,7 @@ print(math.e) # 자연상수 e
     7
     3.141592653589793
     2.718281828459045
-    
+
 
 
 ```python
@@ -824,4 +828,4 @@ print(rotate_a_matrix_by_90_degree(a))
 ```
 
     [[9, 5, 1], [10, 6, 2], [11, 7, 3], [12, 8, 4]]
-    
+
