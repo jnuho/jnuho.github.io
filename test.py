@@ -1,3 +1,6 @@
+from typing import Tuple
+
+
 class Solution:
 
   # Given a string s, return the longest palindromic substring in s.
@@ -5,29 +8,32 @@ class Solution:
   # Output: "bab"
   # Note: "aba" is also a valid answer.
   def longestPalindrome(self, s: str) -> str:
-    longest = ""
-    for i,c in enumerate(s):
-      s_len = min(i, len(s)-i-1)
-      for j in range(s_len+1):
-        target = s[i-j:i+j+1]
-        if self.isPalindrome(target):
-          if len(target) > len(longest):
-            longest = target
-        target = s[i-j:i+j]
-        if self.isPalindrome(target):
-          if len(target) > len(longest):
-            longest = target
-    return longest
+    if not s:
+      return ''
 
+    def extend(s:str, i:int, j:int) -> Tuple[int, int]:
+      while i>=0 and j < len(s):
+        if s[i] != s[j]:
+          break
+        i -= 1
+        j += 1
+      
+      return i+1, j-1
 
-    longest = ""
-    return longest
+    result = 0, 0
 
-  def isPalindrome(self, s:str) -> str:
-    for i in range(len(s)//2):
-      if s[i] != s[len(s)-i-1]:
-        return False
-    return True
+    for i in range(len(s)):
+      a, b = extend(s, i, i)
+      if b-a > result[1] - result[0]:
+        result = a, b
+
+      if i+1 < len(s):
+        a, b = extend(s, i, i+1)
+        if b-a > result[1] - result[0]:
+          result = a, b
+
+    return s[result[0]: result[1]+1]
 
 result = Solution().longestPalindrome("cbbd")
+# result = Solution().longestPalindrome("babad")
 print(result)

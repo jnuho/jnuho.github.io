@@ -19,9 +19,10 @@
   4. [라우트 테이블](#라우트-테이블)
   5. [NACL](#NACL)
   6. [EC2](#ec2)
-  6. [NAT Gateway](#nat-gateway)
   7. [보안 그룹](#보안-그룹)
-  8. [ElastiCache](#elasticache)
+  8. [NAT Gateway](#nat-gateway)
+  9. [VPC Endpoint](#vpc-endpoint)
+  10. [ElastiCache](#elasticache)
 
 #### VPC
 - CIDR 172.20.0.0/16
@@ -91,8 +92,6 @@
   service httpd start
   ```
 
-#### NAT Gateway
-
 #### 보안 그룹
 같은 VPC내 보안 그룹 구분
 
@@ -105,6 +104,37 @@
 - sg-starpass-redis
   - 인바운드: sg-was/web/bastion (TCP 7379)
 
+#### NAT Gateway
+
+- 프라이빗 EC2에서 외부 인터넷 막혀있어서, yum으로 소프트웨어 (mysql, apache,...) 설치 안됨
+- (VPC) NAT Gateway 만들어 외부와 연결: 퍼블릭 서브넷 내에 생성
+- 프라이빗 RT수정 : 라우팅 > 추가 0.0.0.0/0  (대상: nat-...)
+
+
+#### VPC Endpoint
+- 프라이빗 EC2 에서 S3접근하고 싶을때 NAT게이트웨이 대신 VPC Endpoint 사용: 보안상 이유
+- IAM 역할 > 추가 > EC2 > 'AmazonS3FullAccess' > 'test-01-s3-fullaccess'
+- 프라이빗 EC2 생성 시 IAM역할 선택 또는 [ATTACH IAM역할.](https://aws.amazon.com/blogs/security/easily-replace-or-attach-an-iam-role-to-an-existing-ec2-instance-by-using-the-ec2-console/)
+
+- S3 연결 시도
+```sh
+# S3버킷 리스트 조회 (VPC Endpoint설정도 안했는데 연결됨)
+# 프라이빗 RT에 NAT설정 되어있기때문
+aws s3 ls --region ap-northeast-2
+# 프라이빗 RT에 NAT설정 삭제후 시도시 조회안됨
+aws s3 ls --region ap-northeast-2
+```
+- VPC Endpoint 설정 이후 S3 연결 시도
+  - VPC > 엔드포인트 > 생성
+    - 'S3'검색 > com.amazonaws.ap-northeast-2.s3 서비스선택, Gateway유형 선택
+    - VPC 및 프라이빗 서브넷 선택
+  - 프라이빗 RT > 라우팅 > 대상에 VPC Endpoint 추가됨 확인
+    - S3관련된 트래픽을 S3로 보내는 정책
+    - VPC Endpoint 밑에 라우팅 추가 > NAT Gateway추가하여 위의 두개 IP이외는 NAT Gateway로 보내도록 함
+```sh
+# 조회가능 확인
+aws s3 ls --region ap-northeast-2
+```
 
 #### 운영환경 - ElastiCache
 - redis 선택
