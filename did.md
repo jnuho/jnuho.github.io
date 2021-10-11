@@ -2,32 +2,30 @@
 - From the book <i>"Self-Sovereign Identity"</i>
 
 #### 디지털 신원인증 모델
-- 중앙형 - Centralized
-  - ex. 계정 가입 웹사이트
+- 중앙형 모델
   - You $\xrightarrow[\text{계정}]{\text{}}$ Org
+  - 웹사이트는 사용자의 신원을 계정 가입을 통해 관리 - Centralized
 <br>
-- 연합형 - Federated
-  - 서비스, 신원 제공자 IDP (ex. google, facebook, kakao)
-  - 연합 : 같은 IDP를 사용하는 사이트들의 집합 (or group of IDPs)
+- 연합형 모델
   - You $\xrightarrow[\text{계정}]{\text{}}$ IDP $\xrightarrow[\text{}]{\text{}}$ Org
+  - IDP: 서비스, 신원 제공자 (ex. google, facebook, kakao)
 <br>
-- 탈중앙형 - Decentralized
-  - Peer-to-Peer
+- 탈중앙형 모델 - Decentralized
   - ```공개/개인키 암호화 기법``` 기반 ```블록체인``` 사용
   - 블록체인 기술을 암호화폐가 아닌, DPKI (Decentralized PKI)에 적용
-    - 공개키를 직접 교환 하여 안전한 Peer-to-Peer 연결 생성
-    - 공개키를 블록체인에 저장하여 디지털 신원 자격(VC) 서명(signature) 증명
+    - DID는 블록체인을 기반으로 한 신분증
+    - 이용자 스스로 자신의 신원정보를 관리하고 통제할 수 있도록 하는 디지털화된 신원관리 체계
+    - 공개키 $\rightarrow$ [블록체인](https://stackoverflow.com/a/66515581)에 저장하여 디지털 신원 자격(VC) 서명(signature) 증명
+    - 개인키 $\rightarrow$ 디지털 지갑에 저장
+    - VC $\rightarrow$ 개인 기기에 저장
       - VC(verifiable credentials): 실생활에서 신원증명 제공을 위해 교환 가능한 자격 증명
-    - 개인키는 디지털 지갑에 저장
-  - [블록체인 사용 이유](https://stackoverflow.com/a/66515581)
-    - ex. 운전 면허증 '중앙형' vs '블록체인 이용한 탈중앙형'
-      - '중앙형' : 발행기관(지방경찰청)
-      - '블록체인 이용한 탈중앙형' : DID에 퍼블릭키 정보를 담아 블록체인에 저장. VC(신원자격 증명)은 디지털 형태로 개인기기 저장
 
 <div>
 <img src="https://drek4537l1klr.cloudfront.net/preukschat/HighResolutionFigures/figure_1-4.png"
 height="25%" width="25%" alt="Figure1.4">
 </div>
+
+- 공개키를 직접 교환 하여 안전한 Peer-to-Peer 연결 생성
 
 <br>
 
@@ -49,7 +47,7 @@ height="25%" width="25%" alt="Figure1.4">
   - _공개/개인키 암호화기법_ 으로 증명가능 한 디지털 Proof 제공
   - 개인키로 *메시지* 서명(sign), 공개키로 검증(verify)
 - 공개 키 기반 구조 ***PKI*** 도입
-  - *```공개키의 소유권```* 을 검증할 수 있게 됨 - 신원 대상자의 공개키가 실제로 소유자의 것인지 여부
+  - `공개키의 소유권` 을 검증할 수 있게 됨 - 신원 대상자의 공개키가 실제로 소유자의 것인지 여부
   - 검증된 CA기관들로 부터 공개키 인증서 발행하는 중앙집권형 시스템이므로
   - 개인들이 여러개의 암호화 키페어를 가지고 있는 환경(SSI)에 한계가 있음
 <br>
@@ -157,7 +155,8 @@ height="70%" width="70%" alt="Figure8.6">
 
 #### DID methods
 
-- 각 DID 메소드는 다음과 같은 기술적 스펙 정의가 요구됨:
+- 메소드별 상세스팩 : https://www.w3.org/TR/did-spec-registries/#did-methods
+- 각 DID 메소드는 다음과 같은 기술적 정의가 요구됨:
   - 메소드 고유 식별 (예: sov,btcr,v1,ethr,jolo,...)
   - DID에 대한 CRUD 4가지 operation 수행 가능
     - 블록체인이나, 분산 ledger시스템에 기반한 DID메소드의 경우 create/update시 ledger에 트랜젝션 기록
