@@ -1,20 +1,23 @@
-from collections import Counter
-from typing import Tuple
 
+N, M = map(int, input().split())
+dduks = list(map(int, input().split()))
+dduks.sort()
 
-class Solution:
+start = 0
+end = max(dduks)
 
-  # Given a string s, find the length of the longest substring without repeating characters.
+while start <= end:
+  mid = (start+end) //2
+  res = 0
+  for i in dduks:
+    res += max(0, i-mid)
 
-  def lengthOfLongestSubstring(self, s: str) -> int:
-    ans = 0
-    count = Counter()
+  if res == M:
+    print(mid)
+    break
+  elif res < M:
+    end = mid-1
+  else:
+    start = mid+1
 
-    l = 0
-    for r,c in enumerate(s):
-      count[c] += 1
-
-
-# result = Solution().lengthOfLongestSubstring("abcabcbb");
-result = Solution().lengthOfLongestSubstring("abc");
-print(result)
+  
