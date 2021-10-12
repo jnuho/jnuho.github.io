@@ -18,28 +18,28 @@
 <br>
 
 - 탈중앙형 모델 - *Decentralized*
-  - 위의 두가지 모델 모두 `Centralized`인 한계 해결
+  - 위의 두가지 모델 모두 중앙 컨트롤 기관에서 신원을 확인하는 한계 해결
   - `공개/개인키 암호화 기법` 기반 `블록체인` 사용
   - 블록체인 기술을 암호화폐가 아닌, DPKI (Decentralized PKI)에 적용
-    - DID는 블록체인을 기반으로 한 신분증
+    - DID는 블록체인을 기반으로 한 신분증이라고 할 수 있습니다.
     - 이용자 스스로 자신의 신원정보를 관리하고 통제할 수 있도록 하는 디지털화된 신원관리 체계
-    - 공개키 $\rightarrow$ [블록체인](https://stackoverflow.com/a/66515581)에 저장하여 디지털 신원 자격(VC) 서명(signature) 증명
+    - 공개키 $\rightarrow$ [블록체인](https://stackoverflow.com/a/66515581)에 저장하여 디지털 신원 자격(VC) 서명(signature) 증명하는데 사용
     - 개인키 $\rightarrow$ 디지털 지갑에 저장
     - VC $\rightarrow$ 개인 기기에 저장
-      - Verifiable Credentials: 실생활에서 신원증명 제공을 위해 교환 가능한 자격 증명 (디지털화 된 신분증)
+      - Verifiable Credentials: 실생활에서 신원증명 제공을 위해 교환 가능한 자격 증명 (디지털화 된 신분증) 입니다
 
 <div>
 <img src="https://drek4537l1klr.cloudfront.net/preukschat/HighResolutionFigures/figure_1-4.png"
 height="25%" width="25%" alt="Figure1.4">
 </div>
 
-- 공개키를 블록체인을 통해 직접 교환 하여 안전한 Peer-to-Peer 연결 생성
+- 공개키를 블록체인을 통해 직접 교환 하여 안전한 Peer-to-Peer 연결 생성하기 때문에 Decentralized라고 할 수 있습니다
 
 <br>
 
 #### 암호화 기법
 
-DID는 기존의 PKI에 사용되는 암호화 기법 사용
+DID는 기존의 PKI에 사용되는 암호화 기법을 그대로 사용합니다 :
 
 - 비대칭 키 기법 Asymmetric-key cryptography
   - 개인키(private)는 디지털지갑에 저장
@@ -58,15 +58,15 @@ DID는 기존의 PKI에 사용되는 암호화 기법 사용
   - `개인키`로 메시지 서명(sign), `공개키`로 검증(verify)
 
 ##### PKI 도입
-공개 키 기반 구조 
-  - `공개키의 소유권` 을 검증할 수 있게 됨 - 신원 대상자의 공개키가 실제로 소유자의 것인지 여부
+공개 키 기반 인프라 구조
+  - PKI를 통해 `공개키의 소유권` 을 검증할 수 있게 되었습니다 - 신원 대상자의 공개키가 실제로 소유자의 것인지 여부 확인 할 수 있게 됨
   - 검증된 CA기관들로 부터 공개키 인증서 발행하는 중앙집권형 시스템이므로
   - 개인들이 여러개의 암호화 키페어를 가지고 있는 환경(Decentalized Identity model)에 한계가 있음
 <br>
 
-- 탈중앙 인증 식별자 DIDs으로 위의 한계 해결. 다음 네가지 특성을 가집니다 :
-  - 영속성 - Permanent
-  - 분해성 - DID Resolver를 통해 DID를 DID document로 분해
+- 탈중앙 인증 식별자 DIDs으로 위의 한계를 해결 할 수 있으며, 다음 네가지 특성을 가집니다 :
+  - 영속성 - Permanent (블록체인에 기록된 데이터는 tampered 될 수 없습니다)
+  - 분해성 - DID Resolver를 통해 DID를 DID document로 분해(resolve)
   - 암호화기법으로 검증 가능 - Cryptographically verifiable
     - 신원 소유자가 암호화 기법으로 개인키 검증가능
     - 암호화기법으로 DID 생성
