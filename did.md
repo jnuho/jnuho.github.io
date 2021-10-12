@@ -2,19 +2,23 @@
 - From the book <i>"Self-Sovereign Identity"</i>
 
 #### 디지털 신원인증 모델
+
+인터넷 신원인증 모델 발전 단계
+
 - 중앙형 모델
   - You $\xrightarrow[\text{계정}]{\text{}}$ Org
   - 웹사이트는 사용자의 신원을 계정 가입을 통해 관리 - Centralized
   - 중앙 통제(사이트 관리자)에 의한 신원 관리
 <br>
+
 - 연합형 모델
   - You $\xrightarrow[\text{계정}]{\text{}}$ IDP $\xrightarrow[\text{}]{\text{}}$ Org
   - IDP(Identity Provider) : 서비스, 신원 제공자 (ex. Google, Facebook, Kakao)
   - 하나의 IDP에 계정 가입하여 여러사이트 이용 가능
 <br>
 
-- 탈중앙형 모델 - Decentralized
-  - 위의 두가지 모델 한계점 - `Centralized`되어 있는 문제 해결
+- 탈중앙형 모델 - *Decentralized*
+  - 위의 두가지 모델 모두 `Centralized`인 한계 해결
   - `공개/개인키 암호화 기법` 기반 `블록체인` 사용
   - 블록체인 기술을 암호화폐가 아닌, DPKI (Decentralized PKI)에 적용
     - DID는 블록체인을 기반으로 한 신분증
@@ -22,14 +26,14 @@
     - 공개키 $\rightarrow$ [블록체인](https://stackoverflow.com/a/66515581)에 저장하여 디지털 신원 자격(VC) 서명(signature) 증명
     - 개인키 $\rightarrow$ 디지털 지갑에 저장
     - VC $\rightarrow$ 개인 기기에 저장
-      - Verifiable Credentials: 실생활에서 신원증명 제공을 위해 교환 가능한 자격 증명
+      - Verifiable Credentials: 실생활에서 신원증명 제공을 위해 교환 가능한 자격 증명 (디지털화 된 신분증)
 
 <div>
 <img src="https://drek4537l1klr.cloudfront.net/preukschat/HighResolutionFigures/figure_1-4.png"
 height="25%" width="25%" alt="Figure1.4">
 </div>
 
-- 공개키를 직접 교환 하여 안전한 Peer-to-Peer 연결 생성
+- 공개키를 블록체인을 통해 직접 교환 하여 안전한 Peer-to-Peer 연결 생성
 
 <br>
 
@@ -60,14 +64,14 @@ DID는 기존의 PKI에 사용되는 암호화 기법 사용
   - 개인들이 여러개의 암호화 키페어를 가지고 있는 환경(Decentalized Identity model)에 한계가 있음
 <br>
 
-- 탈중앙 인증 식별자 DIDs 도입으로 위의 한계 해결 가능하며. 다음 네가지 특성을 가집니다 :
+- 탈중앙 인증 식별자 DIDs으로 위의 한계 해결. 다음 네가지 특성을 가집니다 :
   - 영속성 - Permanent
-  - 분해성 - Resolvable to DID document
+  - 분해성 - DID Resolver를 통해 DID를 DID document로 분해
   - 암호화기법으로 검증 가능 - Cryptographically verifiable
     - 신원 소유자가 암호화 기법으로 개인키 검증가능
     - 암호화기법으로 DID 생성
     - DID는 1개의 공개/개인키와 연결되므로 개인키 소유자(controller)가 DID 소유자(controller)임 증명 가능
-  - 탈중앙화 - Decentralized
+  - 탈중앙 - Decentralized
     - 암호화기법을 사용하여 중앙 신원인증 기관들(CAs)의 통제 없이, 블록체인 등 탈중앙화 네트워크에 기반함
     - 공개/개인키 생성하는 암호화 알고리즘은 프라임넘버, 랜덤숫자생성기, 타원곡선 암호학에 기반하여
     - globally 고유한 식별자를 만들기 때문에 중앙기관 없이 Uniqueness 검증가능
@@ -83,7 +87,7 @@ height="45%" width="45%" alt="Figure2.11"><br>
 #### DID 정의
 
 - 새로운 타입의 고유 식별자 _globally unique identifier_
-- DIDs 는 VC(신원자격 증명)을 암호화한 형태라고 볼 수 있습니다.(Cryptographic counterpart to Verifiable Credentials)
+- DIDs 는 VC(신원자격 증명)를 암호화한 형태라고 볼 수 있습니다.(Cryptographic counterpart to Verifiable Credentials)
 - DID는 블록체인에 공개키 주소로서 역할을 하며, DID subject의 agent를 찾는데도 사용 됩니다
 - DID 메소드를 통해 블록체인, DLT(Distributed Ledger Technology) 등을 이용할 수 있도록 설계됨
 - 소프트웨어를 통해 누구나 DID 메소드(sov,btcr,ethr, ...)를 사용하여 중앙기관 통제 없이 DID 발행 및 사용가능
@@ -94,7 +98,8 @@ height="45%" width="45%" alt="Figure2.11"><br>
 height="50%" width="50%" alt="Figure8.2">
 </div>
 
-- DID 예시
+- DID 예시 데모
+  - 링크: https://www.youtube.com/watch?v=r28GeXkxn0w
   - 예시 1
     - 개인키/공개키 페어 생성
     - 개인키 $\rightarrow$ 디지털 지갑 앱
@@ -185,12 +190,12 @@ height="70%" width="70%" alt="Figure8.6">
 
 - DID로부터 DID method의 "Read" 오퍼레이션을 통해 DID document를 얻는 과정
 - DID관련 앱이나 서비스가 DID document에서 DID subject 관련 메타데이터를 얻어 추가 상호작용 가능:
-  1. VC 발행자로 부터의 디지털 서명을 검증할 공개키 조회
+  - VC 발행자로 부터의 디지털 서명을 검증할 공개키 조회
     - VC의 "issuer"가 DID subject이고 proof를 DID subject의 공개키로 검증하는 예시
-  2. DID 컨트롤러가 웹사이트나 앱에 로그인해야할 때 검증 진행
+  - DID 컨트롤러가 웹사이트나 앱에 로그인해야할 때 검증 진행
     - 로그인 요청자의 DID resolve한 document에 있는 공개키로, 요청자의 proof 검증
-  3. 웹사이트, 소셜 네트워크 또는 라이선스 기관과 같은 DID 컨트롤러와 관련된 잘 알려진 서비스를 검색하고 액세스
-  4. DID 컨트롤러로 DID-to-DID 연결을 요청
+  - 웹사이트, 소셜 네트워크 또는 라이선스 기관과 같은 DID 컨트롤러와 관련된 잘 알려진 서비스를 검색하고 액세스
+  - DID 컨트롤러로 DID-to-DID 연결을 요청
 
 
 <div>
@@ -203,11 +208,11 @@ alt="Figure8.8">
 <div>
 <img
 src="https://drek4537l1klr.cloudfront.net/preukschat/HighResolutionFigures/figure_8-9.png"
-height="55%" width="55%" alt="Figure8.9">
+height="70%" width="70%" alt="Figure8.9">
 </div>
 <br>
 
-### Architectural View
+### 아키텍쳐 뷰
 
 <div>
 <img
@@ -218,6 +223,8 @@ height="70%" width="70%" alt="w3-Figure7">
 <br>
 
 #### DID URLs
+
+웹사이트 URL과 같이 DID도 쿼리 스트링을 통한 추가 파라미터 사용 가능
 
 <div> <img
 src="https://drek4537l1klr.cloudfront.net/preukschat/HighResolutionFigures/table_8-1.png"
@@ -279,5 +286,8 @@ Origin | Address type | Network
 
 <br>
 
-- SSI 리소스
+- 기타 리소스
   - [2020-02-SSI 웨비나 자료](https://ssimeetup.org/decentralized-identifiers-dids-fundamentals-identitybook-info-drummond-reed-markus-sabadello-webinar-46)
+
+  - [COOV DID 구현](https://infrablockchain.com/en/posts/vaccine-passport-bclabs-notice)
+    - [infra 메소드 스펙](https://github.com/InfraBlockchain/infra-did-method-specs/blob/main/docs/Infra-DID-method-spec.md)
