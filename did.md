@@ -5,20 +5,24 @@
 - 중앙형 모델
   - You $\xrightarrow[\text{계정}]{\text{}}$ Org
   - 웹사이트는 사용자의 신원을 계정 가입을 통해 관리 - Centralized
+  - 중앙 통제(사이트 관리자)에 의한 신원 관리
 <br>
 - 연합형 모델
   - You $\xrightarrow[\text{계정}]{\text{}}$ IDP $\xrightarrow[\text{}]{\text{}}$ Org
-  - IDP: 서비스, 신원 제공자 (ex. google, facebook, kakao)
+  - IDP(Identity Provider) : 서비스, 신원 제공자 (ex. Google, Facebook, Kakao)
+  - 하나의 IDP에 계정 가입하여 여러사이트 이용 가능
 <br>
+
 - 탈중앙형 모델 - Decentralized
-  - ```공개/개인키 암호화 기법``` 기반 ```블록체인``` 사용
+  - 위의 두가지 모델 한계점 - `Centralized`되어 있는 문제 해결
+  - `공개/개인키 암호화 기법` 기반 `블록체인` 사용
   - 블록체인 기술을 암호화폐가 아닌, DPKI (Decentralized PKI)에 적용
     - DID는 블록체인을 기반으로 한 신분증
     - 이용자 스스로 자신의 신원정보를 관리하고 통제할 수 있도록 하는 디지털화된 신원관리 체계
     - 공개키 $\rightarrow$ [블록체인](https://stackoverflow.com/a/66515581)에 저장하여 디지털 신원 자격(VC) 서명(signature) 증명
     - 개인키 $\rightarrow$ 디지털 지갑에 저장
     - VC $\rightarrow$ 개인 기기에 저장
-      - VC(verifiable credentials): 실생활에서 신원증명 제공을 위해 교환 가능한 자격 증명
+      - Verifiable Credentials: 실생활에서 신원증명 제공을 위해 교환 가능한 자격 증명
 
 <div>
 <img src="https://drek4537l1klr.cloudfront.net/preukschat/HighResolutionFigures/figure_1-4.png"
@@ -31,10 +35,11 @@ height="25%" width="25%" alt="Figure1.4">
 
 #### 암호화 기법
 
-기존의 PKI에 사용되는 암호화 기법 사용
+DID는 기존의 PKI에 사용되는 암호화 기법 사용
 
 - 비대칭 키 기법 Asymmetric-key cryptography
-  - ex. DID의 개인키는 디지털지갑, 공개키는 블록체인에 저장
+  - 개인키(private)는 디지털지갑에 저장
+  - 공개키(public)는 블록체인에 저장
 - 디지털 서명
   - _공개키 암호화 기법_ 기반 : 메시지를 개인키로 암호화하여 디지털 서명 생성, 공개키로 서명 검증
 
@@ -42,18 +47,22 @@ height="25%" width="25%" alt="Figure1.4">
 
 #### DID 배경
 
-- Ip 주소 자체는 해당 ip를 소유한 신원 대상에 대한 어떠한 정보도 제공하지 않으므로,
-- 신원 대상자(Controller)는 본인 임을 증명 할 수 있는, 디지털 Proof를 제공 해야함:
-  - _공개/개인키 암호화기법_ 으로 증명가능 한 디지털 Proof 제공
-  - 개인키로 *메시지* 서명(sign), 공개키로 검증(verify)
-- 공개 키 기반 구조 ***PKI*** 도입
+##### PKI의 필요성
+- Ip 주소 (ex. 172.20.10.11) 자체는 해당 ip를 소유한 신원 대상에 대한 어떠한 정보도 제공하지 않기 때문에,
+- 신원 주체자는 본인 임을 증명 할 수 있는, 디지털 Proof를 제공 해야합니다
+  - `공개/개인키 암호화기법` 으로 증명가능 한 디지털 Proof 제공
+  - `개인키`로 메시지 서명(sign), `공개키`로 검증(verify)
+
+##### PKI 도입
+공개 키 기반 구조 
   - `공개키의 소유권` 을 검증할 수 있게 됨 - 신원 대상자의 공개키가 실제로 소유자의 것인지 여부
   - 검증된 CA기관들로 부터 공개키 인증서 발행하는 중앙집권형 시스템이므로
-  - 개인들이 여러개의 암호화 키페어를 가지고 있는 환경(SSI)에 한계가 있음
+  - 개인들이 여러개의 암호화 키페어를 가지고 있는 환경(Decentalized Identity model)에 한계가 있음
 <br>
-- 탈중앙 인증 식별자 DIDs 도입으로 위의 한계 해결. 네가지 특성 :
+
+- 탈중앙 인증 식별자 DIDs 도입으로 위의 한계 해결 가능하며. 다음 네가지 특성을 가집니다 :
   - 영속성 - Permanent
-  - 분해성 - Resolvable to document
+  - 분해성 - Resolvable to DID document
   - 암호화기법으로 검증 가능 - Cryptographically verifiable
     - 신원 소유자가 암호화 기법으로 개인키 검증가능
     - 암호화기법으로 DID 생성
@@ -74,7 +83,7 @@ height="45%" width="45%" alt="Figure2.11"><br>
 #### DID 정의
 
 - 새로운 타입의 고유 식별자 _globally unique identifier_
-- DIDs 는 VC(신원자격 증명)을 암호화한 형태라고 볼 수 있습니다.(cryptographic counterpart to VCs)
+- DIDs 는 VC(신원자격 증명)을 암호화한 형태라고 볼 수 있습니다.(Cryptographic counterpart to Verifiable Credentials)
 - DID는 블록체인에 공개키 주소로서 역할을 하며, DID subject의 agent를 찾는데도 사용 됩니다
 - DID 메소드를 통해 블록체인, DLT(Distributed Ledger Technology) 등을 이용할 수 있도록 설계됨
 - 소프트웨어를 통해 누구나 DID 메소드(sov,btcr,ethr, ...)를 사용하여 중앙기관 통제 없이 DID 발행 및 사용가능
@@ -107,9 +116,9 @@ height="50%" width="50%" alt="Figure8.2">
 
 - DID $\xrightarrow[\text{}]{\text{DID resolver(software/hardware)}}$ DID document
   - 디지털 신원인증 앱, 디지털 지갑, 또는 에이전트 등에서 인증을 위한 기초 빌딩블록 으로 사용
-  - DID $\xleftrightarrow[\text{}]{\text{}}$ DID document (1-1 대응)
-- DID document는 퍼블릭 이므로 개인정보와 관련된 데이터는 넣지 않습니다
-- DID document는 표준화된 규격 구조(json)를 가지고 있으며 다음 데이터를 포함 합니다 :
+  - DID $\xleftrightarrow[\text{}]{\text{}}$ DID document (1-to-1 대응)
+- DID document는 퍼블릭이므로 개인정보와 관련된 데이터는 넣지 않습니다
+- DID document는 표준화된 규격 구조(json)를 가지고 있으며 다음 데이터 등을 포함 합니다 :
   - 공개키: 1개 이상의 DID subject의 공개키; 거래시 공개키로 subject 검증 - essence of DPKI, SSI
   - 서비스: 프로토콜을 통한 거래 시에 사용 할 DID subject 관련 서비스들
   - 메타데이터: 타임스탬프, 디지털서명, 암호학적proof, deleation 및 인증 관련 메타데이터
@@ -167,7 +176,8 @@ height="70%" width="70%" alt="Figure8.6">
 </div>
 
 - [did-rubric](https://w3c.github.io/did-rubric)
-  - “Rubric” document to help adopters evaluate how well a particular DID method will meet the needs of a particular user community:
+  - 특정 DID 메소드가 얼마나 사용 커뮤니티 필요에 부합하는지 평가/측정 할 수 있는 문서
+  <!-- - “Rubric” document to help adopters evaluate how well a particular DID method will meet the needs of a particular user community: -->
 
 <br>
 
@@ -181,7 +191,7 @@ height="70%" width="70%" alt="Figure8.6">
     - 로그인 요청자의 DID resolve한 document에 있는 공개키로, 요청자의 proof 검증
   3. 웹사이트, 소셜 네트워크 또는 라이선스 기관과 같은 DID 컨트롤러와 관련된 잘 알려진 서비스를 검색하고 액세스
   4. DID 컨트롤러로 DID-to-DID 연결을 요청
-  
+
 
 <div>
 <img
@@ -211,7 +221,7 @@ height="70%" width="70%" alt="w3-Figure7">
 
 <div> <img
 src="https://drek4537l1klr.cloudfront.net/preukschat/HighResolutionFigures/table_8-1.png"
-height="70%"rwidth="70%" alt="Table8.1"></div>
+alt="Table8.1"></div>
 <br>
 
 <div> <img
@@ -269,6 +279,5 @@ Origin | Address type | Network
 
 <br>
 
-- SSI Resources
-  - [webinar](https://ssimeetup.org/decentralized-identifiers-dids-fundamentals-identitybook-info-drummond-reed-markus-sabadello-webinar-46)
-
+- SSI 리소스
+  - [2020-02-SSI 웨비나 자료](https://ssimeetup.org/decentralized-identifiers-dids-fundamentals-identitybook-info-drummond-reed-markus-sabadello-webinar-46)
