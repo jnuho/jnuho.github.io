@@ -77,6 +77,7 @@ docker start {id}
 ```
 
 - Remove stopped container
+
 ```sh
 docker rm <container_id>
 
@@ -85,6 +86,7 @@ docker system prune
 ```
 
 - Retrieving log outputs
+
 ```sh
 docker create busybox echo hi there
 docker start {id}
@@ -93,6 +95,7 @@ docker logs {id}
 ```
 
 - Stopping a running container
+
 ```sh
 docker create busybox ping google.com
 docker start {id}
