@@ -55,6 +55,7 @@ docker run hello-world ls
 ```
 
 ### Container LifeCycle
+
 - Create container
 ```sh
 docker create hello-world
