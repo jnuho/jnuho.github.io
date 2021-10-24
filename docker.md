@@ -139,14 +139,14 @@ docker run redis
 # execute 'redis-cli' inside a running container
 # exec: run another command in a container
 # -it: allow us to provide input to the container
-docker exec -it <container_id> <command>
-docker exec -it <container_id> redis-cli
+docker exec -it {container_id} <command>
+docker exec -it {container_id} redis-cli
 > set mynumber 5
 > get mynumber
 
 # redis-cli is started up but no ability to enter in any text, closing down kicked back to terminal
 # have to use -it tag
-docker exec <container_id> redis-cli
+docker exec {container_id} redis-cli
 ```
 
 - The Purpose of -it flag in docker exec
@@ -165,7 +165,7 @@ docker exec <container_id> redis-cli
 ```sh
 # get full terminal access: easy debugging
 # sh: another command shell
-docker exec -it <docker_container> sh
+docker exec -it {docker_container} sh
 > cd ~/
 > ls
 > redis-cli
