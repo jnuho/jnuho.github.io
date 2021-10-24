@@ -20,7 +20,7 @@ e.g. hello-world. This is specific to Linux Operating System.
 
 ### Docker CLI (client)
 
-``` sh
+```sh
 docker version
 
 # Docker Server download from Docker hub and store it into image cache, if image is not found locally
@@ -47,7 +47,7 @@ docker run busybox echo hi there
 docker run busybox ls
 ```
 
-``` sh
+```sh
 # Override does not work because hello-world image does not provide file system
 # only a single file hello-world exists inside the file system
 docker run hello-world echo hi there
@@ -56,7 +56,7 @@ docker run hello-world ls
 
 ### Container LifeCycle
 - Create container
-``` sh
+```sh
 docker create hello-world
 ```
 
@@ -76,7 +76,7 @@ docker start {id}
 ```
 
 - Remove stopped container
-``` sh
+```sh
 docker rm <container_id>
 
 # delete all stopped containers, networks, dangling images, cache
@@ -84,7 +84,7 @@ docker system prune
 ```
 
 - Retrieving log outputs
-``` sh
+```sh
 docker create busybox echo hi there
 docker start {id}
 # show logs without re-running container with -a option
@@ -92,7 +92,7 @@ docker logs {id}
 ```
 
 - Stopping a running container
-``` sh
+```sh
 docker create busybox ping google.com
 docker start {id}
 docker logs {id}
@@ -150,7 +150,7 @@ docker exec <container_id> redis-cli
 
 - The Purpose of -it flag in docker exec
 
-``` sh
+```sh
 # execute an additional command inside a container
 # container runs inside virtual machine running linux
 # ping google.com / echo hi there /redis-cli each process has: STDIN STDOUT STDERR
@@ -161,7 +161,7 @@ docker exec <container_id> redis-cli
 
 - Get Command prompt in a container
 
-``` sh
+```sh
 # get full terminal access: easy debugging
 # sh: another command shell
 docker exec -it <docker_container> sh
@@ -172,7 +172,7 @@ docker exec -it <docker_container> sh
 
 - Starting a shell after starting a container
 
-``` sh
+```sh
 # go inside shell without running any other commands (no default override command)
 docker run -it busybox sh
 > ls
@@ -186,7 +186,7 @@ docker run -it busybox sh
 
 - two containers do not share file systems
 
-``` sh
+```sh
 docker run -it busybox sh
 > touch hithere.txt
 > ls
@@ -319,7 +319,7 @@ CMD ["redis-server"]
 
 - Build image using Dockerfile
 
-``` sh
+```sh
 # generate image with build context (current directory);
 # set of files and folders to encapsulate in this container
 docker build .
@@ -329,7 +329,7 @@ docker run [#id]
 
 - Tagging an Image
 
-``` sh
+```sh
 docker build -t {docker id}/{repo_name}:{version} .
 docker build -t username/redis:latest .
 ```
@@ -375,7 +375,7 @@ RUN apk add --update gcc
 CMD ["redis-server"]
 ```
 
-``` sh
+```sh
 # no fetch or installation of redis: image has been cached
 # it will not use cached image if redis and gcc RUN command order changes
 # installation of gcc and redis
