@@ -50,6 +50,7 @@ npm install
 - 웹 어플리케이션 서버 (WAS)
 
 - 클라우드워치
+- CWAgent > ImageId, InstanceId, InstanceType > 'mem_used_percent' 추가
   - https://ninano.techblogg.net/2021/07/23/cloud-watch%EC%97%90%EC%84%9C-ec2-memory-%EB%AA%A8%EB%8B%88%ED%84%B0%EB%A7%81/
   - https://musketpopeye.xyz/2020/12/11/aws-ec2-cloudwatch-mem/
   - https://brunch.co.kr/@topasvga/615
