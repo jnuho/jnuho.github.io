@@ -233,6 +233,10 @@ docker network disconnect {network_name}
 # docker network create 커멘드 옵션
 # -d, --driver="bridge"
 docker network create myNetwork
+docker network create -d bridge myNetwork
+docker network create --driver=bridge myNetwork
+
+docker network create -d myNetwork
 docker network inspect myNetwork
 docker run -it --net=myNetwork tomcat
 
@@ -258,10 +262,12 @@ CMD ["catalina.sh", "run"]
 ```
 
 ```sh
-docker run -it -name myTomcat --net=myNetwork tomcat
+docker network create --driver=bridge myNetwork
+docker run -it --name myTomcat --net=myNetwork tomcat
+docker run -it --net=container:myTomcat busybox
 ```
 
-### Create a DockerFile
+### Create a Dockerfile
 
 ```
 # Writing a Dockerfile
@@ -284,6 +290,7 @@ Dockerfile (Configuration to define how our container should behave)
 -> Docker Server
 -> Build Usable Image
 ```
+
 
 - Create Dockerfile
 
