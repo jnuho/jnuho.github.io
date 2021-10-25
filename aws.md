@@ -48,3 +48,25 @@ npm install
 
 - 웹서버 (WEB)
 - 웹 어플리케이션 서버 (WAS)
+
+- 클라우드워치
+  - https://ninano.techblogg.net/2021/07/23/cloud-watch%EC%97%90%EC%84%9C-ec2-memory-%EB%AA%A8%EB%8B%88%ED%84%B0%EB%A7%81/
+  - https://musketpopeye.xyz/2020/12/11/aws-ec2-cloudwatch-mem/
+  - https://brunch.co.kr/@topasvga/615
+
+```sh
+sudo -s
+cd /opt
+wget https://s4.amazonaws.com/amazoncloudwatch-agent/centos/amd64/latest/amazon-cloudwatch-agent.rpm
+rpm -Uvh amazon-cloudwatch-agent.rpm
+cd /opt/aws/amazon-cloudwatch-agent/bin
+./amazon-cloudwatch-agent-config-wizard
+  위자드 설치 옵션1~2선택
+cd /opt/aws/amazon-cloudwatch-agent/bin
+./amazon-cloudwatch-agent-ctl -a fetch-config -m ec2 file://opt/aws/amazon-cloudwatch-agent/bin/config.json -s
+./amazon-cloudwatch-agent-ctl -m ec2 -a start
+./amazon-cloudwatch-agent-ctl -m ec2 -a status
+ps -ef | grep amazon-cloudwatch-agent
+cd /opt/aws/amazon-cloudwatch-agent/logs
+more amazon-cloudwatch-agent.log
+```
