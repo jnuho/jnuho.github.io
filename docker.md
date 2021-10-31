@@ -205,68 +205,6 @@ CONTAINER ID
 <b>
 ```
 
-### Network
-
-From the book 'Docker and Kubernetes for Java'
-
-- Docker network types
-  - Bridge (default)
-  - Host
-    - fast network speed
-    - for performance
-    - vulnerable security
-    - accessible through the host's ip address
-    - requires port mapping to reach services inside the container
-  - None
-    - does not configure networking at all
-    - networking is disabled
-
-- Networking commands
-
-```sh
-docker network ls
-docker network create {network_name}
-docker network rm {network_name}
-docker network connect {network_name}
-docker network disconnect {network_name}
-
-# docker network create 커멘드 옵션
-# -d, --driver="bridge"
-docker network create myNetwork
-docker network create -d bridge myNetwork
-docker network create --driver=bridge myNetwork
-
-docker network create -d myNetwork
-docker network inspect myNetwork
-docker run -it --net=myNetwork tomcat
-
-# 'myPostgreSQL' container can use the same network as the other container, 'myTomcat', use
-# they can directly communite each other in the same network, 'bridge'
-# though the network itself isolates the containers from external networks
-# [Docker Host] -> [ISOLATED Network(container1, 2, 3, ...)]
-docker run -it --net=bridge myTomcat
-docker run -it --net=container:myTomcat myPostgreSQL
-```
-
-- Exposing and Mapping ports
-
-```Dockerfile
-# Official 'tomcat' image Dockerfile fragment
-FROM openjdk:8-jre-alpine
-ENV CATALINA_HOME /usr/local/tomcat
-ENV PATH $CATALINA_HOME/bin:$PATH
-RUN mkdir -p "$CATALINA_HOME"
-WORKDIR "$CATALINA_HOME"
-EXPOSE 8080
-CMD ["catalina.sh", "run"]
-```
-
-```sh
-docker network create --driver=bridge myNetwork
-docker run -it --name myTomcat --net=myNetwork tomcat
-docker run -it --net=container:myTomcat busybox
-```
-
 ### Create a Dockerfile
 
 ```
