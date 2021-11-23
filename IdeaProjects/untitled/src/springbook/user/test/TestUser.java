@@ -1,6 +1,7 @@
 package springbook.user.test;
 
-import springbook.user.dao.*;
+import springbook.user.dao.DaoFactory;
+import springbook.user.dao.UserDao;
 import springbook.user.domain.User;
 
 import java.sql.SQLException;
