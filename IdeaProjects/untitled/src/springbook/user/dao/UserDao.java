@@ -1,5 +1,6 @@
 package springbook.user.dao;
 
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import springbook.user.domain.User;
 
 import java.sql.Connection;
@@ -11,8 +12,17 @@ public class UserDao {
 
   private ConnectionMaker connectionMaker;
 
+  // 의존관계 주입
+  //  런타임시 DConnectionMaker에 대한 의존성을 제거함
+  //  대신 인터페이스를 통해 전달받음
   public UserDao(ConnectionMaker connectionMaker) {
     this.connectionMaker = connectionMaker;
+  }
+
+  // 의존관계 검색
+  public UserDao() {
+    AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(DaoFactory.class);
+    this.connectionMaker = context.getBean("connectionMaker", ConnectionMaker.class);
   }
 
   public void add(User user) throws ClassNotFoundException, SQLException {
