@@ -14,5 +14,8 @@ public class DaoFactory {
   @Bean
   public ConnectionMaker connectionMaker() {
     return new NConnectionMaker();
+    // 필요에 따라 어떤 ConnectionMaker 사용할 지 수정
+//    return new LocalDBConnectionMaker();
+//    return new ProductionlDBConnectionMaker();
   }
 }
