@@ -25,6 +25,10 @@ public class UserDao {
     this.connectionMaker = context.getBean("connectionMaker", ConnectionMaker.class);
   }
 
+  public void setConnectionMaker(ConnectionMaker connectionMaker) {
+    this.connectionMaker = connectionMaker;
+  }
+
   public void add(User user) throws ClassNotFoundException, SQLException {
     Connection c = connectionMaker.makeConnection();
     PreparedStatement ps  = c.prepareStatement("insert into users(id, name, password) values(?,?,?)");
