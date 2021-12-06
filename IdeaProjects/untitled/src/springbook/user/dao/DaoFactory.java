@@ -9,15 +9,23 @@ public class DaoFactory {
   @Bean
   public UserDao userDao() {
     UserDao userDao = new UserDao();
-    userDao.setConnectionMaker(myConnectionMaker());
+    userDao.setConnectionMaker(localDBConnectionMaker());
     return userDao;
   }
 
   @Bean
   public ConnectionMaker myConnectionMaker() {
-    return new NConnectionMaker();
     // 필요에 따라 어떤 ConnectionMaker 사용할 지 수정
-//    return new LocalDBConnectionMaker();
-//    return new ProductionlDBConnectionMaker();
+    return new NConnectionMaker();
+  }
+
+  @Bean
+  public ConnectionMaker localDBConnectionMaker() {
+    return new LocalDBConnectionMaker();
+  }
+
+  @Bean
+  public ConnectionMaker productionDBConnectionMaker() {
+    return new ProductionDBConnectionMaker();
   }
 }
