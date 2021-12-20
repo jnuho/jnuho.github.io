@@ -1,4 +1,10 @@
 
+- Spring Initializr
+  - Gradle Project
+  - Spring Boot 2.x.x
+  - Dependencies: Spring Web, Thymeleaf 
+    - spring-boot-devtools: html컴파일만 해주면 서버 재시작 없이 view파일 변경 가능
+  - 다운로드 unzip > Open or import "build.gradle" > Open as project
 
 - 배포파일 빌드(gradle) 및 실행
 
@@ -10,6 +16,7 @@ cd study/hello-spring
 cd build/libs
 ls -arlth
     hello-spring-0.0.1-SNAPSHOPT.jar
+scp hello-spring-0.0.1-SNAPSHOPT.jar {remotehost}:/home/ec2-user
 
 # 서버 실행
 java -jar hello-spring-0.0.1-SNAPSHOPT.jar
