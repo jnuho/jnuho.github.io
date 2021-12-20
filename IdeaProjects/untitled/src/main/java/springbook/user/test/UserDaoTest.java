@@ -1,7 +1,9 @@
 package springbook.user.test;
 
 import org.junit.jupiter.api.Test;
-import springbook.user.dao.DaoFactory;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.GenericXmlApplicationContext;
+import springbook.user.dao.DConnectionMaker;
 import springbook.user.dao.UserDao;
 import springbook.user.domain.User;
 
@@ -16,10 +18,14 @@ public class UserDaoTest {
   public void addAndGet() throws SQLException, ClassNotFoundException {
 
     // 의존관계 검색
-//    ApplicationContext context = new GenericXmlApplicationContext("applicationContext.xml");
-//    UserDao dao = context.getBean("userDao", UserDao.class); // 메소드 명
+    ApplicationContext context = new GenericXmlApplicationContext("applicationContext.xml"); // XML방식
+//    ApplicationContext context = new AnnotationConfigApplicationContext(DaoFactory.class); // 어노테이션 방식
+    UserDao dao = context.getBean("userDao", UserDao.class); // 메소드 명
 
-    UserDao dao = new DaoFactory().userDao();
+    DConnectionMaker pcm = context.getBean("connectionMaker", DConnectionMaker.class);
+    System.out.println("커넥션 횟수 : "+ pcm.getCounter());
+
+//    UserDao dao = new DaoFactory().userDao();
     User user = new User();
     user.setId("whiteship");
     user.setName("백기선");

@@ -2,30 +2,28 @@ package springbook.user.dao;
 
 import springbook.user.domain.User;
 
-import java.sql.*;
+import javax.sql.DataSource;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class UserDao {
-  private ConnectionMaker connectionMaker;
-//  private DataSource dataSource;
-//
-//  public void setDataSource(DataSource dataSource) {
-//    this.dataSource = dataSource;
+//  private ConnectionMaker connectionMaker;
+//  public void setConnectionMaker(ConnectionMaker connectionMaker) {
+//    this.connectionMaker = connectionMaker;
 //  }
 
-  public UserDao(ConnectionMaker connectionMaker) {
-    this.connectionMaker = connectionMaker;
+  private DataSource dataSource;
+
+  public void setDataSource(DataSource dataSource) {
+    this.dataSource = dataSource;
   }
 
-//  public Connection getConnection() throws ClassNotFoundException, SQLException {
-//    Class.forName("com.mysql.jdbc.Driver");
-//    Connection c = DriverManager.getConnection("jdbc:mysql://localhost/springbook", "spring", "book");
-//    return c;
-//  }
-
   public void add(User user) throws ClassNotFoundException, SQLException {
-//    Connection c = dataSource.getConnection();
 //    Connection c = getConnection();
-    Connection c = connectionMaker.makeConnection();
+//    Connection c = connectionMaker.makeConnection();
+    Connection c = dataSource.getConnection();
     PreparedStatement ps  = c.prepareStatement("insert into users(id, name, password) values(?,?,?)");
     ps.setString(1, user.getId());
     ps.setString(2, user.getName());
@@ -37,9 +35,9 @@ public class UserDao {
   }
 
   public User get(String id) throws ClassNotFoundException, SQLException {
-//    Connection c = dataSource.getConnection();
 //    Connection c = getConnection();
-    Connection c = connectionMaker.makeConnection();
+//    Connection c = connectionMaker.makeConnection();
+    Connection c = dataSource.getConnection();
     PreparedStatement ps  = c.prepareStatement("select from users where id=?");
     ps.setString(1, id);
     ResultSet rs = ps.executeQuery();
