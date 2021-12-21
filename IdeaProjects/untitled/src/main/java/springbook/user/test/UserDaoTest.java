@@ -17,15 +17,18 @@ public class UserDaoTest {
   @Test
   public void addAndGet() throws SQLException, ClassNotFoundException {
 
-    // 의존관계 검색
-    ApplicationContext context = new GenericXmlApplicationContext("applicationContext.xml"); // XML방식
-//    ApplicationContext context = new AnnotationConfigApplicationContext(DaoFactory.class); // 어노테이션 방식
+    /** 의존관계 검색 */
+    // 1. XML방식
+    ApplicationContext context = new GenericXmlApplicationContext("applicationContext.xml");
     UserDao dao = context.getBean("userDao", UserDao.class); // 메소드 명
+    // 2. 어노테이션 방식
+//    ApplicationContext context = new AnnotationConfigApplicationContext(DaoFactory.class);
+//    UserDao dao = new DaoFactory().userDao();
 
+    // 커넥션 횟수
     DConnectionMaker pcm = context.getBean("connectionMaker", DConnectionMaker.class);
     System.out.println("커넥션 횟수 : "+ pcm.getCounter());
 
-//    UserDao dao = new DaoFactory().userDao();
     User user = new User();
     user.setId("whiteship");
     user.setName("백기선");
@@ -34,6 +37,7 @@ public class UserDaoTest {
     dao.add(user);
 
     User user2 = dao.get(user.getId());
+
 
     assertThat(user2.getName(), is(user.getName()));
     assertThat(user2.getPassword(), is(user.getPassword()));
