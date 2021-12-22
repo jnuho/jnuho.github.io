@@ -1,5 +1,9 @@
 package springbook.user.dao;
 
+import org.junit.jupiter.api.BeforeAll;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.GenericXmlApplicationContext;
+import org.springframework.dao.EmptyResultDataAccessException;
 import springbook.user.domain.User;
 
 import javax.sql.DataSource;
@@ -50,6 +54,10 @@ public class UserDao {
     rs.close();
     ps.close();
     c.close();
+
+    if (null == user) {
+      throw new EmptyResultDataAccessException(1);
+    }
 
     return user;
   }
