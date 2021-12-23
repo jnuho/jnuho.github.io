@@ -84,6 +84,7 @@
   - 일반 메소드
 
 - XML을 이용한 설정
+  - DaoFactory의 bean인 userDao와 makeConnection을 xml로 대체가능
 
 |자바 코드 설정정보 | XML 설정정보
 ---|---|---
@@ -91,5 +92,20 @@
 빈 이름 | @Bean methodName() | `<bean id="methodName">`
 빈 클래스 | return new BeanClass() | `class="a.b.c...BeanClass`
 
+- @Autowired
+  - 테스트 컨텍스트 프레임워크는 변수타입과 일치하는 컨텍스트 내의 빈을 찾는다.
+  - 타입일치 빈이 있으면 인스턴스 변수에 주입 (타입에 의한 자동 와이어링)
+  - ApplicationContext 는 applicationContext.xml 정의여부 상관없음
+    - 스프링 어플리케이션 컨텍스트는 초기화 시 자신도 빈으로 등록
+    - 어플리케이션 컨텍스트에는 ApplicationContext 타입의 빈이 존재, DI도 가능
+    - ApplicationContext 빈을 가져올 필요없이 UserDao를 자동와이어링 가능
+    - 같은타입의 빈이 2개이상이면 자동와이어링 불가능
+    
+    
+``` java
+@Autowired
+SimpleDriverDataSource simpleDataSource;
 
-    - DaoFactory의 bean인 userDao와 makeConnection을 xml로 대체가능
+@Autowired
+DataSource dataSource;
+```

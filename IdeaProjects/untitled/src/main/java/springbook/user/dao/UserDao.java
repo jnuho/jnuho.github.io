@@ -1,6 +1,7 @@
 package springbook.user.dao;
 
 import org.junit.jupiter.api.BeforeAll;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.GenericXmlApplicationContext;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -18,6 +19,7 @@ public class UserDao {
 //    this.connectionMaker = connectionMaker;
 //  }
 
+  @Autowired
   private DataSource dataSource;
 
   public void setDataSource(DataSource dataSource) {

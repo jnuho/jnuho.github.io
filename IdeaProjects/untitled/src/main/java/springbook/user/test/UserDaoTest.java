@@ -13,6 +13,7 @@ import springbook.user.dao.DConnectionMaker;
 import springbook.user.dao.UserDao;
 import springbook.user.domain.User;
 
+import javax.sql.DataSource;
 import java.sql.SQLException;
 
 import static org.hamcrest.CoreMatchers.is;

@@ -13,7 +13,7 @@ public class DaoFactory {
   public UserDao userDao() {
 
     UserDao userDao = new UserDao();
-    userDao.setDataSource(dataSource());
+//    userDao.setDataSource(dataSource());
 //    userDao.setConnectionMaker(connectionMaker());
     return userDao;
   }
