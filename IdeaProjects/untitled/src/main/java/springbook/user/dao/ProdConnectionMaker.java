@@ -8,7 +8,7 @@ public class ProdConnectionMaker implements ConnectionMaker {
 
   public Connection makeConnection() throws ClassNotFoundException, SQLException {
     Class.forName("com.mysql.jdbc.Driver");
-    Connection c = DriverManager.getConnection("jdbc:mysql://localhost/test", "root", "root");
+    Connection c = DriverManager.getConnection("jdbc:mysql://localhost/springbook", "spring", "book");
     return c;
   }
 }
