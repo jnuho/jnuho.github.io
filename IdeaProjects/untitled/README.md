@@ -110,3 +110,9 @@ SimpleDriverDataSource simpleDataSource;
 DataSource dataSource;
 ```
 
+- SimpleDriverDataSource 대신 DataSource 인터페이스 DI 하는 이유
+  - 추후 구현체가 변경 될수 있기때문
+  - 다른 서비스기능을 도입가능 (ex. 커넥션 counter)
+  - 효율적인 테스트
+
+
