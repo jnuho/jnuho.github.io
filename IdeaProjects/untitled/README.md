@@ -110,9 +110,32 @@ SimpleDriverDataSource simpleDataSource;
 DataSource dataSource;
 ```
 
-- SimpleDriverDataSource 대신 DataSource 인터페이스 DI 하는 이유
-  - 추후 구현체가 변경 될수 있기때문
-  - 다른 서비스기능을 도입가능 (ex. 커넥션 counter)
-  - 효율적인 테스트
+- DI사용 및 SimpleDriverDataSource 대신 DataSource 인터페이스 사용 이유
+  1. 추후 구현체가 변경 될수 있기때문
+  2. 다른 서비스기능을 도입가능 (ex. 커넥션 counter)
+  3. 효율적인 테스트
 
 
+- `@BeforeAll`의 non-static 메소드 사용을 위해,
+  - 클래스에 `@TestInstance(TestInstance.Lifecycle.PER_CLASS)` 추가
+
+- `@DirtiesContext` : 테스트 메소드에서 애플리케이션 컨텍스트의 구성이나 상태를 변경한다는 것을
+  - 테스트 컨텍스트 프레임워크에 알려줌
+- 테스트용 test-applicationContext.xml 생성 및 dataSource빈의 "url" 프로퍼티를 testdb바라보게 설정
+
+
+
+```sql
+-- 데이터베이스 생성 
+CREATE DATABASE `testdb` CHARACTER SET utf8;
+
+# 계정생성 (5.7 이상은 Create 후 권한부여)
+# % 인 경우 remote access 허용 
+# localhost 인 경우 localhost만 허용 
+# IP 인 경우 해당 IP만 허용 (192.168.0.% 인 경우 Host 대역 허용)
+CREATE USER 'spring'@'%' IDENTIFIED BY 'book';
+
+# 권한부여 (계정 생성 후 부여)
+# 외부 % 및 개발서버 lowem-139 접근권한 허용
+GRANT ALL PRIVILEGES ON `testdb`.* TO 'spring'@'%';
+```
