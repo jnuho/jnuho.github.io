@@ -139,3 +139,9 @@ CREATE USER 'spring'@'%' IDENTIFIED BY 'book';
 # 외부 % 및 개발서버 lowem-139 접근권한 허용
 GRANT ALL PRIVILEGES ON `testdb`.* TO 'spring'@'%';
 ```
+
+
+- 스프링 학습테스트
+  - JUnit실행 클래스 : 테스트메소드 @Test 실행할 떄 마다 새로운 테스트클래스의 오브젝트가 만들어짐
+  - ApplicationContext : 테스트 개수에 상관없이 한 개 만들어지고, 모든 테스트에서 공유됨
+
