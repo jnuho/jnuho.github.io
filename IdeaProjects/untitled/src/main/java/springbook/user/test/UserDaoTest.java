@@ -77,12 +77,13 @@ public class UserDaoTest {
   }
 
   @Test
-  public void addAndGet() throws SQLException, ClassNotFoundException {
+  public void addAndGet() throws SQLException {
 
     // 커넥션 횟수
 //    System.out.println("커넥션 횟수 : "+ this.counter);
 
     dao.deleteAll();
+
     assertThat(dao.getCount(), is(0));
 
     dao.add(user1);

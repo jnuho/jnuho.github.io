@@ -1,9 +1,5 @@
 package springbook.user.dao;
 
-import org.junit.jupiter.api.BeforeAll;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.GenericXmlApplicationContext;
 import org.springframework.dao.EmptyResultDataAccessException;
 import springbook.user.domain.User;
 
@@ -14,63 +10,101 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class UserDao {
-//  private ConnectionMaker connectionMaker;
-//  public void setConnectionMaker(ConnectionMaker connectionMaker) {
-//    this.connectionMaker = connectionMaker;
-//  }
 
-  @Autowired
   private DataSource dataSource;
 
+  private JdbcContext jdbcContext;
+
+  public UserDao(){}
+
+  public UserDao(JdbcContext jdbcContext) {
+    this.jdbcContext = jdbcContext;
+  }
+
   public void setDataSource(DataSource dataSource) {
+    this.jdbcContext = new JdbcContext();
+    this.jdbcContext.setDataSource(dataSource);
     this.dataSource = dataSource;
   }
 
-  public void add(User user) throws ClassNotFoundException, SQLException {
-//    Connection c = getConnection();
-//    Connection c = connectionMaker.makeConnection();
-    Connection c = dataSource.getConnection();
-    PreparedStatement ps  = c.prepareStatement("insert into users(id, name, password) values(?,?,?)");
-    ps.setString(1, user.getId());
-    ps.setString(2, user.getName());
-    ps.setString(3, user.getPassword());
-    ps.executeUpdate();
-
-    ps.close();
-    c.close();
+  public void add(User user) throws SQLException {
+    this.jdbcContext.workWithStatementStrategy(
+        new StatementStrategy() {
+          @Override
+          public PreparedStatement makePreparedStatement(Connection c) throws SQLException {
+            PreparedStatement ps = c.prepareStatement("insert into users(id, name, password) values(?,?,?)");
+            ps.setString(1, user.getId());
+            ps.setString(2, user.getName());
+            ps.setString(3, user.getPassword());
+            return ps;
+          }
+        }
+    );
   }
 
-  public User get(String id) throws ClassNotFoundException, SQLException {
+  public User get(String id) throws SQLException, EmptyResultDataAccessException {
 //    Connection c = getConnection();
 //    Connection c = connectionMaker.makeConnection();
-    Connection c = dataSource.getConnection();
-    PreparedStatement ps  = c.prepareStatement("select * from users where id=?");
-    ps.setString(1, id);
-    ResultSet rs = ps.executeQuery();
-    rs.next();
-    User user = new User();
-    user.setId(rs.getString("id"));
-    user.setName(rs.getString("name"));
-    user.setPassword(rs.getString("password"));
+    Connection c = null;
+    PreparedStatement ps = null;
+    ResultSet rs = null;
 
-    rs.close();
-    ps.close();
-    c.close();
+    User user = new User();
+    try {
+      c = dataSource.getConnection();
+
+      ps  = c.prepareStatement("select * from users where id=?");
+      ps.setString(1, id);
+
+      rs = ps.executeQuery();
+      rs.next();
+      user.setId(rs.getString("id"));
+      user.setName(rs.getString("name"));
+      user.setPassword(rs.getString("password"));
+    } catch(SQLException e) {
+      throw e;
+    } finally {
+      if (rs != null) {
+        try {
+          rs.close();
+        } catch( SQLException e) {
+          System.out.println("rs.close??");
+        }
+      }
+      if (ps != null) {
+        try {
+          ps.close();
+        } catch( SQLException e) {
+          System.out.println("ps.close??");
+        }
+      }
+      if (c != null) {
+        try {
+          c.close();
+        } catch( SQLException e) {
+          System.out.println("c.close??");
+        }
+      }
+    }
 
     if (null == user) {
+      System.out.println("null==user???");
       throw new EmptyResultDataAccessException(1);
     }
 
     return user;
   }
 
-  public void deleteAll() throws SQLException {
-    Connection c = dataSource.getConnection();
-    PreparedStatement ps = c.prepareStatement("delete from users");
-    ps.executeUpdate();
 
-    ps.close();
-    c.close();
+  public void deleteAll() throws SQLException {
+    this.jdbcContext.workWithStatementStrategy(
+        new StatementStrategy() {
+          @Override
+          public PreparedStatement makePreparedStatement(Connection c) throws SQLException {
+            return c.prepareStatement("delete from users");
+          }
+        }
+    );
   }
 
   public int getCount() throws SQLException {
@@ -87,6 +121,5 @@ public class UserDao {
 
     return count;
   }
-
 
 }

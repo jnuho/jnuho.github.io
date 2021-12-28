@@ -9,19 +9,19 @@ import javax.sql.DataSource;
 @Configuration
 public class DaoFactory {
 
-  @Bean
-  public UserDao userDao() {
-
-    UserDao userDao = new UserDao();
-//    userDao.setDataSource(dataSource());
-//    userDao.setConnectionMaker(connectionMaker());
-    return userDao;
-  }
-
-  @Bean
-  public ConnectionMaker connectionMaker() {
-    return new DConnectionMaker(realConnectionMaker());
-  }
+//  @Bean
+//  public UserDao userDao() {
+//
+//    UserDao userDao = new UserDao();
+////    userDao.setDataSource(dataSource());
+////    userDao.setConnectionMaker(connectionMaker());
+//    return userDao;
+//  }
+//
+//  @Bean
+//  public ConnectionMaker connectionMaker() {
+//    return new DConnectionMaker(realConnectionMaker());
+//  }
 
   @Bean
   public ConnectionMaker realConnectionMaker() {
