@@ -124,10 +124,14 @@ DataSource dataSource;
 - 테스트용 test-applicationContext.xml 생성 및 dataSource빈의 "url" 프로퍼티를 testdb바라보게 설정
 
 
+```
+docker run -d -p 3306:3306 -e MYSQL_ROOT_PASSWORD=root --name mysql8 mysql:8.0 --lower_case_table_names=1
+```
 
 ```sql
 -- 데이터베이스 생성 
 CREATE DATABASE `testdb` CHARACTER SET utf8;
+USE `testdb`;
 
 # 계정생성 (5.7 이상은 Create 후 권한부여)
 # % 인 경우 remote access 허용 
@@ -137,9 +141,15 @@ CREATE USER 'spring'@'%' IDENTIFIED BY 'book';
 
 # 권한부여 (계정 생성 후 부여)
 # 외부 % 및 개발서버 lowem-139 접근권한 허용
-GRANT ALL PRIVILEGES ON `testdb`.* TO 'spring'@'%';
-```
+GRANT ALL PRIVILEGES ON `testdb`.* TO 'spring'@'%' WITH GRANT OPTION;
 
+# 테이블 생성
+CREATE TABLE users (
+  ID varchar(10) primary key,
+  NAME varchar(20) not null,
+  PASSWORD varchar(10) not null
+);
+```
 
 - 스프링 학습테스트
   - JUnit실행 클래스 : 테스트메소드 @Test 실행할 떄 마다 새로운 테스트클래스의 오브젝트가 만들어짐

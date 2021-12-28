@@ -49,7 +49,7 @@ public class UserDao {
     PreparedStatement ps = null;
     ResultSet rs = null;
 
-    User user = new User();
+    User user = null;
     try {
       c = dataSource.getConnection();
 
@@ -57,10 +57,12 @@ public class UserDao {
       ps.setString(1, id);
 
       rs = ps.executeQuery();
-      rs.next();
-      user.setId(rs.getString("id"));
-      user.setName(rs.getString("name"));
-      user.setPassword(rs.getString("password"));
+      if (rs.next()) {
+        user = new User();
+        user.setId(rs.getString("id"));
+        user.setName(rs.getString("name"));
+        user.setPassword(rs.getString("password"));
+      }
     } catch(SQLException e) {
       throw e;
     } finally {
@@ -68,27 +70,23 @@ public class UserDao {
         try {
           rs.close();
         } catch( SQLException e) {
-          System.out.println("rs.close??");
         }
       }
       if (ps != null) {
         try {
           ps.close();
         } catch( SQLException e) {
-          System.out.println("ps.close??");
         }
       }
       if (c != null) {
         try {
           c.close();
         } catch( SQLException e) {
-          System.out.println("c.close??");
         }
       }
     }
 
     if (null == user) {
-      System.out.println("null==user???");
       throw new EmptyResultDataAccessException(1);
     }
 

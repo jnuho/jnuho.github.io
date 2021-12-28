@@ -22,7 +22,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 // JUnit 4
 //@RunWith(SpringJUnit4ClassRunner.class)
-//@ContextConfiguration({"/applicationContext.xml"})
 // JUnit 5
 // 스프링의 테스트 컨텍스트 프레임워크의 JUnit 확장기능 지점
 @ExtendWith(SpringExtension.class)
