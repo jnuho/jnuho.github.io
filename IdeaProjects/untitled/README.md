@@ -155,3 +155,10 @@ CREATE TABLE users (
   - JUnit실행 클래스 : 테스트메소드 @Test 실행할 떄 마다 새로운 테스트클래스의 오브젝트가 만들어짐
   - ApplicationContext : 테스트 개수에 상관없이 한 개 만들어지고, 모든 테스트에서 공유됨
 
+- 디펜던시 인젝션 pom.xml 또는 @Autowired
+  - JdbcContext는 인터페이스 없으므로 pom.xml대신 수동 DI 사용
+
+
+- 템플릿과 콜백
+  - 템플릿
+  - 콜백: 실행 되는 것을 목적으로 다른 오브젝트 메소드에 전달되는 오브젝트

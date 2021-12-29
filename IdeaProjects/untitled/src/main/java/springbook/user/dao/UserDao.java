@@ -11,15 +11,19 @@ import java.sql.SQLException;
 
 public class UserDao {
 
+  // applicationContext.xml에 빈 정의 -> SimpleDriverDataSource 사용
   private DataSource dataSource;
 
   private JdbcContext jdbcContext;
 
   public UserDao(){}
 
-  public UserDao(JdbcContext jdbcContext) {
-    this.jdbcContext = jdbcContext;
-  }
+  // applicationContext.xml의 jdbcContext가 아닌
+  // new JdbcContext()로 직접 주입시, setter 필요 없음
+//  public void setJdbcContext(JdbcContext jdbcContext) {
+//    // DI받기위한 setter
+//    this.jdbcContext = jdbcContext;
+//  }
 
   public void setDataSource(DataSource dataSource) {
     this.jdbcContext = new JdbcContext();
@@ -93,16 +97,8 @@ public class UserDao {
     return user;
   }
 
-
   public void deleteAll() throws SQLException {
-    this.jdbcContext.workWithStatementStrategy(
-        new StatementStrategy() {
-          @Override
-          public PreparedStatement makePreparedStatement(Connection c) throws SQLException {
-            return c.prepareStatement("delete from users");
-          }
-        }
-    );
+    this.jdbcContext.executeSql("delete from users");
   }
 
   public int getCount() throws SQLException {
