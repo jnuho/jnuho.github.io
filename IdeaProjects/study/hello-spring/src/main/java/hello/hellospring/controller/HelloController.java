@@ -21,13 +21,14 @@ public class HelloController {
   }
 
   @GetMapping("hello-string")
-  @ResponseBody
+  @ResponseBody // 템플릿이 viewResolver 아닌 응답결과를 직접 결정: string 또는 객체는 디폴트 json
   public String helloString(@RequestParam(value = "name") String name) {
     return "HELLO " + name;
+//    return "<html>HELLO " + name + "</html>";
   }
 
   @GetMapping("hello-api")
-  @ResponseBody
+  @ResponseBody // 템플릿이 viewResolver 아닌 응답결과를 직접 결정: string 또는 객체를 디폴트 json
   public Hello helloApi(@RequestParam(value = "name") String name) {
     Hello hello = new Hello();
     hello.setName(name);

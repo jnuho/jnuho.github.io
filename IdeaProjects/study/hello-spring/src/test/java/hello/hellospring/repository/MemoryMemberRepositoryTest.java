@@ -1,20 +1,23 @@
 package hello.hellospring.repository;
 
 import hello.hellospring.domain.Member;
+import hello.hellospring.service.MemberService;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.equalTo;
-
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class MemoryMemberRepositoryTest {
 
-  MemoryMemberRepository repository = new MemoryMemberRepository();
+  MemoryMemberRepository repository;
+
+  @BeforeEach
+  public void beforeEach() {
+    repository = new MemoryMemberRepository();
+  }
 
   @AfterEach
   public void afterEach() {
@@ -25,10 +28,13 @@ public class MemoryMemberRepositoryTest {
   public void save() {
     Member member = new Member();
     member.setName("spring");
+
     repository.save(member);
 
     Member result = repository.findById(member.getId()).get();
-    assertThat(member, is(equalTo(result)));
+
+//    Assertions.assertEquals(member, result);
+    assertThat(member).isEqualTo(result);
   }
 
   @Test
@@ -41,8 +47,9 @@ public class MemoryMemberRepositoryTest {
     member2.setName("spring2");
     repository.save(member2);
 
-    Member result = repository.findByName("spring1").get();
-    assertThat(result, is(equalTo(member1)));
+    Member member = repository.findByName("spring1").get();
+
+    assertThat(member).isEqualTo(member1);
   }
 
   @Test
@@ -56,6 +63,9 @@ public class MemoryMemberRepositoryTest {
     repository.save(member2);
 
     List<Member> result = repository.findAll();
-    assertThat(result.size(), is(equalTo(2)));
+
+    assertThat(result.size()).isEqualTo(2);
+
   }
+
 }
