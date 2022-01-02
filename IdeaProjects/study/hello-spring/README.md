@@ -99,3 +99,11 @@ public class MemberController {
 - Mapping 우선순위
   - 맵핑찾음
   - static파일
+
+- DB접근
+
+```properties
+# application.properties
+spring.datasource.url=jdbc:mysql://localhost:3306/testdb
+spring.datasource.driver-class-name=com.mysql.jdbc.Driver
+```
