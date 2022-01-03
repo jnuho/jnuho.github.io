@@ -1,7 +1,6 @@
 package hello.hellospring.service;
 
 import hello.hellospring.domain.Member;
-import hello.hellospring.repository.MemberRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -17,10 +16,8 @@ class MemberServiceIntegrationTest {
   @Autowired
   private MemberService memberService;
 
-  @Autowired
-  private MemberRepository memberRepository;
-
   @Test
+//  @Commit
   public void join() {
     // given
     Member member = new Member();
@@ -61,11 +58,11 @@ class MemberServiceIntegrationTest {
 //    assertThat(member.getName()).isEqualTo(findMember.getName());
   }
 
-  @Test
-  public void findMembers() {
-  }
-
-  @Test
-  public void findOne() {
-  }
+//  @Test
+//  public void findMembers() {
+//  }
+//
+//  @Test
+//  public void findOne() {
+//  }
 }

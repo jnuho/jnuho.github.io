@@ -23,6 +23,10 @@ public class MemberController {
   @Autowired
   public MemberController(MemberService memberService) {
     this.memberService = memberService;
+    // 진짜 Service 실행전 프록시 Service 생성되어 AOP 적용 및 실행 후 joinPointProceed() 하게 되므로
+    // 여기서는 CGLIB가 Service를 프록시가 생성되어 주입되고 있음을 확인
+    // DI를 사용하기 때문에 프록시 주입이 가능!
+    System.out.println("[AOP확인]memberService = " + memberService.getClass());
   }
 
   @GetMapping("/members/new")

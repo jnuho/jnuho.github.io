@@ -107,3 +107,9 @@ public class MemberController {
 spring.datasource.url=jdbc:mysql://localhost:3306/testdb
 spring.datasource.driver-class-name=com.mysql.jdbc.Driver
 ```
+
+- JPA + Hibernate
+
+- AOP
+  - 공통관심사항 vs 핵심관심사항 분리
+
