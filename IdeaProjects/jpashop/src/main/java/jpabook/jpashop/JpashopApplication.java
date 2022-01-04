@@ -1,18 +1,17 @@
-package jpabook.japshop;
+package jpabook.jpashop;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class JapshopApplication {
+public class JpashopApplication {
 
 	public static void main(String[] args) {
     Hello hello = new Hello();
-    hello.setData("hello");
-    String data = hello.getData();
-    System.out.println(data);
+    hello.setData("spring");
+    System.out.println(hello.getData());
 
-		SpringApplication.run(JapshopApplication.class, args);
+		SpringApplication.run(JpashopApplication.class, args);
 	}
 
 }
