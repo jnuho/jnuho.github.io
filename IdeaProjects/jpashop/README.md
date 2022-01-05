@@ -22,3 +22,7 @@ Intellij > Setting > Compiler > Annotation Processors > Enable annotation proces
 ```shell
 ./gradlew dependencies
 ```
+
+- 설정파일 변경 `application.properties -> application.yml`
+
+
