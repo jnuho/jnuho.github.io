@@ -22,3 +22,6 @@ Intellij > open > pom.xml
 - 영속성 컨텍스트
   - 엔티티 조회, 1차캐시 key,value = (@Id, Entity객체)
   - 1차캐시에 없으면 DB조회 후 1차캐시에 저장
+
+
+- 배치

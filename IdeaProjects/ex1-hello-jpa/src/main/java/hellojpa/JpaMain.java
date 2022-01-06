@@ -58,8 +58,12 @@ public class JpaMain {
 //      em.remove(findMember);
 
       // 수정
-//      Member findMember = em.find(Member.class, 1L);
-//      findMember.setName("HelloJPA");
+//      Member m = new Member();
+//      m.setId(150L);
+//      m.setName("AAA");
+//      em.persist(m);
+      Member member = em.find(Member.class, 150L);
+      member.setName("ZZZ");
 
       // JPQL
 //      Member findMember = em.find(Member.class, 1L);
@@ -73,14 +77,16 @@ public class JpaMain {
 //        System.out.println(m.getName());
 //      }
 
-      Member member1 = new Member(150L, "A");
-      Member member2 = new Member(160L, "B");
+//      Member member1 = new Member(150L, "A");
+//      Member member2 = new Member(160L, "B");
+//
+//      em.persist(member1);
+//      em.persist(member2);
+//
+//      System.out.println("===");
 
-      em.persist(member1);
-      em.persist(member2);
-
-      System.out.println("===");
-
+      // flush
+      // hibernate option
       tx.commit();
 
     } catch(Exception e) {

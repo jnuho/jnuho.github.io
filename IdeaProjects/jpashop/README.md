@@ -23,6 +23,7 @@ Intellij > Setting > Compiler > Annotation Processors > Enable annotation proces
 ./gradlew dependencies
 ```
 
+<<<<<<< HEAD
 - Spring boot documentation
   - Serving web content with Spring MVC
 
@@ -30,3 +31,8 @@ Intellij > Setting > Compiler > Annotation Processors > Enable annotation proces
   - Thymeleaf
   - Groovy Templates
   - 
+=======
+- 설정파일 변경 `application.properties -> application.yml`
+
+
+>>>>>>> 03eef6ae7bc264a4ee4302c8df2c7174beb03d9a
