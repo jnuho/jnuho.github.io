@@ -11,3 +11,4 @@ for x in array:
 for i in array:
     for j in array:
         temp = i*j
+
