@@ -63,9 +63,27 @@ public class JpaMain {
 //      m.setName("AAA");
 //      em.persist(m);
       Member member = em.find(Member.class, 150L);
-      member.setName("ZZZ");
+      member.setName("AAAAA");
+
+      // 준영속상태 전환 : update안됨
+      em.detach(member);
+
+      // 영속성 컨텍스트를 완전히 초기화
+      em.clear();
+
+      // 영속성 컨텍스트 종료: 데이터 변경 못함
+      em.close();
+      member = em.find(Member.class, 150L);
+      member.setName("AAAAA");
+
+      // 초기화 됐기때문에 다시 select 조회
+      member = em.find(Member.class, 150L);
 
       // JPQL
+      //  flush 자동 호출
+      //  insert한 데이터가 persist에서 DB반영 안될 수 있기 때문
+      //   em.setFlushMode(FlushModeType.AUTO) // 기본값
+      //   em.setFlushMode(FlushModeType.COMMIT)
 //      Member findMember = em.find(Member.class, 1L);
 //      List<Member> result = em.createQuery("select m from Member m", Member.class)
 //              .getResultList();
@@ -86,6 +104,9 @@ public class JpaMain {
 //      System.out.println("===");
 
       // flush
+      // 커밋하기 전에 강제로 DB반영 (insert)
+//      em.flush();
+
       // hibernate option
       tx.commit();
 

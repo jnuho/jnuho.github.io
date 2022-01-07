@@ -25,3 +25,9 @@ Intellij > open > pom.xml
 
 
 - 배치
+
+- 데이터베이스 스키마 자동 생성
+  - 개발서버 에서만 사용
+  - 운영은 다듬은 후 사용
+  - hibernate.hbm2ddl.auto
+    - update: 컬럼 지우는건 안됨

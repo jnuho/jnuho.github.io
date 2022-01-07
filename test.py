@@ -1,23 +1,13 @@
 
-# 5, [1,2,3,4,5]
-# 3, [1,7,5]
-# N = int(input())
-# n_list = set(map(int, input().split()))
+array = [3, 5, 1, 2, 4]
 
-# M = int(input())
-# m_list = map(int, input().split())
+summary = 0
 
-def binary_search(arr:list, target:int, start:int, end:int) -> int:
+# O(N)
+for x in array:
+    summary += x
 
-  while start <= end:
-    mid = (start + end) // 2
-
-    if arr[mid] == target: 
-      return mid
-    elif arr[mid] > target:
-      end = mid - 1
-    else:
-      start = mid + 1
-
-  return None
-
+# O(N^2)
+for i in array:
+    for j in array:
+        temp = i*j
