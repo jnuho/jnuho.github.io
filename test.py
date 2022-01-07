@@ -1,14 +1,43 @@
 
-array = [3, 5, 1, 2, 4]
 
-summary = 0
 
-# O(N)
-for x in array:
-    summary += x
 
-# O(N^2)
-for i in array:
-    for j in array:
-        temp = i*j
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# N = 배열의 크기
+# M = 숫자가 더해지는 횟수
+# K = 연속으로 더할 수 있는 횟수
+# 5 8 3
+# 2 4 5 4 6
+N, M, K = map(int, input().split())
+
+list = list(map(int, input().split()))
+sum = 0
 
