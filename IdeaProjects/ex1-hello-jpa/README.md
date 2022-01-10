@@ -9,6 +9,24 @@
 - Dependencies
   - JPA 하이버네이트
   - H2 데이터베이스
+  - 
+```xml
+<dependencies>
+    <!-- JPA 하이버네이트 -->
+    <dependency>
+        <groupId>org.hibernate</groupId>
+        <artifactId>hibernate-entitymanager</artifactId>
+        <version>5.3.10.Final</version>
+    </dependency>
+    <!-- H2 데이터베이스 -->
+    <dependency>
+        <groupId>com.h2database</groupId>
+        <artifactId>h2</artifactId>
+        <version>1.4.199</version>
+    </dependency>
+</dependencies>
+
+```
 
 Intellij > new > maven
 Intellij > open > pom.xml
