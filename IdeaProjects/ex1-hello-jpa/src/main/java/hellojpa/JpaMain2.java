@@ -6,7 +6,9 @@ import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 
 public class JpaMain2 {
+
   public static void main(String[] args) {
+
     // 애플리케이션 전체에서 하나만 생성하여 사용
     EntityManagerFactory emf = Persistence.createEntityManagerFactory("hello");
 

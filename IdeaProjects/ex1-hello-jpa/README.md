@@ -9,7 +9,9 @@
 - Dependencies
   - JPA 하이버네이트
   - H2 데이터베이스
-  - 
+
+  - Create `pom.xml`
+
 ```xml
 <dependencies>
     <!-- JPA 하이버네이트 -->

@@ -5,60 +5,20 @@
 
 
 
+# top left (1,1) bottom right (N,N)
+# 계획서 띄어쓰기 기준 L R U D 문자들이 반복적으로 적혀있음
+# 움직일수 없는 곳 이동명령은 무시 됨
+# 5
+# R R R U D D
+# 3 4
+move_type = ['L', 'R', 'U', 'D']
 
+# LRUD
+r_moves = [0, 0, 1, -1]
 
+# 행열
+c_moves = [-1, 1, 0, 0]
+r, c = 1,1
+n = int(input())
+moves = list(input.split()) # LRUD 방향 리스트
 
-
-
-
-
-
-
-
-
-
-# N = 25, K = 3
-# 24    25 % 3 = 1:  count += mod(1)
-# 8     24 // 3:  count += 1
-# 7     8 % 3 = 2:  count += mod(2)
-# 6     6 // 3: count+= 1
-# 2     2 % 3 = 2 count+=mod(2)
-# 1     
-# result = 6
-
-# 24
-# 25 % 3 = 1
-# 25 //3 = 8
-
-# 8
-# 8 % 3 = 2
-# 8 // 3 = 2
-
-# 6
-# 2 % 3 = 2
-# 2 // 3 = 0
-
-N, K = map(int, input().split())
-count = 0
-mod = 0
-while N > 1:
-  mod = (N % K)
-  N -= mod
-  count += (mod + (N//K >0))
-  N //= K
-
-if mod > 0:
-  count -= 1
-print(count)
-
-# N이 1이 될때까지
-# (1번) N = N-1
-# (2번) N을 K로 나눈다
-# 2<=N<=100000, 2<=K<=100000,  N >= K
-# 1이 될때까지 1또는 2번 수행해야하는 최소 횟수
-# 17 4
-# 3
-# 25 5
-# 2
-# 25 3
-# 6
