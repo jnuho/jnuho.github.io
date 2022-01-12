@@ -35,3 +35,23 @@
   - `OR` : FULL 테이블스캔
   - WHERE절에 인덱스 컬럼에 연산사용하면 인덱스 안탐 `WHERE SALARY * 10 = 100`
 
+```sql
+CREATE TABLE `user`(
+  `ID` INT(11) NOT NULL AUTO_INCREMENT COMMENT '아이디',
+  `NAME` VARCHAR(50) NOT NULL COMMENT '이름',
+  `HOBBY` VARCHAR(100) COMMENT '취미',
+  `STAT` CHAR(1) DEFAULT '1' COMMENT `1.활성 2.비활성`,
+  PRIMARY KEY(ID)
+);
+
+ALTER TABLE user ADD INDEX `idx_user_01` (`ID`, `NAME`, `STAT`);
+select
+  A.ID
+  , A.NAME
+  , A.STAT
+FROM USER A
+WHERE 1=1
+  A.ID = 'ABC'
+  AND STAT = '1'
+```
+
