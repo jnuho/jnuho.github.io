@@ -5,7 +5,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
 
-@Entity
+//@Entity
 //@Table(UniqueConstraint = )
 //@Entity(name="Member")
 //@Table(name="USER") // 테이블명 명시

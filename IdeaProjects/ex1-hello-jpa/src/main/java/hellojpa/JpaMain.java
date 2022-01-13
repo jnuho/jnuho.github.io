@@ -18,10 +18,29 @@ public class JpaMain {
     tx.begin();
 
     try {
-      Member member = new Member();
-      member.setUsername("C");
-      em.persist(member);
-      System.out.println("member.id " + member.getId());
+      Member member1 = new Member();
+      member1.setUsername("A");
+
+      Member member2 = new Member();
+      member2.setUsername("B");
+
+      Member member3 = new Member();
+      member3.setUsername("C");
+
+      em.persist(member1);
+      em.persist(member2);
+      em.persist(member3);
+
+      // identity전략: DB insert후 JPA로 id에 세팅. 버퍼링 없이 insert
+      // sequence전략: DB next 시퀀스 가져와서 id에 세팅. 버퍼링을 통해 insert는 commit()에 실행
+      System.out.println("==========");
+      System.out.println("member1.id " + member1.getId());
+      System.out.println("member2.id " + member2.getId());
+      System.out.println("member3.id " + member3.getId());
+      System.out.println("==========");
+      //DB SEQ - 1  | WAS 1
+      //DB SEQ - 51 | WAS 2
+      //DB SEQ - 51 | WAS 3
 
       tx.commit();
 
