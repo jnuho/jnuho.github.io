@@ -51,3 +51,12 @@ Intellij > open > pom.xml
   - 운영은 다듬은 후 사용
   - hibernate.hbm2ddl.auto
     - update: 컬럼 지우는건 안됨
+
+- 주인관계 사용시 주의사항
+  - Member, Team
+  - 무한루프 가능: toString(), lombok, JSON 생성 라이브러리
+    - lombok toString() 사용자제
+    - 컨트롤러에서 return 타입 엔티티 사용하지 말기 => DTO로 변환해서 반환
+  - 단방향 객체설계 후에 추후 필요시 수정 `Team 클래스에 private List<Member> members;`
+  - 연관관계의 주인은 외래 키의 위치를 기준으로 정해야함 (e.g. `Member`가 외래키 들고있음)
+
