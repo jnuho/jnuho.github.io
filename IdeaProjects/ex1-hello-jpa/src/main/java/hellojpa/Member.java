@@ -36,7 +36,8 @@ public class Member {
   // team변경 시 DB에 반영
 //  @ManyToOne(fetch = FetchType.LAZY)
   @ManyToOne
-  @JoinColumn(name = "TEAM_ID")
+  @JoinColumn(name = "TEAM_ID") // 연관관계 주인인 경우
+//  @JoinColumn(name = "TEAM_ID", insertable = false, updatable = false) // 1:N맵핑 시, 연관관계 주인 아닌경우(읽기전용)
   private Team team;
 
   public Long getId() {
