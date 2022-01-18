@@ -8,11 +8,11 @@ import java.util.List;
 //@Table(indexes = @Index())
 public class Member {
 
-  @Id @GeneratedValue(strategy = GenerationType.AUTO)
+  @Id @GeneratedValue
   @Column(name = "MEMBER_ID")
   private Long id;
 
-  @Column(length = 10)
+//  @Column(length = 10)
   private String name;
 
   private String city;
@@ -20,6 +20,9 @@ public class Member {
   private String street;
 
   private String zipcode;
+
+  @OneToMany(mappedBy = "member")
+  private List<Order> orders = new ArrayList<>();
 
   public Long getId() {
     return id;

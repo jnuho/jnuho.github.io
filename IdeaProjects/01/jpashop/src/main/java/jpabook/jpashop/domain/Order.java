@@ -9,23 +9,25 @@ import java.util.List;
 @Table(name = "ORDERS")
 public class Order {
 
-  @Id @GeneratedValue(strategy = GenerationType.AUTO)
+  @Id @GeneratedValue
   @Column(name = "ORDER_ID")
   private Long id;
 
-//  @Column(name = "MEMBER_ID")
-//  private Long memberId; // 테이블 설계 맞춤 방식
   @ManyToOne
   @JoinColumn(name ="MEMBER_ID")
   private Member member; // 객체지향적 설계 방식!
 
-  private LocalDateTime orderDate; // ORDER_DATE order_date
+  @OneToMany(mappedBy = "order")
+  private List<OrderItem> orderItems = new ArrayList<>();
+
+  private LocalDateTime orderDate; // JPA가 ORDER_DATE로 변환해줌 (또는 order_date 도 가능)
 
   @Enumerated(EnumType.STRING)
   private OrderStatus status;
 
-  @OneToMany(mappedBy = "order")
-  private List<OrderItem> orderItems = new ArrayList<>();
+  @OneToOne
+  @JoinColumn(name ="DELIVERY_ID")
+  private Delivery delivery;
 
   public Member getMember() {
     return member;

@@ -60,3 +60,14 @@ Intellij > open > pom.xml
   - 단방향 객체설계 후에 추후 필요시 수정 `Team 클래스에 private List<Member> members;`
   - 연관관계의 주인은 외래 키의 위치를 기준으로 정해야함 (e.g. `Member`가 외래키 들고있음)
 
+
+- 1:1
+  - 주 테이블 외래키
+    - Member-Locker
+    - Member에 FK(LOCKER_ID) 정의하는 방법 선호
+    - Member 조회하는 경우가 많고, 조인없이 Locker에 대한 정보 얻을 수 있음
+  - 대상 테이블 외래키
+
+- 다:다
+  - 실무 사용지양
+
