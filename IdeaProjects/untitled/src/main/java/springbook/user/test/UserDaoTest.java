@@ -14,6 +14,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import springbook.user.dao.UserDao;
 import springbook.user.domain.User;
 
+import javax.management.InvalidApplicationException;
 import javax.sql.DataSource;
 import java.sql.SQLException;
 
