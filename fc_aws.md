@@ -17,35 +17,6 @@
 
 
 
-
-
-
-서비스
-- EC2 사양과 크기 조절할수 있는 컴퓨팅 서비스
-- Auto Scaling 서버의 특정 조건에 따라 서버를 추가/삭제할 수 있게 하는 서비스
-  - 서버를 여러대 부하 분산
-- Lightsail 가상화 프라이빗 서버
-- Workspaces 사내PC가상화
-- Route 53 DNS 웹서비스
-- VPC 가상네트워크를 클라우드에 구성
-- Direct Connect 온프레미스 인프라와 AWS연결 하는 네트워킹 서비스
-- ELB 부하분산(로드 밸런싱) 서비스
-  - 네트워킹 방식으로 부하 분산
-- S3: 여러가지 파일을 형식 구애받지 않고 저장
-- Dynamo DB 가상 NoSQL 데이터베이스
-- RDS 가상 SQL 데이터베이스
-- ElastiCache In-memory 기반의 cache서비스 (빠른속도 필요로 하는 서비스)
-- Redshift 데이터 분석에 특화된 스토리지 시스템
-- EMR 대량 데이터 효율적 가공
-- Sagemaker 머신러닝 & 데이터분석을 위한 클라우드 환경제공
-
-
-AWS 기초와 VPC
-- 네트워킹 기초
-
-
-
-
 - EC2 & key pair
   - 퍼블릭키는 EC2 인스턴스에 설치됨
   - 개인키는 접속주체 개인 저장
@@ -176,3 +147,31 @@ aws sts get-caller-identity --debug
 # IGW -> VPC
 aws ec2 attach-internet-gateway --vpc-id "vpc-025bb54e5d273c193" --internet-gateway-id "igw-09fe226851efbc823" --region ap-northeast-2
 ```
+
+
+
+서비스
+- EC2 사양과 크기 조절할수 있는 컴퓨팅 서비스
+- Auto Scaling 서버의 특정 조건에 따라 서버를 추가/삭제할 수 있게 하는 서비스
+  - 서버를 여러대 부하 분산
+- Lightsail 가상화 프라이빗 서버
+- Workspaces 사내PC가상화
+- Route 53 DNS 웹서비스
+- VPC 가상네트워크를 클라우드에 구성
+- Direct Connect 온프레미스 인프라와 AWS연결 하는 네트워킹 서비스
+- ELB 부하분산(로드 밸런싱) 서비스
+  - 네트워킹 방식으로 부하 분산
+- S3: 여러가지 파일을 형식 구애받지 않고 저장
+- Dynamo DB 가상 NoSQL 데이터베이스
+- RDS 가상 SQL 데이터베이스
+- ElastiCache In-memory 기반의 cache서비스 (빠른속도 필요로 하는 서비스)
+- Redshift 데이터 분석에 특화된 스토리지 시스템
+- EMR 대량 데이터 효율적 가공
+- Sagemaker 머신러닝 & 데이터분석을 위한 클라우드 환경제공
+
+
+AWS 기초와 VPC
+- 네트워킹 기초
+
+
+
