@@ -283,6 +283,7 @@ docker run --name my-redis \
   -p 7379:7379 \
   --network redis-net \
   -v $(pwd)/my/folder:/data \
+  -v ~/Downloads/redis.conf:/etc/redis.conf \
   -d redis:alpine redis-server --appendonly yes
 
 # --rm 실행 할때 컨테이너 id가 존재하면 삭제 후 run
