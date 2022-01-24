@@ -210,8 +210,12 @@ cd redis-stable/src
 ./redis-server /home/starpass/redis-stable/redis.conf &
 
 # 접속 시도
-redis-cli -h {ElastiCache 엔드포인트} -p {보안그룹에 정의된 포트 7379}
+./redis-cli -h {ElastiCache 엔드포인트} -p {보안그룹에 정의된 포트 7379}
 
+# redis-cli 파라미터 '-a {비밀번호}' 사용 자제 (보안이슈)
+./redis-cli -h 127.0.0.1 -p 7379
+
+> AUTH {비밀번호}
 > flushall
 > keys *
 ```
@@ -259,3 +263,30 @@ keys *
 - 개발/운영 환경 분리하여 캐시 관리
   - 개발: 개발서버에 redis-server 설치하여 캐시저장
   - 운영: ElastiCache 클러스터 생성하여 EC2->ElastiCache
+
+- 로컬테스트
+  - 로컬에 톰캣 WAS localhost:8180
+  - 도커 redis-server, redis-cli (둘사이는 통신은 도커 네트워크 생성)
+  - 톰캣 WAS -> 도커 redis-server 통신은 lettuce 라이브러리
+```sh
+# https://emflant.tistory.com/235
+docker pull redis:alpine
+docker network create redis-net
+docker network ls
+docker network inspect redis-net
+
+# --name 컨테이너 이름 지정
+# -v host와 연결할 폴더 지정
+#   https://stackoverflow.com/a/32270232/12198233
+# -p host에 노출할 포트 지정
+docker run --name my-redis \
+  -p 7379:7379 \
+  --network redis-net \
+  -v my/folder:/data \
+  -d redis:alpine redis-server --appendonly yes
+
+# --rm 실행 할때 컨테이너 id가 존재하면 삭제 후 run
+docker run -it --network redis-net \
+  --rm redis:alpine redis-cli -h my-redis
+```
+
