@@ -282,11 +282,14 @@ docker network inspect redis-net
 docker run --name my-redis \
   -p 7379:7379 \
   --network redis-net \
-  -v my/folder:/data \
+  -v $(pwd)/my/folder:/data \
   -d redis:alpine redis-server --appendonly yes
 
 # --rm 실행 할때 컨테이너 id가 존재하면 삭제 후 run
-docker run -it --network redis-net \
-  --rm redis:alpine redis-cli -h my-redis
+winpty docker run -it --network redis-net \
+  --rm redis:alpine redis-cli \
+  -h my-redis \
+ 
+
 ```
 
