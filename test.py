@@ -1,17 +1,19 @@
 
-from typing import List
 
-def quick_sort(arr: List[int]) -> List[int]:
-  if len(arr) <= 1:
-    return arr
 
-  idx = len(arr) // 2
-  pivot = arr[idx]
+def binary_search(arr, target, start, end):
+  if start >= end:
+    mid = (start + end) // 2
 
-  left = [x for x in arr if x < pivot]
-  right = [x for x in arr if x > pivot]
-  return quick_sort(left) + [pivot] + quick_sort(right)
+    if arr[mid] == target:
+      return mid
+    elif arr[mid] < target:
+      binary_search(arr, target, mid+1, end)
+    else:
+      binary_search(arr, target, start, mid-1)
 
-arr = [7, 5, 9, 0, 3, 1, 6, 2, 4, 8]
-print(arr)
-print(quick_sort(arr))
+arr = [1,2,3,4,5,6,7,8,9,10]
+target = 9
+
+idx = binary_search(arr, 9, 0, len(arr)-1)
+print(idx)
