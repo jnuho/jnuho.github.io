@@ -1,6 +1,5 @@
 package com.spring.book.springboot.web.domain.posts;
 
-import javafx.geometry.Pos;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
