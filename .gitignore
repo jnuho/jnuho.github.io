@@ -10,3 +10,5 @@ __pycache__
 *.swp
 target/
 .gradle
+build/
+*.class
