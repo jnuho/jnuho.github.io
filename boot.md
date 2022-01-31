@@ -54,3 +54,7 @@ height="45%" width="45%" alt="Figure2.11"><br>
     - Freemaker
     - Thymeleaf
     - Mustache
+
+- Mustache
+  - css는 header, js는 footer (페이지 로딩속도 영향)
+  - bootstrap.js는 제이쿼리에 의존 (script 순서 고려하여 배치)
