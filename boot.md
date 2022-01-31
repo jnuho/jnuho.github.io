@@ -46,3 +46,11 @@ height="45%" width="45%" alt="Figure2.11"><br>
 - h2
   - http://localhost:8081/h2-console
   - jdbc:h2:mem:testdb
+
+- 템플릿 엔진 : 지정된 템플릿과 데이터를 이용하여 HTML 생성
+  - 클라이언트 템플릿 엔진 React, Vue
+  - 서버 템플릿 엔진
+    - JSP, Velocity 권장 X
+    - Freemaker
+    - Thymeleaf
+    - Mustache
