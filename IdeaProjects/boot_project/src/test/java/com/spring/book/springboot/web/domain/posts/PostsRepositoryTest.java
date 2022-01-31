@@ -29,7 +29,7 @@ public class PostsRepositoryTest extends TestCase {
 
   @Test
   public void 게시글저장_불러오기() {
-    // given
+    //given
     String title = "테스트 게시글";
     String content = "테스트 본문";
     postsRepository.save(Posts.builder()
@@ -39,10 +39,10 @@ public class PostsRepositoryTest extends TestCase {
         .build()
     );
 
-    // when
+    //when
     List<Posts> postsList = postsRepository.findAll();
 
-    // then
+    //then
     Posts posts = postsList.get(0);
     assertThat(posts.getTitle(), is(title));
     assertThat(posts.getContent(), is(content));
