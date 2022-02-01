@@ -58,3 +58,11 @@ height="45%" width="45%" alt="Figure2.11"><br>
 - Mustache
   - css는 header, js는 footer (페이지 로딩속도 영향)
   - bootstrap.js는 제이쿼리에 의존 (script 순서 고려하여 배치)
+
+- 쿼리 추가
+  - SpringDataJpa에서 제공하지 않는 메소드는 PostsRepository 인터페이스에 추가
+  - @Query 어노테이션 사용
+  - SpringDataJpa로는 구현하기 힘든 FK조인, 복잡한 조건등을 위해 조회용 프레임워크 추가하여 사용:
+    - querydsl (추천- 타입안정성 보장, 래퍼런스 많고, 국내 많은 회사에서 사용중)
+    - jooq
+    - MyBatis

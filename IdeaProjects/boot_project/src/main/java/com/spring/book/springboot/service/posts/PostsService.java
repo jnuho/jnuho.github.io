@@ -35,4 +35,14 @@ public class PostsService {
         );
     return new PostsResponseDto(entity);
   }
+
+//  @Transactional(readOnly = true)
+//  // 트랜젝션 범위는 유지하되, 조회 기능만 남겨두어 조회속도 개선
+//  // .map(posts -> new PostsListResponseDto(posts)) 와 같은 표현식
+//  public List<PostsListResponseDto> findAllDesc() {
+//    return postsRepository.findAllDesc().stream()
+//      .map(PostsListResponseDto::new)
+//      .collect(Collectiors.toList());
+//  }
+
 }
