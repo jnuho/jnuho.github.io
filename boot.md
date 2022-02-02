@@ -66,3 +66,10 @@ height="45%" width="45%" alt="Figure2.11"><br>
     - querydsl (추천- 타입안정성 보장, 래퍼런스 많고, 국내 많은 회사에서 사용중)
     - jooq
     - MyBatis
+
+- REST의 CRUD -> HTTP method 맵핑
+  - 생성(Create) - POST
+  - 읽기(Read) - GET
+  - 수정(Update) - PUT
+  - 삭제(Delete) - DELETE
+
