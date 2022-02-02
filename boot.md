@@ -73,3 +73,62 @@ height="45%" width="45%" alt="Figure2.11"><br>
   - 수정(Update) - PUT
   - 삭제(Delete) - DELETE
 
+
+### 스프링 시큐리티와 OAuth 2.0으로 로그인 기능 구현하기
+
+- 스프링 부트 2.0
+- 인터셉터, 필터기반의 보안기능 보다 스프링 시큐리티를 통한 구현 권장
+- OAuth 로그인시 필요한 구현
+  - 로그인시 보안
+  - 비밀번호 찾기
+  - 회원가입 시 이메일 혹은 전화번호 인증
+  - 비밀번호 변경
+  - 회원정보 변경
+- 라이브러리: spring-security-oauth2-autoconfigure
+- 스프링 부트 2 방식-Spring Security Oauth2 Client 라이브러리
+  - 스프링부트 2.0 방식
+  - url주소 전부 명시 할 필요 없이 2.0방식에서는 client 인증정보만 입력
+  - 기본 제공 enum: CommonOAuth2Provider
+  - 이외의 소셜로그인 추가시, 직접 다 추가해야함
+```yml
+spring:
+  security:
+    oauth2:
+      client:
+        clientId: 인증정보
+        clientSecret: 인증정보
+```
+
+
+1. 구글 서비스 신규 등록 (clientId, clientSecret)
+  - https://console.cloud.google.com
+  - 새 프로젝트 'freelec-springboot2-webservice'
+  - API 및 서비스 > 사용자 인증 정보 > 만들기
+    - OAuth 클라이언트 ID
+    - 동의 화면 구성
+      - 애플리케이션 이름: 구글로그인 시 사용자에게 노출할 애플리케이션 이름
+      - 지원 이메일: 동의화면에 노출될 이메일주소 (e.g. help@myservice.com)
+      - Google API 범위(scope) : email,profile,openid 디폴트 이외 추가 가능
+    - 애플리케이션 유형: '웹 애플리케이션'
+    - 승인된 리디렉션 URI:
+      - 'http://localhost:8180/login/oauth2/code/google'
+      - '{도메인}/login/oauth2/code/{소셜서비스코드}'
+      - AWS 배포시에 도메인 변경하여 추가
+
+2. 프로젝트에 위의 OAuth 정보 등록
+  - application-oauth 등록
+    - src/main/resources/application-oauth.properties
+    - `spring.security.oauth2.client.registration.google.client-id=클라이언트ID`
+    - `spring.security.oauth2.client.registration.google.client-secret=클라이언트시크릿`
+    - `spring.security.oauth2.client.registration.google.scope=profile,email`
+    - scope의 openid는 사용하는 서비스와 사용하지 않는 서비스가 있으므로 빼고 scope 등록
+  - 스프링부트에서 application-xxx.properties로 만들면 xxx라는 profile이 생성됨
+    - application.properties에 다음 추가 `spring.profiles.include=oauth`
+  - `.gitignore`에 시크릿키 정보가 올라가지 않도록 다음라인 추가 `application-oauth.properties`
+  
+3. User 엔터티
+  - 스프링 시큐리티에서 권한코드에 항상 ROLE_ 이 앞에 붙어야 함
+  - enum타입 필드 Role의 코드별 키값은 ROLE_xxx 로 지정
+
+4. 스프링 시큐리티 설정 - 라이브러리
+   - implementation('org.springframework.boot:spring-boot-starter-oauth2-client')
