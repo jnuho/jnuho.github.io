@@ -45,7 +45,7 @@
 Client|	OAuth 2.0을 사용해 서드파티 로그인 기능을 구현할 자사 또는 개인 애플리케이션 서버다.
 Recource Owner|	서드파티 애플리케이션 (Google, Facebook, Kakao 등)에 이미 개인정보를 저장(회원가입)하고 있으며 Client가 제공하는 서비스를 이용하려는 사용자, 'Resource' 는 개인정보라고 생각하면 된다.
 Resource Server	| 사용자의 개인정보를 가지고있는 애플리케이션 (Google, Facebook, Kakao 등) 서버다.  Client는 Token을 이 서버로 넘겨 개인정보를 응답 받을 수 있다.
-Authorization Server	| 권한을 부여(인증에 사용할 아이템을 제공주는)해주는 서버다. 사용자는 이 서버로 ID, PW를 넘겨 Authorization Code를 발급 받을 수 있다. Client는 이 서버로 Authorization Code을 넘겨 Token을 받급 받을 수 있다.
+Authorization Server	| 권한을 부여(인증에 사용할 아이템을 제공주는)해주는 서버다. 사용자는 이 서버로 ID, PW를 넘겨 Authorization Code를 발급 받을 수 있다. Client는 이 서버로 Authorization Code을 넘겨 Access Token을 받급 받을 수 있다.
 
 
 ![PAYCO OAUTH](./assets/images/payco_oauth.jpg)

@@ -37,11 +37,13 @@ public class PostsService {
 
   @Transactional(readOnly = true)
   // 트랜젝션 범위는 유지하되, 조회 기능만 남겨두어 조회속도 개선
-  // .map(posts -> new PostsListResponseDto(posts)) 와 같은 표현식
+  // 등록,수정,삭제 기능이 없는 서비스 메소드에 사용
   public List<PostsListResponseDto> findAllDesc() {
     // Posts의 Stream을 map을 통해 PostListResponseDto 를 변환하여 List로 반환
     return postsRepository.findAllDesc().stream()
       .map(PostsListResponseDto::new)
+      // .map(posts -> new PostsListResponseDto(posts)) 와 같은 표현식
+      // Posts -> PostsListResponseDto 타입으로 변환
       .collect(Collectors.toList());
   }
 

@@ -20,15 +20,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
           .authorizeRequests() // URL별 권한권리 설정 옵션의 시작점
           .antMatchers("/","/css/**", "/images/**", "/js/**", "/h2-console/**").permitAll()
           .antMatchers("/api/v1/**").hasRole(Role.USER.name())
-          .anyRequest().authenticated() // 설정된 값들 이외의 나머지 URL들은 인증된 사용자(로그인된 사용자)에게만 허용
+          .anyRequest().authenticated() // 설정된 값들 이외의 나머지 URL(anyRequest()): 인증된 사용자(authenticated/로그인된 사용자)에게만 허용
         .and()
           .logout()
             .logoutSuccessUrl("/") // 로그아웃시 이동 url
         .and()
-          .oauth2Login()
-            .userInfoEndpoint()
-              .userService(customOAuth2UserService);
-
-    super.configure(http);
+          .oauth2Login() // OAuth2 로그인 기능에 대한 설정
+            .userInfoEndpoint() // 로그인 성공 이후 사용자들의 정보를 가져올 때의 설정
+            // 로그인 성공 후 후속조치 진행할 구현체
+            // 리소스 서버(소셜 서비스)에서 사용자 정보를 가져온 상태에서, 추가로 진행 하고자 하는 기능 명시
+            .userService(customOAuth2UserService);
   }
 }

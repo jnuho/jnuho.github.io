@@ -26,6 +26,13 @@ public class OAuthAttributes {
     this.picture = picture;
   }
 
+  /**
+   * OAuth2User 에서 반환하는 사용자정보는 Map이기 떄문에 값 하나하나를 변환해야 함
+   * @param registrationId
+   * @param userNameAttributeName
+   * @param attributes
+   * @return
+   */
   public static OAuthAttributes of(String registrationId,
                                    String userNameAttributeName,
                                    Map<String, Object> attributes) {
@@ -43,6 +50,11 @@ public class OAuthAttributes {
         .build();
   }
 
+  /**
+   * OAuthAttributes에서 엔터티를 생성하는 시점은 처음 가입할 때
+   * 가입할 때 기본권한은 GUEST로 설정
+   * @return
+   */
   public User toEntity() {
     return User.builder()
         .name(name)
