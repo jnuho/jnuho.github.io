@@ -307,3 +307,13 @@ will not throw an exception when asked for a read-only transaction but rather si
     - Application.java에서 @EnableJpaAuditing 제거 후 JpaConfig 클래스 별도로 생성
 
 
+
+- 서버 구동방법
+  - 가정용 서버 (PC, NAS)
+  - 호스팅서비스 (Cafe24, 코리아호스팅)
+  - 클라우드서비스 (AWS, AZURE, GCP)
+
+- 클라우드 서비스의 종류
+  - IaaS
+  - PaaS
+  - SaaS
