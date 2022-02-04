@@ -162,8 +162,12 @@ logging:
      - 소셜 로그인 등 클라이언트 입장에서 소셜 기능 구현시 필요한 의존성
      - `spring-security-oauth2-client` 와 `spring-security-oauth2-jose`를 기본적으로 관리해줌
    - SecurityConfig:
+     - @EnableWebSecurity
+       - @Configuration 클래스에 추가하여 WebSecurityConfigurer에 있는 스프링 시큐리티 설정 활성화
      - 스프링 시큐리티 설정
      - URL별 권한(로그인, 인증여부) 설정
+     - lass to have the Spring Security configuration defined in any WebSecurityConfigurer
+     - or more likely by extending the WebSecurityConfigurerAdapter base class and overriding individual methods:
    - CustomOAuth2UserService
      - 구글로그인 이후 가져온 사용자정보 (email, name, picture)로 가입, 정보수정, 세션저장 기능 지원
      - loadUser : UserInfo 엔드포인트에서 사용자 attributes를 받아 OAuth2User객체 반환
@@ -200,3 +204,106 @@ A transaction manager which cannot interpret the read-only hint
 will not throw an exception when asked for a read-only transaction but rather silently ignore the hint.
 
 ```
+
+- 어노테이션 기반으로 코드 개선
+  - 어노테이션 정의 @LoginUser
+    - 컨트롤러나 메소드에서 세션값(유저정보) 필요할 때 마다 세션정보 호출해야함
+    - 메소드인자로 세션 값을 바로 받을 수 있도록 개선: @LoginUser 생성
+  - HandlerMethodArgumentResolver 구현체 생성
+    - @Component LoginUserArgumentResolver
+      - 조건에 맞는 경우 구현체('LoginArgumentResolver')가 지정한 값으로 해당 메소드의 파라미터로 넘길 수있음
+        - 컨트롤러 메소드의 특정파라미터를 지원하는지 여부 판단- boolean
+        - 파라미터에 전달할 세션객체 생성
+        - 스프링에서 LoginUserArgumentResolver를 인식 할 수 있도록 WebMvcConfigurer에 추가: WebConfig
+  - WebConfig
+    - @Configuration
+    - 커스텀 컨트룔러 메소드 argument 타입을 지원하기 위해 @Override addArgumentResolvers
+    - addArgumentResolvers를 통해 위에서 정의한 LoginUserArgumentResolver를 추가
+    - HandlerMethodARgumentResolver는 항상 WebMvcConfigurer의 addArgumentResolvers()를 통해 추가
+
+
+- `@Component` 어노테이션
+  - https://www.baeldung.com/spring-component-annotation
+  - Spring ApplicationContext
+    - 스프링이 관리하고/자동 분배되도록 설정한 객체(beans) 인스턴스들을 저장하는 곳
+    - 스프링 빈관리와 디펜던시 인젝션 옵션은 스프링의 주기능
+    - IOC를 통해, 어플리케이션의 빈 인스턴스들을 수집하여 적절한 시간에 사용
+    - @Autowired 등의 어노테이션으로 스프링관리 빈을 애플리케이션에 주입하는것은 powerful,scalable한 코드를 만드는 힘
+    - 클래스에 stereotype 어노테이션을 사용하여 스프링의 자동 bean dectection 활용
+  - @Component는 스프링이 우리가 커스텀 정의한 빈을 detect할 수 있게 함
+
+- `@Configuration` 어노테이션
+  - 스프링 어노테이션 기반 configuration 설정에 사용됨
+  - 해당 어노테이션이 있는 클래스는 1개이상의 @Bean 메소드를 선언하며
+  - 스프링 컨테이너에 의해 프로세스 되어 빈 definition과 런타임에 빈에 대한 서비스 리퀘스트를 생성함
+
+- 세션저장소로 데이터베이스 사용하기
+  - 애플리케이션 재실행시 내장톰캣에 있는 세션정보가 없어져서 로그아웃됨
+  - WAS가 여러대라면 서로간에 세션동기화가 필요. 현업에서의 해결책:
+  1. 톰캣세션
+  2. MySQL과 같은 데이터베이스를 세션저장소로 사용
+     - spring-session-jdbc 등록: gradle 디펜던시
+     - implementation('org.springframework.session:spring-session-jdbc')
+     - spring.session.store-type=jdbc
+     - SPRING_SESSION, SPRING_SESSION_ATTRIBUTES 테이블이 JPA에 의해 생성되고 여기서 세션이 저장됨
+     - 물론 스프링부트 재시작시 DB-h2도 재시작되므로 세션도 초기화 됨: AWS RDS사용시 문제 없음
+  3. Redis, Memcached와 같은 메모리 DB를 세션저장소로 사용
+    - B2C에서 많이 사용
+    - ElastiCache는 비용발생함
+
+1. 네이버 서비스 신규등록
+   - https://developers.naver.com/apps/#/register?api=nvlogin
+   - freelec-springboot2-webservice
+   - 서비스url http://localhost:8180/
+   - 네이버로그인 콜백url http://localhost:8180/login/oauth2/code/naver
+     - '{도메인}/login/oauth2/code/{소셜서비스코드}'
+     - 구글의 리디렉션 URL과 같은 역할
+
+  - 네이버로그인 응답결과
+    - 네이버는 기준이되는 user_name의 이름을 response로 해야함
+    - `spring.security.oauth2.client.provider.naver.user-name-attribute=response`
+    - 스프링 시큐리티에서는 하위필드를 명시 할 수 없기 떄문에, 최상위 필드들만 user_name으로 지정가능
+    - 네이버 응답값 최상위 필드들: resultCode, message, response
+    - 본문에서 담고있는 response를 user_name으로 지정하고 이후 자바코드로 response의 id를 user_name으로 지정
+```json
+{
+  "resultCode": "00",
+  "message": "success",
+  "response": {
+    "email": " openapi@naver.com",
+    "nickname": "OpenAPI",
+    "profile_image": "...",
+    "age": "40-49",
+    ...
+    
+  }
+}
+```
+
+- 테스트 에러 디버깅
+  - No qualifying bean of type `com.spring.book.springboot.config.auth.CustomOAuth2UserService`
+    - @SpringBootTest 에서 발생
+    - CustomOAuth2UserService 생성하는데 필요한 소셜로그인 관련 설정값들이 없기 때문
+    - 다만 test에 application.properties 가 없으면 디폴트로 main에서 가져옴
+    - 자동으로 가져오는 범위는 application.properties 까지임
+    - 테스트환경을 위한 application-oauth.properties 생성
+  - `<302 FOUND>` (리다이렉션 응답) 에러
+    - 인증되지 않은 사용자의 요청은 이동시킴
+    - 임의로 인증된 사용자를 추가하여 API 기능 테스트 `@WithMockUser(roles="USER")`
+    - Gradle 디펜던시도 testImplementation에 추가
+      - `testImplementation 'org.springframework.security:spring-security-test'`
+  - No qualifying bean of type `com.spring.book.springboot.config.auth.CustomOAuth2UserService`
+    - @WebMvcTest 에서 발생
+    - 스프링시큐리티 설정(properties)은 잘작동 했지만 CustomOAuth2UserService 스캔하지 않음
+    - @WebMvcTest는 컨트롤러 및 컨트롤러어드바이스 등을 읽지만 @Repository, @Service, @Component는 스캔대상이 아님
+    - 따라서 SecurityConfig는 읽었지만 이를 생성하기 위해 필요한 CustomOAuth2UserService는 읽지못함
+    - 스캔대상에서 SecurityConfig 제거하여 해결: `@WebMvcTest의 excludeFilters` 추가
+    - @WithMockUser도 추가
+  - 위의 에러 해결 후 IllegalArgumentException
+    - `JPA metamodel must not be empty` (또는 `At least one JPA metamodel must be present`)
+    - @EnableJpaAuditing 사용하려면 최소한 하나의 @Entity 클래스 필요
+    - @WebMvcTest이다 보니 당연히 없음
+    - @EnableJpaAuditing가 @SpringBootApplication와 함께 있다보니, @WebMvcTest에서도 스캔
+    - Application.java에서 @EnableJpaAuditing 제거 후 JpaConfig 클래스 별도로 생성
+
+

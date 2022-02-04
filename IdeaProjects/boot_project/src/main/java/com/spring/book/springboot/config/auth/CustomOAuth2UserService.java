@@ -38,6 +38,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 
     // 소셜로그인 서비스 구분 하기위한 Id (구글,네이버, 카카오, ...)
     String registrationId = userRequest.getClientRegistration().getRegistrationId();
+
     // OAuth2 로그인 진행 시 키가 되는 값들 - Primary Key
     // 구글의 경우만 기본적으로 코드지원: "sub"
     // 이후 네이버 로그인과 구글 로그인을 동시 지원할 때 사용
