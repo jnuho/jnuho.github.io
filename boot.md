@@ -34,14 +34,19 @@ height="45%" width="45%" alt="Figure2.11"><br>
 
 - JUnit
   - @WebMvcTest
+    - JPA기능 작동하지 않음 -> @SpringBootTest + TestRestTemplate 사용가능
+    - 컨트롤러 레이어 테스트 하기 위한 어노테이션
+    - 필요한 Mock 오브젝트의 디펜던시를 따로 제공해줘야 함
     - Web(Spring MVC)에 집중
     - @Controller @ControllerAdvice등 와부 연동과 관련된 부분만 활성화
     - @Service @Component @Repository 사용 불가
     - 컨드롤러 기능 테스트할 때 사용
-    - JPA기능 작동하지 않음
   - @SpringBootTest
-    - H2데이터베이스 자동 실행
     - JPA기능을 함께 테스트할때 TestRestTemplate과 함께 사용하여 기능 테스트
+    - 스프링부트가 메인 configuration 클래스(@SpringBootApplication)를 찾아, 스프링 application context를 시작함
+    - 어플리케이션 전체를 로그해서 모든빈을 주입하기 때문에 느릴수 있음
+    - H2데이터베이스 자동 실행
+
 
 - h2
   - http://localhost:8081/h2-console
