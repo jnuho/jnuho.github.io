@@ -79,7 +79,7 @@ height="45%" width="45%" alt="Figure2.11"><br>
   - 삭제(Delete) - DELETE
 
 
-### 스프링 시큐리티와 OAuth 2.0으로 로그인 기능 구현하기
+## 스프링 시큐리티와 OAuth 2.0으로 로그인 기능 구현하기
 
 - 스프링 부트 2.0
 - 인터셉터, 필터기반의 보안기능 보다 스프링 시큐리티를 통한 구현 권장
@@ -104,6 +104,8 @@ spring:
         clientSecret: 인증정보
 ```
 
+### 구글 로그인
+
 1. 구글 서비스 신규 등록 (clientId, clientSecret 생성, redirect_uri 설정)
   - https://console.cloud.google.com
   - 새 프로젝트 'freelec-springboot2-webservice'
@@ -111,7 +113,7 @@ spring:
     - OAuth 클라이언트 ID
     - 동의 화면 구성
       - 애플리케이션 이름: 구글로그인 시 사용자에게 노출할 애플리케이션 이름
-      - 지원 이메일: 동의화면에 노출될 이메일주소 (e.g. help@myservice.com)
+      - 고객지원 이메일: 동의화면에 노출될 이메일주소 (e.g. help@myservice.com)
       - Google API 범위(scope) : email,profile,openid 디폴트 이외 추가 가능
     - 애플리케이션 유형: '웹 애플리케이션'
     - 승인된 리디렉션 URI:
@@ -255,6 +257,9 @@ will not throw an exception when asked for a read-only transaction but rather si
   3. Redis, Memcached와 같은 메모리 DB를 세션저장소로 사용
     - B2C에서 많이 사용
     - ElastiCache는 비용발생함
+
+
+### 네이버 로그인
 
 1. 네이버 서비스 신규등록
    - https://developers.naver.com/apps/#/register?api=nvlogin
