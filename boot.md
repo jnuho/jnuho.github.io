@@ -361,8 +361,9 @@ will not throw an exception when asked for a read-only transaction but rather si
     - 서브넷연결 설정
   - 퍼블릭
     - 서브넷연결 설정
-  - 인바운드규칙 번호 적은것부터 오름차순으로 확인
+  - 인바운드규칙 번호 오름차순으로 순서대로 확인
 
+  - 아웃바운드 1024-65535 응답시 포트 임의로 선택
 
 ```
 * 바스티온 호스트 vs NAT 게이트웨이: 상반된 목적
