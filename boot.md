@@ -410,7 +410,6 @@ service httpd start
       - VPC엔드포인트 외에 NAT 게이트웨이도 별도로 추가가능: 프라이빗 RT > 라우팅 편집
         - 10.0.0.0/16은 로컬, 이외 S3관련된건 엔드포인트타고 S3로, 이외는 NAT 게이트웨이
        
-  
 
 ![vpc_2](assets/images/vpc_2.jpg)
 
@@ -420,5 +419,29 @@ service httpd start
 - NAT 게이트웨이: 프라이빗 서브넷 -> 외부인터넷
 ```
 
+
 ```shell
+# 자바 패키지 검색
+# yum search java-1.8 | grep Development
+# java-1.8.0-openjdk-devel.x86_64 : OpenJDK 8 Development Environment
+
+# 자바 8 설치
+sudo yum install java-1.8.0-openjdk-devel.x86_64
+sudo update-alternatives --config java
+
+# 타임존 UTC -> KST
+sudo rm /etc/localtime
+sudo ln -s /usr/share/zoneinfo/Asia/Seoul /etc/localtime
+
+# 깃설치 및 소스다운로드
+sudo yum install git
+mkdir ~ec2-user/app && mkdir ~ec2-user/app/step1
+cd ~ec2-user/app/step1
+git clone https://github.com/jojoldu/freelec-springboot2-webservice.git
+cd freelec-springboot2-webservice
+
+# 그래들
+# chmod +x ./gradlew
+./gradlew test
+
 ```
