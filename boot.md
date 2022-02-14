@@ -394,7 +394,22 @@ service httpd start
   - NAT 게이트웨이를 통해서 액세스할수도 있지만, 트래픽 노출의 위험이 있음
   - IAM S3 접근 권한 부여해줘야함 > 역할만들기 > 사용사례 EC2 > 권한정책 'AmazonS3FullAccess'
     - 프라이빗 EC2 생성시에 '역할'에 지정
-  - 
+  - S3 버킷생성 (버킷명: 'vpc-endpoint-check')
+  - 프라이빗 EC2에서 S3접근 가능한지 테스트
+    - AWS계정에 있는 S3버킷 확인 `aws s3 ls --region ap-northeast-2`
+    - VPC 게이트웨이 엔드포인트 설정 안했는데도 접근됨!
+    - NAT 게이트웨이를 설정 해줬기 때문: 프라이빗 RT > 라우팅편집 > NAT 게이트웨이 라우팅 제거
+    - NAT 게이트웨이 라우팅 삭제 후 접근 안됨!
+    - 연결하기 위해 VPC 엔드포인트 생성:
+      - VPC > 엔드포인트 > 생성
+        - 서비스: com.amazonaws.ap-northeast-2.s3	'Gateway' 선택
+        - VPC: freelec VPC선택
+        - RT: 프라이빗 선택
+      - 프라이빗 RT에 '엔드포인트' 로우가 한개 자동으로 추가됨
+        - S3와 관련된 트래픽이 오면 S3로 보내게 됨
+      - VPC엔드포인트 외에 NAT 게이트웨이도 별도로 추가가능: 프라이빗 RT > 라우팅 편집
+        - 10.0.0.0/16은 로컬, 이외 S3관련된건 엔드포인트타고 S3로, 이외는 NAT 게이트웨이
+       
   
 
 ![vpc_2](assets/images/vpc_2.jpg)
