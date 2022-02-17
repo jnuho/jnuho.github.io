@@ -40,5 +40,5 @@
 
     
 
-- MCA
-  - Multi-Channel-Architecture
+- MSA
+  - MicroService Architecture
