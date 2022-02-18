@@ -175,3 +175,17 @@ AWS 기초와 VPC
 
 
 
+### Cloud Platform Models
+
+- Iaas (Infrastructure as a Service)
+  - EC2, EBS, ELB
+  - look and feel you'd get from managing physical resources
+  - responsiable for consequences of your configuration
+
+- Paas (Platform as a Service)
+  - Elastic Beanstalk, ECS (Elastice Container Service)
+  - simplifies the process of building an application by hiding the complexity of the infrastructure
+- Saas (Software as a Service)
+  - offer services meant to be accessed by end users.
+  - Simple Email Service, Amazon WorkSpaces, Gmail, Outlook
+
