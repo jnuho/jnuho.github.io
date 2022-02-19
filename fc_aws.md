@@ -32,41 +32,89 @@ ssh -i {my.pem} ubuntu@{public_ip}
   - access key 필요
   - secret access key 필요
   - 프로필>내보안자격증명>액세스키 생성
+
+- [CLI 설치 (우분투)](https://docs.aws.amazon.com/ko_kr/cli/latest/userguide/install-cliv2-linux.html)
 ```sh
+cat /etc/lsb-release
 sudo apt update
 sudo apt install unzip build-essential curl
-```
 
-  - [cli 설치](https://docs.aws.amazon.com/ko_kr/cli/latest/userguide/install-cliv2-linux.html)
-```sh
+# 최신버전
+# curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
 # 특정버전
 curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64-2.2.16.zip" -o "awscliv2.zip"
 unzip awscliv2.zip
 sudo ./aws/install
 ```
 
+- WSL 사용설정 (윈도우)
+```shell
+# powershell as Admin
+dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
+dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart
+
+# 재부팅 후 실행
+wsl
+
+# 우분투 설치 (Microsoft Store)
+
+# 버전 확인
+wsl -l -v
+
+# 커널 업데이트 파일 다운로드 및 설치
+https://wslstorestorage.blob.core.windows.net/wslblob/wsl_update_x64.msi
+
+# 버전 업데이트
+wsl --set-version Ubuntu 2
+# 또는
+wsl --set-version Ubuntu-20.04 2
+
+
+# 업데이트된 버전 상태확인
+wsl -l -v
+# stopped된 wsl 재실행
+wsl
+
+# 디폴트 버전 2 설정
+wsl --set-default-version 2
+
+```
+
+
 - AWS CLI자격증명 설정 우선순위
-  1. CLI명령어 옵션
-  2. 환경변수
+  1. CLI명령어 옵션 (실무)
+  2. 환경변수 (실무)
   3. CLI 자격증명 파일 - `~/.aws/credentials`
-  4. CLI 설정 파일 - `~/.aws/config`
+  4. CLI 설정 파일 - `~/.aws/config` (실무)
   5. 컨테이너 자격증명 (ECS의 경우)
-  6. 인스턴스 프로파일 자격증명 (EC2의 경우)
+  6. 인스턴스 프로파일 자격증명 (EC2의 경우) (실무)
 
 ```sh
+# 1. CLI 명령어
+# --profile
+
+# 2. 환경변수
+AWS_ACCESS_KEY_ID
+AWS_SECRET_ACCESS_KEY
+AWS_PROFILE
+
+# 6. EC2생성시 IAM 역할 부여
+
+# 4. CLI 설정파일
 # 액세스키 다운로드 후
 cat mycredential.csv
-
 vim ~/.aws/config
 [default]
 aws_access_key_id=AKI...K
 aws_secret_access_key_id=k0r...M8
 
 # 테스트
+# 계정정보 확인
 aws sts get-caller-identity
 aws ec2 describe-key-pairs
 
 # 리전설정 필요
+# 매번 명령어에 --region 생략하려면 CLI 설정파일에 region 추가
 aws ec2 describe-key-pairs --region ap-northeast-2
 
 [default]
@@ -90,7 +138,17 @@ aws_secret_access_key_id=k0r...M8
 # 아웃풋 옵션없이 키페어 조회 가능
 aws ec2 describe-key-pairs
 
-# 프로파일 AWS_PROFILE 환경 변수 또는 --profile 또는 config파일
+
+# AWS CLI 여러 사용자 프로필 등록 가능 :
+# 프로파일 AWS_PROFILE 환경 변수
+# 또는 --profile
+# 또는 config파일
+[default]
+region=ap-northeast-2
+output=yaml
+aws_access_key_id=AKI...K
+aws_secret_access_key_id=k0r...M8
+
 [profile eu-west-1]
 region=eu-west-1
 aws_access_key_id=AKI...K
@@ -101,10 +159,17 @@ region=ap-northeast-1
 aws_access_key_id=AKI...K
 aws_secret_access_key_id=k0r...M8
 
+# A.여러 AWS 계정운영
+# B.동일 계정 내 여러 리전 운열
+# C.동일 계정 내 여러 IAM 역할 전환 수행
+# D.AWS SSO 조직 내 역할 수행
 # 디폴트 프로파일의 리전
 aws configure get region
+ap-northeast-2
+
 # eu-west-1 프로파일의 리전
 aws configure get region --profile eu-west-1
+eu-west-1
 
 # 환경변수로 디폴트 리전 설정
 export AWS_PROFILE=ap-northeast-1
@@ -112,6 +177,8 @@ aws configure get region
 ap-northeast-1
 ```
 
+
+- AWS CLI 사용법
 
 ```sh
 aws <command> <subcommand> [options and parameters]
@@ -129,7 +196,6 @@ aws ec2 describe-availability-zones help
 # 자격 증명정보 확인시 디버그모드 활성화
 aws sts get-caller-identity --debug
 ```
-
 
 
 - Auto Scaling
