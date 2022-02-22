@@ -255,3 +255,178 @@ AWS 기초와 VPC
   - offer services meant to be accessed by end users.
   - Simple Email Service, Amazon WorkSpaces, Gmail, Outlook
 
+
+
+- MSA
+  - [Django 프로젝트](https://docs.djangoproject.com/en/4.0/intro/tutorial01/)
+    - `settings.py`
+    - `urls.py`
+
+
+```shell
+python --version
+
+python -m pip install django
+python -m django --version
+django-admin startproject mysite
+cd mysite/
+# http://localhost:8000/
+# python manage.py runserver 8080
+# python manage.py runserver 0:8080
+python manage.py runserver
+
+# polls 앱시작
+python manage.py startapp polls
+# polls/urls.py 추가
+# mysite/urls.py 수정
+
+python manage.py runserver
+# http://127.0.0.1:8000/polls/
+
+
+
+# mysite > settings.py > INSTALLED_APPS PollsConfig 추가 후
+# DB 스키마들을 정의 하는 migration 스크립트 0001_initial.py 생성됨
+python manage.py makemigrations polls
+
+# 0001_initial.py의 스키마 대로 db.sqllite3에 DB 구성
+python manage.py migrate
+
+# DB확인하기
+python manage.py shell
+
+```
+
+
+
+- Part 5. 도커와 쿠버네티스를 이용한 서비스 운영
+  - docker, docker-compose, kubernetes
+
+- 도커
+  - 우분투환경 t3.small (쿠버네티스 minikube 사용 위한 최소 사양 - NOT FREE-TIER!)
+  - 설치스크립트 install-docker.sh
+    - https://github.com/tedilabs/fastcampus-devops/blob/main/3-docker-kubernetes/env/ubuntu/install-docker.sh
+    - install-docker-compose.sh
+
+
+```shell
+# Use Docker without root
+sudo usermod -aG docker $DOCKER_USER
+
+# github내용 붙여넣고 Ctrl+C (^M캐릭터 등 문제 없애기 위해)
+cat > install-docker.sh
+chmod u+x install-docker.sh
+./install-docker.sh
+# 도커가 그룹목록에 없음. 터미널 재실행 후 반영 확인
+id
+docker ps
+
+cat > install-docker-compose.sh
+chmod u+x install-docker-compose.sh
+./install-docker-compose.sh
+
+```
+
+
+- kubectl
+  - 쿠버네티스 API 서버(클러스터)와 통신하여 사용자 명령 전달 CLI 도구
+    - https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/#install-using-native-package-management
+
+```shell
+cat > install-kubectl.sh
+chmod u+x install-kubectl.sh
+./install-kubectl.sh
+
+```
+
+
+- kustomize (또는 Helm사용)
+  - https://kubectl.docs.kubernetes.io/installation/kustomize/binaries/
+
+
+```shell
+cat > install-kustomize.sh
+chmod u+x install-kustomize.sh
+./install-kubectl.sh
+
+```
+
+- minikube (또는 Helm사용)
+  - https://minikube.sigs.k8s.io/docs/start/
+
+```shell
+cat > install-kustomize.sh
+chmod u+x install-kustomize.sh
+./install-kubectl.sh
+
+minikube start --driver=docker
+cat ~/.kube/config
+# 컨텍스트: 클러스터, 인증사용자 정보로 인증,접속 한다는 정보
+# minikube 컨텍스트를 통해서 kubectl에 통신
+```
+
+```shell
+# 노드의이름: minikube, 역할: control-plane 과 master 역할 수행
+kubectl get nodes
+kubectl cluster-info
+
+# 쿠버네티스 클러스터 커멘드
+# status, stop, delete, pause, unpause
+minikube status
+
+
+# 쿠버네티스 클러스터에 addon 설정
+# : dashboard, helm-tiller, ingress, istio, metallb, metrics-server
+# minikube addons enable ingress
+minikube addons list
+
+# 쿠버네티스 클러스터에 있는 노드 컨테이너에 접근
+minikube ssh
+
+# 로컬에 설치된 kubectl 버전과 , 쿠버네티스 클러스터 버전일치 하지 않을 수 있음
+# 클러스터버전과 동일한 kubectl 버전을 사용하는 커멘드
+minikube kubectl version
+```
+
+- 테라폼 코드 이용하여 미리 준비된 AWS 실습환경 구성
+  - https://github.com/tedilabs/fastcampus-devops/tree/main/3-docker-kubernetes/env/terraform-aws-ubuntu
+ 
+## 도커
+
+- 이미지: build 또는 pull (from 이미지저장소 Registry)
+  - 퍼플릭: dockerhub
+  - 프라이빗: AWS ECR
+- 컨테이너 : 이미지 실행 프로세스
+  - 라이프사이클: created, deleted, running, stopped, paused
+
+```shell
+docker ps -a
+
+docker run -d nginx
+docker run -it ubuntu:focal 
+docker run ubuntu:focal id
+
+docker run -p {호스트포트}:{컨테이너포트} -d nginx
+docker run -p 9999:80 nginx -d
+curl localhost:{호스트포트}
+
+# 컨테이너 생성
+docker create [image]
+
+# 컨테이너 시작
+docker start [container]
+
+# 컨테이너 생성 및 시작시작
+docker run [image]
+
+docker run \
+  -i \                          # 호스트의 표준 입력을 컨테이너와 연결 (interactive)
+  -t \                          # TTY 할당
+  --rm \                        # 컨테이너 실행 종료 후 자동 삭제
+  -d \                          # 백그라운드 모드로 실행 (detached)
+  --name hello-world \          # 컨테이너 이름 지정
+  -p 80:80 \                    # 호스트 - 컨테이너 간 포트 바인딩
+  -v /opt/example:/example \    # 호스트 - 컨테이너 간 볼륨 바인딩
+  fastcampus/hello-world:latest \   # 실행할 이미지
+  my-command                        # 컨테이너 내에서 실행할 명령어
+```
