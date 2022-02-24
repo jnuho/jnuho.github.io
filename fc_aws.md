@@ -239,6 +239,8 @@ aws ec2 attach-internet-gateway --vpc-id "vpc-025bb54e5d273c193" --internet-gate
 AWS 기초와 VPC
 - 네트워킹 기초
 
+- AMI
+  - EBS 스냅샷 생성하여 EC2 -> AMI 변환 가능
 
 
 ### Cloud Platform Models
@@ -329,7 +331,7 @@ chmod u+x install-docker-compose.sh
 
 
 - kubectl
-  - 쿠버네티스 API 서버(클러스터)와 통신하여 사용자 명령 전달 CLI 도구
+  - 쿠버네티스의 API 서버(클러스터)와 통신하여 사용자 명령을 전달하는 CLI 도구
     - https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/#install-using-native-package-management
 
 ```shell
