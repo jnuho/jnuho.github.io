@@ -47,4 +47,18 @@ docker container prune
 # -a : 중지여부 상관없이 모든 컨테이너
 # -q : ID만출력
 docker ps -a -q
+
+docker stop $(docker ps -a -q)
+docker rm $(docker ps -a -q)
+```
+
+```shell
+docker start myubuntu
+docker exec -it myubuntu bash
+
+# ehh0: 도커의 NAT IP 할당받은 인터페이스
+# lo: 인터페이스
+ifconfig
+
+# 
 ```
