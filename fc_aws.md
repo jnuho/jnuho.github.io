@@ -1,22 +1,5 @@
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 - EC2 & key pair
   - 퍼블릭키는 EC2 인스턴스에 설치됨
   - 개인키는 접속주체 개인 저장
@@ -431,4 +414,52 @@ docker run \
   -v /opt/example:/example \    # 호스트 - 컨테이너 간 볼륨 바인딩
   fastcampus/hello-world:latest \   # 실행할 이미지
   my-command                        # 컨테이너 내에서 실행할 명령어
+  
+  
+# 컨테이너 중단 및 빠져나오려면 exit
+# 컨테이너 중단X 빠져나오려면 CTRL+P,Q
+docker run -p 80:80 -d nginx
+curl localhost:80
+
+# 기본 COMMAND = id 세팅
+docker run ubuntu:focal id
+
+# 컨테이너가 실행 종료 후 삭제 되도록 하는 옵션 --rm
+docker run --rm ubuntu:focal id
+
+# 컨테이너 inspect
+docker inspect [container]
+
+# 일시중지 / 재개
+docker pause [container]
+docker unpause [container]
+
+# SIGTERM 시그널로 종료
+# gracefully shutdown 안전하게 종료
+docker stop [container]
+
+# SIGKILL 시그널로 종료
+# 로그남지 않고 강제종료
+docker stop [container]
+
+# 모든 컨테이너 종료
+docker stop $(docker ps -a -q)
+
+# 컨테이너 삭제 (실행중 제외)
+docker rm [container]
+
+# 컨테이너 강제종료 후 SIGKILL 삭제
+docker rm -f [container]
+
+# 컨테이너 실행 종료 후 자동삭제
+docker run --rm ...
+
+# 중지된 모든 컨테이너 삭제
+docker container prune
 ```
+
+
+- 엔트리포인트와 커멘드
+  - 엔트리포인트 : 컨테이너 실행 시 고정적으로 실행되는 스크립트/명령어
+  - 커멘드 : 
+
