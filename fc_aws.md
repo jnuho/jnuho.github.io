@@ -461,5 +461,105 @@ docker container prune
 
 - 엔트리포인트와 커멘드
   - 엔트리포인트 : 컨테이너 실행 시 고정적으로 실행되는 스크립트/명령어
-  - 커멘드 : 
+    - 생략가능. 생략 될 경우 커멘드에 지정된 명령어로 수행
+  - 커멘드 : 도커가 실행 할 떄 수행할 명령어, 혹은 엔트리포인트에 지정된 명령어에 대한 인자 값
+    - 도커파일에 필수로 들어가야함
 
+```dockerfile
+# 실제실행: [Entrypoint][Command]
+ENTRYPOINT ["docker-entrypoint.sh"]
+CMD ["node"]
+```
+
+```shell
+# 우분투 기본 COMMAND  bash를 변경-> sh
+docker run --entrypoint sh ubuntu:focal
+# 우분투 기본 COMMAND  bash를 변경-> echo hello world
+docker run --entrypoint echo ubuntu:focal hello world
+```
+
+- 환경변수
+
+```shell
+docker run -e MY_HOST=fastcampus.com ubuntu:focal bash
+# echo $MY_HOST
+# env
+# docker inspect [container]
+# 리스트 확인 가능 Env: [...]
+docker run --env list [ENV]
+# 환경 변수파일로 저장하여 참조
+docker run --env-file list
+cat sample.env
+  MY_HOST=helloworld.com
+  MY_VAR=123
+  MY_VAR2=456
+
+docker run -it --env-file ./sample.env ubuntu:focal env
+# dockerhub 에서 nginx 설명페이지에 환경변수 변경하여 서버 실행 방법 있음, grafana도 찾아보기
+```
+
+
+- 컨테이너 명령어 실행
+  - `docker exec` 컨테이너의 이슈해결에 사용됨. 컨테이너 내부에 들어가서 컨피그 및 로그 확인
+```shell
+docker exec [container] [command]
+
+docker run -d --name my-nginx nginx
+
+# my-nginx 컨테이너에 Bash 쉘로 접속하기
+docker exec -it my-nginx bash
+
+# my-nginx 컨테이너에 환경변수 확인하기
+docker exec -it my-nginx env
+# ls -l /etc/nginx
+```
+
+
+- 네트워크
+  - 네트워크 구조
+    - docker0: 기본생성되는 브릿지 네트워크(veth와 eth간 다리 역할)
+    - eth0-docker0-veth
+    - eth0: 호스트(EC2 private ip)의 기본 네트워크
+    - 도커컨테이너는 내부에 lo(127.0.0.1), eth0(127.17.0.x) 네트워크 생성됨
+  - 컨테이너 포트 노출
+  - Expose vs Publish
+  - 도커 네트워크 드라이버
+
+```shell
+docker run -p [HOST IP:PORT]:[CONTAINER PORT] [container]
+
+# nginx 컨테이너 80포트를 호스트의 '모든'(0.0.0.0) IP의 80포트와 연결하여 컨테이너 실행
+# PORTS 0.0.0.0:80->80/tcp, :::80->80/tcp
+docker run -d -p 80:80 nginx
+curl localhost:80
+curl [ec2-private-ip]:80
+curl [ec2-public-ip]:80
+
+# nginx 컨테이너 80포트를 호스트 127.0.0.1 IP의 80포트 연결하여 실행
+# PORTS 127.0.0.1:80->80/tcp, :::80->80/tcp
+docker run -d -p 127.0.0.1:80:80 nginx
+curl localhost:80 # 로컬(loopback 127.0.0.1)에서만 접근
+
+# nginx 컨테이너 80포트를 호스트의 사용가능한 임의의 포트와 연결하여 실행
+# PORTS 0.0.0.0:49155->80/tcp, :::49155->80/tcp
+docker run -d -p 80 nginx
+curl localhost:49155
+curl [ec2-private-ip]:49155
+curl [ec2-public-ip]:49155
+```
+
+- Expose vs. Publish
+  - expose 옵션은 문서화 용도
+    - `docker run -d --expose 80 nginx`
+  - publish 옵션은 실제 포트를 바인딩
+    - `docker run -d -p 80 nginx`
+
+```shell
+# PORTS 80/tcp (Expose 문서화용도 이기 떄문에 localhost:80 Connection 받을수없음)
+docker run -d --expose 80 --name nginx-expose nginx
+docker network ls
+```
+
+- 볼륨
+
+- 로그
