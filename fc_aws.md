@@ -555,9 +555,28 @@ curl [ec2-public-ip]:49155
     - `docker run -d -p 80 nginx`
 
 ```shell
-# PORTS 80/tcp (Expose 문서화용도 이기 떄문에 localhost:80 Connection 받을수없음)
+# PORTS 80/tcp (-p 퍼블리시와 달리, --expose는 문서화 용도 이기 떄문에 localhost:80 Connection 받을수없음)
 docker run -d --expose 80 --name nginx-expose nginx
+# Docker network Drivers 공식 문서 참조
 docker network ls
+```
+
+- 도커 네트워크 드라이버
+  - Single/Multi Host Networking
+  - Multi: docker swarm
+
+```shell
+ls
+# bridge.sh container.sh host.sh none.sh
+docker rm -f $(docker ps -a -q); docker container prune
+
+# cat none.sh
+#!/usr/bin/env sh
+docker run -i -t --net none ubuntu:focal
+
+# cat host.sh
+
+
 ```
 
 - 볼륨
