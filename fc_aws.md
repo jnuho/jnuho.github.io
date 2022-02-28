@@ -520,6 +520,7 @@ docker exec -it my-nginx env
     - docker0: 기본생성되는 브릿지 네트워크(veth와 eth간 다리 역할)
     - eth0-docker0-veth
     - eth0: 호스트(EC2 private ip)의 기본 네트워크
+    - veth: 컨테이너 생성시 호스트에 해당 컨테이너에 대응되는 가상 veth가 생성 됨
     - 도커컨테이너는 내부에 lo(127.0.0.1), eth0(127.17.0.x) 네트워크 생성됨
   - 컨테이너 포트 노출
   - Expose vs Publish
@@ -557,26 +558,66 @@ curl [ec2-public-ip]:49155
 ```shell
 # PORTS 80/tcp (-p 퍼블리시와 달리, --expose는 문서화 용도 이기 떄문에 localhost:80 Connection 받을수없음)
 docker run -d --expose 80 --name nginx-expose nginx
+
 # Docker network Drivers 공식 문서 참조
 docker network ls
+  bridge
+  host
+  none
 ```
 
 - 도커 네트워크 드라이버
-  - Single/Multi Host Networking
-  - Multi: docker swarm
+  - Single Host
+    - bridge(docker0)/host/none
+  - Multi Host Networking
+    - overlay (docker swarm)
 
 ```shell
+# tedilabs/fastcampus-devops/3-docker-kubernetes/1-docker-network
 ls
 # bridge.sh container.sh host.sh none.sh
 docker rm -f $(docker ps -a -q); docker container prune
 
 # cat none.sh
+# docker inspect > IPAddress ="", Networks > DriverOpts: null
+# apk update시 오류 (network=none)
+# 컨테이너의 네트워크가 필요없거나 커스텀 네트워크를 설정해야 하는 경우
 #!/usr/bin/env sh
 docker run -i -t --net none ubuntu:focal
 
 # cat host.sh
+# 도커가 제공하는 가상 네트워크가 아닌, 직접 호스트 네트워크에 붙음(포트바인드 없이)
+# curl localhost:3000 (그라파나 디폴트 포트)
+#!/usr/bin/env sh
+docker run -d --network=host grafana/grafana
+
+# cat bridge.sh
+# docker0이 아닌 user-defined 네트워크 사용: fastcampus 네트워크 생성
+# 브릿지네트워크에서만 사용옵션 --net-alias
+#   브릿지네트워크 안에서 hello라는 도메인이름으로 컨테이너ip 서치가능하도록 내부도메인에 저장
+# docker network ls
+#!/usr/bin/env sh
+docker network create --driver=bridge fastcampus
+docker run -d --network=fastcampus --net-alias=hello nginx
+docker run -d --network=fastcampus --net-alias=grafana grafana/grafana
 
 
+docker exec -it [hello_container] bash
+# curl이 없으므로 wget
+# cd /tmp
+# wget hello (도메인의 alias)
+
+
+docker exec -it [grafana_container] bash
+# curl grafana:3000
+
+
+# veth 볼수 있음
+#   ens5: 호스트 eth0
+#   docker0: 브릿지
+#   br-xxx : fastcampus 브릿지
+ip addr
+ifconfig
 ```
 
 - 볼륨
