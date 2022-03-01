@@ -826,4 +826,179 @@ docker run \
 - 도커 로그 드라이버
 
 
-- 이미지 빌드
+- 도커 이미지
+  - Layer Architecture
+  - 도커 컨테이너 생성시 이미지레이어(Read Only) & 컨테이너 레이어(Read/Write)
+
+```shell
+docker images
+# RootFS 레이어 배열리스트 확인
+docker image inspect nginx:latest
+```
+- Dockerfile 없이 이미지 생성
+  - docker commit
+  - 기존 컨테이너를 기반으로 새 이미지를 생성 할 수 있음
+
+```shell
+docker commit [OPTIONS] CONTAINER [REPOSITORY[:TAG]]
+docker commit -a fastcampus -m "First Commit" ubuntu my_ubuntu:v1
+
+
+docker run -it --name my_ubuntu ubuntu:focal
+  cat > my_file
+  Hello Fastcampus!
+  # CTRL+P,Q
+docker ps
+
+# 컨테이너를 이미지로 저장
+# -a 작성자
+# -m 커밋 메시지
+# my_ubuntu 컨테이너이름
+# my-ubuntu:v1 이미지
+docker commit -a fastcampus -m "Add my_file" my_ubuntu my-ubuntu:v1
+# my-ubuntu 이미지 생성 확인
+docker images
+# 레이어 두개 있음(기반으로 만든 레이어 ubuntu:focal도 그중 하나)
+docker image inspect my-ubuntu
+# 이 이미지를 만드는데 사용 된 ubuntu:focal 이미지 확인하기(-> 해당 레이어가 my-ubuntu 이미지 레이어에 포함 됨)
+docker image inspect ubuntu:focal
+
+# 컨테이너 삭제후 다시 신규 이미지를 사용해 컨테이서 생성 및 실행
+docker rm -f my_ubuntu
+docker run -it my-ubuntu:v1
+# cat my_file
+# exit
+```
+
+- 도커파일 Dockerfile 이용한 이미지 생성
+  - Dockerfile로 이미지 생성
+
+```shell
+# docker build [OPTIONS] PATH
+# ./ 디렉토리를 빌드 컨텍스트로 my_app:v1 이미지 빌드 (Dockerfile 이용)
+# 현재 디렉토리 기반으로 도커빌드를 할건데, 빌드 결과물 이미지는 my_app:v1이라는 태그를 생성
+# -t 빌드할 이미지에 태그 지정
+docker build -t my_app:v1 ./
+
+# 다른 도커파일 MyDockerfile로 빌드
+docker build -t my_app:v1 -f example/MyDockerfile ./
+
+# cd fastcampus-devops/3-docker-kubernetes/3-dockerfile/app
+# sudo apt install tree & tree -L 2
+cat Dockerfile
+
+FROM node:12-alpine
+RUN apk add --no-cache python3 g++ make
+WORKDIR /app
+COPY . .
+RUN yarn install --production
+CMD ["node", "src/index.js"]
+
+
+cd app
+# Sending build context to Docker daemon xxMB
+docker build -t my-app:v1 ./
+# my-app:v1 이미지 생성 확인
+docker images
+
+# 도커 파일 수정 후 재빌드
+# CMD ["node", "src/index.js", "1"]
+# Using cache (기존에 빌드된 부분 일부 레이어는 캐시 사용)
+docker build -t my-app:v2 ./
+
+```
+
+- 빌드 컨텍스트
+  - 도커 빌드 명령 수행 시 현재 디렉토리(Current Working Directory)를 빌드 컨텍스트(Build Context)라고 함
+  - Dockerfile로 부터 이미지 빌드에 필요한 정보를 도커 데몬에 전달하기 위한 목적
+  - `COPY . .` 현재 디렉토리 내용을  컨테이너 이미지 내부로 복사
+  - 현재 디렉토리 정보를 알고 있으려면 도커 데몬이 빌드 컨텍스트 정보를 알고 있어야 함
+  - 현재 디렉토리에 파일이 많다면 빌드 오래 걸릴 수 있음-> `.dockerignore` 활용
+
+
+- Dockefile 작성
+  - Dockerfile 공식 문서 참고
+
+```shell
+# cd fastcampus-devops/3-docker-kubernetes/3-dockerfile/nodejs-server/
+cat Docerfile
+#
+# nodejs-server
+#
+# build:
+#   docker build --force-rm -t nodejs-server .
+# run:
+#   docker run --rm -it --name nodejs-server nodejs-server
+#
+
+FROM node:16
+# 이미지 메타데이터
+LABEL maintainer="FastCampus Park <fastcampus@fastcampus.com>"
+LABEL description="Simple server with Node.js"
+
+# 컨테이너안에 디렉토리 설정 (cd 명령어를 통해)
+# Create app directory
+WORKDIR /app
+
+# COPY [SRC 호스트 운영체제] [DEST 이미지 상에서 경로]
+# ./ 현재 디렉토리는 WORKDIR에서 지정한 /app 디렉토리임!
+# 호스트 파일시스템에 있는 package*.json 파일들을 도커 이미지 디렉토리 WORKDIR /app에 복사!
+# Install app dependencies
+# A wildcard is used to ensure both package.json AND package-lock.json are copied
+# where available (npm@5+)
+COPY package*.json ./
+
+# 도커 이미지 상에서 해당 명령어를 실행하라
+# /app에 .json을 복사하고, 여기서 npm install을 실행
+RUN npm install
+# If you are building your code for production
+# RUN npm ci --only=production
+
+# 현재 호스트 디렉토리의 모든 파일과 디렉토리를 도커이미지 /app에 복사
+# 위에서 진행된 소스코드의 변경사항을 적용하기 위함
+# Bundle app source
+COPY . .
+
+# 도커이미지 포트 8080 사용
+# 퍼블리싱 -p가 아닌 명시용 목적 (이미지 사용하는 유저에게 알려주는 목적)
+EXPOSE 8080
+
+# 해당 이미지로 컨테이너 실행시 수행해야할 명령어 (배열리스트 또는 한개의 문자열 "node server.js" 지정 가능) 
+CMD [ "node", "server.js" ]
+```
+
+
+```shell
+# build:
+docker build --force-rm -t nodejs-server .
+docker images
+
+# run:
+docker run --rm -it --name nodejs-server nodejs-server
+docker ps
+# -p 8080 퍼블리싱 하지 않았기 때문에 해당 포트 열려있지 않음
+curl localhost:8080 
+docker rm -f [container]
+docker run -d -p 8080 --name nodejs-server nodejs-server
+curl localhost:8080
+```
+
+- ENTRYPOINT 엔트리포인트
+  - CMD 앞서 시작프로그램 지정
+  - ENTRYPOINT 와 CMD가 합쳐져 사용됨
+
+```shell
+# Dockerfile
+ENTRYPOINT ["executable", "param1", "param2"]
+ENTRYPOINT command param1 param2
+```
+
+- ADD
+  - COPY와 비슷
+  - 차이점은 소스디텍토리로 url도 받을 수 있음 (소스가 변경됐는지 확인 어렵기 때문에 ADD 사용 지양)
+  - COPY 사용 권장
+
+- USER
+  - 컨테이너가 사용하게 될 기본 사용자/ 그룹 지정 가능
+  - 보안관련 옵션
+
