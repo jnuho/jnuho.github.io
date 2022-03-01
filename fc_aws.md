@@ -622,4 +622,208 @@ ifconfig
 
 - 볼륨
 
+```shell
+docker run [app]
+docker build -t app .
+
+# 호스트의 디렉토리를 컨테이너의 특정 경로에 '마운트' 합니다
+# 호스트 /opt/html 디렉토리를 Nginx의 뤱 루트 디렉토리로 마운트
+docker run -d \
+  --name nginx \
+  -v /opt/html:/usr/share/nginx/html
+  nginx
+
+
+
+# tedilabs/fastcampus-devops/3-docker-kubernetes/2-docker-volume
+docker ps -a
+docker run -d -it ubuntu:focal
+docker exec -it [container] bash
+# cat > hello
+# hello world!
+# exit
+docker rm -f [container]
+# 볼륨 사용없이 실행 시 컨테이너 삭제시 삭제됨
+docker run -d -it ubuntu:focal
+docker exec -it [container] bash
+
+
+# 호스트 볼륨
+# 호스트의 $(pwd)/html 디렉토리에는 index.html이라는 파일이 있음
+# 다음 스크립트 실행 시 nginx 컨테이너의 디렉토리에 index.html이 마운트 됨
+# curl localhost로 확인
+# cat host-volume.sh
+#!/usr/bin/env sh
+docker run \
+  -d \
+  -v $(pwd)/html:/usr/share/nginx/html \ # 호스트볼륨:컨테이너볼륨
+  -p 80:80 \
+  nginx
+
+docker exec -it [container] bash
+# ls /usr/share/nginx/html
+# cat index.html
+# cat > hello
+# hello world!
+# exit
+ls $(pwd)/html
+# 컨테이너 안에서 만들었던 hello라는 파일이 호스트에도 생성됨!
+```
+
+- 볼륨 컨테이너
+  - 특정 컨테이너의 볼륨 마운트를 공유할 수 있음
+
+```shell
+docker run -d \
+  --name my-volume
+  -it \
+  -v /opt/html:/usr/share/nginx/html \
+  ubuntu:focal
+
+# my-volume 컨테이너의 볼륨을 공유
+docker run -d \
+  --name nginx \
+  --volumes-from my-volume \
+  nginx
+
+
+
+cat volumne-container.sh
+#!/usr/bin/env sh
+docker run \
+  -d \
+  -it \
+  -v $(pwd)/html:/usr/share/nginx/html \
+  --name web-volume \
+  ubuntu:focal
+
+docker run \
+  -d \
+  --name fastcampus-nginx \
+  --volumes-from web-volume \
+  -p 80:80 \
+  nginx
+  
+docker run \
+  -d \
+  --name fastcampus-nginx2 \
+  --volumes-from web-volume \
+  -p 8080:80 \
+  nginx
+
+
+curl localhost:80
+curl localhost:8080
+docker inspect fastcampus-nginx
+docker inspect fastcampus-nginx2
+```
+
+- 도커 볼륨 (호스트볼륨과 대비)
+  - 호스트볼륨은 호스트에 마운트할 경로 지정했어야 했음
+  - 도커가 제공하는 볼륨 관리기능을 활용하여 데이터 보존 (볼륨 생성, 삭제 등 관리)
+  - 이런 도커 볼륨은 도커가 관리하는 특정 호스트 경로에 데이터 저장
+  - 기본적으로 /var/lib/docker/volumes/$(volume-name}/_data에 데이터가 저장됨 (호스트에 쌓임)
+
+```shell
+# 'db' 라는 도커 볼륨 생성
+docker volume create --name db
+
+# 도커의 'db' 볼륨을 mysql 루트 디렉토리로 마운트
+docker run -d \
+  --name fastcampus-mysql \
+  -v db:/var/lib/mysql \
+  -p 3306:3306 \
+  mysql:5.7
+
+
+cat docker-volume.sh
+#!/usr/bin/env sh
+docker volume create --name db
+docker volume ls
+docker run \
+  -d \
+  --name fastcampus-mysql \
+  -e MYSQL_DATABASE=fastcampus \ # 환경변수 지정: 최초생성 데이터베이스 이름
+  -e MYSQL_ROOT_PASSWORD=fastcampus \ # 환경변수 지정: 루트계정의 비밀번호
+  -v db:/var/lib/mysql \  # 호스트 볼륨대신 도커볼륨 사용
+  -p 3306:3306 \
+  mysql:5.7
+
+docker ps
+docker volume inspect db
+sudo ls -l /var/lib/docker/volumes/db/_data
+
+docker rm -rf $(docker ps -a -q)
+docker volume rm db
+```
+
+- 읽기전용 볼륨 연결
+  - 볼륨 연결 설정에 :ro 옵션을 통해 읽기 전용 마운트 옵션을 설정
+  - 변경 되어서는 안되는 디렉토리나 파일 연결 시
+
+```shell
+# 도커의 web-volume 볼륨을 nginx의 웹 루트 디렉토리로 읽기 전용 마운트
+docker run -d \
+  --name nginx \
+  -v web-volume:/usr/share/nginx/html:ro \
+  nginx
+
+cat host-volume.sh
+#!/usr/bin/env sh
+docker run \
+  -d \
+  -v $(pwd)/html:/usr/share/nginx/html:ro \
+  -p 80:80 \
+  --name ro-nginx \
+  nginx
+
+# 에러발생! : read-only file system!!!
+docker exec ro-nginx touch /usr/share/nginx/html/test
+```
+
 - 로그
+  - stdout/stderr
+    - 각언어에서 지원하는 로그프레임워크로 어플리케이션 단에서 처리했지만, 도커컨테이너에서는 stdout/stderr 사용
+    - APP container (stdou/stderr) -> logging driver
+  - 로그확인하기
+  - 호스트 운영체제의 로그 저장 경로
+  - 로그 용량 제한하기
+  - 도커 로그 드라이버
+
+```shell
+# 전체 로그 확인
+docker logs [container]
+# 마지막 10줄
+docker logs --tail 10 [container]
+# 실시간 로그 스트림
+docker logs -f [container]
+# 로그마다 타임스탬프 확인
+docker logs -f -t [container]
+
+```
+
+- 호스트 운영체제의 로그 저장 경로
+  - log driver = json-file 했을때만 유효
+
+```shell
+sudo su
+cat /var/lib/docker/containers/${CONTAINER_ID}/${CONTAINER_ID}-json.log
+less -R /var/lib/docker/containers/${CONTAINER_ID}/${CONTAINER_ID}-json.log
+```
+
+- 로그 용량 제한
+  - 컨테이너 단위 또는 도커엔진에서 기본설정 진행(운영환경에서는 필수 설정!)
+
+```shell
+# 한 로그 파일 당 최대 크기를 3MB제한, 최대 로그 파일 5개로 로테이팅
+docker run \
+  -d \
+  --log-driver=json-file \
+  --log-opt max-size=3m \
+  --log-opt max-file=5 \
+  nginx
+```
+- 도커 로그 드라이버
+
+
+- 이미지 빌드
