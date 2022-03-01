@@ -503,6 +503,7 @@ docker run -it --env-file ./sample.env ubuntu:focal env
 
 - 컨테이너 명령어 실행
   - `docker exec` 컨테이너의 이슈해결에 사용됨. 컨테이너 내부에 들어가서 컨피그 및 로그 확인
+
 ```shell
 docker exec [container] [command]
 
