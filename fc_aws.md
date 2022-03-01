@@ -17,7 +17,8 @@ ssh -i {my.pem} ubuntu@{public_ip}
   - 프로필>내보안자격증명>액세스키 생성
 
 - [CLI 설치 (우분투)](https://docs.aws.amazon.com/ko_kr/cli/latest/userguide/install-cliv2-linux.html)
-```sh
+
+```shell
 cat /etc/lsb-release
 sudo apt update
 sudo apt install unzip build-essential curl
@@ -31,6 +32,7 @@ sudo ./aws/install
 ```
 
 - WSL 사용설정 (윈도우)
+
 ```shell
 # powershell as Admin
 dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
@@ -72,7 +74,7 @@ wsl --set-default-version 2
   5. 컨테이너 자격증명 (ECS의 경우)
   6. 인스턴스 프로파일 자격증명 (EC2의 경우) (실무)
 
-```sh
+```shell
 # 1. CLI 명령어
 # --profile
 
@@ -163,7 +165,7 @@ ap-northeast-1
 
 - AWS CLI 사용법
 
-```sh
+```shell
 aws <command> <subcommand> [options and parameters]
 aws --version
 aws help
@@ -175,7 +177,7 @@ aws ec2 describe-availability-zones help
 
 - 디버그 옵션 활성화
 
-```sh
+```shell
 # 자격 증명정보 확인시 디버그모드 활성화
 aws sts get-caller-identity --debug
 ```
@@ -192,7 +194,7 @@ aws sts get-caller-identity --debug
   - A클래스 큰 네트워크 - 국가수준
   - 211.11.124.2
 
-```sh
+```shell
 # IGW -> VPC
 aws ec2 attach-internet-gateway --vpc-id "vpc-025bb54e5d273c193" --internet-gateway-id "igw-09fe226851efbc823" --region ap-northeast-2
 ```
@@ -1001,4 +1003,96 @@ ENTRYPOINT command param1 param2
 - USER
   - 컨테이너가 사용하게 될 기본 사용자/ 그룹 지정 가능
   - 보안관련 옵션
+
+
+- 도커이미지 저장, 불러오기
+  - 인터넷이 없는 환경에 유용
+
+```shell
+# docker save -o [OUTPUT-FILE] IMAGE
+# ubuntu:focal 이미지를 ubuntu_focal.tar 압축파일로 저장
+docker save -o ubuntu_focal.tar ubuntu:focal
+
+# docker load -i [INPUT-FILE]
+docker load -i ubuntu_focal.tar
+
+
+docker images
+# my-app:v2 이미지를 압축파일로 저장
+docker save -o my-app-v2.tar my-app:v2
+file my-app-v2.tar
+
+# 이미지 제거
+docker rmi my-app:v2
+# my-app:v2 이미지 제거 확인
+docker images
+
+# 다시 압축파일로부터 이미지를 불러옴
+docker load -i my-app-v2.tar
+docker images
+```
+
+
+- 도커허브 저장소
+  - hub.docker.com 로그인
+  - Security > New Access token
+  - Repository > Create Repository (Private)
+    - `REPO_NAME/my-nginx`
+  - 도커이미지 업로드 시 : `docker tag`, `docker push`
+
+
+```shell
+docker ps
+docker login -u [ID]
+# Password: 액세스토큰
+# ~/.docker/config.json에 저장됨 -> 안전하게 따로 보관
+
+docker images
+
+# nginx:latest 이미지를 만들어, 위의 리포지토리로 업로드
+docker tag nginx:latest REPO_NAME/my-nginx:v1.0.0
+docker images
+docker push REPO_NAME/my-nginx:v1.0.0
+
+
+# 도커 이미지 pull 받을 수 있는지 확인
+docker rmi REPO_NAME/my-nginx:v1.0.0
+docker pull REPO_NAME/my-nginx:v1.0.0
+docker images
+```
+
+
+- AWS ECR 저장소 이용
+  - ECR: 컨테이너 이미지 저장소
+
+
+
+
+
+- 쿠버네티스 소개
+  - 컨테이너 오케스트레이션 시스템
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
