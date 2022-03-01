@@ -1064,7 +1064,37 @@ docker images
 
 
 - AWS ECR 저장소 이용
-  - ECR: 컨테이너 이미지 저장소
+  - ECR(Elastic Container Registry): 컨테이너 이미지 저장소
+    - Create Repository 'Private' > 'my-nginx'
+    - Image scan settings, KMS encryption : 'Disabled'
+
+```shell
+# Nginx 도커 이미지 다운로드
+docker pull nginx
+
+# aws-cli 사용
+aws sts get-caller-identity
+export AWS_PROFILE=fastcampus
+aws sts get-caller-identity
+
+# AWS ECR > View Push Commands
+# 로그인
+aws ecr get-login-password --region ap-northeast-2 | \
+  docker login \
+  --username AWS \
+  --password-stdin [AWS_ID].dkr.ecr.ap-northeast-2.amazonaws.com
+
+# ECR로 푸시
+docker tag nginx:latest [AWS_ID].dkr.ecr.ap-northeast-2.amazonaws.com/my-nginx:v1.0.0
+docker images
+docker push [AWS_ID].dkr.ecr.ap-northeast-2.amazonaws.com/my-nginx:v1.0.0
+
+# 삭제후 다시 pull 테스트
+docker rmi [AWS_ID].dkr.ecr.ap-northeast-2.amazonaws.com/my-nginx:v1.0.0
+
+# credential 있는 머신에만 다운로드 가능
+docker pull [AWS_ID].dkr.ecr.ap-northeast-2.amazonaws.com/my-nginx:v1.0.0
+```
 
 
 
