@@ -60,15 +60,21 @@ docker exec -it myubuntu bash
 # lo: 인터페이스
 ifconfig
 
-# 
 ```
 
-- Terms
-  - Control plane :
-    - 쿠버네티스 노드들을 컨트롤 하는 프로세스 컬렉션
-    - 여기서 task 할당이 이루어 짐
-  - Nodes : Control plane으로 부터 할당된 task들 수행하는 머신
-  - Pods: 1개의 Node에 deploy된 한개 이상의 컨테이너들
-    - Pod에 있는 컨테이너들은 IP 주소, IPC (inter-process-communication), Hostname, 리소스
+- TERMS
+  - 컨트롤 플레인
+    - 쿠버네티스 노드들을 컨트롤하는 프로세스 컬렉션
+    - 여기서 Task 할당이 이루어 짐
+  - 노드 : 컨트롤 플레인으로 부터 할당된 Task들 수행하는 머신
+  - 파드: 1개의 Node에 Deploy된 한개 이상의 컨테이너들
+    - 파드에 있는 컨테이너들은 IP 주소, IPC (inter-process-communication), Hostname, 리소스
   - Replication 컨트롤러 : 몇개의 동일 pod 카피들이 클러스터에서 실행되어야 하는지 컨트롤
-  - Service:
+  - 서비스 : Pods로부터 수행할 work definition을 제거 함
+  - Kubelet : 해당 서비스는 노드에서 작동하며, 컨테이너 manifest를 읽고, 정의된 컨테이너들이 시작하여 작동할 수 있도록 함
+  - kubectl: 쿠버네티스를 위한 cli 설정제어 툴
+
+- 동작원리
+  - 클러스터 : 동작 중인 쿠버네티스 deployment를 가리킴
+    - 컨트롤 plane과 노드(동작하는 머신)
+  
