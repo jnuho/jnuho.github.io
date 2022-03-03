@@ -12,9 +12,8 @@ ssh -i {my.pem} ubuntu@{public_ip}
 ```
 
 - AWS CLI
-  - access key 필요
-  - secret access key 필요
-  - 프로필>내보안자격증명>액세스키 생성
+  - Access key, Secret Access key 발급 필요
+  - 프로필 > 보안자격증명 > 액세스키 생성
 
 - [CLI 설치 (우분투)](https://docs.aws.amazon.com/ko_kr/cli/latest/userguide/install-cliv2-linux.html)
 
@@ -62,7 +61,6 @@ wsl
 
 # 디폴트 버전 2 설정
 wsl --set-default-version 2
-
 ```
 
 
@@ -87,11 +85,24 @@ AWS_PROFILE
 
 # 4. CLI 설정파일
 # 액세스키 다운로드 후
-cat mycredential.csv
-vim ~/.aws/config
+cat mycredential.csv >> temp.csv
+cat temp.csv
+
+aws configure
+  AWS Access Key ID : 
+  AWS Secret Access Key : 
+  Default region name : ap-northeast-2
+  Default output format : json
+
+cat ~/.aws/config
 [default]
-aws_access_key_id=AKI...K
-aws_secret_access_key_id=k0r...M8
+region = ap-northeast-2
+output = json
+
+cat ~/.aws/credentials
+[default]
+aws_access_key_id=...
+aws_secret_access_key_id=...
 
 # 테스트
 # 계정정보 확인
@@ -111,6 +122,7 @@ aws_secret_access_key_id=k0r...M8
 # 리전설정 없이 키페어 조회 가능
 aws ec2 describe-key-pairs
 
+aws ec2 describe-key-pairs --output json
 aws ec2 describe-key-pairs --output yaml
 aws ec2 describe-key-pairs --output table
 
@@ -122,7 +134,6 @@ aws_secret_access_key_id=k0r...M8
 
 # 아웃풋 옵션없이 키페어 조회 가능
 aws ec2 describe-key-pairs
-
 
 # AWS CLI 여러 사용자 프로필 등록 가능 :
 # 프로파일 AWS_PROFILE 환경 변수
@@ -234,14 +245,12 @@ AWS 기초와 VPC
   - EC2, EBS, ELB
   - look and feel you'd get from managing physical resources
   - responsiable for consequences of your configuration
-
 - Paas (Platform as a Service)
   - Elastic Beanstalk, ECS (Elastice Container Service)
   - simplifies the process of building an application by hiding the complexity of the infrastructure
 - Saas (Software as a Service)
   - offer services meant to be accessed by end users.
   - Simple Email Service, Amazon WorkSpaces, Gmail, Outlook
-
 
 
 - MSA
@@ -285,7 +294,6 @@ python manage.py shell
 ```
 
 
-
 - Part 5. 도커와 쿠버네티스를 이용한 서비스 운영
   - docker, docker-compose, kubernetes
 
@@ -302,6 +310,7 @@ sudo usermod -aG docker $DOCKER_USER
 
 # github내용 붙여넣고 Ctrl+C (^M캐릭터 등 문제 없애기 위해)
 cat > install-docker.sh
+
 chmod u+x install-docker.sh
 ./install-docker.sh
 # 도커가 그룹목록에 없음. 터미널 재실행 후 반영 확인
@@ -316,7 +325,7 @@ chmod u+x install-docker-compose.sh
 
 
 - kubectl
-  - 쿠버네티스의 API 서버(클러스터)와 통신하여 사용자 명령을 전달하는 CLI 도구
+  - 쿠버네티스의 API 서버(클러스터)와 통신하여 용사자 명령을 전달하는 CLI 도구
     - https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/#install-using-native-package-management
 
 ```shell
@@ -1102,18 +1111,6 @@ docker pull [AWS_ID].dkr.ecr.ap-northeast-2.amazonaws.com/my-nginx:v1.0.0
 
 - 쿠버네티스 소개
   - 컨테이너 오케스트레이션 시스템
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

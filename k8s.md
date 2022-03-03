@@ -62,3 +62,13 @@ ifconfig
 
 # 
 ```
+
+- Terms
+  - Control plane :
+    - 쿠버네티스 노드들을 컨트롤 하는 프로세스 컬렉션
+    - 여기서 task 할당이 이루어 짐
+  - Nodes : Control plane으로 부터 할당된 task들 수행하는 머신
+  - Pods: 1개의 Node에 deploy된 한개 이상의 컨테이너들
+    - Pod에 있는 컨테이너들은 IP 주소, IPC (inter-process-communication), Hostname, 리소스
+  - Replication 컨트롤러 : 몇개의 동일 pod 카피들이 클러스터에서 실행되어야 하는지 컨트롤
+  - Service:
