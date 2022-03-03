@@ -63,10 +63,10 @@ ifconfig
 ```
 
 - TERMS
-  - 컨트롤 플레인
-    - 쿠버네티스 노드들을 컨트롤하는 프로세스 컬렉션
+  - 컨트롤 Plane
+    - 쿠버네티스 노드들을 컨트롤하는 프로세스의 집합
     - 여기서 Task 할당이 이루어 짐
-  - 노드 : 컨트롤 플레인으로 부터 할당된 Task들 수행하는 머신
+  - 노드 : 컨트롤 Plane으로 부터 할당된 Task를 수행하는 머신
   - 파드: 1개의 Node에 Deploy된 한개 이상의 컨테이너들
     - 파드에 있는 컨테이너들은 IP 주소, IPC (inter-process-communication), Hostname, 리소스
   - Replication 컨트롤러 : 몇개의 동일 pod 카피들이 클러스터에서 실행되어야 하는지 컨트롤
