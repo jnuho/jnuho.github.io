@@ -59,8 +59,30 @@ docker exec -it myubuntu bash
 # ehh0: 도커의 NAT IP 할당받은 인터페이스
 # lo: 인터페이스
 ifconfig
-
 ```
+
+
+- 쿠버네티스 소개
+  - 컨테이너 오케스트레이션 플랫폼으로 컨테이너 어플리케이션 deploy,manage, scaling 프로세스 자동화
+  - Kubernetes clusters : 리눅스 컨테이너 호스트를 cluster로 그룹화하고 관리
+    - on-premise, public/private/hybrid clouds에 적용가능
+    - 바른 스케일링이 필요한 cloud-native 어플리케이션에 적합한 플랫폼
+  - 클라우드 앱 개발시 optimization에 유용
+  - physical 또는 VM 클러스터에 컨테이너들을 scheduling 하고 run 할 수 있음
+  - 클라우드 네이티브 앱을 '쿠버네티스 패턴'을 이용하여 쿠버네티스를 런타임 플랫폼으로 사용하여 만들수 있음
+  - 추가 기능으로:
+    - 여러호스트에 걸쳐서 컨테이너를 Orchestrate 할 수 있음
+    - 엔터프라이즈 앱실행을 위해 리소스를 최대화하여 하드웨어 운용 가능
+    - 어플리케이션 배포와 업데이트를 제어 및 자동화
+    - Stateful 앱을 실행 하기 위해 스토리지를 마운트 하고 추가 가능
+    - 컨테이너 애플리케이션과 리소스를 scaling 할 수 있음
+  - 쿠버네트스는 다른 프로젝트들과 결합하여 효율적인 사용
+    - Registry: Docker Registry
+    - Networking
+    - Telemetry
+    - Security: LDAP, SELinux,RBAC, OAUTH with multitenancy layers
+    - Automation
+    - Services
 
 - TERMS
   - 컨트롤 Plane
@@ -75,6 +97,18 @@ ifconfig
   - kubectl: 쿠버네티스를 위한 cli 설정제어 툴
 
 - 동작원리
-  - 클러스터 : 동작 중인 쿠버네티스 deployment를 가리킴
-    - 컨트롤 plane과 노드(동작하는 머신)
-  
+  - 클러스터 : 동작 중인 쿠버네티스 deployment를 클러스터라고 합니다.
+    - 클러스터는 컨트롤 plane과 compute 머신(노드) 두가지 파트로 나눌 수 있습니다.
+    - 각각의 노드는 리눅스환경으로 볼 수 있으며, physical/virtual 머신입니다.
+    - 각각의 노드는 컨테이너들로 구성된 pod들을 실행합니다.
+    - 컨트롤러 플레인은 클러스터의 상태를 관리
+      - 어떤 어플리케이션이 실행되고 있는지, 어떤 컨테이너 이미지가 사용 되고 있는지 등
+      - Compute 머신은 실제로 어플리케이션과 워크로드들을 실행 합니다.
+  - 쿠버네티스는 OS위에서 동작하면서 노드들위에 실행 중인 컨테이너 pod들과 interact 합니다.
+    - 컨트롤러플레인은 admin으로부터 커멘드를 받아, Compute머신에 해당 커멘드들을 적용합니다.
+
+<div>
+<img src="https://www.redhat.com/cms/managed-files/kubernetes_diagram-v3-770x717_0_0_v2.svg?itok=Z6bFR9q1"
+alt="쿠버네티스 클러스터" width="50%" height="100%">
+</div>
+

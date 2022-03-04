@@ -1109,15 +1109,6 @@ docker pull [AWS_ID].dkr.ecr.ap-northeast-2.amazonaws.com/my-nginx:v1.0.0
 
 
 
-- 쿠버네티스 소개
-  - 컨테이너 오케스트레이션 시스템
-
-
-
-
-
-
-
 
 
 
