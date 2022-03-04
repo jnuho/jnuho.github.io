@@ -301,7 +301,12 @@ python manage.py shell
   - 우분투환경 t3.small (쿠버네티스 minikube 사용 위한 최소 사양 - NOT FREE-TIER!)
   - 설치스크립트 install-docker.sh
     - https://github.com/tedilabs/fastcampus-devops/blob/main/3-docker-kubernetes/env/ubuntu/install-docker.sh
+    - install-docker.sh
     - install-docker-compose.sh
+    - install-kubectl.sh
+    - install-kustomize.sh
+    - install-minikube.sh
+    - update-apt.sh
 
 
 ```shell
@@ -310,6 +315,34 @@ sudo usermod -aG docker $DOCKER_USER
 
 # github내용 붙여넣고 Ctrl+C (^M캐릭터 등 문제 없애기 위해)
 cat > install-docker.sh
+#!/usr/bin/env bash
+## INFO: https://docs.docker.com/engine/install/ubuntu/
+
+set -euf -o pipefail
+
+DOCKER_USER=ubuntu
+
+# Install dependencies
+sudo apt-get update && sudo apt-get install -y \
+  apt-transport-https \
+  ca-certificates \
+  curl \
+  gnupg \
+  lsb-release
+
+# Add Docker’s official GPG key
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --yes --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+
+# Set up the stable repository
+echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
+  $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+# Install Docker CE
+sudo apt-get update && sudo apt-get install -y docker-ce docker-ce-cli containerd.io
+
+# Use Docker without root
+sudo usermod -aG docker $DOCKER_USER
 
 chmod u+x install-docker.sh
 ./install-docker.sh
@@ -317,28 +350,24 @@ chmod u+x install-docker.sh
 id
 docker ps
 
+
 cat > install-docker-compose.sh
 chmod u+x install-docker-compose.sh
 ./install-docker-compose.sh
-
 ```
 
-
 - kubectl
-  - 쿠버네티스의 API 서버(클러스터)와 통신하여 용사자 명령을 전달하는 CLI 도구
+  - 쿠버네티스의 API 서버(클러스터)와 통신하여 사용자 명령을 전달하는 CLI 도구
     - https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/#install-using-native-package-management
 
 ```shell
 cat > install-kubectl.sh
 chmod u+x install-kubectl.sh
 ./install-kubectl.sh
-
 ```
-
 
 - kustomize (또는 Helm사용)
   - https://kubectl.docs.kubernetes.io/installation/kustomize/binaries/
-
 
 ```shell
 cat > install-kustomize.sh
@@ -475,6 +504,8 @@ docker container prune
     - 생략가능. 생략 될 경우 커멘드에 지정된 명령어로 수행
   - 커멘드 : 도커가 실행 할 떄 수행할 명령어, 혹은 엔트리포인트에 지정된 명령어에 대한 인자 값
     - 도커파일에 필수로 들어가야함
+    - docker run 커멘드에 명시되어 있다면 CMD는 무시됨
+    - 필수 파라미터이기 떄문에 명시되지 않아도 디폴트 커멘드 실행 됨
 
 ```dockerfile
 # 실제실행: [Entrypoint][Command]
@@ -509,7 +540,6 @@ docker run -it --env-file ./sample.env ubuntu:focal env
 # dockerhub 에서 nginx 설명페이지에 환경변수 변경하여 서버 실행 방법 있음, grafana도 찾아보기
 ```
 
-
 - 컨테이너 명령어 실행
   - `docker exec` 컨테이너의 이슈해결에 사용됨. 컨테이너 내부에 들어가서 컨피그 및 로그 확인
 
@@ -534,6 +564,7 @@ docker exec -it my-nginx env
     - eth0: 호스트(EC2 private ip)의 기본 네트워크
     - veth: 컨테이너 생성시 호스트에 해당 컨테이너에 대응되는 가상 veth가 생성 됨
     - 도커컨테이너는 내부에 lo(127.0.0.1), eth0(127.17.0.x) 네트워크 생성됨
+    - 
   - 컨테이너 포트 노출
   - Expose vs Publish
   - 도커 네트워크 드라이버
