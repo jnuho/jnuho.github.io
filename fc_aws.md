@@ -564,7 +564,7 @@ docker exec -it my-nginx env
     - eth0: 호스트(EC2 private ip)의 기본 네트워크
     - veth: 컨테이너 생성시 호스트에 해당 컨테이너에 대응되는 가상 veth가 생성 됨
     - 도커컨테이너는 내부에 lo(127.0.0.1), eth0(127.17.0.x) 네트워크 생성됨
-    - 
+
   - 컨테이너 포트 노출
   - Expose vs Publish
   - 도커 네트워크 드라이버
@@ -783,18 +783,23 @@ cat docker-volume.sh
 #!/usr/bin/env sh
 docker volume create --name db
 docker volume ls
+
+# 환경변수 지정: 최초생성 데이터베이스 이름
+# 환경변수 지정: 루트계정의 비밀번호
+# 호스트 볼륨대신 도커볼륨 사용
 docker run \
   -d \
   --name fastcampus-mysql \
-  -e MYSQL_DATABASE=fastcampus \ # 환경변수 지정: 최초생성 데이터베이스 이름
-  -e MYSQL_ROOT_PASSWORD=fastcampus \ # 환경변수 지정: 루트계정의 비밀번호
-  -v db:/var/lib/mysql \  # 호스트 볼륨대신 도커볼륨 사용
+  -e MYSQL_DATABASE=fastcampus \
+  -e MYSQL_ROOT_PASSWORD=fastcampus \
+  -v db:/var/lib/mysql \
   -p 3306:3306 \
   mysql:5.7
 
 docker ps
 docker volume inspect db
-sudo ls -l /var/lib/docker/volumes/db/_data
+sudo -s
+ls -l /var/lib/docker/volumes/db/_data
 
 docker rm -rf $(docker ps -a -q)
 docker volume rm db
@@ -812,6 +817,7 @@ docker run -d \
   nginx
 
 cat host-volume.sh
+
 #!/usr/bin/env sh
 docker run \
   -d \
@@ -842,7 +848,6 @@ docker logs --tail 10 [container]
 docker logs -f [container]
 # 로그마다 타임스탬프 확인
 docker logs -f -t [container]
-
 ```
 
 - 호스트 운영체제의 로그 저장 경로
@@ -866,8 +871,8 @@ docker run \
   --log-opt max-file=5 \
   nginx
 ```
-- 도커 로그 드라이버
 
+- 도커 로그 드라이버
 
 - 도커 이미지
   - Layer Architecture
@@ -878,11 +883,13 @@ docker images
 # RootFS 레이어 배열리스트 확인
 docker image inspect nginx:latest
 ```
+
 - Dockerfile 없이 이미지 생성
   - docker commit
   - 기존 컨테이너를 기반으로 새 이미지를 생성 할 수 있음
 
 ```shell
+# 컨테이너 -> 이미지
 docker commit [OPTIONS] CONTAINER [REPOSITORY[:TAG]]
 docker commit -a fastcampus -m "First Commit" ubuntu my_ubuntu:v1
 
@@ -891,14 +898,15 @@ docker run -it --name my_ubuntu ubuntu:focal
   cat > my_file
   Hello Fastcampus!
   # CTRL+P,Q
+
 docker ps
 
 # 컨테이너를 이미지로 저장
 # -a 작성자
 # -m 커밋 메시지
-# my_ubuntu 컨테이너이름
-# my-ubuntu:v1 이미지
-docker commit -a fastcampus -m "Add my_file" my_ubuntu my-ubuntu:v1
+# my_ubuntu 컨테이너 이름
+# my-ubuntu:v1 저장할 이미지 이름
+docker commit -a fastcampus -m "add my_file" my_ubuntu my-ubuntu:v1
 # my-ubuntu 이미지 생성 확인
 docker images
 # 레이어 두개 있음(기반으로 만든 레이어 ubuntu:focal도 그중 하나)
@@ -1135,13 +1143,6 @@ docker rmi [AWS_ID].dkr.ecr.ap-northeast-2.amazonaws.com/my-nginx:v1.0.0
 # credential 있는 머신에만 다운로드 가능
 docker pull [AWS_ID].dkr.ecr.ap-northeast-2.amazonaws.com/my-nginx:v1.0.0
 ```
-
-
-
-
-
-
-
 
 
 
