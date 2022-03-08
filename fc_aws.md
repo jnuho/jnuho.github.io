@@ -1227,11 +1227,15 @@ docker run -it -d nginx
     - Service: 컨테이너를 관리하기 위한 단위
     - Container: 서비스를 통해 컨테이너 관리
   - docker-compose.yml
-    - version,services,networks, volumes
+    - version, services, networks, volumes
   - docker-compose 명령어
+    - 버전3는 도커 스왐과 호환
+    - `docker-compose deploy`
+    - `docker stack`
+    - 도커 스왐 (쿠버네트스와 동일 목적, 인기 X)
 
-- 도커 스왐
 
 ```shell
-
+cd fastcampus-devops/3-docker-kubernetes/4-docker-compose/build
+vim app.py
 ```
