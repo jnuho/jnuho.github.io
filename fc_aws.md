@@ -956,7 +956,10 @@ docker images
 # CMD ["node", "src/index.js", "1"]
 # Using cache (기존에 빌드된 부분 일부 레이어는 캐시 사용)
 docker build -t my-app:v2 ./
-
+docker images
+docker run -d my-app:v2
+docker ps
+docker exec -it CONTAINER_ID sh
 ```
 
 - 빌드 컨텍스트
@@ -972,7 +975,7 @@ docker build -t my-app:v2 ./
 
 ```shell
 # cd fastcampus-devops/3-docker-kubernetes/3-dockerfile/nodejs-server/
-cat Docerfile
+cat Dockerfile
 #
 # nodejs-server
 #
@@ -1030,7 +1033,7 @@ docker ps
 # -p 8080 퍼블리싱 하지 않았기 때문에 해당 포트 열려있지 않음
 curl localhost:8080 
 docker rm -f [container]
-docker run -d -p 8080 --name nodejs-server nodejs-server
+docker run -d -p 8080:8080 --name nodejs-server nodejs-server
 curl localhost:8080
 ```
 
@@ -1052,7 +1055,6 @@ ENTRYPOINT command param1 param2
 - USER
   - 컨테이너가 사용하게 될 기본 사용자/ 그룹 지정 가능
   - 보안관련 옵션
-
 
 - 도커이미지 저장, 불러오기
   - 인터넷이 없는 환경에 유용
@@ -1098,15 +1100,17 @@ docker login -u [ID]
 
 docker images
 
-# nginx:latest 이미지를 만들어, 위의 리포지토리로 업로드
-docker tag nginx:latest REPO_NAME/my-nginx:v1.0.0
+# 기존 이미지의, 리포지토리와 태그명만 바꾼 이미지 생성하여
+# 도커허브 리포지토리에 업로드
+# USERNAME/REPO_NAME:TAG
+docker tag nginx:latest jnuho/my-nginx:v1.0.0
 docker images
-docker push REPO_NAME/my-nginx:v1.0.0
+docker push jnuho/my-nginx:v1.0.0
 
 
 # 도커 이미지 pull 받을 수 있는지 확인
-docker rmi REPO_NAME/my-nginx:v1.0.0
-docker pull REPO_NAME/my-nginx:v1.0.0
+docker rmi jnuho/my-nginx:v1.0.0
+docker pull jnuho/my-nginx:v1.0.0
 docker images
 ```
 
@@ -1144,6 +1148,75 @@ docker rmi [AWS_ID].dkr.ecr.ap-northeast-2.amazonaws.com/my-nginx:v1.0.0
 docker pull [AWS_ID].dkr.ecr.ap-northeast-2.amazonaws.com/my-nginx:v1.0.0
 ```
 
+- 컨테이너 경량화
+  - 꼭 필요한 패키지 및 파일만 추가
+  - 컨테이너 레이어 수 줄이기 (도커파일 RUN 지시어 한개의 레이어 생성)
+  - 경량 베이스 이미지 선택 (debain slim, alpine, stretch)
+    - FROM node:16-slim
+  - 멀티 스테이지 빌드 사용 (멀티 스테이지 파이프라인)
+    - `FROM node:16-alpine AS base`
+    - `FROM base AS build`
+    - `FROM base AS release`
 
 
+```shell
+cd fastcampus-devops/3-docker-kubernetes/3-dockerfile/
+cat slacktree/Dockerfile
 
+FROM alpine:3.14
+LABEL  maintainer="FastCampus Park <fastcampus@fastcampus.com>"
+LABEL description="Simple utility to send slack message easily."
+
+# RUN 한개에 여러개 커멘드 구성 (레이어 수 1개로)
+# --no-cache 옵션으로 캐시 삭제
+# install needed package
+RUN \
+  apk add --no-cache bash curl git && \
+  git clone https://github.com/course-nero/slacktee /slacktee && \
+  apk dell --no-cache git
+
+RUN chmod 755 /slacktee/slacktee.sh
+```
+
+```shell
+# --force-rm=true 빌드 성공,실패 상관없이 intermediate 컨테이너 삭제
+docker build --force-rm -t nodejs-server:slim -f Dockerfile.alpine ./
+```
+
+- 멀티스테이지 파이프라인 : 블록에 임시 이미지 이름 'base'
+
+``` shell
+FROM node:16-alpine AS base
+LABEL maintainer=""
+LABEL desctiption=""
+WORKDIR /app
+COPY package*.json ./
+```
+
+
+- 도커 데몬
+
+```shell
+docker system info
+
+# 새롭게 발생하는 도커 이벤트 로그 (ex: docker run nginx)
+# ALIAS: docker events
+docker system events
+
+docker run --name
+
+# 우분투 OS
+journalctl -u docker
+df -h
+# RECLAIMABLE 회수 가능 용량
+docker system df
+# 중지된 컨테이너, 이미지, 네트워크 삭제
+docker system prune
+# 컨테이너별로 CPU, IO, MEMORY 등
+docker stats
+docker run -it -d mysql:5.7
+docker run -it -d nginx
+```
+
+- 도커 컴포즈
+  - 명시적으로 여러 컨테이너 관리하기
