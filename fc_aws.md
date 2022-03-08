@@ -1219,4 +1219,19 @@ docker run -it -d nginx
 ```
 
 - 도커 컴포즈
-  - 명시적으로 여러 컨테이너 관리하기
+  - 명시적으로 여러 컨테이너 관리하기 (docker-compose.yml 파일을 통해)
+    - 네트워크, 볼륨, 서비스 의존성, 디스커러리 자동화 및 컨테이너 수평 확장
+  - 단일 서버에서 여러 컨테이너를 프로젝트 단위로 묶어서 관리
+  - 프로젝트/서비스/컨테이너
+    - Project: 워크 스페이스; 서비스 컨테이너 묶음
+    - Service: 컨테이너를 관리하기 위한 단위
+    - Container: 서비스를 통해 컨테이너 관리
+  - docker-compose.yml
+    - version,services,networks, volumes
+  - docker-compose 명령어
+
+- 도커 스왐
+
+```shell
+
+```
