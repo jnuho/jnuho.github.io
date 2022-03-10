@@ -50,6 +50,7 @@ https://wslstorestorage.blob.core.windows.net/wslblob/wsl_update_x64.msi
 
 # 버전 업데이트
 wsl --set-version Ubuntu 2
+
 # 또는
 wsl --set-version Ubuntu-20.04 2
 
@@ -932,7 +933,7 @@ docker run -it my-ubuntu:v1
 docker build -t my_app:v1 ./
 
 # 다른 도커파일 MyDockerfile로 빌드
-docker build -t my_app:v1 -f example/MyDockerfile ./
+docker build -t my_app:v2 -f example/MyDockerfile ./
 
 # cd fastcampus-devops/3-docker-kubernetes/3-dockerfile/app
 # sudo apt install tree & tree -L 2
@@ -1222,20 +1223,49 @@ docker run -it -d nginx
   - 명시적으로 여러 컨테이너 관리하기 (docker-compose.yml 파일을 통해)
     - 네트워크, 볼륨, 서비스 의존성, 디스커러리 자동화 및 컨테이너 수평 확장
   - 단일 서버에서 여러 컨테이너를 프로젝트 단위로 묶어서 관리
+    - 도커 컴포즈 프로젝트 안에, 네트워크, 볼륨, 서비스 등 의존성 관리
+    - 서비스들 s1, s2, s3 간의 의존성 관리
+      - 도커엔진에서는, 서비스의 내부 도메인 명으로 호출시 브릿지네트워크 net alias
+      - 도커컴포즈에서는 서비스명으로 호출 가능 (서비스 디스커버리), 컨테이너 수평확장 용이
   - 프로젝트/서비스/컨테이너
-    - Project: 워크 스페이스; 서비스 컨테이너 묶음
-    - Service: 컨테이너를 관리하기 위한 단위
-    - Container: 서비스를 통해 컨테이너 관리
-  - docker-compose.yml
-    - version, services, networks, volumes
+    - 프로젝트 : 워크 스페이스; 서비스 컨테이너 묶음
+    - 서비스 : 컨테이너를 관리하기 위한 단위
+    - 컨테이너 : 서비스를 통해 컨테이너 관리
+  - docker-compose.yml 각 서비스 정의
+    - 최상위 4가지 옵션: version, services, networks, volumes
+    - EX) scale=3 : 서비스 3개 실행 가능
   - docker-compose 명령어
     - 버전3는 도커 스왐과 호환
     - `docker-compose deploy`
     - `docker stack`
-    - 도커 스왐 (쿠버네트스와 동일 목적, 인기 X)
+    - 도커 스왐 (쿠버네티스와 동일 목적, 시장 점유율 낮음)
 
 
+- 도커 컴포즈 기본 명령어
+- 
 ```shell
-cd fastcampus-devops/3-docker-kubernetes/4-docker-compose/build
-vim app.py
+cd fastcampus-devops/3-docker-kubernetes/4-docker-compose
+cd build
+
+# redis, flask 사용
+cat app.py
+
+cat docker-compose.yml
+
+docker-compose -h
+docker-compose version
+
+# docker run과 비슷, 이미지 받아서, 컨테이너 생성
+# 디폴트 네트워크 생성(브릿지 네트워크, build_default: 프로젝트디렉토리명_default), 컨테이너 2개 (build_web_1) 생성
+# CTRL+C: 컨테이너 중단
+docker-compose up
+# -p: 프로젝트 명 명시
+docker-compose -p my-project up -d
+docker-compose ls -a
+
+# 프로젝트 내 컨테이너 및 네트워크 종료 및 제거
+docker-compose down
+
+# 프로젝트 내 컨테이너 및 네트워크 및 볼륨 종료 및 제거
+docker-compose down -v
 ```
