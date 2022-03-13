@@ -1261,6 +1261,8 @@ docker-compose version
 docker-compose up
 # -p: 프로젝트 명 명시
 docker-compose -p my-project up -d
+
+# 도커 컴포즈 v2 이상부터 사용가능
 docker-compose ls -a
 
 # 프로젝트 내 컨테이너 및 네트워크 종료 및 제거
@@ -1268,4 +1270,72 @@ docker-compose down
 
 # 프로젝트 내 컨테이너 및 네트워크 및 볼륨 종료 및 제거
 docker-compose down -v
+
+cd wordpress
+docker-compose up -d
+docker-compose down -v
 ```
+
+- 서비스 확장
+
+```shell
+cd build
+docker-compose ls
+docker-compose ps
+# 해당 프로젝트 내에 컨테이너 목록
+docker-compose -p my-project ps
+
+# 스케일링
+docker-compose -p my-project up --scale web=3 -d
+# web-1, web-2, web-3 확인
+docker-compose -p my-project ps
+
+```
+
+```yaml
+# docker-compose.yml
+# web을 스케일링 할때 주의할 점:
+#  1.중복된 호스트포트는 사용할 수 없기때문에, [호스트포트]:[컨테이너포트]로 지정하면 안됨
+#  2. web: container_name: "web" 옵션 사용하면 안됨!
+version: "3.9"
+services:
+  web:
+    container_name: "web"
+    build: .
+    ports:
+      - "5000"
+  redis:
+    image: "redis:alpine"
+```
+
+- 프로젝트 내 추가 명령어
+```shell
+docker-compose logs
+docker-compose -p my-project logs -f
+
+docker-compose events
+docker-compose -p my-project events
+
+docker-compose images
+docker-compose -p my-project images
+
+docker-compose ps
+docker-compose -p my-project ps
+
+docker-composet top
+docker-compose -p my-project top
+```
+
+- 도커 컴포즈 yaml: serivces의 depends_on으로 컨테이너 실행순서 설정
+  - 이전 컨테이너의 실행은 보장하지만 준비된 것은 보장X
+  - 엔트리 포인트를 통해 특정 shell 스크립트 실행하여 이전 컨테이너의 준비여부 판단하여 커멘드 실행
+  - 서비스 ports는 docker run의 -p 옵션과 같음
+
+- 도커 컴포즈 사용목적
+  - 로컬 개발환경 구성
+  - 자동화된 테스트 환경 구성
+    - CI/CD 파이프라인 중 쉽게 격리된 테스트 환경을 구성하여 테스트 수행 가능
+  - 단일 호스트 내 컨테이너를 선언적 관리
+
+
+- 도커 컴포즈 실습 - Grafana, MySql
