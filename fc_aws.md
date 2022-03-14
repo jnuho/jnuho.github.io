@@ -1345,6 +1345,35 @@ docker-compose -p my-project top
 
 ```shell
 
+# 그라파나-only
+cd grafana-only
+cat docker-compose.yml
+
+docker-compose up -d
+docker-compose ps
+curl localhost:3000
+  그파라나 로그인 admin/admin > Server Admin > Database : sqlite
+
+cat grafana-only/files/grafana.ini
+
+docker-compose down -v
+
+
+# 그라파나-Mysql
+# 환경변수 : mysql 도커 문서 > Where to Store Data
+# 디비컨테이너 생성 된 후, 그라파나 서비스 생성
+#  grafana depends on: - db
+cd grafana-mysql
+cat docker-compose.yml
+docker-compose up -d
+docker-compose ps
+
+# DB영구적 저장확인을 위해 서비스 내리기 (볼륨은 그대로 두기)
+# 볼륨이 호스트에 영구적으로 보관 됨
+docker-compose down
+docker volume ls
+docker-compose up -d
+docker-compose ps
 ```
 
 
