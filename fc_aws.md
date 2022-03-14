@@ -1339,3 +1339,20 @@ docker-compose -p my-project top
 
 
 - 도커 컴포즈 실습 - Grafana, MySql
+  - Grafana 도커 [가이드](https://grafana.com/docs/grafana/latest/installation/docker/)
+  - MySQL 도커 [가이드](https://hub.docker.com/_/mysql)
+
+
+```shell
+
+```
+
+
+
+
+
+
+
+
+
+
