@@ -37,10 +37,11 @@ sudo ./aws/install
 dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
 dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart
 
+# 우분투 설치 (Microsoft Store)
+
 # 재부팅 후 실행
 wsl
 
-# 우분투 설치 (Microsoft Store)
 
 # 버전 확인
 wsl -l -v
@@ -49,10 +50,8 @@ wsl -l -v
 https://wslstorestorage.blob.core.windows.net/wslblob/wsl_update_x64.msi
 
 # 버전 업데이트
+# 또는 wsl --set-version Ubuntu-20.04 2
 wsl --set-version Ubuntu 2
-
-# 또는
-wsl --set-version Ubuntu-20.04 2
 
 
 # 업데이트된 버전 상태확인
