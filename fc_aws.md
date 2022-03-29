@@ -397,7 +397,7 @@ cat ~/.kube/config
 # 노드의이름: minikube, 역할: control-plane 과 master 역할 수행
 kubectl get nodes
 kubectl cluster-info
-# status, CPU, memory, system information, containers
+# Details on status, CPU, memory, system information, containers
 kubectl describe node minikube
 
 # 쿠버네티스 클러스터 커멘드
@@ -420,6 +420,20 @@ minikube ssh
 # kubectl version # 로컬에 설치된 kubectl버전
 # minikube kubectl 커멘드를 통해 동일 버전 사용
 minikube kubectl version
+```
+
+- ALIAS 설정
+
+```ssh
+# vim ~/.zshrc
+vim ~/.bashrc
+source ~/.bashrc
+alias k=kubectl
+```
+
+- TAB Completion 설정
+  - https://github.com/zsh-users/zsh-completions#oh-my-zsh
+```sh
 ```
 
 - 테라폼 코드 이용하여 미리 준비된 AWS 실습환경 구성
@@ -1386,8 +1400,13 @@ docker-compose ps
 
 
 
+```sh
+kubectl run \
+--generator=run-pod/v1 \
+--image=jnuho/kubia \
+--port=8080 \
+kubia --dry-run
 
-
-
+```
 
 
