@@ -397,6 +397,8 @@ cat ~/.kube/config
 # 노드의이름: minikube, 역할: control-plane 과 master 역할 수행
 kubectl get nodes
 kubectl cluster-info
+# status, CPU, memory, system information, containers
+kubectl describe node minikube
 
 # 쿠버네티스 클러스터 커멘드
 # status, stop, delete, pause, unpause
