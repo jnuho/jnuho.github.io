@@ -386,7 +386,10 @@ chmod u+x install-kustomize.sh
 
 minikube start --driver=docker
 cat ~/.kube/config
-# 컨텍스트: 클러스터, 인증사용자 정보로 인증,접속 한다는 정보
+# cluster : 클러스터 정보
+# context : 클러스터 인증리스트; 어떤 클러스터와 인증을 할지), 유저
+#           클러스터, 인증사용자 정보로 인증,접속 한다는 정보
+# user : 인증사용자 정보
 # minikube 컨텍스트를 통해서 kubectl에 통신
 ```
 
@@ -403,13 +406,17 @@ minikube status
 # 쿠버네티스 클러스터에 addon 설정
 # : dashboard, helm-tiller, ingress, istio, metallb, metrics-server
 # minikube addons enable ingress
+# minikube addons enable dashboard
 minikube addons list
 
 # 쿠버네티스 클러스터에 있는 노드 컨테이너에 접근
 minikube ssh
 
 # 로컬에 설치된 kubectl 버전과 , 쿠버네티스 클러스터 버전일치 하지 않을 수 있음
-# 클러스터버전과 동일한 kubectl 버전을 사용하는 커멘드
+# 클러스터버전과 동일한 kubectl 버전을 사용하는 minikube 커멘드
+# kubectl get nodes # 쿠버네티스 클러스터 버전
+# kubectl version # 로컬에 설치된 kubectl버전
+# minikube kubectl 커멘드를 통해 동일 버전 사용
 minikube kubectl version
 ```
 
