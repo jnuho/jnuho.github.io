@@ -1438,7 +1438,6 @@ kubectl describe nodes
 kubectl describe node <node-name>
 
 
-
 # 2.kubectl로 dokcerhub 이미지를 쿠버네티스 클러스터에서 실행
 # --generator=run/v1 옵션은 Deployment대신 ReplicationController를 create
 # create all the necessary components without having to deal with JSON or YAML
@@ -1450,10 +1449,25 @@ kubectl run kubia \
 - Pods
   - 쿠버네티스는 컨테이너 단위가 아닌 Pods 단위 관리
   - Pods: multiple co-located 컨테이너; 컨테이너 그룹
-    - 같은 worker노드와 리눅스 namespace를 가짐
-    - separate logical machine with same IP, hostname, process, and so on.
+    - 같은 worker노드와 리눅스 namespace위에서 실행되는 밀접하게 연결된 컨테이너 그룹
+    - 각각의 Pod은 separate logical machine with same IP, hostname, process, and so on.
     - 하나의 어플리케이션을 실행 함
 ```sh
-# 생성된 pods 정보
+# 생성된 pods 정보 (Pending/ContainerCreating -> Running)
 kubectl get pods
+kubectl describe pods
+kubectl describe pod <pod-name>
+
+# Create Service Object
+#   rc = replicationcontrollers
+# kubectl expose rc kubia --type=LoadBalancer --name kubia-http
+kubectl expose pod kubia --type=LoadBalancer --name kubia-http
+
+# load balancer가 생성되고 EXTERNAL-IP 할당됨
+kubectl get services
+kubectl get svc
+
+curl <EXTERNAL-IP>:8080
+curl 104.155.74.57:8080
 ```
+
