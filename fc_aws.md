@@ -1464,6 +1464,7 @@ kubectl describe node <node-name>
     - 서비스 오브젝트를 생성하여 external ip 할당하여 외부에 노출
     - LoadBalancer 타입의 서비스를 생성-> external load balancer를 생성되고
     - 이 로드밸런서의 퍼블릭 IP를 통해 pod에 접근 가능
+    - pod는 ephemeral함. pod가 실패하거나 다운되고 다시 생성되면 ip변동-> service를 통해 static ip 할당
 
 ```sh
 ### POD 생성
