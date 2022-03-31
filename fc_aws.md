@@ -1401,15 +1401,24 @@ docker-compose ps
 
 - kubectl 쿠버네티스 클라이언트
 
-```sh
 
-# Sets up a single-node Kubernetes cluster to test Kubernetes functionalities
+- 클러스터 생성하는 방법
+  - 1. minikube 싱글 노드 클러스터
+  - 2. GKE 멀티 노드 클러스터
+
+
+```sh
+### METHOD 1. minikube로 싱글 node 클러스터 생성
+
+# Create a single-node Kubernetes Cluster to test Kubernetes functionalities
 # testing certain features related to managing apps on multiple nodes are limited
+
 minikube start --driver=docker
 
 kubectl cluster-info
 
-# 1.GKE
+### METHOD 2. GKE로 멀티 node 클러스터 생성 (Google 가입 및 신용카드 등록 필요)
+
 # Signing up for a Google account, in the unlikely case you don’t have one already.
 # Creating a project in the Google Cloud Platform Console.
 # Enabling billing. This does require your credit card info, but Google provides a
@@ -1419,7 +1428,6 @@ kubectl cluster-info
 #   command-line tool, which you’ll need to create a Kubernetes cluster.)
 # Installing the kubectl command-line tool with `gcloud components install kubectl`
 
-
 # After completing the installation, you can create a Kubernetes cluster with three
 #   worker nodes using the command shown in the following listing.
 # Then interact with cluster using `kubectl` which issues REST request
@@ -1427,36 +1435,52 @@ kubectl cluster-info
 
 gcloud container clusters create kubia --num-nodes 3
 
-# check if cluster is up by listing cluster nodes
-# three nodes in the cluster
-kubectl get nodes
+
+
+### 클러스터 정보 확인
 
 # explore what's running inside a node; you can check logs inside it
 gcloud compute ssh <node-name>
 
+# check if cluster is up by listing cluster nodes
+#   minikube : 1 node in the cluster
+#   GKE : 3 nodes in the cluster
+
+kubectl get nodes
 kubectl describe nodes
 kubectl describe node <node-name>
-
-
-# 2.kubectl로 dokcerhub 이미지를 쿠버네티스 클러스터에서 실행
-# --generator=run/v1 옵션은 Deployment대신 ReplicationController를 create
-# create all the necessary components without having to deal with JSON or YAML
-kubectl run kubia \
---image=jnuho/kubia \
---port=8080
 ```
 
-- Pods
-  - 쿠버네티스는 컨테이너 단위가 아닌 Pods 단위 관리
-  - Pods: multiple co-located 컨테이너; 컨테이너 그룹
+
+- 클러스터에 app 배포하기 (Deployment)
+  - pod 생성
+    - 쿠버네티스는 컨테이너 단위가 아닌 Pods 단위 관리
+    - Pod: multiple co-located 컨테이너; 컨테이너 그룹
     - 같은 worker노드와 리눅스 namespace위에서 실행되는 밀접하게 연결된 컨테이너 그룹
     - 각각의 Pod은 separate logical machine with same IP, hostname, process, and so on.
     - 하나의 어플리케이션을 실행 함
+  - service 생성
+    - 각 pods들은 IP가 할당되지만 클러스터로의 internal ip라서 외부에서 접근 불가능
+    - 서비스 오브젝트를 생성하여 external ip 할당하여 외부에 노출
+    - LoadBalancer 타입의 서비스를 생성-> external load balancer를 생성되고
+    - 이 로드밸런서의 퍼블릭 IP를 통해 pod에 접근 가능
+
 ```sh
+### POD 생성
+
+# kubectl로 dokcerhub 이미지를 쿠버네티스 클러스터에서 실행
+# --generator=run/v1 옵션은 Deployment대신 ReplicationController를 create
+# create all the necessary components without having to deal with JSON or YAML
+
+kubectl run kubia --image=jnuho/kubia --port=8080
+
 # 생성된 pods 정보 (Pending/ContainerCreating -> Running)
 kubectl get pods
 kubectl describe pods
 kubectl describe pod <pod-name>
+
+
+### SERVICE 생성
 
 # Create Service Object
 #   rc = replicationcontrollers
