@@ -1399,14 +1399,61 @@ docker-compose ps
 ```
 
 
+- kubectl 쿠버네티스 클라이언트
 
 ```sh
-kubectl run \
---generator=run-pod/v1 \
---image=jnuho/kubia \
---port=8080 \
-kubia --dry-run
 
+# Sets up a single-node Kubernetes cluster to test Kubernetes functionalities
+# testing certain features related to managing apps on multiple nodes are limited
+minikube start --driver=docker
+
+kubectl cluster-info
+
+# 1.GKE
+# Signing up for a Google account, in the unlikely case you don’t have one already.
+# Creating a project in the Google Cloud Platform Console.
+# Enabling billing. This does require your credit card info, but Google provides a
+#   12-month free trial. And they’re nice enough to not start charging automatically after the free trial is over.)
+# Enabling the Kubernetes Engine API.
+# Downloading and installing Google Cloud SDK. (This includes the gcloud
+#   command-line tool, which you’ll need to create a Kubernetes cluster.)
+# Installing the kubectl command-line tool with `gcloud components install kubectl`
+
+
+# After completing the installation, you can create a Kubernetes cluster with three
+#   worker nodes using the command shown in the following listing.
+# Then interact with cluster using `kubectl` which issues REST request
+# to the Kubernetes API Server running on the master node
+
+gcloud container clusters create kubia --num-nodes 3
+
+# check if cluster is up by listing cluster nodes
+# three nodes in the cluster
+kubectl get nodes
+
+# explore what's running inside a node; you can check logs inside it
+gcloud compute ssh <node-name>
+
+kubectl describe nodes
+kubectl describe node <node-name>
+
+
+
+# 2.kubectl로 dokcerhub 이미지를 쿠버네티스 클러스터에서 실행
+# --generator=run/v1 옵션은 Deployment대신 ReplicationController를 create
+# create all the necessary components without having to deal with JSON or YAML
+kubectl run kubia \
+--image=jnuho/kubia \
+--port=8080
 ```
 
-
+- Pods
+  - 쿠버네티스는 컨테이너 단위가 아닌 Pods 단위 관리
+  - Pods: multiple co-located 컨테이너; 컨테이너 그룹
+    - 같은 worker노드와 리눅스 namespace를 가짐
+    - separate logical machine with same IP, hostname, process, and so on.
+    - 하나의 어플리케이션을 실행 함
+```sh
+# 생성된 pods 정보
+kubectl get pods
+```
