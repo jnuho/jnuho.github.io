@@ -1398,9 +1398,32 @@ docker-compose up -d
 docker-compose ps
 ```
 
+- API Resources
 
-- kubectl 쿠버네티스 클라이언트
+```sh
+kubectl api-resources
+kubectl explain pod
+kubectl explain configmap
+kubectl explain service
 
+# 파드: pods, pod, po
+kubectl get pod --all-namespaces
+kubectl get po --all-namespaces
+```
+
+- 쿠버네티스는 오브젝트를 yaml기반 매니페스트 파일로 관리
+  - apiVersion : 오브젝트가 어떤 API 그룹에 속하고 api버전은 몇인가
+  - kind : 오브젝트가 어떤 API 리소스인가
+  - metadata : 오브젝트 식별하기 위한 정보 (이름, 네임스페이스, 레이블)
+    - Label (optional) : 정확한 리소스 이름 정의, 소유자, 종류 명시하여 식별하기 위한 목적
+    - Annotations  : 쿠버네티스 애드온이 해당 오브젝트를 어떻게 처리할지 결정하기위한 설정 용도
+      - e.g. LogAgent 애드온의 로그 수집설정
+  - spec : 오브젝트가 가지고자 하는 데이터
+    - API 리소스에 따라 spec 대신 data,rules,subjects 등 다른 속성 사용
+
+
+
+- `kubectl` : 쿠버네티스 클라이언트
 
 - 클러스터 생성하는 방법
   - 1. minikube 싱글 노드 클러스터
