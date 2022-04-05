@@ -1479,6 +1479,19 @@ minikube start --driver=docker
 kubectl cluster-info
 
 ### METHOD 2. kind
+# 문서: https://kind.sigs.k8s.io/docs/user/quick-start/
+# 다른 minikube와 같은 툴에비해 아직 unstable
+
+curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.12.0/kind-linux-amd64
+chmod +x ./kind
+mv ./kind /usr/local/kind
+vim ~ubuntu/.bashrc
+	export PATH=/usr/local/kind:$PATH
+source .bashrc
+
+kind create cluster
+
+
 
 ### METHOD 3. GKE로 멀티 node 클러스터 생성 (Google 가입 및 신용카드 등록 필요)
 
