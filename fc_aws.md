@@ -1400,16 +1400,41 @@ docker-compose ps
 
 
 - 쿠버네티스가 앱을 실행하는 과정
-	- yaml, json 형식에 Object들을 정의
-	- e.g. Deployment 2개, Services 2개로 manifest를 만들어 어플리케이션 배포
-	- 1. Kubernetes API를 통해 manifest의 Object를 생성
-	- 2. 각 application 인스턴스에 해당하는 Object 생성
-	- 3. 스케쥴러를 통해 각각의 인스턴스에 node 배정
-	- 4. Kublet이 instance가 node에 배정된 것을 notice받고, Container Runtime을 통해 application instace를 실행
-	- 5. Kube Proxy는 application instance가 클라이언트로 부터 connection을 받을 준비가 되면 load balancer를 배정
-	- 6. Kublet과 controller는 system을 모니터링하고 application이 실행 상태를 유지하도록 함
+	- DEFINE your application
+		- yaml, json 형식에 Object들을 정의
+		- e.g. Deployment 2개, Services 2개로 manifest를 만들어 어플리케이션 배포
+		- 1. Kubernetes API를 통해 manifest의 Object를 생성
+		- 2. 각 application 인스턴스에 해당하는 Object 생성
+		- 3. 스케쥴러를 통해 각각의 인스턴스에 node 배정
+		- 4. Kublet이 instance가 node에 배정된 것을 notice받고, Container Runtime을 통해 application instace를 실행
+		- 5. Kube Proxy는 application instance가 클라이언트로 부터 connection을 받을 준비가 되면 load balancer를 배정
+		- 6. Kublet과 controller는 system을 모니터링하고 application이 실행 상태를 유지하도록 함
+	- SUBMIT application to the API
+		- `kubectl` 커맨드라인
+	- 
 
 
+- Docker Container
+
+```sh
+ls kaida-0.1
+	Dockerfile	Makefile	app.js	html/
+cat Dockerfile
+	FROM node:16
+	COPY app.js /app.js
+	COPY html /html
+	ENTRYPOINT ["node", "app.js"]
+docker build -t kiada:latest .
+docker run --namee kiada-container -p 1234:8080 -d kiada
+docker tag kiada jnuho/kiada:0.1
+
+docker login -u jnuho docker.io
+docker push jnuho/kiada:0.1
+
+# Run the image on other Hosts
+docker run --namee kiada-container -p 1234:8080 -d jnuho/kiada:0.1
+
+```
 
 - API Resources
 
@@ -1453,7 +1478,9 @@ minikube start --driver=docker
 
 kubectl cluster-info
 
-### METHOD 2. GKE로 멀티 node 클러스터 생성 (Google 가입 및 신용카드 등록 필요)
+### METHOD 2. kind
+
+### METHOD 3. GKE로 멀티 node 클러스터 생성 (Google 가입 및 신용카드 등록 필요)
 
 # Signing up for a Google account, in the unlikely case you don’t have one already.
 # Creating a project in the Google Cloud Platform Console.
