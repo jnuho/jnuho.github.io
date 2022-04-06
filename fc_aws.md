@@ -1398,20 +1398,44 @@ docker-compose up -d
 docker-compose ps
 ```
 
+- 쿠버네티스 아키텍쳐
+	- master nodes (Control Plane) / worker nodes (Workerload Plane)
+	- Control Plane
+		- Kubernetes API
+		- etcd
+		- Scheduler
+		- Controllers
+	- Workerload Plane
+		- Kublet
+		- Container Runtime
+		- Kubernetes Service Proxy
+		
 
 - 쿠버네티스가 앱을 실행하는 과정
 	- DEFINE your application
-		- yaml, json 형식에 Object들을 정의
+		- yaml, json 파일을 통해 Object들을 정의
 		- e.g. Deployment 2개, Services 2개로 manifest를 만들어 어플리케이션 배포
-		- 1. Kubernetes API를 통해 manifest의 Object를 생성
-		- 2. 각 application 인스턴스에 해당하는 Object 생성
-		- 3. 스케쥴러를 통해 각각의 인스턴스에 node 배정
+		- 1. Kubernetes API를 통해 manifest의 Object를 생성하여 etcd 저장
+		- 2. 컨트롤러가 각 application 인스턴스에 해당하는 Object 생성
+		- 3. 스케쥴러가 각각의 인스턴스에 node 배정
 		- 4. Kublet이 instance가 node에 배정된 것을 notice받고, Container Runtime을 통해 application instace를 실행
-		- 5. Kube Proxy는 application instance가 클라이언트로 부터 connection을 받을 준비가 되면 load balancer를 배정
-		- 6. Kublet과 controller는 system을 모니터링하고 application이 실행 상태를 유지하도록 함
+		- 5. Kube Proxy는 application instance가 클라이언트로 부터 connection을 받을 준비가 되면 load balancer 설정함
+		- 6. Kublet과 Controller는 system을 모니터링하고 application이 실행 상태를 유지하도록 함
 	- SUBMIT application to the API
-		- `kubectl` 커맨드라인
-	- 
+		- `kubectl` 커맨드라인으로 yaml, json파일을 오브젝트 단위로 나눠서 API에 전달
+
+- CONTROLLER
+
+- SCHEDULER
+
+- KUBELET AND THE CONTAINER RUNTIME
+
+- KUBE PROXY
+
+
+
+
+
 
 
 - Docker Container
@@ -1490,7 +1514,25 @@ vim ~ubuntu/.bashrc
 source .bashrc
 
 kind create cluster
+cat kind-multi-node.yaml
+	kind: Cluster
+	apiVersion: kind.sigs.k8s.io/v1alpha3
+	nodes:
+	- role: control-plane
+	- role: worker
+	- role: worker
 
+# 3-node cluster
+kind create cluster --config kind-multi-node.yaml
+
+kind get nodes
+	kind-worker
+	kind-control-plane
+	kind-worker2
+
+# Instead of using Docker to run containers, nodes created by kind use the CRI-O container runtime
+crictl ps
+docker ps
 
 
 ### METHOD 3. GKE로 멀티 node 클러스터 생성 (Google 가입 및 신용카드 등록 필요)
@@ -1509,8 +1551,21 @@ kind create cluster
 # Then interact with cluster using `kubectl` which issues REST request
 # to the Kubernetes API Server running on the master node
 
-gcloud container clusters create kubia --num-nodes 3
+# set default zone
+# region europe-west3 has three different zones
+# but here we set all nodes to use the same zone 'europe-west3-c'
+gcloud config set compute/zone europe-west3-c
 
+# create kubernetes cluster
+# three worker nodes in the same zone
+# thus --num-nodes indicates the number of nodes per zone
+# if the regions contains three zones and you only want three nodes, set --num-nodes=1
+gcloud container clusters create kiada --num-nodes 3
+
+gcloud compute instances list
+
+# scale the number of nodes
+gcloud container clusters resize kiada --size 0
 
 
 ### 클러스터 정보 확인
@@ -1522,6 +1577,20 @@ gcloud compute ssh <node-name>
 #   minikube : 1 node in the cluster
 #   GKE : 3 nodes in the cluster
 
+
+#
+
+### METHOD 4. EKS
+# Install eksctl command-line tool
+# https://docs.aws.amazon.com/eks/latest/userguide/getting-started-eksctl.html
+
+# creates a three-node cluster in the eu-central-1 region
+eksctl create cluster --name kiada --region eu-central-1 --nodes 3 --ssh-access
+```
+
+- 쿠버네티스 툴 `kubectl`
+
+```
 kubectl get nodes
 kubectl describe nodes
 kubectl describe node <node-name>
