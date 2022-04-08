@@ -433,8 +433,10 @@ alias k=kubectl
 
 - TAB Completion 설정
   - https://github.com/zsh-users/zsh-completions#oh-my-zsh
+
 ```sh
 ```
+	
 
 - 테라폼 코드 이용하여 미리 준비된 AWS 실습환경 구성
   - https://github.com/tedilabs/fastcampus-devops/tree/main/3-docker-kubernetes/env/terraform-aws-ubuntu
@@ -1486,6 +1488,7 @@ kubectl get po --all-namespaces
 
 
 - `kubectl` : 쿠버네티스 클라이언트
+	- Kubernetes API Server와 통신 할 수 있는 툴
 
 - 클러스터 생성하는 방법
   - 1. minikube 싱글 노드 클러스터
@@ -1578,10 +1581,9 @@ gcloud compute ssh <node-name>
 #   GKE : 3 nodes in the cluster
 
 
-#
 
 ### METHOD 4. EKS
-# Install eksctl command-line tool
+# Install `eksctl` command-line tool
 # https://docs.aws.amazon.com/eks/latest/userguide/getting-started-eksctl.html
 
 # creates a three-node cluster in the eu-central-1 region
@@ -1596,8 +1598,49 @@ kubectl describe nodes
 kubectl describe node <node-name>
 ```
 
+- kubectl 이 특정 Kubernetes cluster를 사용 하도록 설정
+	- point kubectl to it by setting the KUBECONFIG environment variable as follows:
+
+```sh
+cat ~/.kube/config
+export KUBECONFIG=/path/to/custom/kubeconfig
+```
+
+- Kubernetes Dashboard
+
+```sh
+# https://github.com/kubernetes/dashboard
+# add a configuration to a resource by file name or stdin
+# k apply [options]
+
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.5.1/aio/deploy/recommended.yaml
+
+# This command runs a local proxy to the API server, allowing you to access the services through it. Let the proxy process run and use the browser to open the dashboard at the following URL:
+# http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/
+
+kubectl proxy
+
+
+kubectl -n kubernetes-dashboard describe secret $(kubectl -n kubernetes-dashboard get secret | sls admin-user | ForEach-Object { $_ -Split '\s+' } | Select -First 1)
+
+
+# Using Helm to install dashboard?  Install helm :
+# https://medium.com/@munza/local-kubernetes-with-kind-helm-dashboard-41152e4b3b3d
+curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
+chmod 700 get_helm.sh
+./get_helm.sh
+
+helm repo add kubernetes-dashboard https://kubernetes.github.io/dashboard/
+helm install dashboard kubernetes-dashboard/kubernetes-dashboard -n kubernetes-dashboard --create-namespace
+
+```
+
 
 - 클러스터에 app 배포하기 (Deployment)
+	- 보통은 yaml, json 파일에 Object 정의 하여 배포
+	  - (처음에는 일단 manifest 파일없이 Deployment 만들어보기)
+		- Deployment 오브젝트는 클러스터에 배포된 어플리케이션을 의미
+		- 기존에 이미지로 만들어 컨테이너에 배포했던 kiada를 쿠버네티스 클러스터에 적용해보기
   - pod 생성
     - 쿠버네티스는 컨테이너 단위가 아닌 Pods 단위 관리
     - Pod: multiple co-located 컨테이너; 컨테이너 그룹
@@ -1614,11 +1657,29 @@ kubectl describe node <node-name>
 ```sh
 ### POD 생성
 
-# kubectl로 dokcerhub 이미지를 쿠버네티스 클러스터에서 실행
+# OLD VERSION : 
 # --generator=run/v1 옵션은 Deployment대신 ReplicationController를 create
-# create all the necessary components without having to deal with JSON or YAML
+# kubectl run kubia --image=jnuho/kubia --port=8080
 
-kubectl run kubia --image=jnuho/kubia --port=8080
+
+# kubectl로 dokcerhub 이미지를 쿠버네티스 클러스터에서 실행
+# create all the necessary components without having to deal with JSON or YAML
+# Create a deployment object, called 'kiada'
+# deployment to use the container image jnuho/kiada:0.1
+# the Deployment object is stored in Kubernetes API
+# now the jnuho/kiada container is run in the Cluster
+
+kubectl create deployment kiada --image=jnuho/kiada:0.1
+	deployment.apps/kiada created
+
+# 생성된 Deployment 리스트 : NOT READY (컨테이너가 준비되지 않음)
+# 다만 컨테이너 조회 하는 커멘드는 없음 e.g. k get containers 는 없음
+# 컨테이너가 아닌 PODS가 쿠버네티스에서 가장 작은 단위임!
+# POD 내의 컨테이너는 네트워크와 UTS 네임스페이스를 공유
+# 각 POD은 논리적인 단위의 컴퓨터로서 어플리케이션을 실행
+# 하나의 노드에 여러개의 POD가 있더라도, 각 POD들은 서로 다른 POD들의 프로세스를 볼 수 없음
+k get deployments
+
 
 # 생성된 pods 정보 (Pending/ContainerCreating -> Running)
 kubectl get pods
@@ -1627,6 +1688,7 @@ kubectl describe pod <pod-name>
 
 
 ### SERVICE 생성
+# Exposing your application to the world
 
 # Create Service Object
 #   rc = replicationcontrollers
