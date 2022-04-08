@@ -1639,6 +1639,10 @@ helm install dashboard kubernetes-dashboard/kubernetes-dashboard -n kubernetes-d
 - 클러스터에 app 배포하기 (Deployment)
 	- 보통은 yaml, json 파일에 Object 정의 하여 배포
 	  - (처음에는 일단 manifest 파일없이 Deployment 만들어보기)
+	- `kubectl create` -> Kubernetes API에 전달되어 -> Deployment 생성 -> Pod 오브젝트 생성
+		- -> 워커 노드에 assigned/scheduled 됨
+		- -> 워커 노드의 Kublet (쿠버네티스 Agent)는 Pod가 새로 해당 node에 스케쥴된것을 확인
+		- -> 도커 registry에서 이미지를 받아, 컨테이너로 실행 
 		- Deployment 오브젝트는 클러스터에 배포된 어플리케이션을 의미
 		- 기존에 이미지로 만들어 컨테이너에 배포했던 kiada를 쿠버네티스 클러스터에 적용해보기
   - pod 생성
@@ -1691,15 +1695,34 @@ kubectl describe pod <pod-name>
 # Exposing your application to the world
 
 # Create Service Object
-#   rc = replicationcontrollers
-# kubectl expose rc kubia --type=LoadBalancer --name kubia-http
-kubectl expose pod kubia --type=LoadBalancer --name kubia-http
+# 	expose all pods that belong to the kiada Deployment as a new service.
+# 	pods to be accessed from outside the cluster via a load balancer.
+# 	application listens on port 8080, so you want to access it via that port.
+#   로드밸런서 타입 서비스는 cluster내에만 expose 시키거나 퍼블릭IP로 외부로 expose 가능
+
+kubectl expose deployment kiada --type=LoadBalancer --name kiada-http --port 8080
 
 # load balancer가 생성되고 EXTERNAL-IP 할당됨
 kubectl get services
 kubectl get svc
 
+# List all available resources - Kubernetes Objects
+kubectl api-resources
+
+
+
+kubectl get svc kiada-http
+
+# Accessing your application through Load Balancer
 curl <EXTERNAL-IP>:8080
 curl 104.155.74.57:8080
+
+
+# Accessing your application without Load Balancer
+minikube service kiada --url
+curl <ip:port>
+
+
+
 ```
 
