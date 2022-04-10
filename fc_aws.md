@@ -1,8 +1,7 @@
 
 
 - EC2 & key pair
-  - 퍼블릭키는 EC2 인스턴스에 설치됨
-  - 개인키는 접속주체 개인 저장
+  - 퍼블릭키는 EC2 인스턴스에 설치됨 - 개인키는 접속주체 개인 저장
 
 ```
 # Permissions 0644 for '*.pem' are too open!
@@ -1400,6 +1399,9 @@ docker-compose up -d
 docker-compose ps
 ```
 
+
+
+
 - 쿠버네티스 아키텍쳐
 	- master nodes (Control Plane) / worker nodes (Workerload Plane)
 	- Control Plane
@@ -1427,14 +1429,25 @@ docker-compose ps
 		- `kubectl` 커맨드라인으로 yaml, json파일을 오브젝트 단위로 나눠서 API에 전달
 
 - CONTROLLER
+	- API서버로 부터 Object 생성알림을 받으면, Kubernetes API  통해 Object 생성
 
 - SCHEDULER
+	- 컨트롤러 타입으로, application 인스턴스를 워크노드에 스케쥴하는 역할
+	- 각 어플리케이션 인스턴스 오브젝트의 최적의 워커노드를 찾아 인스턴스에 할당 (API를 통해 object를 수정하여)
 
 - KUBELET AND THE CONTAINER RUNTIME
+	- 각 워커노드에서 실행되는 kublet은 컨트롤러 타입 중 하나.
+	- 해당 워커 노드에 어플리케이션 인스턴스가 할당 될때까지 기다리다가, 어플리케이션을 실행
+	- 컨테이너 runtime이 해당 어플리케이션 컨테이너를 실행하도록 함
 
 - KUBE PROXY
+	- 어플리케이션 deployment는 여러 어플리케이션 인스턴스로 구성될 수 있기 때문에, 로드밸런서가 이들을 하나의 IP로 expose 해야함
+	- Kube Proxy도 컨트롤러 타입으로서 로드밸런서를 만드는 역할을 함
 
 
+- KEEPING THE APPLICATION HEALTHY
+	- 어플리케이션이 실행되면, kubelet은 어플리케이션이 종료되는 경우, 재시작하여 healthy한 상태를 유지함
+	- 어플리케이션 인스턴스를 represent하는 object를 업데이트하여, 어플리케이션의 status를 report함
 
 
 
@@ -1458,7 +1471,7 @@ docker login -u jnuho docker.io
 docker push jnuho/kiada:0.1
 
 # Run the image on other Hosts
-docker run --namee kiada-container -p 1234:8080 -d jnuho/kiada:0.1
+docker run --name kiada-container -p 1234:8080 -d jnuho/kiada:0.1
 
 ```
 
@@ -1491,8 +1504,9 @@ kubectl get po --all-namespaces
 	- Kubernetes API Server와 통신 할 수 있는 툴
 
 - 클러스터 생성하는 방법
-  - 1. minikube 싱글 노드 클러스터
-  - 2. GKE 멀티 노드 클러스터
+  1. minikube 싱글 노드 클러스터
+  2. kind 멀티 노드 클러스터
+  3. GKE, EKS, kind 멀티 노드 클러스터
 
 
 ```sh
@@ -1570,7 +1584,6 @@ gcloud compute instances list
 # scale the number of nodes
 gcloud container clusters resize kiada --size 0
 
-
 ### 클러스터 정보 확인
 
 # explore what's running inside a node; you can check logs inside it
@@ -1616,9 +1629,16 @@ export KUBECONFIG=/path/to/custom/kubeconfig
 kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.5.1/aio/deploy/recommended.yaml
 
 # This command runs a local proxy to the API server, allowing you to access the services through it. Let the proxy process run and use the browser to open the dashboard at the following URL:
-# http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/
 
 kubectl proxy
+
+# 대시보드 URL:
+# http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/
+
+# Token 생성 해야함:
+# https://github.com/kubernetes/dashboard/blob/master/docs/user/access-control/creating-sample-user.md#getting-a-bearer-token
+
+kubectl -n kubernetes-dashboard get secret $(kubectl -n kubernetes-dashboard get sa/admin-user -o jsonpath="{.secrets[0].name}") -o go-template="{{.data.token | base64decode}}"
 
 
 kubectl -n kubernetes-dashboard describe secret $(kubectl -n kubernetes-dashboard get secret | sls admin-user | ForEach-Object { $_ -Split '\s+' } | Select -First 1)
@@ -1664,7 +1684,6 @@ helm install dashboard kubernetes-dashboard/kubernetes-dashboard -n kubernetes-d
 # OLD VERSION : 
 # --generator=run/v1 옵션은 Deployment대신 ReplicationController를 create
 # kubectl run kubia --image=jnuho/kubia --port=8080
-
 
 # kubectl로 dokcerhub 이미지를 쿠버네티스 클러스터에서 실행
 # create all the necessary components without having to deal with JSON or YAML
