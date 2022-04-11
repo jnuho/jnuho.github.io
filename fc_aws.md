@@ -1,6 +1,5 @@
 
 
-
 - EC2 & key pair
   - 퍼블릭키는 EC2 인스턴스에 설치됨 - 개인키는 접속주체 개인 저장
 
@@ -436,7 +435,7 @@ alias k=kubectl
 
 ```sh
 ```
-	
+  
 
 - 테라폼 코드 이용하여 미리 준비된 AWS 실습환경 구성
   - https://github.com/tedilabs/fastcampus-devops/tree/main/3-docker-kubernetes/env/terraform-aws-ubuntu
@@ -1404,51 +1403,51 @@ docker-compose ps
 
 
 - 쿠버네티스 아키텍쳐
-	- master nodes (Control Plane) / worker nodes (Workerload Plane)
-	- Control Plane
-		- Kubernetes API
-		- etcd
-		- Scheduler
-		- Controllers
-	- Workerload Plane
-		- Kublet
-		- Container Runtime
-		- Kubernetes Service Proxy
-		
+  - master nodes (Control Plane) / worker nodes (Workerload Plane)
+  - Control Plane
+    - Kubernetes API
+    - etcd
+    - Scheduler
+    - Controllers
+  - Workerload Plane
+    - Kublet
+    - Container Runtime
+    - Kubernetes Service Proxy
+    
 
 - 쿠버네티스가 앱을 실행하는 과정
-	- DEFINE your application
-		- yaml, json 파일을 통해 Object들을 정의
-		- e.g. Deployment 2개, Services 2개로 manifest를 만들어 어플리케이션 배포
-		- 1. Kubernetes API를 통해 manifest의 Object를 생성하여 etcd 저장
-		- 2. 컨트롤러가 각 application 인스턴스에 해당하는 Object 생성
-		- 3. 스케쥴러가 각각의 인스턴스에 node 배정
-		- 4. Kublet이 instance가 node에 배정된 것을 notice받고, Container Runtime을 통해 application instace를 실행
-		- 5. Kube Proxy는 application instance가 클라이언트로 부터 connection을 받을 준비가 되면 load balancer 설정함
-		- 6. Kublet과 Controller는 system을 모니터링하고 application이 실행 상태를 유지하도록 함
-	- SUBMIT application to the API
-		- `kubectl` 커맨드라인으로 yaml, json파일을 오브젝트 단위로 나눠서 API에 전달
+  - DEFINE your application
+    - yaml, json 파일을 통해 Object들을 정의
+    - e.g. Deployment 2개, Services 2개로 manifest를 만들어 어플리케이션 배포
+    - 1. Kubernetes API를 통해 manifest의 Object를 생성하여 etcd 저장
+    - 2. 컨트롤러가 각 application 인스턴스에 해당하는 Object 생성
+    - 3. 스케쥴러가 각각의 인스턴스에 node 배정
+    - 4. Kublet이 instance가 node에 배정된 것을 notice받고, Container Runtime을 통해 application instace를 실행
+    - 5. Kube Proxy는 application instance가 클라이언트로 부터 connection을 받을 준비가 되면 load balancer 설정함
+    - 6. Kublet과 Controller는 system을 모니터링하고 application이 실행 상태를 유지하도록 함
+  - SUBMIT application to the API
+    - `kubectl` 커맨드라인으로 yaml, json파일을 오브젝트 단위로 나눠서 API에 전달
 
 - CONTROLLER
-	- API서버로 부터 Object 생성알림을 받으면, Kubernetes API  통해 Object 생성
+  - API서버로 부터 Object 생성알림을 받으면, Kubernetes API  통해 Object 생성
 
 - SCHEDULER
-	- 컨트롤러 타입으로, application 인스턴스를 워크노드에 스케쥴하는 역할
-	- 각 어플리케이션 인스턴스 오브젝트의 최적의 워커노드를 찾아 인스턴스에 할당 (API를 통해 object를 수정하여)
+  - 컨트롤러 타입으로, application 인스턴스를 워크노드에 스케쥴하는 역할
+  - 각 어플리케이션 인스턴스 오브젝트의 최적의 워커노드를 찾아 인스턴스에 할당 (API를 통해 object를 수정하여)
 
 - KUBELET AND THE CONTAINER RUNTIME
-	- 각 워커노드에서 실행되는 kublet은 컨트롤러 타입 중 하나.
-	- 해당 워커 노드에 어플리케이션 인스턴스가 할당 될때까지 기다리다가, 어플리케이션을 실행
-	- 컨테이너 runtime이 해당 어플리케이션 컨테이너를 실행하도록 함
+  - 각 워커노드에서 실행되는 kublet은 컨트롤러 타입 중 하나.
+  - 해당 워커 노드에 어플리케이션 인스턴스가 할당 될때까지 기다리다가, 어플리케이션을 실행
+  - 컨테이너 runtime이 해당 어플리케이션 컨테이너를 실행하도록 함
 
 - KUBE PROXY
-	- 어플리케이션 deployment는 여러 어플리케이션 인스턴스로 구성될 수 있기 때문에, 로드밸런서가 이들을 하나의 IP로 expose 해야함
-	- Kube Proxy도 컨트롤러 타입으로서 로드밸런서를 만드는 역할을 함
+  - 어플리케이션 deployment는 여러 어플리케이션 인스턴스로 구성될 수 있기 때문에, 로드밸런서가 이들을 하나의 IP로 expose 해야함
+  - Kube Proxy도 컨트롤러 타입으로서 로드밸런서를 만드는 역할을 함
 
 
 - KEEPING THE APPLICATION HEALTHY
-	- 어플리케이션이 실행되면, kubelet은 어플리케이션이 종료되는 경우, 재시작하여 healthy한 상태를 유지함
-	- 어플리케이션 인스턴스를 represent하는 object를 업데이트하여, 어플리케이션의 status를 report함
+  - 어플리케이션이 실행되면, kubelet은 어플리케이션이 종료되는 경우, 재시작하여 healthy한 상태를 유지함
+  - 어플리케이션 인스턴스를 represent하는 object를 업데이트하여, 어플리케이션의 status를 report함
 
 
 
@@ -1458,12 +1457,12 @@ docker-compose ps
 
 ```sh
 ls kaida-0.1
-	Dockerfile	Makefile	app.js	html/
+  Dockerfile  Makefile  app.js  html/
 cat Dockerfile
-	FROM node:16
-	COPY app.js /app.js
-	COPY html /html
-	ENTRYPOINT ["node", "app.js"]
+  FROM node:16
+  COPY app.js /app.js
+  COPY html /html
+  ENTRYPOINT ["node", "app.js"]
 docker build -t kiada:latest .
 docker run --namee kiada-container -p 1234:8080 -d kiada
 docker tag kiada jnuho/kiada:0.1
@@ -1502,7 +1501,7 @@ kubectl get po --all-namespaces
 
 
 - `kubectl` : 쿠버네티스 클라이언트
-	- Kubernetes API Server와 통신 할 수 있는 툴
+  - Kubernetes API Server와 통신 할 수 있는 툴
 
 - 클러스터 생성하는 방법
   1. minikube 싱글 노드 클러스터
@@ -1527,26 +1526,32 @@ kubectl cluster-info
 curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.12.0/kind-linux-amd64
 chmod +x ./kind
 mv ./kind /usr/local/kind
+ls -al /usr/local/kind
+  drwxr-xr-x  2 root root 4096 Apr  5 15:20 kind
+  alias k=kubectl
+  complete -F __start_kubectl k
+  source <(kubectl completion bash)
+  export PATH=/usr/local/kind:$PATH
+
 vim ~ubuntu/.bashrc
-	export PATH=/usr/local/kind:$PATH
+  export PATH=/usr/local/kind:$PATH
 source .bashrc
 
-kind create cluster
 cat kind-multi-node.yaml
-	kind: Cluster
-	apiVersion: kind.sigs.k8s.io/v1alpha3
-	nodes:
-	- role: control-plane
-	- role: worker
-	- role: worker
+  kind: Cluster
+  apiVersion: kind.sigs.k8s.io/v1alpha3
+  nodes:
+  - role: control-plane
+  - role: worker
+  - role: worker
 
 # 3-node cluster
 kind create cluster --config kind-multi-node.yaml
 
 kind get nodes
-	kind-worker
-	kind-control-plane
-	kind-worker2
+  kind-worker
+  kind-control-plane
+  kind-worker2
 
 # Instead of using Docker to run containers, nodes created by kind use the CRI-O container runtime
 crictl ps
@@ -1613,7 +1618,7 @@ kubectl describe node <node-name>
 ```
 
 - kubectl 이 특정 Kubernetes cluster를 사용 하도록 설정
-	- point kubectl to it by setting the KUBECONFIG environment variable as follows:
+  - point kubectl to it by setting the KUBECONFIG environment variable as follows:
 
 ```sh
 cat ~/.kube/config
@@ -1658,14 +1663,14 @@ helm install dashboard kubernetes-dashboard/kubernetes-dashboard -n kubernetes-d
 
 
 - 클러스터에 app 배포하기 (Deployment)
-	- 보통은 yaml, json 파일에 Object 정의 하여 배포
-	  - (처음에는 일단 manifest 파일없이 Deployment 만들어보기)
-	- `kubectl create` -> Kubernetes API에 전달되어 -> Deployment 생성 -> Pod 오브젝트 생성
-		- -> 워커 노드에 assigned/scheduled 됨
-		- -> 워커 노드의 Kublet (쿠버네티스 Agent)는 Pod가 새로 해당 node에 스케쥴된것을 확인
-		- -> 도커 registry에서 이미지를 받아, 컨테이너로 실행 
-		- Deployment 오브젝트는 클러스터에 배포된 어플리케이션을 의미
-		- 기존에 이미지로 만들어 컨테이너에 배포했던 kiada를 쿠버네티스 클러스터에 적용해보기
+  - 보통은 yaml, json 파일에 Object 정의 하여 배포
+    - (처음에는 일단 manifest 파일없이 Deployment 만들어보기)
+  - `kubectl create` -> Kubernetes API에 전달되어 -> Deployment 생성 -> Pod 오브젝트 생성
+    - -> 워커 노드에 assigned/scheduled 됨
+    - -> 워커 노드의 Kublet (쿠버네티스 Agent)는 Pod가 새로 해당 node에 스케쥴된것을 확인
+    - -> 도커 registry에서 이미지를 받아, 컨테이너로 실행 
+    - Deployment 오브젝트는 클러스터에 배포된 어플리케이션을 의미
+    - 기존에 이미지로 만들어 컨테이너에 배포했던 kiada를 쿠버네티스 클러스터에 적용해보기
   - pod 생성
     - 쿠버네티스는 컨테이너 단위가 아닌 Pods 단위 관리
     - Pod: multiple co-located 컨테이너; 컨테이너 그룹
@@ -1694,7 +1699,7 @@ helm install dashboard kubernetes-dashboard/kubernetes-dashboard -n kubernetes-d
 # now the jnuho/kiada container is run in the Cluster
 
 kubectl create deployment kiada --image=jnuho/kiada:0.1
-	deployment.apps/kiada created
+  deployment.apps/kiada created
 
 # 생성된 Deployment 리스트 : NOT READY (컨테이너가 준비되지 않음)
 # 다만 컨테이너 조회 하는 커멘드는 없음 e.g. k get containers 는 없음
@@ -1715,9 +1720,9 @@ kubectl describe pod <pod-name>
 # Exposing your application to the world
 
 # Create Service Object
-# 	expose all pods that belong to the kiada Deployment as a new service.
-# 	pods to be accessed from outside the cluster via a load balancer.
-# 	application listens on port 8080, so you want to access it via that port.
+#   expose all pods that belong to the kiada Deployment as a new service.
+#   pods to be accessed from outside the cluster via a load balancer.
+#   application listens on port 8080, so you want to access it via that port.
 #   로드밸런서 타입 서비스는 cluster내에만 expose 시키거나 퍼블릭IP로 외부로 expose 가능
 
 kubectl expose deployment kiada --type=LoadBalancer --name kiada-http --port 8080
@@ -1741,7 +1746,6 @@ curl 104.155.74.57:8080
 # Accessing your application without Load Balancer
 minikube service kiada --url
 curl <ip:port>
-
 
 
 ```
