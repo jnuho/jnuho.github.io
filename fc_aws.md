@@ -1666,9 +1666,9 @@ helm install dashboard kubernetes-dashboard/kubernetes-dashboard -n kubernetes-d
   - 보통은 yaml, json 파일에 Object 정의 하여 배포
     - (처음에는 일단 manifest 파일없이 Deployment 만들어보기)
   - `kubectl create` -> Kubernetes API에 전달되어 -> Deployment 생성 -> Pod 오브젝트 생성
-    - -> 워커 노드에 assigned/scheduled 됨
-    - -> 워커 노드의 Kublet (쿠버네티스 Agent)는 Pod가 새로 해당 node에 스케쥴된것을 확인
-    - -> 도커 registry에서 이미지를 받아, 컨테이너로 실행 
+    - 워커 노드에 assigned/scheduled 됨
+    - 워커 노드의 Kublet (쿠버네티스 Agent)는 Pod가 새로 해당 node에 스케쥴된것을 확인
+    - 도커 registry에서 이미지를 받아, 컨테이너로 실행 
     - Deployment 오브젝트는 클러스터에 배포된 어플리케이션을 의미
     - 기존에 이미지로 만들어 컨테이너에 배포했던 kiada를 쿠버네티스 클러스터에 적용해보기
   - pod 생성
