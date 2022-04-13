@@ -1713,7 +1713,13 @@ k get deployments
 # 생성된 pods 정보 (Pending/ContainerCreating -> Running)
 kubectl get pods
 kubectl describe pods
+
+# 생성된 pod 상세 정보에 worker노드에서 실행 중 확인
 kubectl describe pod <pod-name>
+  Name:         kiada-7fc9cfcf4b-t8fcg
+  Namespace:    default
+  Priority:     0
+  Node:         kind-worker/172.18.0.2
 
 
 ### SERVICE 생성
@@ -1735,8 +1741,23 @@ kubectl get svc
 kubectl api-resources
 
 
+# 32232 is the node port on the worker node
+# that forwards connections to your service.
+# 이 포트로 모든 워커 노드에서 서비스에서 접근가능
+# (minikube, kind, 등등 클러스터 종류 상관 없이)
 
+regardless of whether you’re using Minikube or any other Kubernetes cluster.
 kubectl get svc kiada-http
+  NAME         TYPE           CLUSTER-IP     EXTERNAL-IP   PORT(S)          AGE
+  kiada-http   LoadBalancer   10.96.59.164   <pending>     8080:32232/TCP   83m
+  kubernetes   ClusterIP      10.96.0.1      <none>        443/TCP          6h50m
+
+
+# Kubernetes 클러스터가 클라우드 (AWS, Gcloud)에 deploy 된다면
+# 해당 클라우드 인프라에 로드밸런서를 통해
+# 클러스터로 오는 트래픽을 실행 중인 컨테이너로 forward 함
+# 해당 인프라는 Kubernetes에게 로드밸런서의 Ip를 알려주고 서비스의 외부주소가 됨
+
 
 # Accessing your application through Load Balancer
 curl <EXTERNAL-IP>:8080
@@ -1744,9 +1765,31 @@ curl 104.155.74.57:8080
 
 
 # Accessing your application without Load Balancer
+#   not all kubernetes clusters provide Load Balancer
+#   minikube shows where to access the services
+#     prints the url of the service
 minikube service kiada --url
 curl <ip:port>
 
 
+# you can access this service locally using the Kubectl proxy tool.
+kubectl port-forward kiada-http 8080:3002
+
+# Deploying your application REQUIRES only two steps
+# 'Deployment' is a representation of an application
+# 'Service' exposes that deployment
+
+kubectl create deployment [options]
+kubectl expose deployment [options]
+
+```
+
+
+- Horizontally Scaling the application
+  - increase (scale-out) / decrease the number of running application instances
+  - scale the deployment object
+
+
+```sh
 ```
 
