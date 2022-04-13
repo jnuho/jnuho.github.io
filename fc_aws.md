@@ -1790,6 +1790,29 @@ kubectl expose deployment [options]
   - scale the deployment object
 
 
+
 ```sh
+k get deploy
+k get deployments.apps
+k get deployment
+
+  NAME    READY   UP-TO-DATE   AVAILABLE   AGE
+  kiada   3/3     3            3           31h
+
+k get pods
+
+  NAME                     READY   STATUS    RESTARTS       AGE
+  kiada-7fc9cfcf4b-64qvl   1/1     Running   0              3m3s
+  kiada-7fc9cfcf4b-mf8ls   1/1     Running   0              3m3s
+  kiada-7fc9cfcf4b-t8fcg   1/1     Running   1 (148m ago)   31h
+```
+
+
+- Displaying the pods' host node when listing pods
+  - To see which nodes the pods were scheduled to,
+  - you can use the -o wide option to display a more detailed pod list:
+
+```sh
+k get pods -o wide
 ```
 
