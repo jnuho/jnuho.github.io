@@ -1792,6 +1792,7 @@ kubectl expose deployment [options]
 
 
 ```sh
+# the result of 'Scale Out'
 k get deploy
 k get deployments.apps
 k get deployment
@@ -1810,9 +1811,47 @@ k get pods
 
 - Displaying the pods' host node when listing pods
   - To see which nodes the pods were scheduled to,
-  - you can use the -o wide option to display a more detailed pod list:
+  - you can use the -o wide option to display a more detailed pod list
+
+- Object created
+  - Deployment object you created,
+  - Pod objects that were automatically created based on the Deployment
+  - Service object you created manually
+    - Instead of connecting directly to the pod,
+    - clients should connect to the IP of the service.
+    - This ensures that their connections are always routed to a healthy pod,
+    - Each service provides internal load balancing in the cluster,
+    - but if you set the type of service to LoadBalancer,
+    - Kubernetes will ask the cloud infrastructure it runs in for an additional
+    - load balancer to make your application available at a publicly accessible address
+
+
+![image](https://drek4537l1klr.cloudfront.net/luksa3/v-12/Figures/03image014.png)
+
 
 ```sh
 k get pods -o wide
+
+# observing requests hitting all three pods when using the service
+k get svc
+  NAME         TYPE           CLUSTER-IP     EXTERNAL-IP   PORT(S)          AGE
+  kiada-http   LoadBalancer   10.96.59.164   <pending>     8080:32232/TCP   43h
+  kubernetes   ClusterIP      10.96.0.1      <none>        443/TCP          2d
+
+k describe pods | grep Node:
+Node:         kind-worker2/172.18.0.3
+Node:         kind-worker/172.18.0.4
+Node:         kind-worker/172.18.0.4
+
+# Each request arrives at a different pod in random order.
+# This is what services in Kubernetes do when more than one pod instance is behind them.
+# They act as load balancers in front of the pods.
+
+curl 172.18.0.3:32232
+curl 172.18.0.4:32232
+
 ```
+
+
+
 
