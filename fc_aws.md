@@ -1854,4 +1854,36 @@ curl 172.18.0.4:32232
 
 
 
+- Kubernetes API
+
+- Understanding the structure of an object manifest
+  - manifest of most Kubernetes API objects consists of the following four sections:
+  - Type Metadata : type of a resource
+  - Object Metadata : name and identifying information
+  - Spec Metadata :  desired state
+  - Status Metadata : current actual state
+
+- Object Controller controls each object type
+  - controllr monitors the desired state (Spec) constantly
+  - controller updates the current status (Status) constantly
+
+```sh
+
+# get info about a node in a yaml format
+kubectl get node <node-name> -o yaml
+
+
+# one can access the API directly through proxy using plain HTTP
+
+kubectl proxy
+
+
+kubectl explain node.spec
+kubectl get node kind-control-plane -o yaml
+
+```
+
+
+
+
 
