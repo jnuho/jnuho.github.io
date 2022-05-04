@@ -43,6 +43,7 @@ aws elbv2 describe-target-health \
   --output text \
   --target-group-arn \
     arn:aws:elasticloadbalancing:ap-northeast-2:734976340835:targetgroup/AWSDC-TG-COM-PRD-KESOA-7080/68261da5b61413c1
+  | /mnt/c/Windows/System32/clip.exe
 
 
 
