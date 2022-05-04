@@ -39,15 +39,12 @@ aws elbv2 describe-target-groups \
 ```sh
 aws elbv2 describe-target-health \
   --profile APPPRD \
-  --query 'TargetHealthDesciptions[?TargetHealth.State==`healthy`].{Id:Target.Id, Port: Target.Port}' \
+  --query 'TargetHealthDescriptions[?TargetHealth.State==`healthy`].{Id:Target.Id, Port: Target.Port}' \
+  --output text \
   --target-group-arn \
     arn:aws:elasticloadbalancing:ap-northeast-2:734976340835:targetgroup/AWSDC-TG-COM-PRD-KESOA-7080/68261da5b61413c1
 
-aws elbv2 describe-target-health \
-  --profile APPPRD \
-  --query 'TargetHealthDescriptions[*].{ID:Target.Id, PORT:Target.Port}' \
-  --target-group-arn \
-    arn:aws:elasticloadbalancing:ap-northeast-2:734976340835:targetgroup/AWSDC-TG-COM-PRD-KESOA-7080/68261da5b61413c1
+
 
 {
     "TargetHealthDescriptions": [
