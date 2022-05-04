@@ -12,6 +12,22 @@ aws elbv2 describe-target-groups \
 --query 'TargetGroups[?LoadBalancerArns[0] != None].{TargetType: TargetType, TG: TargetGroupName, TGARN: TargetGroupArn, ALB: LoadBalancerArns[0], Port: Port}' \
 --output text \
 | sed -E  's/\s+/,/g' > tg.csv
+{
+    "TargetGroups": [
+        {
+            "TargetGroupName": "my-targets",
+            "Protocol": "HTTP",
+            "Port": 80,
+            "VpcId": "vpc-3ac0fb,
+            "TargetType": "instance",
+            ...
+            "LoadBalancerArns: [
+              "", "", ..
+            ]
+        }
+        ,...
+   ]
+}
 
 ```
 
@@ -27,6 +43,11 @@ aws elbv2 describe-target-health \
   --target-group-arn \
     arn:aws:elasticloadbalancing:ap-northeast-2:734976340835:targetgroup/AWSDC-TG-COM-PRD-KESOA-7080/68261da5b61413c1
 
+aws elbv2 describe-target-health \
+  --profile APPPRD \
+  --query 'TargetHealthDescriptions[*].{ID:Target.Id, PORT:Target.Port}' \
+  --target-group-arn \
+    arn:aws:elasticloadbalancing:ap-northeast-2:734976340835:targetgroup/AWSDC-TG-COM-PRD-KESOA-7080/68261da5b61413c1
 
 {
     "TargetHealthDescriptions": [
@@ -41,29 +62,8 @@ aws elbv2 describe-target-health \
                 "State": "healthy"
             }
         },
-        {
-            "Target": {
-                "Id": "10.48.146.154",
-                "Port": 7080,
-                "AvailabilityZone": "ap-northeast-2c"
-            },
-            "HealthCheckPort": "7080",
-            "TargetHealth": {
-                "State": "unhealthy",
-                "Reason": "Target.FailedHealthChecks",
-                "Description": "Health checks failed"
-            }
-        }
-    ]
+        ...
 }
 
-
-aws elbv2 describe-target-health \
-  --profile APPPRD \
-  --target-group-arn \
-    arn:aws:elasticloadbalancing:ap-northeast-2:734976340835:targetgroup/AWSDC-TG-COM-PRD-KESOA-7080/68261da5b61413c1 \
-  --query 'TargetHealthDescriptions[*].{ID:Target.Id, PORT:Target.Port}' \
-  --output text \
-  | sed -E 's/\s+/,/g'
 
 ```
