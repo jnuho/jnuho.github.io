@@ -3,11 +3,48 @@
 - Vscode > Extension > Go
 
 ```sh
-cd `goproject/hello.go`
-go mod init goproject\hello
-go build
-./hello.exe
+### CREATE MODULE ###
+cd goproject/calculator
+# MODULE_NAME should ideally be on the web
+go mod init github.com/jnuho/jnuho.github.io/goproject/calculator
+cat go.mod
+  
+### CREATE PACKAGE ###
+# e.g. two packages
+mkdir operations display
+# to use 'format.go' inside 'simple.go', use:
+# import "github.com/jnuho/jnuho.github.io/goproject/calculator/display"
+touch operations/simple.go
+touch display/format.go
+
+
+### COMMIT AND PUSH TO REPO ###
+
 ```
+
+```go
+### USE ABOVE PACKAGES ###
+# mkdir simplego && cd simplego
+# touch main.go
+package main
+
+import "github.com/jnuho/jnuho.github.io/goproject/calculator/operations"
+
+func main() {
+}
+```
+
+
+```sh
+# look through import statements
+# and downloads all missing packages/dependencies
+# 외부 패키지 다운로드
+go mod tidy
+
+cat go.mod
+```
+
+
 
 - 코드 실행 단계
   - 폴더생성

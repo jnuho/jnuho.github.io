@@ -38,7 +38,12 @@ aws elbv2 describe-target-groups \
     - describe-target-health
 
 ```sh
-TG=arn:aws:elasticloadbalancing:ap-northeast-2:734976340835:targetgroup/AWSDC-TG-COM-PRD-KESOA-7080/68261da5b61413c1
+TG=arn:aws:elasticloadbalancing:ap-northeast-2:734976340835:targetgroup/AWSDC-TG-CSS-PRD-CANADAACI/224e3e1748efb7d4
+
+aws elbv2 describe-target-health \
+  --profile APPPRD \
+  --output text \
+  --target-group-arn ${TG}
 
 aws elbv2 describe-target-health \
   --profile APPPRD \
@@ -66,4 +71,12 @@ aws elbv2 describe-target-health \
 }
 
 
+AWS_INSTANCE_ID=i-001dff691b092e650
+
+
+
+aws ec2 describe-tags --profile APPPRD \
+--filters "Name=resource-id,Values=$AWS_INSTANCE_ID" "Name=key,Values=Name" \
+--output text | cut -f5 \
+| /mnt/c/Windows/System32/clip.exe
 ```
