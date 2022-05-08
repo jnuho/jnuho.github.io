@@ -37,12 +37,13 @@ aws elbv2 describe-target-groups \
     - describe-target-health
 
 ```sh
+TG=arn:aws:elasticloadbalancing:ap-northeast-2:734976340835:targetgroup/AWSDC-TG-COM-PRD-KESOA-7080/68261da5b61413c1
+
 aws elbv2 describe-target-health \
   --profile APPPRD \
   --query 'TargetHealthDescriptions[?TargetHealth.State==`healthy`].{Id:Target.Id, Port: Target.Port}' \
   --output text \
-  --target-group-arn \
-    arn:aws:elasticloadbalancing:ap-northeast-2:734976340835:targetgroup/AWSDC-TG-COM-PRD-KESOA-7080/68261da5b61413c1
+  --target-group-arn ${TG} \
   | /mnt/c/Windows/System32/clip.exe
 
 
