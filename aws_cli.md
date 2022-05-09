@@ -53,7 +53,6 @@ aws elbv2 describe-target-health \
   | /mnt/c/Windows/System32/clip.exe
 
 
-
 {
     "TargetHealthDescriptions": [
         {
