@@ -1,6 +1,5 @@
 
 
-
 - EC2 & key pair
   - 퍼블릭키는 EC2 인스턴스에 설치됨 - 개인키는 접속주체 개인 저장
 
@@ -1400,6 +1399,13 @@ docker-compose up -d
 docker-compose ps
 ```
 
+
+
+- Kubernetes provies infrastructure-related mechnisms (frees developers from those and allow them to focus on the business logic)
+  - service discovery
+  - horizontal scaling
+  - self-healing
+  - leader election
 
 
 
