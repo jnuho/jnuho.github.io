@@ -953,6 +953,8 @@ cat go.mod
 #     ㄴ custompkg/custompkg.go
 cd 16-package/usepkg
 
+# 퍼블릭 github 있는 경우
+# go mod init github.com/reponame/16-package/usepkg
 go mod init 16-package/usepkg
 go mod tidy
 
@@ -970,13 +972,161 @@ go mod tidy
   - init() 호출 (매개변수, 반환값 없는 함수)
 
 ```go
+package main
+
 import (
-  "database/sql"
-  _ "github.com/mattn/go-sqlite3" // 밑줄 _을 이용해서 init() 함수 호출
+	"fmt"
+	"math/rand"
+
+	// 겹치는 패키지 이름 별칭으로 묶기
+	"text/template"
+	htemplate "html/template"
+
+	// 패키지를 사용하지는 않지만 부과효과 떄문에 import 하는 경우
+	"database/sql"
+
+  // 밑줄 _을 이용해서 init() 함수 호출
+  // 밑줄 _ 이용하여 unused 에러 방지
+	_ "github.com/mattn/go-sqlite3"
 )
+
+type Service struct {
+	db *sql.DB
+}
+
+func main() {
+
+	template.New("foo").Parse(`{{define "T"}}Hello`)
+	htemplate.New("foo").Parse(`{{define "T"}}Hello`)
+
+	fmt.Println(rand.Int())
+}
 ```
 
-### 18.슬라이스
+- Go 모듈만들고, 외부 패키지 활용하기
+
+```sh
+cd 16-package/usepkg
+go mod init 16-package/usepkg
+mkdir custompkg
+cat custompkg/custompkg.go
+  package custompkg
+
+  import "fmt"
+
+  func PrintCustom() {
+    fmt.Println("This is custom package!")
+  }
+
+cat usepkg.go
+  package main
+
+  import (
+    "fmt"
+    "16-package/usepkg/custompkg" // 모듈 내 패키지
+    "github.com/guptarohit/asciigraph" // 외부 저장소 패키지
+    "github.com/tuckersGo/musthaveGo/16-package/expkg"
+  )
+
+  func main() {
+    custompkg.PrintCustom()
+    expkg.PrintSample()
+
+    data := []float64{3,4,5,6,9,7,5,8,5,10,2,7,2,5,6}
+    graph := asciigraph.Plot(data)
+    fmt.Println(graph)
+  }
+```
+
+- custompkg.go
+
+```go
+package custompkg
+import "fmt"
+func PrintCustom() {
+	fmt.Println("This is custom package!")
+}
+```
+
+
+- 패키지명과 패키지 외부 공개
+
+```go
+cd 16-package/ex16.2/publicpkg
+cat publicpkg.go
+  package publicpkg
+
+  import "fmt"
+
+  const (
+    PI = 3.1415
+    pi = 3.1415
+  )
+
+  var ScreenSize int = 1080
+  var screenHeight int
+
+  func PublicFunc() {
+    const MyConst = 100
+    fmt.Println("This is a public function", MyConst)
+  }
+
+  func privateFunc() {
+    fmt.Println("This is a private function")
+  }
+
+  type MyInt int
+  type myString string
+
+  type MyStruct struct {
+    Age int
+    name string
+  }
+
+  func (m MyStruct) PublicMethod() {
+    fmt.Println("This is a public method")
+  }
+
+  func (m MyStruct) privateMethod() {
+    fmt.Println("This is a private method")
+  }
+
+  type myPrivateStruct struct {
+    Age int
+    name string
+  }
+
+  func (m myPrivateStruct) PrivateMethod() {
+    fmt.Println("This is a private method")
+  }
+
+cat 16-package/ex16.2
+cat ex16.2.go
+  package main
+
+  import (
+    "fmt"
+    "16-package/ex16.2/publicpkg"
+  )
+
+  func main() {
+    fmt.Println("PI: ", publicpkg.PI)
+    publicpkg.PublicFunc()
+
+    var myint publicpkg.MyInt = 10
+    fmt.Println("myint:", myint)
+
+    var mystruct = publicpkg.MyStruct{Age: 18}
+    fmt.Println("mystrcut:", mystruct)
+  }
+```
+
+- 패키지 임포트하면 다음 진행
+  1. 전역변수 초기화
+  2. 패키지에 init() 정의되어 있다면 호출
+    - 만약 어떤 패키지의 초기화 함수인 init() 함수기능만 사용하길 원할 경우 밑줄 _ 로 임포트
+
+### 18.슬라이
 
 - slice: 동적배열
   - 일반적인 배열 `var array [10]int`은 일정한 길이에서 늘어나지 않는 문제
