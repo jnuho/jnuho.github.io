@@ -1694,9 +1694,7 @@ func main() {
   mainB := mainA.withdrawReturnValue(30)
   fmt.Println(mainB)
 }
-
 ```
-
 
 
 
@@ -1715,6 +1713,31 @@ func main() {
 2. 빈 인터페이스
 3. 인터페이스 기본값
 
+
+```go
+package main
+import "fmt"
+
+type Stringer interface {
+  String() string
+}
+
+type Student struct {
+  Name string
+  Age int
+}
+
+
+func (s *Student) String() string {
+  return fmt.Sprintf("안녕, 나는 %d살, %s라고 해\n", s.Age, s.Name)
+}
+
+func main() {
+  s := &Student{"Jake", 9}
+  res := s.String()
+  fmt.Println(res)
+}
+```
 
 ### 21.함수고급편
 
