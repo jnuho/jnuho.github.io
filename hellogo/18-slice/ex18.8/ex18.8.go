@@ -15,5 +15,7 @@ func main() {
 	slice1[1] = 100
 	fmt.Println(slice1)
 	fmt.Println(slice2)
+	fmt.Println(slice3)
+	fmt.Println(slice4)
 
 }

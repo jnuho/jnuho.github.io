@@ -674,7 +674,6 @@ func main() {
   fmt.Printf("===p가 가리키는 메모리의 값 변경->100===\n")
   fmt.Printf("a의 값: %d\n", a) // a값 변화 확인 *p == a
 
-
   var p2 *int = &a
   fmt.Printf("p2도 a를 가리키는 *int 포인터 입니다: \n\tp2= %p, *p2=%d, &a=%p\n", p2,*p2, &a)
 }
@@ -1298,17 +1297,342 @@ func main() {
 - 슬라이스를 슬라이싱 하기
 
 ```go
-slice1 := []int{1,2,3,4,5}
-slice2 := slice1[1:2]
+package main
+
+import "fmt"
+
+func main() {
+  slice1 := []int{1,2,3,4,5}
+  fmt.Println("slice1: ", slice1, len(slice1), cap(slice1))
+
+  // 중간
+  slice2 := slice1[1:3]
+  fmt.Println("slice1[1:3]: ", slice2, len(slice2), cap(slice2))
+
+  // 처음부터 i까지
+  slice3 := slice1[:3]
+  fmt.Println("slice1[:3]: ", slice3, len(slice3), cap(slice3))
+
+  // i부터 끝까지
+  slice4 := slice1[1:]
+  fmt.Println("slice1[1:]: ", slice4, len(slice4), cap(slice4))
+
+  // 전체
+  slice5 := slice1[:]
+  fmt.Println("slice1[:]", slice5, len(slice5), cap(slice5))
+}
+// slice1:  [1 2 3 4 5] 5 5
+// slice1[1:3]:  [2 3] 2 4
+// slice1[:3]:  [1 2 3] 3 5
+// slice1[1:]:  [2 3 4 5] 4 4
+// slice1[:] [1 2 3 4 5] 5 5
 ```
 
 
 
+
+- 슬라이스 복제 (서로 다른 배열 가리키도록)
+
+```go
+package main
+import "fmt"
+
+func main() {
+  slice1 := []int{1,2,3,4,5}
+
+  // 복제
+  slice2 := make([]int, len(slice1))
+  for i,v := range slice1 {
+    slice2[i] = v
+  }
+  fmt.Println("After slice1-> slice2 복제(for문)")
+  fmt.Println("slice1", slice1, len(slice1), cap(slice1))
+  fmt.Println("slice2", slice2, len(slice2), cap(slice2))
+
+  // slice1,2는 서로 다른 배열 가리키므로 slice1의 배열만 반영
+  slice1[1] = 100
+  fmt.Println("After slice1[1] = 100")
+  fmt.Println("slice1", slice1, len(slice1), cap(slice1))
+  fmt.Println("slice2", slice2, len(slice2), cap(slice2))
+}
+
+// After slice1-> slice2 복제(for문)
+// slice1 [1 2 3 4 5] 5 5
+// slice2 [1 2 3 4 5] 5 5
+// After slice1[1] = 100
+// slice1 [1 100 3 4 5] 5 5
+// slice2 [1 2 3 4 5] 5 5
+```
+
+- 슬라이스 복제 (append()로 코드개선)
+
+```go
+package main
+import "fmt"
+
+func main() {
+  slice1 := []int{1,2,3,4,5}
+  slice2 := append([]int{}, slice1...)
+  fmt.Println("After slice2 := append([]int{}, slice1...)")
+  fmt.Println("slice1", slice1, len(slice1), cap(slice1))
+  fmt.Println("slice2", slice2, len(slice2), cap(slice2))
+}
+```
+
+
+
+
+- 슬라이스 복제 (copy()로 코드개선)
+  - `func copy(dest, src []Type) int`
+
+```go
+package main
+import "fmt"
+
+func main() {
+  slice1 := []int{1,2,3,4,5}
+	slice2 := make([]int, 3, 10) // len:3, cap:10
+	slice3 := make([]int, 10) // len:10, cap:10
+
+  // 3개만 복사됨
+	cnt1 := copy(slice2, slice1)
+  // 5개 복사됨
+	cnt2 := copy(slice3, slice1)
+
+	fmt.Println("slice2: ", cnt1, slice2)
+	fmt.Println("slice3: ", cnt2, slice3)
+
+
+  // 같은 cap, len으로 복제하려면:
+  // for문으로 실행 하거나
+  // copy이용
+  slice2 = make([]int, len(slice1))
+  copy(slice2, slice1)
+  fmt.Println("slice2: ", slice2)
+}
+
+// slice2:  3 [1 2 3]
+// slice3:  5 [1 2 3 4 5 0 0 0 0 0]
+```
+
+
+
+- 슬라이스 요소 삭제
+  1. 삭제한 요소 인덱스 이후를 1칸씩 당기고, 마지막 요소 슬라이싱 기능으로 제거
+  2. 또는 append() 조합으로 요소삭제 후 reassign
+
+
+- 방법 1. 한칸씩 당기는 작업: for문
+
+```go
+package main
+import "fmt"
+
+func main() {
+  slice1 := []int{1,2,3,4,5}
+  del := 2
+
+  for i:=del; i<len(slice1)-1; i++ {
+    slice1[i] = slice1[i+1]
+  }
+  slice1 = slice1[:len(slice1)-1]
+
+  fmt.Printf("After slice1[%d] is deleted: %v  %d %d\n", del, slice1, len(slice1), cap(slice1))
+```
+
+- 방법 2. append() 활요
+
+```go
+package main
+import "fmt"
+
+func main() {
+  slice1 := []int{1,2,3,4,5}
+  del := 2
+  
+  slice1 = append(slice1[:del], slice1[del+1:]...)
+
+  fmt.Println("slice1: ", slice1, len(slice1), cap(slice1))
+}
+```
+
+
+- 슬라이스 요소 추가
+  1. 추가한 요소 인덱스 이후를 1칸씩 밀기: for문
+  2. 또는 append() 조합으로 요소추가 후 reassign
+
+
+- 방법 1. 한칸씩 미는 작업: for문
+  - len+1이 되지만 cap*2 가 됨!
+
+```go
+package main
+import "fmt"
+func main() {
+  slice1 := []int{1,2,3,4,5}
+  add := 2
+  slice1 = append(slice1, 0)
+
+
+  for i:= len(slice1)-1 ; i > add; i-- {
+    slice1[i] = slice1[i-1]
+  }
+  slice1[add] = 100
+  slice1 = slice1[:len(slice1)]
+
+  // slice1 [1 2 100 3 4 5] 6 10
+  fmt.Println("slice1", slice1, len(slice1), cap(slice1))
+}
+```
+
+- 방법 2. append() 활용
+
+```go
+package main
+import "fmt"
+func main() {
+  slice1 := []int{1,2,3,4,5}
+  add := 2
+  slice1 = append(slice1[:add], append([]int{100}, slice1[add:]...)...)
+
+  // slice1 [1 2 100 3 4 5] 6 10
+  fmt.Println("slice1", slice1, len(slice1), cap(slice1))
+}
+```
+
+
+
+- 슬라이스 요소 (int형) 정렬
+
+```go
+package main
+import (
+  "fmt"
+  "sort"
+)
+func main() {
+  slice := []int{5, 1, 2, 3, 4}
+
+  sort.Ints(slice)
+  fmt.Println(slice)
+}
+```
+
+- 구조체 타입 슬라이스 정렬
+  - 구조체를 Sort()로 정렬 하려면 '구조체 리스트' 대해 Len(), Less(), Swap() 메소드 구현필요
+  - 구조체리스트 = `[]구조체`
+
+```go
+package main
+import (
+  "fmt"
+  "sort"
+)
+
+type Student struct {
+  Name string
+  Age int
+}
+
+type Students []Student
+
+func (s Students) Len() int {
+  return len(s)
+}
+
+func (s Students) Less(i, j int) bool {
+  return s[i].Age < s[j].Age
+}
+
+func (s Students) Swap(i, j int) {
+  s[i], s[j] = s[j], s[i]
+}
+
+// 구조체 정렬 시 필요한 정의 메소드
+// Len(), Less(), Swap()
+func main() {
+  // 슬라이스안에 {"A", 1} 선언시
+  // 구조체 type 명 생략
+  slice := []Student {
+    {"B", 2},
+    {"C", 9},
+    {"A", 1},
+    {"D", 5},
+  }
+
+  sort.Sort(Students(slice))
+  fmt.Println(slice)
+}
+```
+
+
 ### 19.메소드
 
+- `func (r Rabbit) info() int`
+  - 리시버: `(r Rabbit)`
+  - 메소드명: `info`
+
+- 메소드와 함수의 구분: '소속'
+  - 함수는 어디에도 속하지 않지만, 메소드는 리시버에 속함
+  - 리시버를 통해 해당 메소드의 소속 명시
+  - 메소드를 통해 object와 기능을 묶을 수 있음
 - 응집도 높힘
 - 객체지향 (절차중심 -> 관계중심)
   - 클래스 상속은 지원 X, 메소드와 인터페이스 O
+
+```go
+package main
+import "fmt"
+
+type account struct {
+  balance int
+}
+
+func withdrawFunc(a* account, amount int) { // 일반함수 표현
+  a.balance -= amount
+}
+
+func (a *account) withdrawMethod(amount int) { // 메소드 표현
+  a.balance -= amount
+}
+
+func main() {
+  a := &account{100}
+
+  withdrawFunc(a, 30)
+  a.withdrawMethod(30)
+
+  fmt.Printf("%d \n", a.balance)
+}
+```
+
+
+- 별칭 리시버 타입
+  - int 타입도 별칭을 통해 리시버로 기능할 수 있음
+
+```go
+package main
+import "fmt"
+
+// 사용자 정의 별칭 타입
+type myInt int
+
+func (a myInt) add(b int) int {
+  return int(a) + b
+}
+
+func main() {
+  var a myInt = 10 // myInt타입변수
+  res := a.add(30)
+  fmt.Println("myInt + 30 = ", res)
+
+  var b int = 20
+  myInt(b)
+}
+```
+
+
+- 객체지향: 절차중심 -> 관계중심
 
 ```go
 type Student struct {
@@ -1318,7 +1642,6 @@ type Student struct {
 }
 
 // Student 구조체에 속하는 메소드들
-
 func (s *Student) EnrollClass(c *Subject) {
   // ...
 }
@@ -1327,6 +1650,51 @@ func (s *Student) SendReport(p *Professor, r *Report) {
   // ...
 }
 ```
+
+- 포인터 메소드 vs 값타입 메소드
+
+```go
+package main
+import "fmt"
+
+type account struct {
+  balance int
+  firstName string
+  lastName string
+}
+
+// 1. 포인터타입 메소드
+func (a1 *account) withdrawPointe(amount int) {
+  a1.balance -= amount
+}
+
+// 2. 값타입 메소드
+func (a2 account) withdrawValue(amount int) {
+  a2.balance -= amount
+}
+
+// 3. 변경된 값을 반환하는 값 타입 메소드
+//  값타입 메소드를 보완하지만, 메모리의 복사가 여러번 일어나 메모리 비효율적
+func (a3 account) withdrawReturnValue(amount int) account {
+  a3.balance -= amount
+  return a3
+}
+
+func main() {
+  var mainA *account = &account{100, "Joe", "Park"}
+
+  mainA.withdrawPointer(30)
+  fmt.Println(mainA)
+
+  // 고언어에서는
+  // (*mainA).withdrawValue(30) 와 같음
+  mainA.withdrawValue(30)
+  fmt.Println(mainA)
+}
+
+```
+
+
 
 
 ### 20.인터페이스
@@ -1345,7 +1713,6 @@ func (s *Student) SendReport(p *Professor, r *Report) {
 3. 인터페이스 기본값
 
 
-
 ### 21.함수고급편
 
 - `...` 키워드 사용
@@ -1357,7 +1724,6 @@ func (s *Student) SendReport(p *Professor, r *Report) {
   - 함수 alias 지정가능 `type opFunc func (int, int) int`
   - 함수리터럴 (익명함수, lambda)
     - 함수리터럴 외부변수를 자동으로 리터럴 함수 내부상태로 가져와 저장 ('capture') : 값복사가 아닌 참조형태로 가져옴
-
 
 ### 24.고루틴과 동시성 프로그래밍
 

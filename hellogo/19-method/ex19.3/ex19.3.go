@@ -27,7 +27,7 @@ func (a3 account) withdrawReturnValue (amount int) account {
 }
 
 func main() {
-	var mainA *account = &account {100, "Joe", "Park" }
+	var mainA *account = &account{100, "Joe", "Park" }
 	mainA.withdrawPointer(30)
 	fmt.Println(mainA.balance)
 
