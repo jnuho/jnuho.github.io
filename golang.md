@@ -1686,10 +1686,13 @@ func main() {
   mainA.withdrawPointer(30)
   fmt.Println(mainA)
 
-  // 고언어에서는
-  // (*mainA).withdrawValue(30) 와 같음
+  // 고언어에서는 (*mainA).withdrawValue(30) 와 같음
+  // 복사가 일어나므로 mainA에 변경값 반영안됨
   mainA.withdrawValue(30)
   fmt.Println(mainA)
+
+  mainB := mainA.withdrawReturnValue(30)
+  fmt.Println(mainB)
 }
 
 ```
