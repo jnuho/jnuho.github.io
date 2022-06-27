@@ -1151,6 +1151,159 @@ for i,v := range slice1 {
 }
 ```
 
+- 슬라이스 동작원리
+  - func(arr [5]int) 배열 파라미터로 넘기면 전체 배열 COPY : array 요소들 변경 적용 X
+  - func(slice []int) 슬라이스 파라미터 포인터까지 복제되므로: array 요소들 변경 적용 됨
+
+```go
+type SliceHeader struct {
+  Data uintptr  // 실제 배열을 가리키는 포인터
+  Len int       // 요소개수
+  Cap int       // 실제 배열의 길이
+}
+```
+
+
+- 문제발생 CASE1
+
+```go
+package main
+import "fmt"
+
+func main() {
+  slice1 := make([]int, 3, 5)
+  slice2 := append(slice1, 4, 5)
+
+  // len() cap()
+  fmt.Println("slice1: ", slice1, len(slice1), cap(slice1))
+  fmt.Println("slice2: ", slice2, len(slice2), cap(slice2))
+
+  // 문제1: slice1변경 시 둘다 바뀜
+  slice1[1] = 100
+  fmt.Println("After slice1[1]=100")
+  fmt.Println("slice1: ", slice1, len(slice1), cap(slice1))
+  fmt.Println("slice2: ", slice2, len(slice2), cap(slice2))
+
+  // 문제2: slice1 append()하면 1,2 둘다 바뀌는데,
+  // len에 따라 append 위치가 다름
+  slice1 = append(slice1, 500)
+  fmt.Println("After append(slice1, 500)")
+  fmt.Println("slice1: ", slice1, len(slice1), cap(slice1))
+  fmt.Println("slice2: ", slice2, len(slice2), cap(slice2))
+}
+
+// slice1:  [0 0 0] 3 5
+// slice2:  [0 0 0 4 5] 5 5
+// After slice1[1]=100
+// slice1:  [0 100 0] 3 5
+// slice2:  [0 100 0 4 5] 5 5
+// After slice1 = append(slice1, 500)
+// slice1:  [0 100 0 500] 4 5
+// slice2:  [0 100 0 500 5] 5 5
+```
+
+
+- 문제발생 CASE2
+
+```go
+// cap이 다 찼을때, append() 하면
+// 2배만큼 len 증가
+package main
+import "fmt"
+
+func main() {
+  // len=3 cap=3
+  slice1 := []int{1,2,3}
+
+  // cap=len으로 슬라이스 용량이 다 찬 상태에서
+  //  append() 실행 시 cap*2만큼 용량(capacity) 증가
+  //  cap: 3-> 6
+  //  새로운 용량 (6)의 배열이 생성되면서,
+  //  slice1과 slice2는 다른배열을 가리키게됨
+  slice2 := append(slice1, 4, 5)
+  fmt.Println("After slice2 := append(slice1, 4, 5) ")
+  fmt.Println("slice1: ", slice1, len(slice1), cap(slice1))
+  fmt.Println("slice2: ", slice2, len(slice2), cap(slice2))
+
+  slice1[1] = 100
+  fmt.Println("After slice1[1] = 100")
+  fmt.Println("slice1: ", slice1, len(slice1), cap(slice1))
+  fmt.Println("slice2: ", slice2, len(slice2), cap(slice2))
+
+  slice1 = append(slice1, 500)
+  fmt.Println("After slice1 = append(slice1, 500)")
+  fmt.Println("slice1: ", slice1, len(slice1), cap(slice1))
+  fmt.Println("slice2: ", slice2, len(slice2), cap(slice2))
+}
+
+// After slice2 := append(slice1, 4, 5) 
+// slice1:  [1 2 3] 3 3
+// slice2:  [1 2 3 4 5] 5 6
+// After slice1[1] = 100
+// slice1:  [1 100 3] 3 3
+// slice2:  [1 2 3 4 5] 5 6
+// After slice1 = append(slice1, 500)
+// slice1:  [1 100 3 500] 4 6
+// slice2:  [1 2 3 4 5] 5 6
+
+```
+
+- 슬라이싱
+
+```go
+package main
+
+import "fmt"
+
+func main() {
+  array := [5]int{1,2,3,4,5}
+  slice := array[1:2]
+
+
+  // 슬라이싱 cap길이 = 시작인덱스 ~끝인덱스 까지의 길이
+  //   여기에서는 cap = 시작인덱스 1부터 끝까지 길이 = 4
+  fmt.Println("After slice := array[1:2]")
+  fmt.Println("array: ", array)
+  fmt.Println("slice: ", slice, len(slice), cap(slice))
+
+  array[1] = 100
+  fmt.Println("After array[1] = 100")
+  fmt.Println("array: ", array)
+  fmt.Println("slice: ", slice, len(slice), cap(slice))
+
+  slice = append(slice, 500)
+  fmt.Println("After slice = append(slice, 500)")
+  fmt.Println("array: ", array)
+  fmt.Println("slice: ", slice, len(slice), cap(slice))
+
+
+  // IF 슬라이스 append를 배열 길이 5이상으로 실행하면
+  // array는 그대로, slice는 동적으로 크기 증가: cap*2 용량 증가 및 len 증가
+}
+
+
+// After slice := array[1:2]
+// array:  [1 2 3 4 5]
+// slice:  [2] 1 4
+// After array[1] = 100
+// array:  [1 100 3 4 5]
+// slice:  [100] 1 4
+// After slice = append(slice, 500)
+// array:  [1 100 500 4 5]
+// slice:  [100 500] 2 4
+```
+
+
+
+- 슬라이스를 슬라이싱 하기
+
+```go
+slice1 := []int{1,2,3,4,5}
+slice2 := slice1[1:2]
+```
+
+
+
 ### 19.메소드
 
 - 응집도 높힘
