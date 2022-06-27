@@ -1664,7 +1664,7 @@ type account struct {
 }
 
 // 1. 포인터타입 메소드
-func (a1 *account) withdrawPointe(amount int) {
+func (a1 *account) withdrawPointer(amount int) {
   a1.balance -= amount
 }
 
