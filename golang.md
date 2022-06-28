@@ -2074,7 +2074,7 @@ func main() {
 
 2. 다른 인터페이스로 변환
   - 구체화된 타입 뿐아니라, 다른 인터페이스로도 변환 가능
-  - `AInterface -> ConcreteType <- AInterface`
+  - `AInterface -> ConcreteType <- BInterface`
 
 ```go
 var AInterface = ConcreteType{}
@@ -2086,7 +2086,16 @@ b := a.(BInterface)
 package main
 import "fmt"
 
+type Reader interface {
+  Read()
+}
+
+type Closer interface {
+  Close()
+}
+
 func main() {
+
 }
 ```
 
