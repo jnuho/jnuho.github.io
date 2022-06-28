@@ -1733,11 +1733,364 @@ func (s *Student) String() string {
 }
 
 func main() {
-  s := &Student{"Jake", 9}
+  // s := &Student{"Jake", 9}
+  s := Student{"Jake", 9}
+
   res := s.String()
   fmt.Println(res)
 }
 ```
+
+
+- 우편업체 fedex.FedexSender, koreaPost.PostSender
+
+1. FedexSender
+
+```go
+// github.com/tuckersGo/musthaveGo/ch20/fedex
+package fedex
+import "fmt"
+
+type FedexSender struct {
+}
+
+func (f *FedexSender) Send(parcel string) {
+  fmt.Printf("Fedex에서 %s를 보냅니다.\n", parcel)
+}
+```
+
+2. PostSender
+
+```go
+// github.com/tuckersGo/musthaveGo/ch20/koreaPost
+package koreaPost
+import "fmt"
+
+type PostSender struct{
+}
+
+func (p *PostSender) Send(parcel string) {
+  fmt.Printf("Post우편에서 %s를 보냅니다.\n", parcel)
+}
+```
+
+
+- 인터페이스 없이 사용
+
+```go
+package main
+
+import (
+  "fmt"
+  "github.com/tuckersGo/musthaveGo/ch20/fedex"
+  "github.com/tuckersGo/musthaveGo/ch20/koreaPost"
+)
+
+func SendFedexParcel(parcel string, f *fedex.FedexSender) {
+  f.Send(parcel)
+}
+
+func SendKoreaPostParcel(parcel string, p *koreaPost.PostSender) {
+  p.Send(parcel)
+}
+
+func main() {
+  f := &fedex.FedexSender{}
+  p := &koreaPost.PostSender{}
+
+  // f.Send("fedex parcel")
+	// p.Send("koreaPost parcel")
+  SendFedexParcel("fedex parcel", f)
+  SendKoreaPostParcel("koreaPost parcel", p)
+}
+
+```
+
+- 인터페이스 사용
+  - 두개 struct 타입이 기능을 공유하되 implemntation이 조금 다름
+
+
+```go
+package main
+import (
+  "fmt"
+  "github.com/tuckersGo/musthaveGo/ch20/fedex"
+  "github.com/tuckersGo/musthaveGo/ch20/koreaPost"
+)
+
+type Sender interface {
+  Send(parcel string)
+}
+
+func SendBook(parcel string, sender Sender) {
+  sender.Send(parcel)
+}
+
+func main() {
+  f := &fedex.FedexSender{}
+  p := &koreaPost.PostSender{}
+
+  SendBook("fedex소포", f)
+  SendBook("koreaPost소포", p)
+}
+
+
+- 덕타이핑
+  - FedexSender, PostSender에 implements Sender라는 명시를 하지 않아도
+  - Sender인터페이스 의 Send() 메소드만 정의했다면 자동으로 duckTyping 됨
+
+- 서비스 사용자 중심 코딩
+  - Sender 인터페이스를 서비스 제공자인 Fedex나 Post가 아닌 패키지를 이용하는 쪽에서 만듦
+  - 덕타이핑에서는 인터페이스 구현 여부를 타입선언에서 하는게 아니라, 인터페이스가
+  - 사용될 때, 해당 타입이 인터페이스에 정의된 메서드를 포함했는지 여부로 결정
+  - 서비스 제공자가 인터페이스를 정의할 필요없이, 구체적인 객체만 제공하고,
+  - 서비스 이용자가 필요에 따라 그때그떄 인터페이스를 정의해서 사용할 수 있음
+```
+
+```go
+// A회사: B,C회사의 제품 성능 비교하고자 함
+//   A회사가 직접 Database 인터페이스 정의하여
+//   TotalTime 함수 사용하도록 구현
+// 구조체 BDatabase, CDatabase가 달라서
+// 한 함수의 인수로 쓸수 없기때문에, Database 인터페이스 정의
+func TotalTime(db Database) int {
+  db.Get()
+  db.Set()
+  return ?
+}
+
+func Compare() {
+  BDB := &BDatabase{}
+  CDB := &CDatabase{}
+
+  if TotalTime(BDB) < TotalTime(CDB) {
+    fmt.Println("B회사 제품이 더 빠름")
+  } else {
+    fmt.Println("C회사 제품이 더 빠름")
+  }
+}
+
+// 덕타이핑을 지원하지 않는다면
+//    B 인터페이스 정의, C 인터페이스 정의하여
+//    고객에게 알려줘야하는 불편함
+//    또한, C에게 B인터페이스를 지원하도록 요청 해야함
+//  덕타이핑을 활용하면, 인터페이스 지원여부를 사용하는 쪽에서 판단
+```
+
+
+1. 포함된 인터페이스
+
+
+```go
+package main
+
+type Reader interface {
+  Read()(n int, err error)
+  Close() error
+}
+
+type Writer interface {
+  Write()(n int, err error)
+  Close() error
+}
+
+type ReadWriter interface {
+  Reader
+  Writer
+}
+// 1 Read() Write() Close() 포함 타입
+//    => Reader, Writer, ReadWriter 모두 사용가능
+// 2 Read() Close() 포함 타입
+//    => Reader만 사용 가능
+// 3 Write Close() 포함 타입
+//    => Writer만 사용 가능
+// 4 Read() Write() 포함 타입
+//    => Close()없기 떄문에 3개 interface 모두 사용 불가능
+```
+
+2. 빈 인터페이스
+
+- `interface{}`는 메서도를 가지고 있지 않은 빈 인터페이스
+  - 가지고 있어야할 메서드가 하나도 없기 때문에 모든 타입이 빈인터페이스로 쓰일 수 있음
+  - 어떤값이든 받을 수 있는 함수, 메소드, 변숫값을 만들 떄 사용
+
+
+
+- 빈 인터페이스를 인수로 받기
+
+```go
+package main
+import "fmt"
+
+
+type Student struct{
+  Age int
+}
+
+func PrintVal(v interface{}) {
+
+  switch t:= v.(type) {
+    case int:
+      fmt.Printf("v is int %d\n", int(t))
+    case float64:
+      fmt.Printf("v is float64 %f\n", float64(t))
+    case string:
+      fmt.Printf("v is string %s\n", string(t))
+    default:
+      fmt.Printf("Not supported type %T:%v\n", t, t)
+  }
+}
+
+func main() {
+  PrintVal(10)
+  PrintVal(3.14)
+  PrintVal("Hello")
+  PrintVal(Student{15})
+}
+```
+
+
+3. 인터페이스 기본 값 nil
+
+```go
+package main
+
+type Attacker interface {
+	Attack()
+}
+
+func main() {
+	var att Attacker // 인터페이스 기본값은 nil입니다.
+	att.Attack()     // att가 nil이기 때문에 런타임 에러가 발생합니다.
+}
+```
+
+
+
+- 인터페이스 변환 하기
+
+1. 구체화된 다른 타입으로 타입 변환
+  - 인터페이스를 본래의 구체화된 타입으로 복원할 때
+  - 인터페이스 변수 a 를 ConcreteType 타입으로 변환하여, ConcreteType 변수 t 생성하여 대입
+
+```go
+var a Interface
+t := a.(ConcreteType)
+```
+
+```go
+package main
+import "fmt"
+
+type Stringer interface {
+  String() string
+}
+
+// Student 구조체가  Stringer 인터페이스 구현
+//    String()메소드 정의되어 있기 때문
+type Student struct {
+  Age int
+}
+
+func (s *Student) String() string {
+  return fmt.Sprintf("학생 나이는: %d\n", s.Age)
+}
+
+// 인터페이스 -> 구현체 타입으로 변환
+// Stringer -> *Student
+func PrintAge(stringer Stringer) {
+  // 특정 구현체 타입으로 변환
+  // PrintAge의 매개변수로 어떤 타입이 들어온지 알수 없기 때문에 
+  s := stringer.(*Student)
+  fmt.Printf("Age: %d\n", s.Age)
+  // fmt.Println(stringer.String())
+}
+
+func main() {
+  s := &Student{100}
+  PrintAge(s)
+}
+```
+
+- 컴파일 에러
+  - 인터페이스 변수를 구체화된 타입으로 변환 하려면
+  - 해당 타입이 인터페이스 메서드 집합을 포함하고 있어야함, 그렇지 않은 경우 컴파일 에러
+
+```go
+type Stringer interface {
+  String() string
+}
+
+type Student struct {
+}
+
+func main() {
+  var Stringer stringer
+  stringer.(*Student) // 컴파일 에러
+}
+
+```
+
+
+- 런타임 에러
+  - go build는 되지만, 실행 중 에러 발생
+
+```go
+package main
+import "fmt"
+
+type Stringer interface {
+  String() string
+}
+
+type Student struct {
+}
+
+func (s *Student) String() string {
+  return "Student"
+}
+
+type Actor struct {
+}
+
+func (a *Actor) String() string {
+  return "Actor"
+}
+
+func ConvertType(stringer Stringer) {
+  student := stringer.(*Student)
+  fmt.Println(student)
+}
+
+func main() {
+  actor := &Actor{}
+
+  // 런타임 에러:
+  // Actor -> Student 타입 에러!!!
+  //  panic: interface conversion: main.Stringer is *main.Actor, not *main.Student
+  ConvertType(actor)
+}
+```
+
+2. 다른 인터페이스로 변환
+  - 구체화된 타입 뿐아니라, 다른 인터페이스로도 변환 가능
+  - `AInterface -> ConcreteType <- AInterface`
+
+```go
+var AInterface = ConcreteType{}
+b := a.(BInterface)
+```
+
+
+```go
+package main
+import "fmt"
+
+func main() {
+}
+```
+
+- 타입 변환 성공 여부 반환
 
 ### 21.함수고급편
 
@@ -1755,5 +2108,7 @@ func main() {
 
 
 ```go
-
+package main
+import "fmt"
 ```
+
