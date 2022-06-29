@@ -2269,6 +2269,7 @@ func getOperator(op string) opFunc {
 }
 
 func main() {
+  // var opFnc func(int,int) int = getOperator("*")
   opFnc := getOperator("*")
 
   res := opFnc(2, 9)
