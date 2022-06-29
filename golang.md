@@ -2094,30 +2094,198 @@ type Closer interface {
   Close()
 }
 
-func main() {
+type struct File {
+}
 
+func (*f File) Read() {
+}
+
+func ReadFile(reader Reader) {
+  c := reader.(Closer)
+  // ERROR! 발생!
+  // reader 인터페이스변수는 File타입을 가리키고 있고,
+  // File 타입은 Close() 메서드를 포함하고 있지 않기 때문에 에러발생
+  c.Close()
+}
+
+func main() {
+  file := &File{}
+
+  // ERROR!
+  ReadFile(file)
 }
 ```
 
 - 타입 변환 성공 여부 반환
 
+```go
+package main
+import (
+  "fmt"
+  "os"
+)
+
+type Reader interface {
+  Read()
+}
+
+type Closer interface {
+  Close()
+}
+
+type File struct {
+}
+
+func (f *File) Read() {
+}
+
+func ReadFile(reader Reader {
+  if c, ok := reader.(Closer); ok {
+    c.Close()
+  }
+}
+
+func main() {
+  f := &File{}
+  ReadFile(f)
+}
+```
+
+
 ### 21.함수고급편
 
-- `...` 키워드 사용
-- `defer` 지연 실행
-- 함수타입 변수
-  - 함수시작 지점을 가리키는 프로그램 카운터 있음 e.g. 1번라인, 2번라인...
-  - 함수시작 지점은 숫자로 표현되며, 가리키는 값을 함수포인터라고 함
-  - 함수타입은 함수정의로 표현 e.g. `func (int, int) int`
-  - 함수 alias 지정가능 `type opFunc func (int, int) int`
-  - 함수리터럴 (익명함수, lambda)
-    - 함수리터럴 외부변수를 자동으로 리터럴 함수 내부상태로 가져와 저장 ('capture') : 값복사가 아닌 참조형태로 가져옴
-
-### 24.고루틴과 동시성 프로그래밍
+- 매개변수 `...` 키워드 사용
 
 
 ```go
 package main
 import "fmt"
+
+func sum(nums ...int) int {
+  sum := 0
+
+  fmt.Printf("nums 타입: %T\n", nums)
+  for _,v := range nums {
+    sum += v
+  }
+  return sum
+}
+
+func PrintT(args ...interface{}) {
+  for _,arg := range args {
+    switch f := arg.(type) {
+      case int:
+        val := arg.(int)
+        fmt.Println(val, int(f))
+        fmt.Println(val == int(f))
+        // Print로직
+      case float64:
+        val := arg.(float64)
+        fmt.Println(val == float64(f))
+      case string:
+        val := arg.(string)
+        fmt.Println(val == string(f))
+    }
+  }
+}
+
+func main() {
+  fmt.Println(sum(1,2,3,4,5))
+  fmt.Println(sum(10,20))
+  fmt.Println(sum())
+
+  PrintT(1,3.14, "abc")
+
+}
+
+```
+
+
+- `defer` 지연 실행
+
+- 함수타입 변수
+  - 함수 시작지점을 가리키는 프로그램 카운터 있음 e.g. 1번라인, 2번라인...
+  - 함수 시작지점은 숫자로 표현되며, 가리키는 값을 함수포인터라고 함
+  - 함수 타입은 함수정의로 표현 e.g. `func (int, int) int`
+  - 함수 alias 지정가능 `type opFunc func (int, int) int`
+  - 함수리터럴 (익명함수, lambda)
+    - 함수리터럴 외부변수를 자동으로 리터럴 함수 내부상태로 가져와 저장 ('capture') : 값복사가 아닌 참조형태로 가져옴
+
+```go
+package main
+import (
+  "fmt"
+  "os"
+)
+
+func main() {
+  f,err := os.Create("test.txt")
+  if err != nil {
+    fmt.Println("Failed to Create a file")
+    return
+  }
+
+  defer fmt.Println("반드시 호출됩니다.") //4
+  defer f.Close() //3
+  defer fmt.Println("파일을 닫았습니다.") //2
+
+
+  fmt.Println("파일에 Hello World를 씁니다.") // 1
+  fmt.Fprintln(f, "Hello World!")
+}
+
+
+// 1->2->3->4
+// 파일에 Hello World를 씁니다.
+// 파일을 닫았습니다.
+// 반드시 호출됩니다.
+```
+
+- 함수 타입 변수
+
+```go
+package main
+
+import "fmt"
+
+func add(a, b int) int {
+  return a + b
+}
+
+func mul(a, b int) int {
+  return a * b
+}
+
+type opFunc func(int, int) int
+
+func getOperator(op string) opFunc {
+  if op == "+" {
+    return add
+  } else if op == "*" {
+    return mul
+  } else {
+    return nil
+  }
+}
+
+func main() {
+  opFnc := getOperator("*")
+
+  res := opFnc(2, 9)
+  fmt.Println("2*9 = ", res)
+}
+
+```
+
+
+
+### 24.고루틴과 동시성 프로그래밍
+
+```go
+package main
+import "fmt"
+
+func main() {
+}
 ```
 
