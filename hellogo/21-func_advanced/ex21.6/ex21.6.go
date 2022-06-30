@@ -51,5 +51,4 @@ func main() {
 
 	// 1 2 3
   CaptureLoop2()
-
 }

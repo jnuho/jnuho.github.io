@@ -2391,7 +2391,7 @@ func main() {
 ```
 
 
-- 파일핸들을 내부 상태로 사용하는 예
+- 파일 핸들을 내부 상태로 사용하는 예
 
 ```go
 package main
@@ -2424,16 +2424,122 @@ func main() {
 
 ### 22.자료구조
 
-
 - 리스트
+
+```go
+type Element struct {
+  Value interface{}
+  Next *Element
+  Prev *Element
+}
+```
+
+```go
+package main
+import (
+  "container/list"
+  "fmt"
+)
+
+func main() {
+  // PushBack, PushFront returns Pointer to newly insertedElement
+  // 1 4
+  //    1 <- e1
+  //    4 <- e4
+  v := list.New()
+  e4 := v.PushBack(4)
+  e1 := v.PushFront(1)
+
+  v.InsertBefore(3, e4)
+  v.InsertAfter(2, e1)
+
+  for e := v.Front(); e != nil; e= e.Next() {
+    fmt.Print(e.Value, " ")
+  }
+  fmt.Println()
+
+  // 역순
+  for e := v.Back(); e != nil; e = e.Prev() {
+    fmt.Print(e.Value, " ")
+  }
+}
+```
+
+- 배열,슬라이스 vs. 리스트
+  - 요소삽입 : O(N) vs. O(1)
+  - 요소삭제 : O(N) vs. O(N)
+  - 요소접근 : O(1) vs. O(N)
+    - 배열시작주소 + (인덱스*타입크기)
+
+- 큐
+  - First In First Out
 
 ```go
 package main
 import "fmt"
 
 func main() {
-  v := list.New()
-  v.Push
+
+}
+```
+
+
+- 스택
+  - First In Last Out
+
+```go
+package main
+import (
+  "fmt"
+  "container/list"
+)
+
+type Queue struct {
+  v *list.List
+}
+
+func (q *Queue) Push(val interface{}) {
+  q.v.PushBack(val)
+}
+
+func (q *Queue) Pop(val interface{}) {
+  front := 
+
+}
+
+func NewQueue() *Queue {
+  return &Queue{ list.New() }
+}
+
+func main() {
+}
+```
+
+- 링
+
+- 맵
+
+
+### 23.에러핸들링
+
+```go
+package main
+import (
+  "fmt"
+  "os"
+  "bufio"
+)
+
+func ReadFile() {
+
+}
+
+func WriteFile() {
+
+}
+
+func main() {
+
 }
 ```
 
@@ -2443,6 +2549,38 @@ func main() {
 package main
 import "fmt"
 func main() {
+
 }
 ```
 
+### 25.채널과 컨텍스트
+
+- 채널 사용하기
+
+```go
+
+```
+
+
+### 26.단어검색 프로그램 만들기
+
+
+### 27.객체지향원칙 SOLID
+
+
+### 28.테스트와 벤치마크
+
+
+
+
+### 29.Go언어로 만드는 웹서버
+
+### 30.Restful API 서버 만들기
+
+
+### 31.TODO리스트 웹사이트 만들기
+
+
+### A.Go문법 보충
+
+### B.생각하는 프로그래밍
