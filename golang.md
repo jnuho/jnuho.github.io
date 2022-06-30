@@ -2278,14 +2278,170 @@ func main() {
 
 ```
 
+- 함수 리터럴
+  - 다른 언어 에서는 lambda(익명 함수)
 
+```go
+package main
+import "fmt"
+
+func getOperator(operator string) func(int, int) int {
+  if operator == "*" {
+    return func(a, b int) int {
+      return a * b
+    }
+  } else if operator == "+" {
+    return func(a, b int) int {
+      return a + b
+    }
+  } else {
+    return nil
+  }
+}
+
+func main() {
+  fn := getOperator("*")
+  a, b := 3,4
+  fmt.Printf("%d x %d = %d\n", a,b, fn(a,b))
+}
+```
+
+
+- 함수리터럴 내부 상태
+  - 함수 내부에서 사용 되는 외부 변수는 자동으로 함수 내부 상태로 저장 됨
+
+```go
+package main
+import "fmt"
+func main() {
+  i := 0
+
+  // 함수
+  f := func() {
+    i += 10
+  }
+
+  i++
+  f()
+  fmt.Println(i)
+}
+```
+
+
+- 함수 리터럴 내부상태 주의점
+  - 캡쳐: 함수 리터럴 외부 변수를 내부로 가져옴
+  - 다만 캡쳐는 복사가 아닌 참조 형태로 가져옴
+
+
+
+```go
+package main
+import "fmt"
+
+func CaptureLoop() {
+  // make slice of functions with length 3
+  f := make([]func(), 3)
+  fmt.Println("CaptureLoop")
+
+	// i 가 복사되는것이 아닌 참조되기 떄문에
+  for i :=0; i< len(f); i++ {
+    f[i] = func() {
+			// 캡쳐할 떄 캡쳐하는 순간의 i값(1,2,3)이
+			// 복제 되는 것이 아니라, 변수가 참조로 캡쳐되므로
+			// i가 최종적으로 3이 되었을떄
+			// i를 참조하는 f[0], f[1], f[2]는 모두 i=3를 참조하게 됨
+      fmt.Println(i)
+    }
+  }
+
+  for i :=0; i< len(f); i++ {
+		f[i]()
+	}
+}
+
+
+func CaptureLoop2() {
+  // make slice of functions with length 3
+  f := make([]func(), 3)
+  fmt.Println("CaptureLoop2")
+
+	// i 가 복사되는것이 아닌 참조되기 떄문에
+  for i :=0; i< len(f); i++ {
+		v := i
+    f[i] = func() {
+			// 캡쳐할 떄 캡쳐하는 순간의 i값(1,2,3)이
+			// 복제 되는 것이 아니라, 변수가 참조로 캡쳐되므로
+			// i가 최종적으로 3이 되었을떄
+			// i를 참조하는 f[0], f[1], f[2]는 모두 i=3를 참조하게 됨
+      fmt.Println(v)
+    }
+  }
+
+  for i :=0; i< len(f); i++ {
+		f[i]()
+	}
+}
+
+func main() {
+	// 3 3 3
+  CaptureLoop()
+	// 1 2 3
+  CaptureLoop2()
+}
+```
+
+
+- 파일핸들을 내부 상태로 사용하는 예
+
+```go
+package main
+import (
+  "os"
+  "fmt"
+)
+
+type Writer func(string)
+
+func writeHello(writer Writer) {
+  writer("Hello World")
+}
+
+func main() {
+  f, err := os.Create("test.txt")
+  if err != nil {
+    fmt.Println("Failed to create a file")
+    return
+  }
+
+  defer f.Close()
+
+  writeHello(func (msg string) {
+    // 함수리터럴 외부 변수 f사용
+    fmt.Fprintf(f, msg)
+  })
+}
+```
+
+### 22.자료구조
+
+
+- 리스트
+
+```go
+package main
+import "fmt"
+
+func main() {
+  v := list.New()
+  v.Push
+}
+```
 
 ### 24.고루틴과 동시성 프로그래밍
 
 ```go
 package main
 import "fmt"
-
 func main() {
 }
 ```
