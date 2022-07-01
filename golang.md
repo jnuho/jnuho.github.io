@@ -2425,6 +2425,7 @@ func main() {
 ### 22.자료구조
 
 - 리스트
+  - 리스트 구현하는 구조체 코드
 
 ```go
 type Element struct {
@@ -2433,6 +2434,8 @@ type Element struct {
   Prev *Element
 }
 ```
+
+- 리스트 기본 사용법
 
 ```go
 package main
@@ -2476,10 +2479,50 @@ func main() {
 
 ```go
 package main
-import "fmt"
+
+import (
+  "fmt"
+  "container/list"
+)
+
+// list.List : 링크드리스트
+//    .PushBack(n)
+//    .Front()
+//        front = .Front()
+//    .Remove(front)
+type Queue struct {
+	v *list.List
+}
+
+func (q *Queue) Push(val interface{}) {
+	q.v.PushBack(val)
+}
+
+func (q *Queue) Pop() interface{} {
+	front := q.v.Front()
+	if front != nil {
+		return q.v.Remove(front)
+	}
+	return nil
+}
+
+func NewQueu() *Queue {
+	return &Queue{ list.New()}
+}
 
 func main() {
+	queue := NewQueue()
 
+	for i :=1; i<=4; i++ {
+		queue.Push(i)
+	}
+
+	v := queue.Pop()
+	for v != nil {
+		fmt.Print(v, " ")
+		v = queue.Pop()
+	}
+	fmt.Println()
 }
 ```
 
@@ -2489,67 +2532,229 @@ func main() {
 
 ```go
 package main
+
 import (
   "fmt"
   "container/list"
 )
 
-type Queue struct {
+type Stack struct {
   v *list.List
 }
 
-func (q *Queue) Push(val interface{}) {
-  q.v.PushBack(val)
+func (s *Stack) Push(val interface{}) {
+  s.v.PushBack(val)
 }
 
-func (q *Queue) Pop(val interface{}) {
-  front := 
-
+func (s *Stack) Pop() interface{} {
+  back := s.v.Back()
+  if back !=nil {
+    return s.v.Remove(back)
+  }
+  return nil
 }
 
-func NewQueue() *Queue {
-  return &Queue{ list.New() }
+func NewStack() *Stack {
+  return &Stack{ list.New() }
 }
 
 func main() {
+  stack := NewStack()
+  for i:=1; i<=4; i++ {
+    stack.Push(i)
+  }
+
+  val := stack.Pop()
+  for val != nil {
+    fmt.Print(val , " ")
+    val = stack.Pop()
+  }
 }
 ```
 
 - 링
 
-- 맵
-
-
-### 23.에러핸들링
 
 ```go
 package main
+
+import (
+  "fmt"
+  "container/ring"
+)
+
+func main() {
+  r := ring.New(5)
+  n := r.Len()
+
+  for i:=0; i< n; i++ {
+    r.Value = 'a' + i
+    r = r.Next()
+  }
+
+  for i :=0; i<n; i++ {
+    fmt.Printf("%c", r.Value)
+    r = r.Next()
+  }
+  fmt.Println()
+
+  for i :=0; i<n; i++ {
+    fmt.Printf("%c", r.Value)
+    r = r.Prev()
+  }
+}
+```
+
+- 맵
+  - 같은입력이 들어오면 같은값이 나옴
+  - 입력범위는 무한, 결과는 특정범위
+
+```go
+package main
+import "fmt"
+
+func main() {
+  m := make(map[string]string)
+  m["이하나"] = "A100"
+  m["송하나"] = "A101"
+  m["박하나"] = "A102"
+  m["최하나"] = "A103"
+
+  s := "송하나"
+  fmt.Print(s, ": ")
+  fmt.Println(m[s])
+}
+```
+
+- 요소 삭제와 없는 요소 확인
+
+```go
+package main
+import "fmt"
+func main() {
+  m := make(map[int]int)
+  m[1] = 0
+  m[2] = 1
+  m[3] = 2
+
+  // delete(맵, key값)
+  delete(m, 3)
+  delete(m, 4) // 없는요소 삭제시도
+
+  v, ok := m[3]
+  fmt.Println(v, ok) // 삭제된 요소값 출력
+
+  v, ok = m[1]
+  fmt.Println(v, ok) // 존재하는 요소값 출력
+
+
+  // 맵 순환하기
+  for k, v := range m {
+    fmt.Printf("Key: %d, Value: %d\n", k, v)
+  }
+}
+```
+
+- 배열,슬라이스 vs. 리스트 vs. 맵
+  - 삽입 : O(N) vs. O(1) vs. O(1)
+  - 삭제 : O(N) vs. O(N) vs. O(1)
+  - 접근 : O(1) vs. O(N) vs. O(1) 키로 접근
+    - 배열시작주소 + (인덱스*타입크기)
+
+- 맵의 원리 - 해시함수
+  1. 같은 입력 -> 같은 결과
+  2. 다른 입력 -> 다른 결과
+  3. 입력값의 범위는 무한대, 결과는 특정 범위
+    - 배열로 구현시 같은 해시값(인덱스)에 1개의 값만 맵핑
+    - 이 문제는 배열안에 리스트 저장하여 해결가능
+    - m[hash(23)] m[hash(33)] 해시충돌
+
+
+- 해시로 맵 만들기
+
+```go
+const M = 10
+func hash(d int) int {
+  return d % M
+}
+```
+
+
+```go
+var m [M]int
+m[hash(23)] = 10
+```
+
+```go
+package main
+import "fmt"
+
+const M = 10
+
+func hash(d int) int {
+  return d % M
+}
+
+func main() {
+  m := [M]int{}
+  m[hash(23)] = 10
+  m[hash(259)] = 50
+  fmt.Printf("m[hash(23)] = %d\n", m[hash(23)])
+  fmt.Printf("m[hash(259)] = %d\n", m[hash(259)])
+}
+```
+
+### 23.에러 핸들링
+
+```go
+package main
+
 import (
   "fmt"
   "os"
   "bufio"
 )
 
-func ReadFile() {
+func ReadFile(filename string) (string, error) {
+  file, err := os.Open(filename)
+  if err != nil {
+    return "", err
+  }
 
+  defer file.Close()
+
+  rd := bufio.NewReader(file)
+  line, _ := rd.ReadString('\n')
+  return line, nil
 }
 
-func WriteFile() {
-
+func WriteFile(filename string, line string) error {
 }
 
 func main() {
-
 }
 ```
 
 ### 24.고루틴과 동시성 프로그래밍
 
+- 스레드란?
+  - 고루틴: 경량 스레드로 함수나 명령을 동시에 실행 시 사용
+  - CPU는 하나의 스레드 실행가능, 여러개 스레드를 번갈아가면서 수행하여 동시실행 처럼 보임
+
+- 컨텍스트 스위칭 비용
+  - 한번에 여러개 일 수행 시 스레드는 컨텍스트를 통해 저장 (명령 포인터, 스택메모리 등 저장)
+  - 컨텍스트 저장 및 복원 시 비용 발생
+  - Go언어는 한개의 CPU 코어당 하나의 OS스레드 할당 하므로 컨텍스트 비용 발생 없음
+
+
+- 고루틴 사용
+  - 모든 프로그램은 main()을 고루틴으로 하나 가지고 있음
+  - `go 함수호출`로 고루틴 추가 가능
+
 ```go
 package main
 import "fmt"
 func main() {
-
 }
 ```
 
@@ -2561,26 +2766,19 @@ func main() {
 
 ```
 
-
 ### 26.단어검색 프로그램 만들기
-
 
 ### 27.객체지향원칙 SOLID
 
-
-### 28.테스트와 벤치마크
-
-
-
+.테스트와 벤치마크
 
 ### 29.Go언어로 만드는 웹서버
 
 ### 30.Restful API 서버 만들기
 
-
 ### 31.TODO리스트 웹사이트 만들기
-
 
 ### A.Go문법 보충
 
 ### B.생각하는 프로그래밍
+
