@@ -2435,6 +2435,33 @@ type Element struct {
 }
 ```
 
+- 리스트 라이브러리
+
+```go
+// Element
+func (e *Element) Next() *Element
+func (e *Element) Prev() *Element
+
+// List
+// Package list implements a doubly linked list.
+func New() *List
+func (l *List) Back() *Element
+func (l *List) Front() *Element
+func (l *List) Init() *List
+func (l *List) InsertAfter(v any, mark *Element) *Element
+func (l *List) InsertBefore(v any, mark *Element) *Element
+func (l *List) Len() int
+func (l *List) MoveAfter(e, mark *Element)
+func (l *List) MoveBefore(e, mark *Element)
+func (l *List) MoveToBack(e *Element)
+func (l *List) MoveToFront(e *Element)
+func (l *List) PushBack(v any) *Element
+func (l *List) PushBackList(other *List)
+func (l *List) PushFront(v any) *Element
+func (l *List) PushFrontList(other *List)
+func (l *List) Remove(e *Element) any
+```
+
 - 리스트 기본 사용법
 
 ```go
@@ -2506,7 +2533,7 @@ func (q *Queue) Pop() interface{} {
 	return nil
 }
 
-func NewQueu() *Queue {
+func NewQueue() *Queue {
 	return &Queue{ list.New()}
 }
 
@@ -2525,7 +2552,6 @@ func main() {
 	fmt.Println()
 }
 ```
-
 
 - 스택
   - First In Last Out
@@ -2574,6 +2600,16 @@ func main() {
 
 - 링
 
+```go
+func New(n int) *Ring
+func (r *Ring) Do(f func(any))
+func (r *Ring) Len() int
+func (r *Ring) Link(s *Ring) *Ring
+func (r *Ring) Move(n int) *Ring
+func (r *Ring) Next() *Ring
+func (r *Ring) Prev() *Ring
+func (r *Ring) Unlink(n int) *Ring
+```
 
 ```go
 package main
@@ -2666,24 +2702,27 @@ func main() {
   2. 다른 입력 -> 다른 결과
   3. 입력값의 범위는 무한대, 결과는 특정 범위
     - 배열로 구현시 같은 해시값(인덱스)에 1개의 값만 맵핑
-    - 이 문제는 배열안에 리스트 저장하여 해결가능
     - m[hash(23)] m[hash(33)] 해시충돌
+      - 이 문제는 배열안에 리스트 저장하여 해결가능
+    - 해시함수는 요소개수와 상관없이 고정된 시간을 갖는 함수이므로 맵이 읽기,쓰기에서 O(1)의 시간
 
 
 - 해시로 맵 만들기
 
 ```go
 const M = 10
+
 func hash(d int) int {
   return d % M
 }
+
+func main() {
+  var m [M]int
+  
+  m[hash(23)] = 10
+}
 ```
 
-
-```go
-var m [M]int
-m[hash(23)] = 10
-```
 
 ```go
 package main
@@ -2698,11 +2737,13 @@ func hash(d int) int {
 func main() {
   m := [M]int{}
   m[hash(23)] = 10
+  m[hash(33)] = 10 // 덮어 씌워짐 (해시충돌)
   m[hash(259)] = 50
   fmt.Printf("m[hash(23)] = %d\n", m[hash(23)])
   fmt.Printf("m[hash(259)] = %d\n", m[hash(259)])
 }
 ```
+
 
 ### 23.에러 핸들링
 
@@ -2738,7 +2779,10 @@ func main() {
 ### 24.고루틴과 동시성 프로그래밍
 
 - 스레드란?
-  - 고루틴: 경량 스레드로 함수나 명령을 동시에 실행 시 사용
+  - 고루틴: 경량 스레드로 함수나 명령을 동시에 실행 시 사용. main()도 고루틴에 의해 실행 됨
+  - 프로세스 1개(싱글테스킹) vs 멀티프로세스 (멀티태스킹).
+  - 프로세스 : 메모리 공간에 로딩되어 동작하는 프로그램. 1개 이상의 스레드를 가지고 있음
+    - 스레드는 프로세스의 세부작업 단위 또는 실행 흐름. 1개, 2개, 멀티 스레드 있을 수 있음
   - CPU는 하나의 스레드 실행가능, 여러개 스레드를 번갈아가면서 수행하여 동시실행 처럼 보임
 
 - 컨텍스트 스위칭 비용
@@ -2746,16 +2790,92 @@ func main() {
   - 컨텍스트 저장 및 복원 시 비용 발생
   - Go언어는 한개의 CPU 코어당 하나의 OS스레드 할당 하므로 컨텍스트 비용 발생 없음
 
-
 - 고루틴 사용
   - 모든 프로그램은 main()을 고루틴으로 하나 가지고 있음
-  - `go 함수호출`로 고루틴 추가 가능
+  - `go 함수호출`로 새로운 고루틴 추가 가능. 현재 고루틴이 아닌 새로운 고루틴에서 함수가 수행 됨
+
+
 
 ```go
 package main
-import "fmt"
-func main() {
+
+import (
+  "fmt"
+  "time"
+)
+
+func PrintHangul() {
+  hanguls := []rune{'가','나','다','라','마','바', '사'}
+  for _, v := range hanguls {
+    time.Sleep(300 * time.Millisecond)
+    fmt.Printf("%c", v)
+  }
 }
+func PrintNumbers(){
+  for i:=1; i<=5; i++ {
+    time.Sleep(400 * time.Millisecond)
+    fmt.Printf("%d ", i)
+  }
+}
+
+
+func main() {
+  // PrintHangul, PrintNumbers가 동시에 실행
+  go PrintHangul()
+  go PrintNumbers()
+
+  // 기다리지 않으면 메인함수 종료되고 모든 고루틴도 종료되기 때문에 대기시간 지정
+  // 하지만 3초 라는 시간처럼 항상 시간을 계산할 필요는 없음
+  //  -> sync패키지 WaitGroup 객체 사용!
+  time.Sleep(3*time.Second)
+}
+```
+
+- 모든 고루틴 작업 완료할때 까지 대기
+  - 항상 고루틴의 종료시간에 맞춰 time.Sleep(종료까지걸리는시간) 호출할 수 없음
+
+```go
+// sync.WaitGroup 객체 사용
+var wg sync.WaitGroup
+
+// Add()로 완료해야 하는 작업개수 설정하고, 각 작업이 완료 될때마다 Done() 호출하여
+// 남은 작업개수를 하나씩 중여줌. Wait()은 전체 작업이 모두 완료될때까지 대기하기 됨
+wg.Add(3)   // 작업개수 설정
+wg.Done()   // 작업이 완료될 때마다 호출
+wg.Wait()   // 모든 작업이 완료될 때까지 대기
+```
+
+
+```go
+package main
+
+import (
+  "sync"
+  "fmt"
+)
+
+var wg sync.WaitGroup
+
+func SumAtoB(a, b int) {
+  sum := 0
+  for i:=a; i<=b; i++ {
+    sum += i
+  }
+  fmt.Printf("%d부터 %d까지 합계는 %d입니다.\n", a,b,sum)
+  wg.Done() // wg의 남은 작업개수를 1씩 감소시킴
+}
+
+func main() {
+  wg.Add(10) // 총 작업개수 설정
+
+  for i:=0; i<10; i++ {
+    go SumAtoB(1, 1000000)
+  }
+
+  wg.Wait() // 모든 작업이 완료 될때까지 (남은작업개수 = 0) 종료하지 않고 대기
+  fmt.Println("모든 계산이 완료됐습니다.")
+}
+
 ```
 
 ### 25.채널과 컨텍스트
