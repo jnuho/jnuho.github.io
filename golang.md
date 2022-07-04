@@ -2880,10 +2880,54 @@ func main() {
 - 고루틴의 동작방법
   - 고루틴은 OS 스레드를 이용하는 경량 스레드
   - 2코어 시스템, 고루틴 3개일때 작업끝날때 까지 대기 후 끝난 1코어에 고루틴_3 배정됨
+  - 시스템 콜 호출 시 (고루틴으로 시스템콜 호출시; e.g. 네트워크로 데이터 읽을 때 데이터 들어올때 까지 고루틴이 대기상태 됨), 
+    - 네트워크 수신 대기상태인 고루틴이 대기목록으로 빠지고, 대기중이던 다른 고루틴이 OS 스레드를 이용하여 실행 됨
+    - 코어와 스레드 변경(컨텍스트 스위칭) 없이 고루틴이 옮겨다니기 때문에 효율적
 
 
 - 동시성 프로그래밍 주의점
+  - 하나의 자원의 여러개 고루틴 접근!
 
+```go
+package main
+import (
+  "fmt"
+  "sync"
+  "time"
+)
+
+type Account struct {
+  Balance int
+}
+
+func DepositAndWithdraw(account *Account) {
+  if account.Balance < 0 {
+    panic(fmt.Sprintf("Balance should not be negative value: %d", account.Balance))
+  }
+  account.Balance += 1000
+  time.Sleep(time.Millisecond)
+  account.Balance -= 1000
+}
+
+func main() {
+  var wg sync.WaitGroup
+
+  account := &Account{0}
+  wg.Add(10)
+
+  for i:=0; i< 10; i++ {
+    go func() {
+      for {
+        DepositAndWithdraw(account)
+      }
+      wg.Done()
+    }()
+  }
+
+  wg.Wait()
+}
+
+```
 
 - 뮤텍스를 이용한 동시성 문제 해결
 
