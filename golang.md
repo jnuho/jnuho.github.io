@@ -2926,40 +2926,237 @@ func main() {
 
   wg.Wait()
 }
-
 ```
 
 - 뮤텍스를 이용한 동시성 문제 해결
 
+```go
+package main
+
+import (
+  "fmt"
+  "sync"
+  "time"
+)
+
+var mutex sync.Mutex
+
+type Account struct {
+  Balance int
+}
+
+func DepositAndWithdraw(account *Account) {
+  mutex.Lock()
+  defer mutex.Unlock()
+
+  if account.Balance < 0 {
+    panic(fmt.Sprint("Balance cannot be negative: %d", account.Balance))
+  }
+
+  account.Balance += 1000
+  time.Sleep(time.Millisecond)
+  account.Balance -= 1000
+}
+
+
+func main() {
+  var wg sync.WaitGroup
+
+  account := &Account{0}
+  wg.Add(10)
+  for i:=0; i< 10; i++ {
+    go func() {
+      for {
+        DepositAndWithdraw(account)
+      }
+      wg.Done()
+    }()
+  }
+  wg.Wait()
+  
+}
+```
 
 - 뮤텍스와 데드락
+  - 멀티코어 환경에서는 여러 고루틴으로 성능 향상 가능
+  - 같은메모리 접근시 꼬일 수 있음
+  - 뮤텍스로 고루틴 하나만 접근하도록 하여 꼬이는 문제 해결 가능
+  - 하지만, 뮤텍스를 잘못 사용하면 성능향상 없이 데드락 발생가능
+    - 뮤텍스 사용시 좁은 범위에서 사용하여 데드락 발생 방지
+    - 또는 둘다 수저-> 포크 순서로 뮤텍스 락 사용하면 해결 가능
 
+```go
+package main
+import (
+  "fmt"
+  "math/rand"
+  "sync"
+  "time"
+)
+
+var wg sync.WaitGroup
+
+func diningProblem(
+  name string
+  , first, second *sync.Mutex,
+  , firstName, secondName string) {
+
+  for i:= 0; i<100; i++ {
+    fmt.Printf("%s 밥을 먹으로 합니다.\n", name)
+    first.Lock()
+    fmt.Printf("%s %s 획득\n", name, fisrtName)
+    second.Lock()
+    fmt.Printf("%s %s 획득\n", name, secondName)
+    fmt.Printf("%s 밥을 먹습니다.\n", name)
+  
+    time.Sleep(time.Duration(rand.Intn(1000))* time.Millisecond)
+  
+    second.Unlock()
+    first.Unlock()
+  }
+
+  wg.Done()
+}
+
+func main() {
+  rand.Seed(time.Now().UnixNano())
+
+  wg.Add(2)
+  fork := &sync.Mutex{}
+  spoon := &sync.Mutex{}
+
+  go diningProblem("A", fork, spoon, "포크", "수저")
+  go diningProblem("B", spoon, fork, "수저", "포크")
+
+  wg.Wait()
+}
+
+```
 
 - 또 다른 자원 관리 기법
+  - 영역을 나누는 방법
+  - 역할을 나누는 방법
 
+```go
+package main
+import (
+  "fmt"
+  "sync"
+  "time"
+)
 
+type Job interface {
+  Do()
+}
+
+type SquareJob struct {
+  index int
+}
+
+func (j *SquareJob) Do() {
+  fmt.Printf("%d 작업 시작\n", j.index)
+  time.Sleep(1 * time.Second)
+  fmt.Printf("%d 작업 완료 - 작업결괴: %d\n", j.index, j.index * j.index)
+}
+
+func main() {
+  jobList := [10]Job
+
+  for i:=0 ; i< len(jobList); i++ {
+    jobList[i] = &SquareJob{i}
+  }
+
+  var wg sync.WaitGroup
+  wg.Add(10)
+
+  for i:=0; i<10; i++ {
+    job := jobList[i]
+    go func() {
+      job.Do()
+      wg.Done()
+    }
+  }
+  wg.Wait()
+}
+```
 
 ### 25.채널과 컨텍스트
 
+
+- 채널: 고루틴끼리 메시지를 전달 할 수 있는 메시지 큐
+  - 메시지큐에 메시지가 쌓이게 되고 메시지를 읽을 때는 처음온 메시지부터 차례대로 읽음
+
 - 채널 인스턴스 생성
+
+```go
+// 채널타입: chan string
+//    chan: 채널키워드
+//    string: 메시지 타입
+var messages chan string = make(chan string)
+```
+
 
 - 채널에 데이터 넣기
 
+```go
+var messages chan string = make(chan string)
+messages <- "This is a message"
+```
+
 - 채널에서 데이터 빼기
+
+```go
+// 채널에서 빼낸 데이터를 담을 변수
+// 채널 messages에 데이터가 없으면 데이터가 들어올떄까지 대기함
+var msg string = <- messages
+```
+
+```go
+package main
+import (
+  "fmt"
+  "sync"
+  "time"
+)
+
+func square(wg *sync.WaitGroup, ch chan int) {
+  // 데이터를 빼온다
+  n := <- ch
+
+  time.Sleep(time.Second)
+  fmt.Printf("Square: %d\n", n*n)
+
+  wg.Done()
+}
+
+func main() {
+  var wg sync.WaitGroup
+  ch := make(chan int)
+
+  wg.Add(1)
+  go square(&wg, ch)
+  ch <- 9
+  wg.Wait()
+}
+```
 
 - 채널 크기
 
-
-
 ```go
+package main
+import (
 
+)
+func main() {
+
+}
 ```
 
 ### 26.단어검색 프로그램 만들기
 
 ### 27.객체지향원칙 SOLID
 
-.테스트와 벤치마크
+### 28.테스트와 벤치마크
 
 ### 29.Go언어로 만드는 웹서버
 
