@@ -3121,6 +3121,7 @@ import (
 
 func square(wg *sync.WaitGroup, ch chan int) {
   // 데이터를 빼온다
+  // 데이터 들어올때까지 대기
   n := <- ch
 
   time.Sleep(time.Second)
@@ -3136,35 +3137,152 @@ func main() {
   wg.Add(1)
   go square(&wg, ch)
   ch <- 9
+
+  // square내에서 채널 데이터 빼고 wg.Done() 완료 될떄까지 대기
   wg.Wait()
 }
 ```
 
+
 - 채널 크기
+  - 기본 채널크기 0
+  - 채널 만들때 버퍼 크기 설정 가능
 
 ```go
 package main
+
 import (
-
+  "fmt"
 )
-func main() {
 
+func main() {
+  ch := make(chan int)
+  // 채널에 데이터 넣을떄 기본사이즈 0이기 때문에
+  // 보관할 수 없으므로 채널에서 데이터 빼는 코드가 있어야 진행가능!
+  // 데드락 발생! 택배 보관장소 없으면 문앞에서 기다려야 함
+  // 데이터 보관할 수 있는 메모리영역: 버퍼
+  ch <- 9
+  fmt.Println("Never print")
+}
+```
+
+- 버퍼 가진 채널
+  `var chan string messages = make(chan string, 2)`
+
+- 채널에서 데이터 대기
+
+```go
+package main
+
+import (
+  "fmt"
+  "sync"
+  "time"
+)
+
+func square(wg *sync.WaitGroup, ch chan int) {
+  // 채널에 데이터가 들어 올때까지 계속 기다림
+  // square() 호출 밖에서 close(채널)로 채널이 닫히면
+  // for문을 종료하여 프로그램 정상 종료하도록 함
+  for n := range ch {
+    fmt.Printf("Square: %d\n", n*n)
+    time.Sleep(time.Second)
+  }
+
+  // 실행되지 않음 :
+  // 위에 for문에서 계속 채널로 들어오는 데이터 기다림
+  wg.Done()
+}
+
+func main() {
+  var wg sync.WaitGroup
+  ch := make(chan int)
+
+  wg.Add(1)
+  go square(&wg, ch)
+
+  // 10번만 데이터를 넣음
+  // square 내에서 채널 데이터 계속 기다림
+  for i :=0; i< 10; i++ {
+    ch <- i * 2
+  }
+
+  // 작업완료를 기다리지만,
+  // square() 내에서 wg.Done()이 실행 되지 않고 deadlock발생
+  // 하지만 채널을 닫아서 데드락 방지 가능
+  // 채널에서 데이터를 모두 빼낸 상태이고, 채널이 닫혔으면
+  // for range 문을 빠져나가게 됨
+  close(ch)
+
+  wg.Wait()
+}
+```
+
+
+- select문
+  - 채널에 데이터가 들어오길 기다리는 대신, 다른작업 수행하거나, 여러채널 동시대기
+  - 여러개 채널을 동시에 기다림. 하나의 case만 처리되면 종료됨
+  - 반복된 데이터 처리를 하려면 for문도 같이 사용
+
+```go
+package main
+
+import (
+  "fmt"
+  "sync"
+  "time"
+)
+
+func square(wg *sync.WaitGroup, ch chan int, quit chan bool) {
+  for {
+    select {
+      case n := <- ch
+        fmt.Printf("Square : %d\n", n*n)
+        time.Sleep(time.Second)
+      case <-quit:
+        wg.Done()
+        return
+    }
+  }
+}
+
+func main() {
+  var wg sync.WaitGroup
+  ch := make(chan int)
+  quit := make(chan bool)
+
+  wg.Add(1)
+  go square(&wg, ch, quit)
+
+  for i:=0; i< 10; i++ {
+    ch <- i*2
+  }
+
+  quit <- true
+  wg.Wait()
 }
 ```
 
 ### 26.단어검색 프로그램 만들기
 
+
 ### 27.객체지향원칙 SOLID
+
 
 ### 28.테스트와 벤치마크
 
+
 ### 29.Go언어로 만드는 웹서버
+
 
 ### 30.Restful API 서버 만들기
 
+
 ### 31.TODO리스트 웹사이트 만들기
 
+
 ### A.Go문법 보충
+
 
 ### B.생각하는 프로그래밍
 
