@@ -3157,6 +3157,7 @@ import (
 
 func main() {
   ch := make(chan int)
+  // **DEADLOCK 채널에 데이터 넣기만 하고 뺴지 않을때
   // 채널에 데이터 넣을떄 기본사이즈 0이기 때문에
   // 보관할 수 없으므로 채널에서 데이터 빼는 코드가 있어야 진행가능!
   // 데드락 발생! 택배 보관장소 없으면 문앞에서 기다려야 함
@@ -3218,15 +3219,15 @@ func main() {
 }
 ```
 
-
-- select문
+- SELECT 문
   - 채널에 데이터가 들어오길 기다리는 대신, 다른작업 수행하거나, 여러채널 동시대기
-  - 여러개 채널을 동시에 기다림. 하나의 case만 처리되면 종료됨
+  - 여러개 채널을 동시에 기다림. 하나의 케이스만 처리되면 종료됨
   - 반복된 데이터 처리를 하려면 for문도 같이 사용
+  - ch채널과 quit채널을 모두 기다림, ch채널먼저 시도하기 때문에
+    - ch채널 먼저 읽다가 모두 읽고나서 quit에 true가 들어와서 읽으면서 return 실행
 
 ```go
 package main
-
 import (
   "fmt"
   "sync"
@@ -3236,12 +3237,12 @@ import (
 func square(wg *sync.WaitGroup, ch chan int, quit chan bool) {
   for {
     select {
-      case n := <- ch
-        fmt.Printf("Square : %d\n", n*n)
-        time.Sleep(time.Second)
-      case <-quit:
-        wg.Done()
-        return
+    case n := <-ch:
+      fmt.Printf("Squared: %d\n", n*n)
+      time.Sleep(time.Second)
+    case <- quit:
+      wg.Done()
+      return
     }
   }
 }
@@ -3254,14 +3255,25 @@ func main() {
   wg.Add(1)
   go square(&wg, ch, quit)
 
-  for i:=0; i< 10; i++ {
-    ch <- i*2
+  for i:=0; i<10; i++ {
+    ch <- i
   }
 
   quit <- true
   wg.Wait()
 }
 ```
+
+- 일정간격으로 실행
+
+
+- 채널로 생산자 소비자 패턴 구현
+
+
+- 컨텍스트 사용하기
+
+- 작업취소 가능한 컨텍스트
+- 작업시간 설정한 컨텍스트
 
 ### 26.단어검색 프로그램 만들기
 
