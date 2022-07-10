@@ -1,49 +1,32 @@
 package main
 
 import (
-  "fmt"
-  "sync"
-  "time"
+	"fmt"
+	"sync"
+	"context"
 )
 
-func square(wg *sync.WaitGroup, ch chan int) {
-  // 원하는 시간 간격으로 신호를 보내주는 채널을 만들 수 있음
-  // 1초간격 주기로 시그널 보내주는 '채널' 생성하여 반환
-  // func Tick(d Duration) <-chan Time
-  //    return 타입: <-chan time.Time
-  // 이채널에서 데이터를 읽어오면 일정 시간간격으로 현재 시각을 나타내는 Timer 객체를 반환
-  tick := time.Tick(time.Second)  // 1초 간격 시그널
+var wg sync.WaitGroup
 
-  // func After(d Duration) <-chan Time
-  //    waits for the duration to elapse 
-  //    and then sends the current time on the returned channel.
-  // 이채널에서 데이터를 읽으면 일정시간 경과 후에 현재시각을 나타내는 Timer 객체를 반환
-  terminate := time.After(10*time.Second) // 10초 이후 시그널
+func square(ctx context.Context) {
+	// 컨텍스트에서 값을 읽기
+	// Value는 빈 인터페이스 타입이므로 (int)로 변환하여 n에 할당
+	if v:= ctx.Value("number"); v != nil {
+		n := v.(int)
+		fmt.Printf("Square:%d\n", n*n)
+	}
 
-  for {
-    select {
-    case <- tick:
-      fmt.Println("Tick", time.Now())
-    case <- terminate:
-      fmt.Println("Terminated")
-      wg.Done()
-      return
-    case n := <-ch:
-      fmt.Printf("Squared: %d\n", n*n)
-      time.Sleep(time.Second)
-    }
-  }
+	wg.Done()
 }
 
 func main() {
-  var wg sync.WaitGroup
-  ch := make(chan int)
+	wg.Add(1)
 
-  wg.Add(1)
-  go square(&wg, ch)
+	// "number"를 키로 값을 9로 설정한 컨텍스트를 만듦
+	// square의 인수로 넘겨서 값을 사용할 수 있도록 함
+	ctx := context.WithValue(context.Background(), "number", 9)
 
-  for i:=0; i<10; i++ {
-    ch <-i
-  }
-  wg.Wait()
+	go square(ctx)
+
+	wg.Wait()
 }

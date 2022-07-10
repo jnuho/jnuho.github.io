@@ -3266,14 +3266,265 @@ func main() {
 
 - 일정간격으로 실행
 
+```go
+package main
+
+import (
+  "fmt"
+  "sync"
+  "time"
+)
+
+func square(wg *sync.WaitGroup, ch chan int) {
+  // 원하는 시간 간격으로 신호를 보내주는 채널을 만들 수 있음
+  // 1초간격 주기로 시그널 보내주는 '채널' 생성하여 반환
+  // func Tick(d Duration) <-chan Time
+  // 이채널에서 데이터를 읽어오면 일정 시간간격으로 현재 시각을 나타내는 Timer 객체를 반환
+  tick := time.Tick(time.Second)  // 1초 간격 시그널
+
+  // func After(d Duration) <-chan Time
+  //    waits for the duration to elapse 
+  //    and then sends the current time on the returned channel.
+  // 이채널에서 데이터를 읽으면 일정시간 경과 후에 현재시각을 나타내는 Timer 객체를 반환
+  terminate := time.After(10*time.Second) // 10초 이후 시그널
+
+  for {
+    select {
+    case <- tick:
+      fmt.Println("tick")
+    case <- terminate:
+      fmt.Println("terminated...")
+      wg.Done()
+      return
+    case n := <-ch:
+      fmt.Printf("Squared: %d\n", n*n)
+      time.Sleep(time.Second)
+    }
+  }
+}
+
+func main() {
+  var wg sync.WaitGroup
+  ch := make(chan int)
+
+  wg.Add(1)
+  go square(&wg, ch)
+
+  for i:=0; i<10; i++ {
+    ch <-i
+  }
+  wg.Wait()
+}
+```
 
 - 채널로 생산자 소비자 패턴 구현
+  - 역할 나누는 방법
+    - 컨베이어벨트: 차체생산->바퀴설치->도색->완성
 
+```go
+package main
+
+import (
+	"fmt"
+	"sync"
+	"time"
+)
+
+// 공정순서:
+// 		Body -> Tire -> Color
+// 생산자 소비자 패턴 (Producer Consumer Pattern) 또는 pipeline pattern
+// MakeBody()루틴이 생산자, InstallTire()루틴은 소비자
+// InstallTire()는 PaintCar()루틴에 대해서는 생산자
+type Car struct {
+	Body string
+	Tire string
+	Color string
+}
+
+var wg sync.WaitGroup
+var startTime = time.Now()
+
+// 1초간격 차체생산하여 tireCh 채널에 데이터 넣음
+// 10초 후 tireCh 채널 닫고 루틴종료
+func MakeBody(tireCh chan *Car) { // 차체생산
+	tick := time.Tick(time.Second)
+	after := time.After(10 * time.Second)
+
+	for {
+		select {
+		case <- tick:
+			// Make a body
+			car := &Car{}
+			car.Body = "Sports car"
+			tireCh <- car
+		case <-after:
+			close(tireCh)
+			wg.Done()
+			return
+		}
+	}
+
+}
+
+// tireCh채널에서 데이터 읽어서 바퀴설치하고 paintCh채널에 넣어줌
+// tireCh채널 닫히면 루틴종료하고 paintCh채널 닫아줌
+func InstallTire(tireCh, paintCh chan *Car) { // 바퀴설치
+		for car := range tireCh {
+			// Make a body
+			time.Sleep(time.Second)
+			car.Tire = "Winter tire"
+			paintCh <- car
+		}
+		wg.Done()
+		close(paintCh)
+}
+
+
+// paintCh채널에서 데이터 읽어서 도색을 하고, 완성된 차 출력
+func PaintCar(paintCh chan *Car) { // 도색
+	for car := range paintCh {
+		// Make a body
+		time.Sleep(time.Second)
+		car.Color = "Red"
+		duration := time.Now().Sub(startTime) // 경과 시간 출력
+		fmt.Printf("%.2f Complete Car: %s %s %s\n",duration.Seconds(), car.Body, car.Tire, car.Color)
+	}
+
+	wg.Done()
+}
+
+func main() {
+	tireCh := make(chan *Car)
+	paintCh := make(chan *Car)
+
+	fmt.Println("Start the factory")
+
+	wg.Add(3)
+	go MakeBody(tireCh)
+	go InstallTire(tireCh, paintCh)
+	go PaintCar(paintCh)
+
+	wg.Wait()
+	fmt.Println("Close the factory")
+}
+```
 
 - 컨텍스트 사용하기
+  - 컨텍스트는 작업을 지시할때 작업가능 시간, 작업 취소 등의 조건을 지시할 수 있는 작업명세서 역할
+  - 새로운 고루틴으로 작업 시작할떄 일정시간 동안만 작업지시하거나, 외부에서 작업 취소시 사용.
+  - 작업 설정에 대한 데이터도 전달 가능
+
 
 - 작업취소 가능한 컨텍스트
+  - 이 컨텍스트를 만들어, 작업자에게 전달하면 작업 지시한 지시자가 원할때 작업취소 알릴 수 있음
+
+```go
+package main
+
+import (
+	"fmt"
+	"sync"
+	"time"
+	"context"
+)
+
+var wg sync.WaitGroup
+
+// 작업이 취소될 때까지 1초마다 메시지 출력하는 고루틴
+func PrintEverySecond(ctx context.Context) {
+	tick := time.Tick(time.Second)
+	for {
+		select {
+		case <-ctx.Done():
+			wg.Done()
+			return
+		case <-tick:
+			fmt.Println("tick")
+		}
+	}
+}
+
+func main() {
+	wg.Add(1)
+
+	// 취소 가능한 컨텍스트 생성 : 컨텍스트 개체와 취소함수 반환
+	ctx, cancel := context.WithCancel(context.Background())
+
+	go PrintEverySecond(ctx)
+	time.Sleep(5 * time.Second)
+
+	// 작업취소
+	// 		컨텍스트의 Done()채널에 시그널을 보내, 작업자가 작업 취소하도록 알림
+	//		<-ctx.Done() 채널
+	cancel()
+
+	wg.Wait()
+}
+```
+
+
 - 작업시간 설정한 컨텍스트
+  - 일정시간 동안만 작업을 지시할 수 있는 컨텍스트 생성
+  - WithTimeout() 두번째 인수로 시간을 설정하면, 그시간이 지난 뒤
+  - 컨텍스트의 Done()채널에 시그널을 보내서 작업 종료
+  - WithTimeout() 역시 두번째 반환값으로 cancel함수 반환하기 때문에
+  - 작업 시작전에 원하면 언제든지 작업 취소 가능
+
+```go
+ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+```
+
+- 특정 값을 설정한 컨텍스트
+  - 작업자에게 지시할때 별도의 지시사항 추가 가능
+  - 컨텍스트에 특정키로 값을 읽어오도록 설정 가능
+  - context.WithValue()로 컨텍스트에 값 설정 가능
+
+```go
+package main
+
+import (
+	"fmt"
+	"sync"
+	"context"
+)
+
+var wg sync.WaitGroup
+
+func square(ctx context.Context) {
+	// 컨텍스트에서 값을 읽기
+	// Value는 빈 인터페이스 타입이므로 (int)로 변환하여 n에 할당
+	if v:= ctx.Value("number"); v != nil {
+		n := v.(int)
+		fmt.Printf("Square:%d\n", n*n)
+	}
+
+	wg.Done()
+}
+
+func main() {
+	wg.Add(1)
+
+	// "number"를 키로 값을 9로 설정한 컨텍스트를 만듦
+	// square의 인수로 넘겨서 값을 사용할 수 있도록 함
+	ctx := context.WithValue(context.Background(), "number", 9)
+
+	go square(ctx)
+
+	wg.Wait()
+}
+```
+
+- 취소도 되면서 값도 설정하는 컨텍스트 만들기
+  - 컨텍스트를 만들때 항상 상위 컨텍스트 객체를 인수로 넣어줘야 했음
+  - 일반적으로 context.Background()를 넣어줬는데, 여기에 이미 만들어진 컨텍스트 객체 넣어도 됨
+  - 이를통해 여러 값을 설정하거나, 기능을 설정할 수 있음
+  - 구글: "golang concurrency patterns"
+
+```go
+ctx, cancel := context.WithCancel(context.Background())
+ctx = context.WithValue(ctx, "number", 9)
+ctx = context.WithValue(ctx, "keyword", "Lilly")
+```
 
 ### 26.단어검색 프로그램 만들기
 
@@ -3297,4 +3548,5 @@ func main() {
 
 
 ### B.생각하는 프로그래밍
+
 
