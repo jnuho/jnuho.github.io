@@ -1936,6 +1936,10 @@ func PrintVal(v interface{}) {
       fmt.Printf("v is float64 %f\n", float64(t))
     case string:
       fmt.Printf("v is string %s\n", string(t))
+    case []int:
+      fmt.Printf("v is []int Slice %T:%v", t, t)
+    case [5]int:
+      fmt.Printf("v is [5]int Array %T:%v", t, t)
     default:
       fmt.Printf("Not supported type %T:%v\n", t, t)
   }
@@ -1946,6 +1950,11 @@ func main() {
   PrintVal(3.14)
   PrintVal("Hello")
   PrintVal(Student{15})
+
+  arr := [5]int{1,2,3,4,5}
+  slice := arr[2:]
+  PrintVal(arr)
+  PrintVal(slice)
 }
 ```
 
@@ -3526,10 +3535,147 @@ ctx = context.WithValue(ctx, "number", 9)
 ctx = context.WithValue(ctx, "keyword", "Lilly")
 ```
 
+
 ### 26.단어검색 프로그램 만들기
+
+- 와일드카드
+  - * : 0개이상 문자
+  - ? : 1개 문자
+- `os.Args []string` 변수와 실행 인수
+  - Args는 os 패키지의 전역변수로 각 실행인수가 []string 슬라이스에 담김
+  - 첫번째 항목으로 실행 명령이 들어감
+  - 두번쨰 부터 입력한 인수들이 차례로 들어감
+    - `find word filepath`
+      - os.Args[0] : find
+      - os.Args[1] : word
+      - os.Args[2] : filepath
+
+- 파일 핸들링
+
+```go
+// 파일열기
+func Open(name string) (*File, error)
+
+// 파일 목록가져오기 (slice)
+func Glob(pattern string) (matches []string, err error)
+filepaths, err := filepath.Glob("*.txt")
+
+// 파일 내용 한줄 씩 읽기
+func NewScanner(r io.Reader) *Scanner
+
+type Scanner
+  func (s *Scanner) Scan() bool
+  func (s *Scanner) Text() string
+```
+
+
+- 단어 포함여부 검사
+  - `func Contains(s, substr string) bool`
+
+
+- 실행 인수 읽고 파일목록 가져오기
+  - 단어프로그램 실행파일 만들기 :
+  - cd 26-search-word-project/ex26.1
+  - touch ex26.1.go
+  - go mod init 26-search-word-project/ex26.1
+  - go mod tidy
+  - go build
+  - ex26.1 word ex*
+  - 찾으려는 단어 : word
+  - 찾으려는 파일 리스트 :
+  -   ex26.1.exe
+  -   ex26.1.go
+
+```go
+package main
+
+import (
+	"fmt"
+	"os"
+	"path/filepath"
+)
+
+func main() {
+	if len(os.Args) < 3 {
+		fmt.Println("2개 이상의 실행 인수가 필요합니다. ex) ex26.1 word filepath")
+		return
+	}
+
+	// 실행인수 가져오기
+	//	찾으려는 단어
+	word := os.Args[1]
+	//	검색할 파일리스트 (슬라이스)
+	files := os.Args[2:]
+	fmt.Println("- 찾으려는 단어: ", word)
+	PrintAllFiles(files)
+}
+
+// 파일리스트 및 에러 반환
+func GetFileList(path string) ([]string, error) {
+	return filepath.Glob(path)
+}
+
+// 찾은 파일리스트 출력
+func PrintAllFiles(files []string) {
+	fmt.Println("- 찾으려는 파일 리스트")
+	for _, path := range files {
+		filelist, err := GetFileList(path)
+		if err != nil {
+			fmt.Println("파일경로가 잘못되었습니다. err:", err, "path:", path)
+			return
+		}
+
+		for _, name := range filelist {
+			fmt.Println(name)
+		}
+	}
+}
+```
+
+- 파일을 열어서 라인 읽기
+  - 파일을 열고 bufio 패키지의 NewScanner()로 스캐너를 만들어, 파일내용을 한단어씩 읽기
+
+```go
+package main
+
+import (
+	"bufio"
+	"fmt"
+	"os"
+)
+
+func main() {
+	PrintFile("hamlet.txt")
+}
+
+// 파일을 읽어서 출력
+func PrintFile(filename string) {
+	file, err := os.Open(filename) // 파일 열기
+	if err != nil {
+		fmt.Println("파일을 찾을 수 없습니다.", filename)
+		return
+	}
+
+	defer file.Close() // 함수 종료전 파일 닫기
+
+	scanner := bufio.NewScanner(file) // 스캐너를 생성해서 한줄 씩 읽기
+	for scanner.Scan() {
+		fmt.Println(scanner.Text())
+	}
+}
+```
+
+- 파일 검색 프로그램 완성 하기
+
+```go
+```
 
 
 ### 27.객체지향원칙 SOLID
+
+```go
+
+```
 
 
 ### 28.테스트와 벤치마크
