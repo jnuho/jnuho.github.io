@@ -3674,7 +3674,6 @@ func PrintFile(filename string) {
 ### 27.객체지향원칙 SOLID
 
 ```go
-
 ```
 
 
