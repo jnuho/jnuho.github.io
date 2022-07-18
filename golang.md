@@ -2756,32 +2756,135 @@ func main() {
 
 ### 23.에러 핸들링
 
+- 에러 반환
+
+```go
+package main
+
+import (
+	"bufio"
+	"fmt"
+	"os"
+)
+
+const filename string =  "data.txt"
+
+// 파일에서 한줄 읽기
+func ReadFile(filename string) (string, error) {
+	file, err := os.Open(filename)
+	if err != nil {
+		return "", err
+	}
+	defer file.Close()
+
+	rd := bufio.NewReader(file)
+	line, _ := rd.ReadString('\n')
+	return line, nil
+}
+
+func WriteFile(filename, line string) error {
+	file, err := os.Create(filename)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+	_, err = fmt.Fprintln(file, line)
+	return err
+}
+
+func main() {
+	line, err := ReadFile(filename)
+	if err != nil {
+		err = WriteFile(filename, "This is WriteFile")
+		if err !=nil {
+			fmt.Println("파일 생성에 실패했습니다.", err)
+			return
+		}
+		line, err = ReadFile(filename)
+		if err !=nil {
+			fmt.Println("파일 읽기에 실패 했습니다.", err)
+			return
+		}
+	}
+
+	fmt.Println("파일내용: ", line)
+}
+```
+
+
+- 사용자 에러 반환
+  - `fmt.Errorf()` 사용 또는
+  - `func New(text string) error` 에러 생성하여 반환 가능
+
+```go
+import errors
+errors.New("에러 메시지")
+```
+
 ```go
 package main
 
 import (
   "fmt"
-  "os"
-  "bufio"
+  "math"
 )
 
-func ReadFile(filename string) (string, error) {
-  file, err := os.Open(filename)
-  if err != nil {
-    return "", err
+func Sqrt(f float64) (float64, error) {
+  if f <0 {
+    return 0, fmt.Errorf("제곱근은 양수여야 합니다. f:%g", f)
   }
-
-  defer file.Close()
-
-  rd := bufio.NewReader(file)
-  line, _ := rd.ReadString('\n')
-  return line, nil
-}
-
-func WriteFile(filename string, line string) error {
+  return math.Sqrt(f), nil
 }
 
 func main() {
+  sqrt, err := Sqrt(-2)
+  if err != nil {
+    fmt.Printf("에러: %v\n", err)
+    return
+  }
+  fmt.Printf("Sqrt(-2)=%v\n", sqrt)
+}
+```
+
+- 에러 타입
+
+```go
+type error interface {
+  Error() string
+}
+```
+
+```go
+package main
+
+import "fmt"
+
+// Error() 메소드 있는 error 인터페이스를 구현
+type PasswordError struct {
+  Len int
+  RequireLen int
+}
+
+func (err PasswordError) Error() string {
+  return "암호 길이가 짧습니다."
+}
+
+func RegisterAccount(name, password string) error {
+  if len(password) < 8 {
+    return PasswordError{len(password), 8}
+  }
+  return nil
+}
+
+func main() {
+  err := RegisterAccount("myID", "myPw")
+  if err != nil {
+    if errInfo, ok := err.(PasswordError); ok {
+      fmt.Printf("%v Len: %d RequiredLen: %d\n", errInfo, errInfo.Len, errInfo.RequireLen)
+    }
+  } else {
+    fmt.Println("회원 가입됐습니다.")
+  }
 }
 ```
 
