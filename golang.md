@@ -2890,10 +2890,46 @@ func main() {
 
 - 에러 랩핑
   - 에러를 감싸서 새로운 에러 만들기
+  - 예를들어, 파일을 읽을떄 에러 뿐 아니라, 몇번째 줄에서 에러발생했는지 등 정보 담을 에러 필요
+
+```go
+// As finds the first error in err's chain that matches target,
+// and if one is found, sets target to that error value
+// and returns true. Otherwise, it returns false.
+//    type any = interface{}
+func As(err error, target any) bool
+func As(err error, target interface{}) bool
+
+// Reader is the interface that wraps the basic Read method.
+// Read reads up to len(p) bytes into p.
+// It returns the number of bytes read (0 <= n <= len(p)) and any error encountered. 
+type Reader interface {
+	Read(p []byte) (n int, err error)
+}
+
+// NewReader returns a new Reader reading from s.
+// It is similar to bytes.NewBufferString but more efficient and read-only.
+func NewReader(s string) *Reader
+
+// NewScanner returns a new Scanner to read from r.
+// The split function defaults to ScanLines.
+func NewScanner(r io.Reader) *Scanner
+
+
+// Split sets the split function for the Scanner.
+// The default split function is ScanLines.
+func (s *Scanner) Split(split SplitFunc)
+
+// ScanWords is a split function for a Scanner that returns
+// each space-separated word of text, with surrounding spaces deleted.
+// It will never return an empty string.
+// The definition of space is set by unicode.IsSpace.
+func ScanWords(data []byte, atEOF bool) (advance int, token []byte, err error)
+```
+
 
 
 ```go
-
 ```
 
 ### 24.고루틴과 동시성 프로그래밍
