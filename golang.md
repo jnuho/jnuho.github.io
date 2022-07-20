@@ -4189,9 +4189,9 @@ func main() {
 
 ### 28.테스트와 벤치마크
 
-- 테스트 코드는 _test.go 안에 작성
-- `import "testing"`
-- 테스트 코드는 `func TestXxxx(t *testing.T)` 형태이어야 함
+- _test.go 작성
+- testing 패키지 임포트
+- `func TestXxxx(t *testing.T)` 형태이어야 함
   - ex28.1.go
   - ex28_1_test.go
 
@@ -4210,13 +4210,6 @@ go test -run TestSquare1
 
 ```
 
-- 테스트 돕는 외부 패키지
-  - `import "github.com/stretchr/testify/assert"`
-  - `assert.Equal(a, b, "에러발생시 메시지")`
-  - `assert.NotEqual()`
-  - `assert.Nil()`
-
-
 ```go
 // ex28.1.go
 package main
@@ -4224,7 +4217,7 @@ package main
 import "fmt"
 
 func square(x int) int {
-	return x * x
+	return x*x
 }
 
 func main() {
@@ -4232,26 +4225,203 @@ func main() {
 }
 ```
 
+- 테스트 돕는 외부 패키지
+
+```go
+import "github.com/stretchr/testify/assert"
+
+// func Equal(t TestingT, expected, actual interface{}, msgAndArgs ...interface{}) bool
+// func NotEqual(t TestingT, expected, actual interface{}, msgAndArgs ...interface{}) bool
+// func Greater(t TestingT, e1 interface{}, e2 interface{}, msgAndArgs ...interface{}) bool
+// func Nil(t TestingT, object interface{}, msgAndArgs ...interface{}) bool
+// func NotNilf(t TestingT, object interface{}, msg string, args ...interface{}) bool
+//    NotNilf asserts that the specified object is not nil.
+//    assert.NotNilf(t, err, "error message %s", "formatted")
+```
+
 ```go
 // ex28_1_test.go
 package main
-func main() {
+
+import (
+	"testing"
+	"github.com/stretchr/testify/assert"
+)
+
+func TestSquare1(t *testing.T) {
+	rst := square(9)
+	if rst != 81 {
+		t.Errorf("square(9) should return 81, but returned %d\n", rst)
+	}
+}
+
+func TestSquare2(t *testing.T) {
+	rst := square(3)
+	if rst != 9 {
+		t.Errorf("square(3) should return 9, but returned %d\n", rst)
+	}
+}
+
+func TestSquare3(t *testing.T) {
+	// func New(t TestingT) *Assertions
+	assert := assert.New(t)
+
+	// 테스트 함수 호출
+	// func (a *Assertions)Equal(expected, actual interface{}, msgAndArgs ...interface{}) bool
+	assert.Equal(81, square(9),"9^2 = 81 결과가 나와야 함")
+	assert.Equal(9, square(3),"3^2 = 9 결과가 나와야 함")
+
+	// 또는 assert.New(t) 사용하지 않고
+	// assert.Equal(t, 49, square(7),"7^2 = 49 결과가 나와야 함")
 }
 ```
 
+- mock(테스트용 목업)과 suite(테스트 시작과 종료) 패키지 제공
+  - mock 패키지: 모듈행동을 가장하는 mockup 객체 제공
+    - 온라인 기능 테스트 시 하위영역인 네트워크 기능까지 테스트 힘들때, 네트워크 객체 가장한 목업 객체 만들때 유용
+  - suite 패키지: 테스트 준비 작업이나 종료 후 뒤처리 작업
+    - 시작전 임시파일 생성
+    - 종료 후 생성한 임시파일 삭제
+
+- 테스트 주도 개발 - TDD
+  - 블랙박스 테스트 : 제품내부 오픈하지 않은 상태로 사용자 입장에서 테스트 (QA 담당)
+  - 화이트박스 테스트 : 내부코드 검증 - unit test
+    - `코드작성 -> [테스트-코드수정] -> 완성`
+
+- 벤치마크
+  - 코드 성능 검사 : testing 패키지에서 제공
+  - _test.go 작성
+  - testing 패키지 임포트
+  - `func BenchmarkXxxx(b *testing.B)` 형태 여야 함
+  - `go test -bench .`
+
+
+```sh
+# 47035 vs 9.346 nanosecond
+go test -bench .
+  goos: linux
+  goarch: amd64
+  pkg: ex28.2
+  cpu: Intel(R) Core(TM) i7-6700HQ CPU @ 2.60GHz
+  BenchmarkFibonacci1-8              24924             47035 ns/op
+  BenchmarkFibonacci2-8           125435312                9.346 ns/op
+  PASS
+  ok      ex28.2  3.810s
+```
+
+```go
+// ex28.2.go
+package main
+
+import "fmt"
+
+func fibonacci1(n int) int {
+	if n < 0 {
+		return 0
+	}
+	if n < 2 {
+		return n
+	}
+	return fibonacci1(n-1) + fibonacci1(n-2) // ❶ 재귀 호출
+}
+
+func fibonacci2(n int) int {
+	if n < 0 {
+		return 0
+	}
+	if n < 2 {
+		return n
+	}
+	one := 1
+	two := 0
+	rst := 0
+	for i := 2; i <= n; i++ { // ❷ 반복문
+		rst = one + two
+		two = one
+		one = rst
+	}
+	return rst
+}
+
+func main() {
+	fmt.Println(fibonacci1(7))
+	fmt.Println(fibonacci2(7))
+}
+```
+
+```go
+// ex28_2_test.go
+package main
+
+import (
+	"testing"
+	"github.com/stretchr/testify/assert"
+)
+
+
+func TestFibonacci1(t *testing.T) {
+	assert := assert.New(t)
+	assert.Equal(0, fibonacci1(-1), "fibonacci1(-1) should be 0")
+	assert.Equal(0, fibonacci1(0), "fibonacci1(0) should be 0")
+	assert.Equal(1, fibonacci1(1), "fibonacci1(1) should be 1")
+	assert.Equal(2, fibonacci1(3), "fibonacci1(2) should be 2")
+	assert.Equal(233, fibonacci1(13), "fibonacci1(13) should be 233")
+}
+
+func TestFibonacci2(t *testing.T) {
+	assert := assert.New(t)
+	assert.Equal(0, fibonacci2(-1), "fibonacci1(-1) should be 0")
+	assert.Equal(0, fibonacci2(0), "fibonacci1(0) should be 0")
+	assert.Equal(1, fibonacci2(1), "fibonacci1(1) should be 1")
+	assert.Equal(2, fibonacci2(3), "fibonacci1(2) should be 2")
+	assert.Equal(233, fibonacci2(13), "fibonacci1(13) should be 233")
+}
+
+func BenchmarkFibonacci1(b *testing.B) {
+	// b.N만큼 반복
+	for i := 0; i < b.N; i++ {
+		fibonacci1(20)
+	}
+}
+
+func BenchmarkFibonacci2(b *testing.B) {
+	// b.N만큼 반복
+	for i := 0; i < b.N; i++ {
+		fibonacci2(20)
+	}
+}
+```
 
 ### 29.Go언어로 만드는 웹서버
+
+- HTTP 웹서버 만들기
+  - net/http 패키지로 웹서버 만들 수 있음
+
+- 핸들러 등록
+
+- 웹서버 시작
+
+- HTTP 동작원리
+
+- HTTP 쿼리인수 사용하기
+
+- ServeMux 인스턴스 이용하기
+
+- 파일서버
+
+- 웹서버 테스트 코드 만들기
+
+- JSON 데이터 전송
+
+- HTTPS 웹서버 만들기
+  - 공개키 암호화 방식
+  - 인증서와 키 생성
 
 
 ### 30.Restful API 서버 만들기
 
 
+
 ### 31.TODO리스트 웹사이트 만들기
-
-
-### A.Go문법 보충
-
-
-### B.생각하는 프로그래밍
 
 
