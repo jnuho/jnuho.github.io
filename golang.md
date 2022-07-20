@@ -2930,6 +2930,148 @@ func ScanWords(data []byte, atEOF bool) (advance int, token []byte, err error)
 
 
 ```go
+//ch23/ex23.4/ex23.4.go
+package main
+
+import (
+	"bufio"
+	"errors"
+	"fmt"
+	"strconv"
+	"strings"
+)
+
+func MultipleFromString(str string) (int, error) {
+	scanner := bufio.NewScanner(strings.NewReader(str)) // ❶ 스캐너 생성
+	scanner.Split(bufio.ScanWords)                      // ❷ 한 단어씩 끊어읽기
+
+	pos := 0
+	a, n, err := readNextInt(scanner)
+	if err != nil {
+		return 0, fmt.Errorf("Failed to readNextInt(), pos:%d err:%w", pos, err) // ➏ 에러 감싸기
+	}
+
+	pos += n + 1
+	b, n, err := readNextInt(scanner)
+	if err != nil {
+		return 0, fmt.Errorf("Failed to readNextInt(), pos:%d err:%w", pos, err)
+	}
+	return a * b, nil
+}
+
+// 다음 단어를 읽어서 숫자로 변환하여 반환합니다.
+// 변환된 숫자, 읽은 글자수, 에러를 반환합니다.
+func readNextInt(scanner *bufio.Scanner) (int, int, error) {
+	if !scanner.Scan() { // ❸ 단어 읽기
+		return 0, 0, fmt.Errorf("Failed to scan")
+	}
+	word := scanner.Text()
+	number, err := strconv.Atoi(word) // ❹ 문자열을 숫자로 변환
+	if err != nil {
+		return 0, 0, fmt.Errorf("Failed to convert word to int, word:%s err:%w", word, err) // ➎ 에러 감싸기
+	}
+	return number, len(word), nil
+}
+
+func readEq(eq string) {
+	rst, err := MultipleFromString(eq)
+	if err == nil {
+		fmt.Println(rst)
+	} else {
+		fmt.Println(err)
+		var numError *strconv.NumError
+		if errors.As(err, &numError) { // ➐ 감싸진 에러가 NumError인지 확인
+			fmt.Println("NumberError:", numError)
+		}
+	}
+}
+func main() {
+	readEq("123 3")
+	readEq("123 abc")
+}
+```
+
+
+- 패닉
+  - 문제 발생 시점에 즉시 종료
+  - 파라미터 메시지 표시 후 호출 순서 나타내는 콜스택 표시 (에러 발생경로 확인 가능)
+
+- 패닉 생성
+  - `func panic(interface{})`
+
+```go
+// panic(42)
+// panic("Error message")
+// panic(fmt.Errorf("Error object"))
+// panic(SomeType{SomeData})
+package main
+import "fmt"
+
+func divide(a,b int) {
+  if b==0 {
+    panic("b가 0일 수 없습니다")
+  }
+  fmt.Printf("%d /%d= %d\n",a,b, a/b )
+}
+
+func main() {
+  divide(3,6)
+  divide(6,3)
+  divide(3,0)
+}
+```
+
+- 패닉 전파 그리고 복구
+  - 패닉 발생 후 종료 대신 복구
+  - 함수호출 순서 : main-> f->g-> h()
+  - 패닉전파 순서(h() 패닉발생):  g->f->main()
+  - main()에서 복구 되지 않으면 프로그램 종료됨
+  - recover()로 복구하여 계속 진행 가능
+  - recover() 호출된 시점에 panic 전파 중이면 패닉객체 반환, 아니면 nil 반환
+
+```go
+//ch23/ex23.6/ex23.6.go
+package main
+
+import "fmt"
+
+func f() {
+	fmt.Println("f() 함수 시작")
+	defer func() { // ❹ 패닉 복구
+		if r := recover(); r != nil {
+			fmt.Println("panic 복구 -", r)
+		}
+	}()
+
+	g() // ❶ g() -> h() 순서로 호출
+	fmt.Println("f() 함수 끝")
+}
+
+func g() {
+	fmt.Printf("9 / 3 = %d\n", h(9, 3))
+	fmt.Printf("9 / 0 = %d\n", h(9, 0)) // ❷ h() 함수 호출 - 패닉
+}
+
+func h(a, b int) int {
+	if b == 0 {
+		panic("제수는 0일 수 없습니다.") // ❸ 패닉 발생!!
+	}
+	return a / b
+}
+
+func main() {
+	f()
+	fmt.Println("프로그램이 계속 실행됨") // ➎ 프로그램 실행 지속됨
+}
+```
+
+- recover() 결과
+  - `func recover() interface{}`
+
+```go
+if r, ok := recover().(net.Error); ok {
+  fmt.Println("r is net.Error type")
+}
 ```
 
 ### 24.고루틴과 동시성 프로그래밍
