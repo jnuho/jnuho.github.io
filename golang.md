@@ -3093,7 +3093,6 @@ if r, ok := recover().(net.Error); ok {
   - `go 함수호출`로 새로운 고루틴 추가 가능. 현재 고루틴이 아닌 새로운 고루틴에서 함수가 수행 됨
 
 
-
 ```go
 package main
 
@@ -4184,14 +4183,61 @@ func main() {
 - 의존 관계 역전 원칙
 
 
-
-
-
 ```go
 ```
 
 
 ### 28.테스트와 벤치마크
+
+- 테스트 코드는 _test.go 안에 작성
+- `import "testing"`
+- 테스트 코드는 `func TestXxxx(t *testing.T)` 형태이어야 함
+  - ex28.1.go
+  - ex28_1_test.go
+
+```sh
+# gcc 관련 에러
+sudo apt install build-essential
+go mod init ex28.1
+go mod tidy
+
+# 테스트 전부 실행
+go test
+
+# 일부 테스트만 실행
+go test -run 테스트명
+go test -run TestSquare1
+
+```
+
+- 테스트 돕는 외부 패키지
+  - `import "github.com/stretchr/testify/assert"`
+  - `assert.Equal(a, b, "에러발생시 메시지")`
+  - `assert.NotEqual()`
+  - `assert.Nil()`
+
+
+```go
+// ex28.1.go
+package main
+
+import "fmt"
+
+func square(x int) int {
+	return x * x
+}
+
+func main() {
+	fmt.Printf("9 * 9 = %d\n", square(9))
+}
+```
+
+```go
+// ex28_1_test.go
+package main
+func main() {
+}
+```
 
 
 ### 29.Go언어로 만드는 웹서버
