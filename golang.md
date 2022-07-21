@@ -4398,8 +4398,61 @@ func BenchmarkFibonacci2(b *testing.B) {
   - net/http 패키지로 웹서버 만들 수 있음
 
 - 핸들러 등록
+  - HandleFunc() 함수 등록
+    - URL해당 경로 호출 시 등록된 함수 호출
+  - http.Handler 인터페이스 구현
+    - 위 객체의 ServeHTTP() 호출
+
+```go
+func IndexPathHandler(w http.ResponseWriter, r *http.Request) { ...  }
+// "/" 요청 시 IndexPathHandler 호출
+http.HandleFunc("/", IndexPathHandler)
+```
+
+```go
+// http 패키지의 Request 구조체
+
+type Request struct {
+  // GET, POST, PUT, DELETE
+  Method string
+
+  UL *url.URL
+
+  Proto string
+  ProtoMajor int
+  ProtoMinor int
+  Header header
+
+  Body io.ReadCloser
+}
+```
 
 - 웹서버 시작
+
+```go
+// addr: HTTP 요청 수신 주소 (포트포함)
+// handler: nil이면 디폴트 핸들러
+//    패키지 함수인 hattp.HandleFunc()로 핸들러 함수 등록 시 nil 전달
+//    또는 새로운 핸들러 인스턴스를 두번쨰 인수로 전달 가능 (ServeMux 이용)
+func ListenAndServe(addr string, handler Handler) error
+```
+
+```go
+package main
+
+import (
+  "fmt"
+  "net/http"
+)
+
+func main() {
+  http.HandleFunc("/",
+  func(w http.ResponseWriter, r *http.Request) {
+    fmt.Fprinf(w, "Hello World")
+  }
+  )
+}
+```
 
 - HTTP 동작원리
 
