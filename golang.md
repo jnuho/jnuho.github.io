@@ -4394,14 +4394,23 @@ func BenchmarkFibonacci2(b *testing.B) {
 
 ### 29.Go언어로 만드는 웹서버
 
+- HTTP는 인터넷에서 데이터를 주고받는 통신 프로토콜
+  - 비연결성 특징 : 클라이언트와 서버가 계속 연결 되어 있지 않고, 응답 후 연결을 끊어버림
+  - 그래서 이전 상태 정보나 현재 통신 상태가 남아 있지 않습니다.
+  - 자원 낭비를 줄일 수 있지만, 클라이언트의 상태를 유지 할 수 없는 단점
+  - cookie, session 사용하면 상태 정보 유지 할 수 있음
+    - cookie: '클라이언트'에서 데이터를 저장/관리하여 상태를 유지하는 기술
+    - session: '서버'에서 데이터를 저장/관리하여 상태를 유지하는 기술
+- HTTPS는 HTTP의 암호화 통신버전. 통신내용을 암호화 하므로 더 안전
+- Go 언어를 이용해 만든 웹서버는 뛰어난 성능을 자랑함
+
+
 - HTTP 웹서버 만들기
   - net/http 패키지로 웹서버 만들 수 있음
 
-- 핸들러 등록
-  - HandleFunc() 함수 등록
-    - URL해당 경로 호출 시 등록된 함수 호출
-  - http.Handler 인터페이스 구현
-    - 위 객체의 ServeHTTP() 호출
+- 핸들러 등록 : HTTP 요청 URL 수신됐을때 그걸 처리하는 함수
+  - HandleFunc() 함수 등록: URL 해당 경로 호출 시 함수 호출
+  - http.Handler 인터페이스 구현한 객체 등록. 이 객체의 인터페이스인 ServeHTTP() 호출
 
 ```go
 func IndexPathHandler(w http.ResponseWriter, r *http.Request) { ...  }
@@ -4409,9 +4418,9 @@ func IndexPathHandler(w http.ResponseWriter, r *http.Request) { ...  }
 http.HandleFunc("/", IndexPathHandler)
 ```
 
-```go
-// http 패키지의 Request 구조체
+- http 패키지의 Request 구조체
 
+```go
 type Request struct {
   // GET, POST, PUT, DELETE
   Method string
@@ -4428,6 +4437,7 @@ type Request struct {
 ```
 
 - 웹서버 시작
+  - 각 경로에 대한 핸들러 등록을 마치고, 웹서버 시작
 
 ```go
 // addr: HTTP 요청 수신 주소 (포트포함)
