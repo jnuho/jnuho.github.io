@@ -4441,9 +4441,9 @@ type Request struct {
 
 ```go
 // addr: HTTP 요청 수신 주소 (포트포함)
-// handler: nil이면 디폴트 핸들러
-//    패키지 함수인 hattp.HandleFunc()로 핸들러 함수 등록 시 nil 전달
-//    또는 새로운 핸들러 인스턴스를 두번쨰 인수로 전달 가능 (ServeMux 이용)
+// handler: nil 이면 디폴트 핸들러
+//    패키지 함수인 hattp.HandleFunc()로 핸들러 함수 등록 시 인자에 nil 전달
+//    또는 새로운 핸들러 인스턴스를 두번쨰 인수로 전달 가능 (ServeMux 인스턴스 이용)
 func ListenAndServe(addr string, handler Handler) error
 ```
 
@@ -4456,21 +4456,148 @@ import (
 )
 
 func main() {
-  http.HandleFunc("/",
-  func(w http.ResponseWriter, r *http.Request) {
-    fmt.Fprinf(w, "Hello World")
-  }
-  )
+  // http패키지 함수인 HandleFunc로 핸들러 함수 등록할 때는
+  // ListenAndServe 두번째 인수에 nil 전달 해야함!
+  // 두번째 인수 nil 전달 시, DefaultServeMux 사용-> http.HandleFunc() 호출하여 등록된 핸들러 사용
+  // "/" 경로로 HTTP 요청을 받으면 함수 리터럴 func(w,r){...} 실행!
+  http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+      // 출력 스트림에 값을 쓰는 함수
+      // 지정한 출력 스트림 w에 "Hello World" 출력
+      // http.ResponseWriter에 값을 쓰면, HTTP 응답으로 전송 됨
+      fmt.Fprint(w, "Hello World")
+  })
+
+  // 웹서버 실행
+  http.ListenAndServe(":3000", nil)
 }
 ```
 
+
 - HTTP 동작원리
+  - https://goldenrabbit.co.kr:3000 호출
+  - 웹 브라우저는 DNS(domain name system)에 도메인에 해당하는 IP 주소를 요청
+  - 웹브라우저 goldenrabbit.co.kr->DNS
+  - DNS ip주소 -> 웹브라우저
+  - IP주소:목적지(컴퓨터), 포트: 해당 컴퓨터 내 데이터 수신 가능한 창구 (0~65535)
+  - 웹서버란? 특정 포트에서 대기하며 사용자의 HTTP요청에 HTTP응답을 전송하는 서버 (응답은 일반적으로 HTMl 문서)
+
 
 - HTTP 쿼리인수 사용하기
+  - HTTP 요청에 포함된 쿼리 인수를 읽고 사용 가능
+  - http://localhost?id=1&name=abcd
+
+```go
+package main
+
+import (
+	"fmt"
+	"net/http"
+	"strconv"
+)
+
+func barHandler(w http.ResponseWriter, r *http.Request) {
+	values := r.URL.Query() // 쿼리인수 가져오기
+	name := values.Get("name") // 특정 키 값이 있는지 확인
+	if name == "" {
+		name = "World"
+	}
+
+	id, _ := strconv.Atoi(values.Get("id")) // id값을 가져와서 int형 타입 변환
+	fmt.Fprintf(w, "Hello %s! id: %d", name, id)
+}
+
+
+// http://localhost:3000/bar?name=Lalalala&id=123
+func main() {
+	http.HandleFunc("/bar", barHandler)
+	http.ListenAndServe(":3000", nil)
+}
+```
 
 - ServeMux 인스턴스 이용하기
+  - ListenAndServe 두번째 인수 nil -> DefaultServeMux가
+  - http.HandleFunc()같은 패키지 함수 호출하므로 다양한 기능 추가 어려움
+  - ServeMux 인스턴스 생성하여 사용
+  - http.HandleFunc()는 DefaultServeMux에 핸들러를 등록하는 반면
+  - mux.HandleFunc()는 생성한 ServeMux 인스턴스에 핸들러를 등록 함
+  - Mux (multiplexer 약자): 여러 입력 중 하나를 선택해서 반환 하는 디지털 장치
+
+```go
+package main
+import (
+	"fmt"
+	"net/http"
+)
+
+func main() {
+	mux := http.NewServeMux()
+	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request){
+			fmt.Fprint(w, "Hello World")
+	})
+	mux.HandleFunc("/bar", func(w http.ResponseWriter, r *http.Request){
+			fmt.Fprint(w, "Hello Bar")
+	})
+
+	http.ListenAndServe(":3000", mux)
+}
+```
 
 - 파일서버
+  - 이미지 데이터를 직접 가져오지 않고 src에 경로만 담고 있음
+  - 웹브라우저는 다시 필요한 이미지 데이터를 HTTP 요청을 통해 가져옴
+  - 이미지 요청을 받은 웹서버는 이미지 경로에 해당하는 데이터를 반환 하여 이미지 표시
+  - 대신에 '/static' 폴더의 파일 제공하는 파일 서버 생성
+
+```html
+<!-- ch29/ex29.4/test.html -->
+<html>
+<body>
+<img src="https://golang.org/lib/godoc/images/footer-gopher.jpg"/>
+<h1>이것은 Gopher 이미지입니다.</h1>
+</body>
+</html>
+```
+
+
+```go
+package main
+import "net/http"
+
+// http://localhost:3000/gopher.jpg
+func main() {
+	http.Handle("/", http.FileServer(http.Dir("static")))
+	http.ListenAndServe(":3000", nil)
+}
+```
+
+- 특정 경로에 있는 파일 읽어오기
+  - http://localhost:3000/static/gopher.jpg 호출
+
+```go
+package main
+import "net/http"
+
+func main() {
+  // http://localhost:3000/gopher.jpg
+	// http.Handle("/", http.FileServer(http.Dir("static")))
+
+  // http.StripPrefix로 URL에서 /static/을 제거 해줌
+  // http://localhost:3000/static/gopher.jpg 출력
+	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
+	http.ListenAndServe(":3000", nil)
+}
+```
+
+```html
+<!-- ch29/ex29.4/test.html -->
+<html>
+<body>
+<img src="http://localhost:3000/static/gopher.jpg"/>
+<h1>이것은 Gopher 이미지입니다.</h1>
+</body>
+</html>
+```
+
 
 - 웹서버 테스트 코드 만들기
 
