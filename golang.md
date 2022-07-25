@@ -4681,13 +4681,103 @@ func TestBarHandler(t *testing.T) {
 
 ```go
 // ex29.6/ex29.6.go
+package main
+
+import (
+	"fmt"
+	"net/http"
+	"encoding/json"
+)
+
+type Student struct {
+	Name string
+	Age int
+	Score int
+}
+
+func StudentHandler(w http.ResponseWriter, r *http.Request) {
+	student := Student{"Abc", 18, 87}
+	data, _ := json.Marshal(student)
+	w.Header().Add("content-type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	fmt.Fprint(w, string(data))
+}
+
+func MakeWebHandler() http.Handler {
+	mux := http.NewServeMux()
+	mux.HandleFunc("/student", StudentHandler)
+	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request){
+			fmt.Fprint(w, "Hello World")
+	})
+	return mux
+}
+
+func main() {
+	http.ListenAndServe(":3000", MakeWebHandler())
+}
 ```
 
+```go
+// ex29.6/ex29_6_test.go
+package main
+
+import (
+	"io"
+	"net/http/httptest"
+	"net/http"
+	"testing"
+	"encoding/json"
+	"github.com/stretchr/testify/assert"
+)
+
+func TestIndexHandler(t *testing.T) {
+	assert := assert.New(t)
+
+	res := httptest.NewRecorder()
+	req := httptest.NewRequest("GET", "/", nil) // '/' 경로 테스트
+
+	mux := MakeWebHandler()
+	mux.ServeHTTP(res, req)
+
+	assert.Equal(http.StatusOK, res.Code)
+	data, _ := io.ReadAll(res.Body)
+	assert.Equal("Hello World", string(data))
+}
+
+func TestJsonHandler(t *testing.T) {
+	assert := assert.New(t)
+
+	res := httptest.NewRecorder()
+	req := httptest.NewRequest("GET", "/student", nil) // '/student' 경로 테스트
+
+	mux := MakeWebHandler()
+	mux.ServeHTTP(res, req)
+
+	assert.Equal(http.StatusOK, res.Code)
+	student := &Student{}
+
+	// res.Body 파싱 -> Student 타입
+	err := json.NewDecoder(res.Body).Decode(student)
+	assert.Nil(err) // 결과 확인
+	assert.Equal("Abc", student.Name)
+	assert.Equal(18, student.Age)
+	assert.Equal(87, student.Score)
+}
+```
 
 - HTTPS 웹서버 만들기
   - 공개키 암호화 방식
-  - 인증서와 키 생성
+  - 인증서와 비밀키 생성
 
+```sh
+# rsh:2048 방식으로 키 localhost.key 와 인증파일 localhost.csr 생성
+openssl req -new -newkey rsa:2048 -nodes -keyout localhost.key -out localhost.csr
+
+# .csr 인증파일을 기관에 제출해서 .crt 인증서 생성
+openssl x509 -req -days 365 -in localhost.csr -signkey localhost.key -out localhost.crt
+```
+```go
+```
 
 ### 30.Restful API 서버 만들기
 
