@@ -4766,14 +4766,27 @@ func TestJsonHandler(t *testing.T) {
 ```
 
 - HTTPS 웹서버 만들기
-  - 공개키 암호화 방식
-  - 인증서와 비밀키 생성
+  - HTTP는 모든 요청이 평문(일반 문자열)
+  - HTTPS는 요청과 응답을 공개키 암호화 방식을 사용해서 암호화한 프로토콜
+    - 패킷이 암호화 되기 때문에 스니핑 해도 내용 알 수 없음
+
+
+- 공개키 암호화 방식
+  - 공개키, 비밀키 두가지 키 생성하여 클라이언트에 공개키, 서버에 비밀키 비공개 상태로 보관
+  - 클라이언트가 HTTPS 요청 보낼 때 공개키로 암호화, 서버가 비밀키로 복호화: 비대칭 암호화 방식
+    - 참고: Khan Academy Lecture, "칸 아카데미 공개키"
+- 인증서와 비밀키 생성
+  - 인증서는 인증기관에서 발급해야 하지만 개인 프로젝트에서는 셀프인증
+  - openssl로 인증서 발급
 
 ```sh
 # rsh:2048 방식으로 키 localhost.key 와 인증파일 localhost.csr 생성
+# localhost.key는 절대 외부에 공개되지 않도록 별도 저장소에 저장 (웹서버 로컬 파일 시스템 저장 권장 X, 일정주기 교체 권장)
 openssl req -new -newkey rsa:2048 -nodes -keyout localhost.key -out localhost.csr
 
 # .csr 인증파일을 기관에 제출해서 .crt 인증서 생성
+# x509 알고리즘으로 1년짜리 인증서 발급
+# 개인정보를 수집하고 외부로 공개되는 사이트는 반드시 인증기관을 통해 인증받은 인증서 사용하도록 법적 강제되어있음
 openssl x509 -req -days 365 -in localhost.csr -signkey localhost.key -out localhost.crt
 ```
 
@@ -4799,6 +4812,37 @@ func main() {
 
 ### 30.Restful API 서버 만들기
 
+
+1. gorilla/mux 같은 RESTful API 웹서버 제작 도와주는 패키지 설치
+2. RESTful API에 맞춰서 Web handler 함수 생성
+3. RESTful API를 테스트하는 테스트 코드 생성
+4. 웹 브라우저로 데이터 조회
+
+- HTTP 메서드: GET, POST, PUT, PATCH, DELETE
+  - GET /students 전체 학생 데이터 반환
+  - GET /students/id 아이디에 해당하는 학생 데이터 반환
+  - POST /students 새로운 학생 등록
+  - PUT /students/id 아이디 해당 학생 데이터 변경
+  - DELETE /students/id 아이디 해당 학생 데이터 삭제
+
+
+- RESTful API 특징
+  1. 자기 표현적인 URL
+  2. 메서드로 행위 표현 : URL과 메서드 조합으로 데이터 조작 정의
+  3. 서버/클라이언트 구조
+    - 데이터 제공자 / 데이터 사용자
+  4. 무상태 statless: 서버는 클라이언트 상태 유지 X
+  5. 캐시 처리 cacheable: 더 쉽게 캐쉬정책 적용하여 성능 개선 가능
+
+
+- gorilla/mux 패키지 설치
+
+```sh
+go get -u github.com/gorilla/mux
+```
+
+```go
+```
 
 
 ### 31.TODO리스트 웹사이트 만들기
