@@ -4776,7 +4776,25 @@ openssl req -new -newkey rsa:2048 -nodes -keyout localhost.key -out localhost.cs
 # .csr 인증파일을 기관에 제출해서 .crt 인증서 생성
 openssl x509 -req -days 365 -in localhost.csr -signkey localhost.key -out localhost.crt
 ```
+
 ```go
+package main
+import (
+	"fmt"
+	"log"
+	"net/http"
+)
+
+func main() {
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+			fmt.Fprint(w, "Hello World")
+	})
+
+	err := http.ListenAndServeTLS( ":3000", "localhost.crt", "localhost.key", nil)
+	if err != nil {
+		log.Fatal(err)
+	}
+}
 ```
 
 ### 30.Restful API 서버 만들기
