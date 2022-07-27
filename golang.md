@@ -4515,12 +4515,11 @@ func main() {
 ```
 
 - ServeMux 인스턴스 이용하기
-  - ListenAndServe 두번째 인수 nil -> DefaultServeMux가
-  - http.HandleFunc()같은 패키지 함수 호출하므로 다양한 기능 추가 어려움
+  - ListenAndServe 두번째 인수 nil -> DefaultServeMux가 http.HandleFunc() 패키지함수 호출. 다양한 기능 추가 어려움
   - ServeMux 인스턴스 생성하여 사용
-  - http.HandleFunc()는 DefaultServeMux에 핸들러를 등록하는 반면
-  - mux.HandleFunc()는 생성한 ServeMux 인스턴스에 핸들러를 등록 함
-  - Mux (multiplexer 약자): 여러 입력 중 하나를 선택해서 반환 하는 디지털 장치
+    - http.HandleFunc()는 DefaultServeMux에 핸들러를 등록하는 반면
+    - mux.HandleFunc()는 생성한 ServeMux 인스턴스에 핸들러를 등록 함
+    - Mux (multiplexer 약자): 여러 입력 중 하나를 선택해서 반환 하는 디지털 장치
 
 ```go
 package main
@@ -4770,11 +4769,11 @@ func TestJsonHandler(t *testing.T) {
   - HTTPS는 요청과 응답을 공개키 암호화 방식을 사용해서 암호화한 프로토콜
     - 패킷이 암호화 되기 때문에 스니핑 해도 내용 알 수 없음
 
-
 - 공개키 암호화 방식
   - 공개키, 비밀키 두가지 키 생성하여 클라이언트에 공개키, 서버에 비밀키 비공개 상태로 보관
   - 클라이언트가 HTTPS 요청 보낼 때 공개키로 암호화, 서버가 비밀키로 복호화: 비대칭 암호화 방식
     - 참고: Khan Academy Lecture, "칸 아카데미 공개키"
+
 - 인증서와 비밀키 생성
   - 인증서는 인증기관에서 발급해야 하지만 개인 프로젝트에서는 셀프인증
   - openssl로 인증서 발급
@@ -4841,9 +4840,509 @@ func main() {
 go get -u github.com/gorilla/mux
 ```
 
+- GET "/students" 학생 리스트 조회
+- GET "/student/{id:[0-9]+}" 학생 조회
+- POST "/students" 학생 등록
+- DELETE "/student/{id:[0-9]+}" 학생 삭제
+
 ```go
+// ex30.1/ex30.1.go
+package main
+
+import (
+	"encoding/json"
+	"net/http"
+	"sort"
+	"strconv"
+
+	"github.com/gorilla/mux"
+)
+
+type Student struct {
+	Id int
+	Name string
+	Age int
+	Score int
+}
+
+/**
+	Student 리스트를 Id 기준정렬하기 위한, Id 정렬 인터페이스 정의
+*/
+type Students []Student
+
+func (s Students) Len() int {
+	return len(s)
+}
+
+func (s Students) Swap(i, j int) {
+	s[i], s[j] = s[j], s[i]
+}
+
+func (s Students) Less(i, j int) bool {
+	return s[i].Id < s[j].Id
+}
+
+var students map[int]Student
+var lastId int
+
+func GetStudentListHandler(w http.ResponseWriter, r *http.Request) {
+	list := make(Students, 0) // 학생 목록을 Id로 정렬
+	for _, student := range students {
+		list = append(list, student)
+	}
+	sort.Sort(list)
+
+	w.WriteHeader(http.StatusOK)
+	w.Header().Set("Content-Type", "application/json")
+
+	json.NewEncoder(w).Encode(list) // JSON 포맷으로 변경
+}
+
+func GetStudentHandler(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	id, _ := strconv.Atoi(vars["id"])
+	student, ok := students[id]
+
+	if !ok {
+		w.WriteHeader(http.StatusNotFound)
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(student)
+}
+
+func PostStudentHandler(w http.ResponseWriter, r *http.Request) {
+	var student Student
+	err := json.NewDecoder(r.Body).Decode(&student) // JSON 데이터 변환
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	lastId++	// id를 증가시킨 후 앱에 등록
+	student.Id = lastId
+
+	students[lastId] = student
+	w.WriteHeader(http.StatusCreated)
+}
+
+func DeleteStudentHandler(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	id, _ := strconv.Atoi(vars["id"])
+	_, ok := students[id]
+	if !ok {
+		w.WriteHeader(http.StatusNotFound) // id 해당 학생 없으면 에러
+		return
+	}
+	delete(students, id)
+	w.WriteHeader(http.StatusOK) // 삭제 성공 시, StatusOK 반환
+}
+
+func MakeWebHandler() http.Handler {
+	mux := mux.NewRouter() // gorilla/mux 생성
+
+	/** 새로운 핸들러 등록 */
+	mux.HandleFunc("/students", GetStudentListHandler).Methods("GET") // 학생 리스트 조회
+	mux.HandleFunc("/student/{id:[0-9]+}", GetStudentHandler).Methods("GET") // 학생 한명 조회
+	mux.HandleFunc("/students", PostStudentHandler).Methods("POST") // 학생 등록
+	mux.HandleFunc("/student/{id:[0-9]+}", DeleteStudentHandler).Methods("DELETE") // 학생 삭제
+
+	students = make(map[int]Student)
+	students[1] = Student{1, "zzz", 10, 77}
+	students[2] = Student{2, "aaa", 20, 88}
+	students[3] = Student{3, "ccc", 30, 99}
+	students[4] = Student{4, "bbb", 40, 50}
+	lastId = 4
+
+	return mux
+}
+
+func main() {
+	http.ListenAndServe(":3000", MakeWebHandler())
+}
 ```
 
+```go
+// ex30.1/ex30_1_test.go
+package main
+
+import (
+	"encoding/json"
+	"net/http"
+	"net/http/httptest"
+	"testing"
+	"strings"
+
+	"github.com/stretchr/testify/assert"
+)
+
+func TestJsonHandler(t *testing.T) {
+	assert := assert.New(t)
+
+	res := httptest.NewRecorder()
+	req := httptest.NewRequest("GET", "/students", nil) // '/students' 경로 테스트
+
+	mux := MakeWebHandler()
+	mux.ServeHTTP(res, req)
+
+	assert.Equal(http.StatusOK, res.Code)
+	var list []Student
+	err := json.NewDecoder(res.Body).Decode(&list)
+	assert.Nil(err)
+	assert.Equal(4, len(list))
+	assert.Equal("zzz", list[0].Name)
+	assert.Equal("aaa", list[1].Name)
+}
+
+func TestJsonHandler2(t *testing.T) { 
+	assert := assert.New(t)
+
+	var student Student
+	mux := MakeWebHandler()
+	res := httptest.NewRecorder()
+	req := httptest.NewRequest("GET", "/student/1", nil) // id=1 학생 조회
+
+	mux.ServeHTTP(res, req)
+	assert.Equal(http.StatusOK, res.Code)
+	err := json.NewDecoder(res.Body).Decode(&student)
+	assert.Nil(err)
+	assert.Equal("zzz", student.Name)
+
+
+	res = httptest.NewRecorder()
+	req = httptest.NewRequest("GET", "/student/2", nil) // id=2 학생 조회
+	mux.ServeHTTP(res, req)
+	assert.Equal(http.StatusOK, res.Code)
+	err = json.NewDecoder(res.Body).Decode(&student)
+	assert.Nil(err)
+	assert.Equal("aaa", student.Name)
+}
+
+func TestJsonHandler3(t *testing.T) { 
+	assert := assert.New(t)
+
+	var student Student
+	mux := MakeWebHandler()
+	res := httptest.NewRecorder()
+	req := httptest.NewRequest("POST", "/students",
+		// 새로운 학생 데이터 등록
+		strings.NewReader(`{"Id":0, "Name": "nnnn", "Age": 15, "Score": 78}`),
+	)
+
+	mux.ServeHTTP(res, req)
+	assert.Equal(http.StatusCreated, res.Code)
+
+	res = httptest.NewRecorder()
+	req = httptest.NewRequest("GET", "/student/5", nil)
+	// 추가된 학생 데이터
+	mux.ServeHTTP(res, req)
+	assert.Equal(http.StatusOK, res.Code)
+	err := json.NewDecoder(res.Body).Decode(&student)
+	assert.Nil(err)
+	assert.Equal("nnnn", student.Name)
+}
+
+func TestJsonHandler4(t *testing.T) { 
+	assert := assert.New(t)
+
+	mux := MakeWebHandler()
+	res := httptest.NewRecorder()
+	req := httptest.NewRequest("DELETE", "/student/1", nil)
+
+	// DELETE 요청
+	mux.ServeHTTP(res, req)
+	assert.Equal(http.StatusOK, res.Code)
+
+	res = httptest.NewRecorder()
+	req = httptest.NewRequest("GET", "/students", nil)
+	mux.ServeHTTP(res, req)
+
+	assert.Equal(http.StatusOK, res.Code)
+	var list []Student
+	err := json.NewDecoder(res.Body).Decode(&list)
+	assert.Nil(err)
+	assert.Equal(3, len(list))
+	assert.Equal("aaa", list[0].Name)
+}
+```
 
 ### 31.TODO리스트 웹사이트 만들기
 
+- 프론트엔드(HTML, Javascript) <-> 백엔드(Go 웹 서버)
+- gorilla/mux 이외에 urfave/negroni 와 unrolled/render 패키지 사용
+
+1. RESTful API에 맞춰 서비스 정의
+2. Todo 구조체 정의
+3. RESTful API에 맞춰 각 핸들러 정의
+4. HTML 작성
+5. Javascript 작성
+6. 웹브라우저 동작 확인
+
+
+- urfave/negroni 설치
+  - 자주 사용하는 웹 핸들러를 제공하는 패키지
+    - 로그기능
+    - panic 복구 기능
+    - 파일 서버 기능
+
+```sh
+go get github.com/urfave/negroni
+```
+
+```go
+mux := MakeWebHandler() // 우리가 만든 핸들러
+n := negroni.Classic()  // negroni 기본 핸들러
+n.UseHandler(mux) // 우리가 만든 핸들러를 감쌈
+
+err := http.ListenAndServe(":3000", n) // negroni 기본 핸들러가 동작함
+```
+
+- unrolled/render 설치
+  - 웹서버 응답을 구현하는데 유용한 패키지.
+  - 서버응답으로 HTML, JSON, TEXT 같은 포맷 간단히 사용가능
+
+```sh
+go get github.com/unrolled/render
+```
+
+```go
+// JSON. 포맷으로 변환하여 응답
+r := render.New()
+r.JSON(w, http.StatusOK, map[string]string{"hello": "json"})
+```
+
+- 웹 서버 만들기
+  - GET /todos 리스트조회
+  - POST /todos 등록
+  - PUT /todos/id 업데이트
+  - DELETE /todos/id 삭제
+
+```sh
+cd 30-restful/ex31.1
+go mod init ex31.1
+go mod tidy
+go build
+./ex31.1
+  2022/07/27 16:02:13 Started App
+```
+
+```go
+// ex31.1/ex31.1.go
+package main
+
+import (
+	"encoding/json"
+	"log"
+	"net/http"
+	"sort"
+	"strconv"
+
+	"github.com/gorilla/mux"
+	"github.com/unrolled/render"
+	"github.com/urfave/negroni"
+)
+
+
+var rd *render.Render
+
+// 할일 정보 담는 Todo 구조체
+type Todo struct {
+	ID int `json:"id,omitempty"`		// JSON 포맷으로 변환 옵션
+	Name string `json:"name"`
+	Completed bool `json:"completed,omitempty"`
+}
+
+var todoMap map[int]Todo
+var lastID int = 0
+
+type Todos []Todo
+
+func (t Todos) Len() int {
+	return len(t)
+}
+
+func (t Todos) Swap(i, j int) {
+	t[i], t[j] = t[j], t[i]
+}
+
+func (t Todos) Less(i, j int) bool {
+	return t[i].ID < t[j].ID
+}
+
+func GetTodoListHandler(w http.ResponseWriter, r *http.Request) {
+	list := make(Todos, 0)
+	for _, todo := range todoMap {
+		list = append(list, todo)
+	}
+	sort.Sort(list)	// ID 기준 정렬
+	rd.JSON(w, http.StatusOK, list)	// JSON 포맷으로 반환
+
+	// w.WriteHeader(http.StatusOK)
+	// w.Header().Set("Content-Type", "application/json")
+	// json.NewEncoder(w).Encode(list) // JSON 포맷으로 변경
+}
+
+func PostTodoHandler(w http.ResponseWriter, r *http.Request) {
+	var todo Todo
+	err := json.NewDecoder(r.Body).Decode(&todo)
+	if err != nil {
+		log.Fatal(err)
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	lastID++
+	todo.ID = lastID
+	todoMap[lastID] = todo
+	rd.JSON(w, http.StatusCreated, todo)
+}
+
+type Success struct {
+	Success bool `json:"Success"`
+}
+
+func RemoveTodoHandler(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	id, _ := strconv.Atoi(vars["id"])
+	if _, ok := todoMap[id]; ok {
+		delete(todoMap, id)
+		rd.JSON(w, http.StatusOK, Success{true})
+	} else {
+		rd.JSON(w, http.StatusNotFound, Success{false})
+	}
+}
+
+func UpdateTodoHandler(w http.ResponseWriter, r *http.Request) {
+	var newTodo Todo
+	err := json.NewDecoder(r.Body).Decode(&newTodo)
+	if err != nil {
+		log.Fatal(err)
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	vars := mux.Vars(r)
+	id, _ := strconv.Atoi(vars["id"])
+	if todo, ok := todoMap[id]; ok {
+		todo.Name = newTodo.Name
+		todo.Completed = newTodo.Completed
+		rd.JSON(w, http.StatusOK, Success{true})
+	} else {
+		rd.JSON(w, http.StatusBadRequest, Success{false})
+	}
+}
+
+func MakeWebHandler() http.Handler {
+	todoMap = make(map[int]Todo)
+
+	mux := mux.NewRouter() // gorilla/mux 객체 생성
+
+	mux.Handle("/", http.FileServer(http.Dir("public")))
+	mux.HandleFunc("/todos", GetTodoListHandler).Methods("GET")
+	mux.HandleFunc("/todos", PostTodoHandler).Methods("POST")
+	mux.HandleFunc("/todos/{id:[0-9]+}", RemoveTodoHandler).Methods("DELETE")
+	mux.HandleFunc("/todos/{id:[0-9]+}", UpdateTodoHandler).Methods("PUT")
+	return mux
+}
+
+func main() {
+	rd = render.New()
+	m := MakeWebHandler()
+	n := negroni.Classic()
+	n.UseHandler(m)
+
+	log.Println("Started App")
+	err := http.ListenAndServe(":3000", n)
+	if err != nil {
+		panic(err)
+	}
+}
+```
+
+- 프론트엔드 만들기
+  - ex31.1/public/index.html
+  - ex31.1/public/todo.js
+  - ex31.1/public/todo.css
+
+
+- 3티어 웹
+  - 프론트엔드-백엔드-데이터베이스
+
+- 웹 배포 방법
+  - 로컬에 띄우는 서버 한계
+    1. 도메인이 없음 (e.g. https://13.125.141.84  https://mytodolist.com)
+    2. 고정된 공개 IP가 없음
+      - IPv4는 고정된것이 아닌 공유기나 ISP에서 컴퓨터에 임시할당한 주소이고, 공개된 주소도 아님
+      - 공유기 네트워크 안쪽에서만 유효함
+  - 개인 PC는 고정 IP가 없음
+  - 고정된 공개 IP주소를 얻으려면 공개 IP 대역을 이미 획득한 인터넷 호스팅업체로부터 호스팅 받아야함
+  - IaaS, PaaS: aws,gcloud,azure (유료)
+  - Heroku(무료) Paas: 간단한 명령어로 웹서버 배포 가능
+
+- 클라우드 서비스 유형
+  - IaaS : infrastructure as a service
+  - PaaS : 머신성능 선택 및 서버 실행간편화. 서버 세부조정 어려움
+  - SaaS : e.g. 구글드라이브, 구글문서도구
+
+
+- 헤로쿠로 배포하기
+  - heroku.com 가입
+  - CLI 설치
+    - https://devcenter.heroku.com/articles/heroku-cli
+    - `curl https://cli-assets.heroku.com/install.sh | sh`
+    - `heroku version`
+
+```sh
+# 모듈 생성
+mkdir todo && cd $_
+touch ex31.1.go
+mkdir public
+go mod init todo
+go build
+
+git init
+heroku login
+heroku create
+```
+
+- 웹서버 수정
+  - 헤로쿠에서 웹서버 배포하려면 port등 일부 수정 필요
+  - Procfile 생성 및 내용 입력
+
+```go
+func main() {
+	rd = render.New()
+	m := MakeWebHandler()
+	n := negroni.Classic()
+	n.UseHandler(m)
+
+	log.Println("Started App")
+  port := os.Getenv("PORT") // 헤로쿠서버에서 환경변수 PORT 가져오기
+	// err := http.ListenAndServe(":3000", n)
+	err := http.ListenAndServe(":" + port, n) // port를 이용해서 웹 서버 실행
+	if err != nil {
+		panic(err)
+	}
+}
+```
+
+```sh
+cd todo
+cat > Procfile
+  web: bin/todo
+```
+
+- 깃 커밋
+
+```sh
+# .gitignore
+cat > .gitignore
+  *.exe
+
+git add .
+git status
+git commit -m 'first commit of todo'
+git push heroku master
+
+heroku open
+```

@@ -25,5 +25,10 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/sso v1.11.4 // indirect
 	github.com/aws/aws-sdk-go-v2/service/sts v1.16.4 // indirect
 	github.com/aws/smithy-go v1.11.2 // indirect
+	github.com/fsnotify/fsnotify v1.5.4 // indirect
+	github.com/gorilla/mux v1.8.0 // indirect
 	github.com/jmespath/go-jmespath v0.4.0 // indirect
+	github.com/unrolled/render v1.5.0 // indirect
+	github.com/urfave/negroni v1.0.0 // indirect
+	golang.org/x/sys v0.0.0-20220615213510-4f61da869c0c // indirect
 )
