@@ -5346,3 +5346,9 @@ git push heroku master
 
 heroku open
 ```
+
+- go build 크로스 플랫폼
+
+```sh
+GOOS=windows GOARCH=amd64 go build
+```

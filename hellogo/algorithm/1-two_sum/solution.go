@@ -45,11 +45,4 @@ func twoSumSorted(nums []int, target int) []int {
 func main() {
 	nums := []int{5,3,1,2,4}
 	target := 5
-	fmt.Println(nums, target)
-	fmt.Println(twoSum(nums, target))
-
-	nums = []int{1, 3, 5, 7, 11, 13, 46, 50}
-	target = 55
-	fmt.Println(nums, target)
-	fmt.Println(twoSumSorted(nums, target))
 }
