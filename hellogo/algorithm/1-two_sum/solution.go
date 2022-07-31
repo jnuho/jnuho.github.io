@@ -3,46 +3,31 @@ package main
 import "fmt"
 
 func twoSum(nums []int, target int) []int {
-	if len(nums) <2 {
+	if len(nums) < 2 {
 		return []int{}
 	}
 
-	numToIndex := make(map[int]int)
-	for idx, num := range nums {
-		need := target - num
+	hashmap := map[int]int{}
 
-		mIdx, ok := numToIndex[need]
+	// Target = A + B
+	for key,A := range nums {
+		B := target - A
+		_, ok := hashmap[B]
+
 		if ok {
-			return []int{mIdx, idx}
+			return []int{hashmap[B], key}
 		}
-
-		numToIndex[num] = idx
-	}
-
-	return nil
-}
-
-/**
-Assume 'nums' is a sorted array in ascending order
-*/
-func twoSumSorted(nums []int, target int) []int {
-	front := 0
-	rear := len(nums) -1
-
-	for front < rear {
-		need := nums[front] + nums[rear]
-		if need == target {
-			return []int{front, rear}
-		} else if need < target {
-			front = front +1
-		} else  {
-			rear = rear-1
-		}
+		hashmap[A] = key
 	}
 	return nil
 }
 
 func main() {
-	nums := []int{5,3,1,2,4}
-	target := 5
+	// nums := []int{2, 7, 11, 15}
+	// target := 9
+	nums := []int{1,1}
+	target := 2
+
+	res := twoSum(nums, target)
+	fmt.Println(res)
 }
