@@ -1,7 +1,13 @@
 
 - Leetcode in Go
 
-- [Reference](https://github.com/austingebauer/go-leetcode)
+- [참고](https://github.com/austingebauer/go-leetcode)
+
+```sh
+cd hellogo/algorithm
+go mod init github.com/jnuho/jnuho.github.io/hellogo/algorithm
+go mod tidy
+```
 
 - [1-two-sum](https://raw.githubusercontent.com/jnuho/jnuho.github.io/master/hellogo/algorithm/1-two-sum/README.md) [☇](https://raw.githubusercontent.com/jnuho/jnuho.github.io/master/hellogo/algorithm/1-two-sum/solution.go)
 - [2-add-two-numbers](https://raw.githubusercontent.com/jnuho/jnuho.github.io/master/hellogo/algorithm/2-add-two-numbers/README.md) [☇](https://raw.githubusercontent.com/jnuho/jnuho.github.io/master/hellogo/algorithm/2-add-two-numbers/solution.go)
