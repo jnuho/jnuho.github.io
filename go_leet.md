@@ -9,11 +9,13 @@ go mod init github.com/jnuho/jnuho.github.io/hellogo/algorithm
 go mod tidy
 ```
 
-- [1-two-sum](https://raw.githubusercontent.com/jnuho/jnuho.github.io/master/hellogo/algorithm/1-two-sum/README.md) [☇](https://raw.githubusercontent.com/jnuho/jnuho.github.io/master/hellogo/algorithm/1-two-sum/solution.go)
-- [2-add-two-numbers](https://raw.githubusercontent.com/jnuho/jnuho.github.io/master/hellogo/algorithm/2-add-two-numbers/README.md) [☇](https://raw.githubusercontent.com/jnuho/jnuho.github.io/master/hellogo/algorithm/2-add-two-numbers/solution.go)
+- [1-two-sum](https://raw.githubusercontent.com/jnuho/jnuho.github.io/master/hellogo/algorithm/1-two-sum/README.md) [☇](https://raw.githubusercontent.com/jnuho/jnuho.github.io/master/hellogo/algorithm/1-two-sum/solution.go) [☇](https://raw.githubusercontent.com/jnuho/jnuho.github.io/master/hellogo/algorithm/1-two-sum/solution_test.go)
+
+- [2-add-two-numbers](https://raw.githubusercontent.com/jnuho/jnuho.github.io/master/hellogo/algorithm/2-add-two-numbers/README.md) [☇](https://raw.githubusercontent.com/jnuho/jnuho.github.io/master/hellogo/algorithm/2-add-two-numbers/solution.go) [☇](https://raw.githubusercontent.com/jnuho/jnuho.github.io/master/hellogo/algorithm/2-add-two-numbers/solution_test.go)
 
 
-3-longest-substring-without-repeating-characters
+- [3-longest-substring-without-repeating-characters](https://raw.githubusercontent.com/jnuho/jnuho.github.io/master/hellogo/algorithm/3-longest-substring-without-repeating-characters/README.md) [☇](https://raw.githubusercontent.com/jnuho/jnuho.github.io/master/hellogo/algorithm/3-longest-substring-without-repeating-characters/solution.go) [☇](https://raw.githubusercontent.com/jnuho/jnuho.github.io/master/hellogo/algorithm/3-longest-substring-without-repeating-characters/solution_test.go)
+
 
 4-median-of-two-sorted-arrays
 
