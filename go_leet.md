@@ -2,7 +2,8 @@
 # Leetcode in Go
 
 - [Reference](https://github.com/austingebauer/go-leetcode)
-- [1-two_sum](https://raw.githubusercontent.com/jnuho/jnuho.github.io/master/hellogo/algorithm/1-two_sum/solution.go)
+- [1-two_sum](https://raw.githubusercontent.com/jnuho/jnuho.github.io/master/hellogo/algorithm/1-two_sum/README.md)  [[sol]](https://raw.githubusercontent.com/jnuho/jnuho.github.io/master/hellogo/algorithm/1-two_sum/solution.go)
+- [2-add_two_num](https://raw.githubusercontent.com/jnuho/jnuho.github.io/master/hellogo/algorithm/2-add_two_num/README.md)  [[sol]](https://raw.githubusercontent.com/jnuho/jnuho.github.io/master/hellogo/algorithm/2-add_two_num/solution.go)
 
 ```go
  
