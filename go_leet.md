@@ -17,7 +17,7 @@ go mod tidy
 - [3-longest-substring-without-repeating-characters](https://raw.githubusercontent.com/jnuho/jnuho.github.io/master/hellogo/algorithm/3-longest-substring-without-repeating-characters/README.md) [☇](https://raw.githubusercontent.com/jnuho/jnuho.github.io/master/hellogo/algorithm/3-longest-substring-without-repeating-characters/solution.go) [☇](https://raw.githubusercontent.com/jnuho/jnuho.github.io/master/hellogo/algorithm/3-longest-substring-without-repeating-characters/solution_test.go)
 
 
-- [4-median-of-two-sorted-arrays](./4-median-of-two-sorted-arrays/README)
+- [4-median-of-two-sorted-arrays](./hellogo/algorithm/4-median-of-two-sorted-arrays/README)
 
 5-longest-palindromic-substring
 
