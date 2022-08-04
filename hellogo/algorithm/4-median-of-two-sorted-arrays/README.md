@@ -1,7 +1,5 @@
 # 4. Median of Two Sorted Arrays
 
-- [solution.go](https://raw.githubusercontent.com/jnuho/jnuho.github.io/master/hellogo/algorithm/4-median-of-two-sorted-arrays/solution.go)
-
 https://leetcode.com/problems/median-of-two-sorted-arrays/
 
 Given two sorted arrays nums2 and nums2 of size m and n respectively, return the median of the two sorted arrays.
