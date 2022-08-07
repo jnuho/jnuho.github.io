@@ -1,7 +1,6 @@
 package main
 
 import (
-	// "github.com/jnuho/jnuho.github.io/hellogo/algorithm/structures"
 	"fmt"
 )
 type ListNode struct {

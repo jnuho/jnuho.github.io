@@ -2103,7 +2103,7 @@ type Closer interface {
   Close()
 }
 
-type struct File {
+type File struct {
 }
 
 func (*f File) Read() {
@@ -2216,7 +2216,9 @@ func main() {
   - 함수 시작지점을 가리키는 프로그램 카운터 있음 e.g. 1번라인, 2번라인...
   - 함수 시작지점은 숫자로 표현되며, 가리키는 값을 함수포인터라고 함
   - 함수 타입은 함수정의로 표현 e.g. `func (int, int) int`
-  - 함수 alias 지정가능 `type opFunc func (int, int) int`
+  - 함수 alias 지정가능
+    - `type opFunc func (int, int) int`
+    - `type CollectorOption func(*Collector)`
   - 함수리터럴 (익명함수, lambda)
     - 함수리터럴 외부변수를 자동으로 리터럴 함수 내부상태로 가져와 저장 ('capture') : 값복사가 아닌 참조형태로 가져옴
 

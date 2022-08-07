@@ -1,6 +1,30 @@
 package main
 
-import "fmt"
+func longestPalindrome(s string) string {
+	ll := len(s)
+	if ll == 0 {
+		return ""
+	}
+
+	var l, r, pl, pr int
+
+	for r < ll {
+		for r+1 < ll && s[l] == s[r+1] {
+			r++
+		}
+		for l-1 >= 0 && r+1 < ll && s[l-l] == s[r+1] {
+			l--
+			r++
+		}
+		if r-l > pr-pl {
+			pl, pr = l, r
+		}
+		l = (l+r) / 2 + 1
+		r = l
+	}
+	return s[pl:pr+1]
+}
+
 
 func Min(i,j int) int {
 	if i < j {
@@ -24,7 +48,7 @@ func isPalindrome(s string) bool {
 	return true
 }
 
-func longestPalindrome(s string) string {
+func longestPalindrome2(s string) string {
 	max_length := 0
 	max_str := ""
 
@@ -44,9 +68,4 @@ func longestPalindrome(s string) string {
 		}
 	}
 	return max_str
-}
-
-func main() {
-	fmt.Println(longestPalindrome("babad"))
-	fmt.Println(longestPalindrome("cbbd"))
 }
