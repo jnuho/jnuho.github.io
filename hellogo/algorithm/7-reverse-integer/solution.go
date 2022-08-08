@@ -3,7 +3,12 @@ package main
 import (
 	"fmt"
 	"strconv"
+	"math"
 )
+
+func powInt(x, y int) int {
+	return int(math.Pow(float64(x), float64(y)))
+}
 
 func reverse(x int) int {
 	ux := 0
@@ -23,6 +28,10 @@ func reverse(x int) int {
 	res, err := strconv.Atoi(string(s))
 	if err !=nil {
 		fmt.Println(err)
+	}
+
+	if sign*res < - powInt(2,31) || sign*res > powInt(2,31)-1 {
+		return 0
 	}
 	return sign *res
 }
