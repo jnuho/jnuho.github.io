@@ -36,7 +36,7 @@ go mod tidy
 go get github.com/bwmarrin/discordgo@v0.20.3
 
 cat go.mod
-  require github.com/bwmarrin/discordgo v0.20.3
+  require github.com/bwmarrin/discordgo v0.203
 
 go get github.com/bwmarrin/discordgo@latest
 
