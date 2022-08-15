@@ -24,7 +24,6 @@ func reverse(x int) int {
 	return result
 }
 
-
 func main() {
 	fmt.Println(reverse(321))
 	fmt.Println(reverse(-123))
