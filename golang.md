@@ -5354,3 +5354,23 @@ heroku open
 ```sh
 GOOS=windows GOARCH=amd64 go build
 ```
+
+
+- Linux 환경배포
+
+```sh
+# 로컬
+zip -r public.zip public/
+scp public.zip root@{ip}:/root
+scp demo root@{ip}:/root
+
+# 원격
+mkdir goapp && cd $_
+unzip public.zip -d goapp
+cp /root/demo /goapp
+./demo &
+
+
+# http://{ip}:3000/
+# 서버 
+```
