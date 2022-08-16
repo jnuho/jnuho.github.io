@@ -16,7 +16,7 @@ func Test(t *testing.T) {
 
 	tests := []struct {
 		name string
-		args type 
+		args args
 		want bool
 	}{
 		{
