@@ -5370,7 +5370,6 @@ unzip public.zip -d goapp
 cp /root/demo /goapp
 ./demo &
 
-
 # http://{ip}:3000/
 # 서버 
 ```
