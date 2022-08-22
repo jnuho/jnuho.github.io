@@ -22,6 +22,9 @@ func main() {
 	c.Limit(&colly.LimitRule{DomainGlob: "*", Parallelism: 2})
 	var result string
 
+	url := "https://www.acmicpc.net/problem/"
+  url += problem
+
   c.OnHTML("div#problem-body", func(e *colly.HTMLElement) {
 		result = e.ChildText("div#problem_description")
 		result += e.ChildText("div#problem_input")
@@ -34,7 +37,7 @@ func main() {
 		result += "\n[OUTPUT 3]\n" + e.ChildText("pre#sample-output-3")
 		result += "\n[INPUT 4]\n" + e.ChildText("pre#sample-input-4")
 		result += "\n[OUTPUT 4]\n" + e.ChildText("pre#sample-output-4")
-		result = "/**\n" + result + "\n*/\n"
+		result = "/**\n" + url + "\n\n" + result + "\n*/\n"
 		
 		result += "package main\n\n"
 		result += "import (\n"
@@ -46,8 +49,6 @@ func main() {
 		result += "}"
   })
 
-	url := "https://www.acmicpc.net/problem/"
-  url += problem
 
 	// Start scraping
   c.Visit(url)

@@ -1,4 +1,6 @@
 /**
+https://www.acmicpc.net/problem/1003
+
 다음 소스는 N번째 피보나치 수를 구하는 C++ 함수이다.
 
 int fibonacci(int n) {
@@ -54,3 +56,43 @@ fibonacci(3)을 호출하면 다음과 같은 일이 일어난다.
 [OUTPUT 4]
 
 */
+package main
+
+import (
+  "fmt"
+)
+
+var cnt_zero int
+var cnt_one int
+
+func fibonacci(n int) int {
+	if n == 0 {
+		cnt_zero++
+		return 0
+	} else if n == 1 {
+		cnt_one++
+		return 1
+	} else {
+		return fibonacci(n-1) + fibonacci(n-2)
+	}
+}
+
+func main() {
+	var T int
+	var n int // 피보나치 n
+	fmt.Scanln(&T)
+  
+	results := ""
+	for i:=0; i<T; i++ {
+		cnt_zero = 0
+		cnt_one = 0
+		fmt.Scanln(&n)
+		fibonacci(n)
+		results += fmt.Sprintf("%d %d", cnt_zero, cnt_one)
+		if i!= T-1 {
+			results += "\n"
+		}
+	}
+
+	fmt.Println(results)
+}

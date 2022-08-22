@@ -1,6 +1,4 @@
 
-- [AWS SDK](#aws-sdk)
-
 ### Learn Golang
 
 - [go module](https://medium.com/@fonseka.live/getting-started-with-go-modules-b3dac652066d)
@@ -89,6 +87,20 @@ go mod tidy
 cat go.mod
 ```
 
+- 프로그래밍 언어
+  - 어셈블리어 vs. 고수준 언어
+    - 어셈블리어는 코드와 기계어가 1:1 매칭이지만 고수준언어 코드는 실행하려며 기계어로 변환 필요
+    - 각각의 고수준 언어는 컴파일러 있음 e.g. C 컴파일러, Go 컴파일러
+  - 정적 컴파일 언어 vs. 동적 컴파일 언어
+    - 미리 컴파일(파른 속도) vs. 사용할때 컴파일(속도 희생, 여러 OS 범용성 뛰어남)
+    - Go는 저적 컴파일 언어로, 다양한 플랫폼에 맞도록 실행 파일을 따로 만들어야 함
+  - 약 타입 언어 vs. 강 타입 언어
+    - Go는 강 타입 언어.
+
+- 가비지 컬렉터 유무
+  - 자동 메모리 해제 처리 하여 메모리 관련 문제 적음
+  - CPU를 사용하므로 성능 저하 단점
+
 
 
 - 코드 실행 단계
@@ -106,6 +118,7 @@ cat go.mod
   - `Ver >= 1.16`: 모든 Go코드는 Go모듈 아래
     - `go mod init MODULE_NAME`으로 Go모듈 생성
     - 모듈이름은 유니크해야 함; GitHub 저장소 주소를 활용하거나 URL을 모듈 이름으로 사용
+
 
 이름| 설명| 값의 범위
 --|--|--
@@ -137,6 +150,44 @@ uint |  32비트 컴퓨터에서 uint32. 64비트 컴퓨터에서 uint64 |
   - 인터페이스
   - 맵
   - 채널
+
+
+- 타입별 기본값
+
+타입 | 기본값
+--|--
+모든정수타입 (int8, int16, int32, int64, uint8, uint16, uint32, uint64, int, uint, byte, rune) | 0
+모든 실수 타입 (float32, float64, complex64, complex128) | 0.0
+불리언 | false
+문자열 | "" (빈문자열)
+그외 | nil (정의되지 않은 메모리 주소를 나타내는 Go 키워드)
+
+
+- 디폴트 데이터타입
+
+```go
+package main
+import (
+	"fmt"
+	"reflect"
+)
+func main() {
+  // int
+	fmt.Println(reflect.TypeOf(10))
+
+  // float64
+	fmt.Println(reflect.TypeOf(3.1415))
+
+  // string
+	fmt.Println(reflect.TypeOf("LaLaLalla"))
+
+  // bool
+	fmt.Println(reflect.TypeOf(true))
+
+  // int32: (rune타입 : 4-byte int32 타입과 별칭)
+	fmt.Println(reflect.TypeOf('A'))
+}
+```
 
 
 - 변수선언 형태
@@ -430,6 +481,15 @@ func main() {
 
 
 ### 10.switch문
+
+```
+// From A Tour of Go
+Go only runs the selected case, not all the cases that follow.
+In effect, the break statement that is needed at the end of each case
+in those languages is provided automatically in Go.
+Another important difference is that Go's switch cases need not be constants,
+and the values involved need not be integers.
+```
 
 ```go
 package main

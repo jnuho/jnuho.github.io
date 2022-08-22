@@ -1,5 +1,6 @@
-
 /**
+https://www.acmicpc.net/problem/1002
+
 조규현과 백승환은 터렛에 근무하는 직원이다. 하지만 워낙 존재감이 없어서 인구수는 차지하지 않는다. 다음은 조규현과 백승환의 사진이다.
 
 
@@ -35,15 +36,38 @@ package main
 
 import (
   "fmt"
+	"math"
 )
 
+func powInt(n,x int) int {
+	return int(math.Pow(float64(n), float64(x)))
+}
+
 func main() {
+
+	var x1,y1,r1, x2,y2,r2 int
 	var T int
 	fmt.Scanln(&T)
 
-	var x1,y1,r1, x2,y2,r2 int
+	results := make([]int, 0)
+
 	for i := 0; i<T; i++ {
 		fmt.Scan(&x1,&y1,&r1, &x2,&y2,&r2)
+		// 터렛간 거리
+		turretGapPow2 := powInt(x1-x2,2) + powInt(y1-y2,2)
+
+		if x1==x2 && y1==y2 && r1 == r2 {
+			results = append(results, -1)
+		} else if (x1 == x2 && y1 == y2 && r1 != r2) || powInt(r1+r2, 2) < turretGapPow2 || powInt(r1-r2, 2) > turretGapPow2 {
+			results = append(results, 0)
+		} else if powInt(r1+r2,2) == turretGapPow2 || powInt(r1-r2,2) == turretGapPow2 {
+			results = append(results, 1)
+		} else {
+			results = append(results, 2)
+		}
 	}
-	
+
+	for _,res := range results {
+		fmt.Println(res)
+	}
 }
