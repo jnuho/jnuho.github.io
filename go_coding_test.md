@@ -323,66 +323,218 @@ func main() {
 
 
 ```go
-# top left (1,1) bottom right (N,N)
-# 계획서 띄어쓰기 기준 L R U D 문자들이 반복적으로 적혀있음
-# 움직일수 없는 곳 이동명령은 무시 됨
-# 5
-# R R R U D D
-# 3 4
-N = int(input())
-# LRUD
-inst = list(input().split())
+// top left (1,1) bottom right (N,N)
+// 계획서 띄어쓰기 기준 L R U D 문자들이 반복적으로 적혀있음
+// 움직일수 없는 곳 이동명령은 무시 됨
+// 5
+// R R R U D D
+// 3 4
+package main
 
-r=1
-c=1
-for s in inst:
-  if s=='L' and c>1:
-    c-=1
-  elif s=='R' and c<N:
-    c+=1
-  elif s=='U' and r>1:
-    r-=1
-  elif s=='D' and r<N:
-    r+=1
+import (
+	"fmt"
+	"os"
+	"bufio"
+	"strings"
+)
 
-print(f'{r} {c}')
-print(r, c)
+func main() {
+	r,c := 1,1
+
+	var N int
+	fmt.Scanln(&N)
+
+	scanner := bufio.NewScanner(os.Stdin)
+	scanner.Scan()
+	line := scanner.Text()
+
+	for _, d := range strings.Fields(line) {
+		switch d {
+		case "L":
+			if c > 1 {
+				c -=1
+			}
+		case "R":
+			if c < N {
+				c +=1
+			}
+		case "U":
+			if r > 1 {
+				r -=1
+			}
+		case "D":
+			if r < N {
+				r +=1
+			}
+		default:
+			break
+		}
+	}
+
+	fmt.Println(r, c)
+}
 ```
 
 
 ```go
-# 00시00분00초~N시59분59초 3이 하나라도 포함되는 경우의 수
-# 0<=N<=23
+// 00시 00분 00초 ~ N시 59분 59초
+// 3이 하나라도 포함되는 경우의 수
+package main
 
-N = int(input())
-count = 0
+import (
+	"fmt"
+	"strconv"
+	"strings"
+)
 
-for h in range(N+1):
-  for m in range(60):
-    for s in range(60):
-      if '3' in str(h) + str(m) + str(s):
-        count+=1
+func main() {
 
-print(count)
+	var N int
+	fmt.Scan(&N)
 
+	count := 0
+
+	// TODO
+	for h:=0; h<=N; h++ {
+		for m:=0; m<60; m++ {
+			for s:=0; s<60; s++ {
+				first := strings.Contains(strconv.Itoa(h), "3")
+				second := strings.Contains(strconv.Itoa(m), "3")
+				third := strings.Contains(strconv.Itoa(s), "3")
+				if first || second || third {
+					count++
+				}
+			}
+		}
+	}
+
+
+	fmt.Println(count)
+}
 ```
 
 
 ```go
-# 체스판에서 (a~h, 1~8)
-# 나이트 위치가 주어졌을때, 이동 가능한 경우의 수
-pos = input()
-x= int(ord(pos[0]))-int(ord('a'))+1
-y = int(pos[1])
-moves = [(2,-1),(2,1),(-2,1),(-2,1),(1,2),(1,-2), (-1,2),(-1,-2)]
+// 체스판에서 (a~h, 1~8)
+// 나이트 이동(2+1방식 이동)할 수 있는 개수
+// a1
+// 2
+package main
 
-count = 0
-for move in moves:
-  dx = x+move[0]
-  dy = y+move[1]
-  if dx >=1 and dx <=8 and dy>=1 and dy <=8:
-    count +=1
-print(count)
+import (
+	"fmt"
+	"os"
+	"bufio"
+)
+
+func main() {
+	scanner := bufio.NewScanner(os.Stdin)
+	scanner.Scan()
+	c := scanner.Text()
+
+	// x: 1~8, y: 1~8
+	x := int(c[0]-96)
+	y := int(c[1]-48)
+
+	var count int
+
+	steps := [][]int{
+		[]int{1,2}, []int{-1,2}, []int{1,-2}, []int{-1,-2},
+		[]int{2,1}, []int{-2,1}, []int{2,-1}, []int{-2,-1},
+	}
+	for _,move := range steps {
+		if x+move[0] >=1 && x+move[0] <= 8 && y+move[1] >=1 && y+move[1] <=8 {
+			count++
+		}
+	}
+	fmt.Println(count)
+}
+```
+
+```go
+// 게임개발
+// 1. 현재방향 왼쪽방향 부터 차례로 갈곳 정함
+// 2. 왼쪽 회전 후 안 가본칸이면 전진, 방문한 칸이라면 왼쪽 회전만
+// 3. 네칸 모두 가본칸이거나 바다라면, 방향 유지한채 한칸 뒤로 (뒤가 바다이면 움직임 멈춤)
+// 0 북 1 동 2 남 3 서
+// 0 육지 1 바다
+// N x M 맵
+// 캐릭터가 방문한 칸의 수 출력
+
+// 4 4
+// 1 1 0  // (1,1)에 북쪽 0을 바라보고 서 있는 캐릭터
+// 1 1 1 1
+// 1 0 0 1
+// 1 1 0 1
+// 1 1 1 1
+// 3
+// TODO 뒤로 돌아가는 케이스에서 일부 오류 있음
+// 모든 칸을 다 방문하지 않는 예외케이스 발생 (expected: 6, actual: 5)
+// 5 5
+// 1 1 0
+// 1 1 1 1 1
+// 1 0 0 0 1
+// 1 1 0 0 1
+// 1 1 0 1 1
+// 1 1 1 1 1
+// 5
+package main
+
+import (
+	"fmt"
+)
+
+func main() {
+	var N,M int
+	var r,c, d int
+
+	fmt.Scanln(&N, &M)
+	fmt.Scanln(&r, &c, &d)
+
+	area := make([][]int, N)
+	for r:=0; r< N; r++ {
+		temp := make([]int, M)
+		for c:=0; c< M; c++ {
+			fmt.Scan(&temp[c])
+		}
+		area[r] = temp
+	}
+
+	dr := []int{-1,0,1,0}
+	dc := []int{0,1,0,-1}
+
+	count := 1
+	for {
+		allFour := false
+		for i:=0; i<4; i++ {
+			area[r][c] = 2
+			dd := ((d-1) +4) %4
+			d = dd
+			isRange := r+ dr[dd] >=0 && r+dr[dd] <N && c+ dc[dd] >=0 && c+dc[dd] <M 
+			if isRange && area[r + dr[dd]][c + dc[dd]] == 0 {
+				r = r + dr[dd]
+				c = c + dc[dd]
+				count++
+				// fmt.Println("움직인후", r,c,count, d)
+				break
+			}
+			if i==3 {
+				allFour = true
+			}
+		}
+		if allFour {
+			newr := r + dr[(d+2) % 4]
+			newc := c + dc[(d+2) % 4]
+			if area[newr][newc] != 1 {
+				r = newr
+				c = newc
+			} else {
+				break
+			}
+		}
+	}
+	fmt.Println(count)
+}
 ```
 
 # 05 DFS/BFS
@@ -394,63 +546,89 @@ print(count)
     - Queue
 
 
+```go
+// 스택구현
+package main
 
+import (
+	"fmt"
+	"sort"
+)
 
+func main() {
+	stack := []int{}
+	stack = append(stack, 5)
+	stack = append(stack, 2)
+	stack = append(stack, 3)
+	stack = append(stack, 7)
+	stack = stack[:len(stack)-1]
+	stack = append(stack, 1)
+	stack = append(stack, 4)
+	stack = stack[:len(stack)-1]
+
+	// 5 2 3 1
+	fmt.Println(stack)
+
+	sort.Sort(sort.IntSlice(stack))
+	fmt.Println(stack)
+
+	sort.Sort(sort.Reverse(sort.IntSlice(stack)))
+	fmt.Println(stack)
+}
+```
 
 ```go
-# 1. Stack
-stack = []
-# 5-2-3-7
-stack.append(5)
-stack.append(2)
-stack.append(3)
-stack.append(7)
-# 5-2-3
-stack.pop()
+// 큐구현
+package main
 
-# 5-2-3-1-4
-stack.append(1)
-stack.append(4)
-# 5-2-3-1
-stack.pop()
-print(stack)
+import (
+	"fmt"
+	"sort"
+)
 
-# 2.Queue
-from collections import deque
-queue = deque()
-# 5-2-3-7
-queue.append(5)
-queue.append(2)
-queue.append(3)
-queue.append(7)
-# 2-3-7
-queue.popleft()
-# 2-3-7-1-4
-queue.append(1)
-queue.append(4)
-# 3-7-1-4
-queue.popleft()
+func main() {
+	queue := []int{}
+	queue = append(queue, 5)
+	queue = append(queue, 2)
+	queue = append(queue, 3)
+	queue = append(queue, 7)
+	queue = queue[1:]
+	queue = append(queue, 1)
+	queue = append(queue, 4)
+	queue = queue[1:]
+
+	// 3 7 1 4
+	fmt.Println(queue)
+
+	sort.Sort(sort.IntSlice(queue))
+	fmt.Println(queue)
+
+	sort.Sort(sort.Reverse(sort.IntSlice(queue)))
+	fmt.Println(queue)
+}
 ```
+
 
 ### 재귀 함수
 
 
 ```go
-def recursive_function(i):
-    if i==5:
-        return
-    print(i, '번째 재귀함수에서', i+1, '번째 재귀 함수를 호출합니다.')
-    recursive_function(i+1)
-    print(i, '번째 재귀 함수를 종료합니다')
+package main
 
-recursive_function(1)
+import (
+	"fmt"
+)
 
-def factorial(n):
-    if n <=1:
-        return 1
-    return n* factorial(n-1)
+func factorial(n int) int {
+	if n <= 1{
+		return 1
+	}
+	return n * factorial(n-1)
+}
 
-print(factorial(5))
+func main() {
+	fmt.Println(factorial(5))
+}
 ```
 
 
@@ -458,7 +636,6 @@ print(factorial(5))
 ---|---|---
 인접 행렬 | 노드많을 수록 메모리 증가 |
 인접 리스트 | 연결된 정보만 저장하므로 효율적 메모리 사용 | 두 노드 연결여부 확인 느림
-
 
 
 ```go
