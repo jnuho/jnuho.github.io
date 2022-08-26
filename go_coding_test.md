@@ -1,5 +1,4 @@
-- From 이것이 코딩테스트다 with python
-  - Golang 구현
+- 이것이 코딩테스트다 -> Golang 구현
 
 # 01 코딩테스트 개요
 
@@ -632,132 +631,194 @@ func main() {
 ```
 
 
--| 메모리| 속도
----|---|---
-인접 행렬 | 노드많을 수록 메모리 증가 |
-인접 리스트 | 연결된 정보만 저장하므로 효율적 메모리 사용 | 두 노드 연결여부 확인 느림
-
-
-```go
-# 1-(7)-0-(5)-2
-
-# 인접 행렬
-#   0  1  2
-# 0 0  7  5
-# 1 7  0  INF
-# 2 5 INF 0
-INF = 999999999
-graph = [
-  [0,7,5]
-  , [7, 0 ,INF]
-  , [5, INF ,0]
-]
-print(graph)
-
-
-# 인접 리스트
-# 0->1_7->2_5
-# 1->0_7
-# 2->0_5
-graph = [[] for _ in range(3)]
-
-graph[0].append((1,7))
-graph[0].append((2,5))
-
-graph[1].append((0,7))
-
-graph[2].append((0,5))
-
-print(graph)
-```
 
 ### DFS
 
 - Depth-First Search
-    - 깊이 우선 탐색
-    - 탐색 시작노드 스택삽입 & 방문처리
-    - -> 스택 최상단 노드에 미방문 인접노드(일반적으로 인접노드들 중 가장 작은 숫자 먼저처리) 있으면 그 인접노드를 스택에 넣고 방문처리
-    - -> 방문하지 않은 인접노드가 없으면 스택에서 최상단 노드를 꺼냄
-    - 인접 행렬
-    - 인접 리스트
+	- 깊이 우선 탐색: 그래프에서 깊이있는 부분을 우선적으로 탐색
+	- Node(또는 Vertex 정점), Edge(간선)
+	- Adjacent(인접) 노드
+	- 탐색 시작노드 스택삽입 & 방문처리
+	- -> 스택 최상단 노드에 미방문 인접노드(일반적으로 인접노드들 중 가장 작은 숫자 먼저처) 있으면 그 인접노드를 스택에 넣고 방문처리
+	- -> 방문하지 않은 인접노드가 없으면 스택에서 최상단 노드를 꺼냄
+
+- 그래프 Graph 표현 방식
+	- 인접 행렬 Adjacency Matrix: 2차원 배열 그래프 각 노드가 연결된 형태 기록
+	- 인접 리스트 Adjacency List: 리스트로 그래프의 연결관계를 표현하는 방식
+
+-| 메모리| 속도
+---|---|---
+인접 행렬 | 노드간 모든관계를 저장하므로, 노드많을 수록 불필요하게 메모리 증가 |
+인접 리스트 | 연결된 정보만 저장하므로 효율적 메모리 사용 | 두 노드 연결여부 확인 속도는 느림
+
+- 예를들어 노드1, 노드7 연결여부 확인시
+	- 행렬의 경우 graph[1][7]만 확인 하면 됨
+	- 리스트의 경우 노드1에 대한 인접 리스트를 앞에서 부터 차례로 확인 -> 특정 노드와 연결된 모든 노드를 순회할때는 메모리 공간 낭비 적음
+
+
+```go
+// 1-(7)-0-(5)-2
+package main
+
+import (
+	"fmt"
+)
+
+type pair struct {
+	node int
+	distance int
+}
+
+func main() {
+	// 인접 행렬
+	//   0  1  2
+	// 0 0  7  5
+	// 1 7  0  INF
+	// 2 5 INF 0
+	INF := 999999999
+	graph_matrix := [][]int {
+		{0, 7, 5},
+		{7, 0, INF},
+		{5, INF, 0},
+	}
+	fmt.Println(graph_matrix)
+
+	// 인접 리스트
+	// 0 -> 1(7) -> 2(5)
+	// 1 -> 0(7)
+	// 2 -> 0(5)
+	graph_list := make([][]pair, 3)
+	graph_list[0] = make([]pair, 0)
+	graph_list[0] = append(graph_list[0], pair{1,7})
+	graph_list[0] = append(graph_list[0], pair{2,5})
+
+	graph_list[1] = make([]pair, 0)
+	graph_list[1] = append(graph_list[1], pair{0,7})
+
+	graph_list[2] = make([]pair, 0)
+	graph_list[2] = append(graph_list[2], pair{0,5})
+
+	fmt.Println(graph_list)
+}
+```
+
+- DFS 스택 자료구조 사용 시 :
+	- 탐색 시작노드를 스택에 삽입하고 방문처리
+	- 스택 최상단 노드에 방문하지 않은 인접노드(여러개면 번호가 관행적으로 낮은 순서부터 처리) 있으면, 스택에 넣고 방문처리. 방문하지 않은 인접노드가 없으면, 스택에서 최상단 노드를 꺼낸다
+	(방문처리는 스택에 한번 삽입되어 처리된 노드가 다시 삽입되지 않게 체크)
 
 ![graph](./assets/images/graph.png)
 
 
+- DFS를 재귀함수로 구현하며 느려질수 있으므로 Stack활용도 가능
+	- DFS보다 BFS가 좀더 빠르게 동작
+
 ```go
-def dfs(graph, v, visited):
-  visited[v] = True
-  print(v, end=' ')
-  for i in graph[v]:
-    if not visited[i]:
-      dfs(graph, i, visited)
+// DFS 메소드 (인접리스트- 2차원리스트 활용)
+// 	인접행렬 방식으로 노드 1,2,..., 8 표현
+// 	graph[0]은 없으므로 empty리스트 []
+// 	graph[1] ~ graph[8] 표현
+package main
 
-# DFS 메소드 (인접리스트- 2차원리스트 활용)
-graph = [
-  []
-  , [2,3,8]
-  , [1,7]
-  , [1,4,5]
-  , [3,5]
-  , [3,4]
-  , [7]
-  , [2,6,8]
-  , [1,7]
-]
-visited = [False]*9
+import (
+	"fmt"
+)
 
-dfs(graph,1,visited)
+func dfs(graph [][]int, v int, visited []bool) {
+	// 현재노드 방문처리
+	visited[v] = true
+	fmt.Print(v, " ")
+
+	// 현재노드와 연결된 다른 노드를 Recursive 방문
+	for _,i := range graph[v] {
+		if !visited[i] {
+			dfs(graph, i, visited)
+		}
+	}
+}
+
+func main() {
+	graph := [][]int {
+		{},
+		{2,3,8},
+		{1,7},
+		{1,4,5},
+		{3,5},
+		{3,4},
+		{7},
+		{2,6,8},
+		{1,7},
+	}
+	visited := []bool {false,false,false,false,false,false,false,false,false}
+
+  // 1 2 7 6 8 3 4 5 
+	dfs(graph, 1, visited)
+	fmt.Println()
+}
 ```
 
-    1 2 7 6 8 3 4 5 
 
 ### BFS
 
 - Breath-First Search
     - 너비 우선 탐색. 가까운 노드부터 탐색
     - 탐색 시작노드 큐 삽입 & 방문처리
-    - -> 큐에서 노드를 꺼내 미방문 인접노드 모두 큐에 삽입 및 방문처리
-    - 인접 행렬
-    - 인접 리스트
-
+    - 큐에서 노드를 꺼내 미방문 인접노드 중 방문하지 않은 노드를 모두 큐에 삽입 및 방문처리
 
 
 ```go
-from collections import deque
+// 인접행렬 방식으로 노드 1,2,..., 8 표현
+// graph[0]은 없으므로 empty리스트 []
+// graph[1] ~ graph[8] 표현
+package main
 
-def bfs(graph, start, visited):
-  # 큐Queue 구현을 위해 deque 라이브러리 사용사용
-  queue = deque([start])
-  # 현재 노드 방문 처리
-  visited[start] = True
-  # 큐가 빌 때까지 반복
-  while queue:
-    # 큐에서 하나의 원소를 뽑아 출력
-    v = queue.popleft()
-    print(v, end=' ')
-    for i in graph[v]:
-      if not visited[i]:
-        queue.append(i)
-        visited[i] = True
+import (
+	"fmt"
+)
 
+func bfs(graph [][]int, start int, visited []bool) {
 
-graph = [
-  []
-  , [2,3,8]
-  , [1,7]
-  , [1,4,5]
-  , [3,5]
-  , [3,4]
-  , [7]
-  , [2,6,8]
-  , [1,7]
-]
-visited = [False]*9
+	// 큐 구현을 위한
+	queue := []int{start}
 
-bfs(graph, 1, visited)
+	// 현재노드 방문처리
+	visited[start] = true
+
+	for len(queue) > 0 {
+		// 큐에서 원소 하나 Pop하여 출력
+		v := queue[0]
+		queue = queue[1:]
+		fmt.Print(v, " ")
+
+		for _, i := range graph[v] {
+			if !visited[i] {
+				queue = append(queue, i)
+				visited[i] = true
+			}
+		}
+	}
+}
+
+func main() {
+	graph := [][]int {
+		{},
+		{2,3,8},
+		{1,7},
+		{1,4,5},
+		{3,5},
+		{3,4},
+		{7},
+		{2,6,8},
+		{1,7},
+	}
+	visited := []bool {false,false,false,false,false,false,false,false,false}
+
+  // 1 2 3 8 7 4 5 6 
+	bfs(graph, 1, visited)
+	fmt.Println()
+}
 ```
 
-    1 2 3 8 7 4 5 6 
 
 -|DFS|BFS
 ---|---|---
@@ -765,8 +826,13 @@ bfs(graph, 1, visited)
 구현방법|재귀함수 이용 | 큐 자료구조
 
 
+- 음료수 얼려 먹기
+
 ```go
 
+```
+
+```go
 
 # 선택 정렬
 def selection_sort(arr):
