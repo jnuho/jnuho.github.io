@@ -829,8 +829,72 @@ func main() {
 - 음료수 얼려 먹기
 
 ```go
+// NxM 얼음틀
+// 0: 얼음 1: 틀
+// 생성되는 아이스크림 수 (0으로 연결된 조각)
+package main
+
+import (
+	"fmt"
+	"strconv"
+)
+
+func dfs(graph [][]int, i,j int) bool {
+	N :=  len(graph)
+	M :=  len(graph[0])
+	if i < 0 || i>=N || j <0 || j>=M {
+		return false
+	}
+	
+	if graph[i][j] == 0 {
+		graph[i][j] = 1
+
+		dfs(graph, i+1, j)
+		dfs(graph, i-1, j)
+		dfs(graph, i, j+1)
+		dfs(graph, i, j-1)
+		return true
+	}
+	return false
+}
+
+func main() {
+	var N,M int
+	fmt.Scan(&N, &M)
+
+	graph := make([][]int, N)
+	var line string
+	for i:=0; i<N; i++ {
+		graph[i] = make([]int, M)
+		fmt.Scanln(&line)
+		for j:=0; j < M; j++ {
+			n,_ := strconv.Atoi(string(line[j]))
+			graph[i][j] = n
+		}
+	}
+
+	result := 0
+	for i:=0; i<N; i++ {
+		for j:=0; j < M; j++ {
+			if dfs(graph, i,j) {
+				result++
+			}
+		}
+	}
+
+	fmt.Println(result)
+}
+```
+
+- 미로탈출
+
+```go
 
 ```
+
+
+
+
 
 ```go
 
