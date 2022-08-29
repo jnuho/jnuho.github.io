@@ -45,4 +45,28 @@ docker system events --format '{{json .}}'
 # 로그내용 중 msg 키워드 정보가 상세 로그 내용임
 journalctl -u docker.service
 
+# 유사한 도커 데몬 디버그
+dockerd -D
+
+
+# 리눅스 시스템에도 기본적인  로그 수집 데몬이 있음
+syslogd
+rsyslogd
+# [참고] 도커로그를 호스트 운영체제 로그수집 데몬에 연결해서 로그 기록 할 수도 있음
+
+# 도커 허브
+# tag생략 시 latest
+docker pull imagename:tag
+docker pull imagename:digest
+docker pull gcr.io/google-samples/hello-app:1.0
+docker push
+docker login
+docker logout
+
+docker image ls
+docker image inspect imagename --format json
+
+
+# docker login 이후
+docker search
 ```

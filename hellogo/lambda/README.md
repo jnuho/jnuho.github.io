@@ -14,7 +14,6 @@ goos=linux go build -o main main.go && git archive -o archive.zip HEAD main
 #  Memory : 128MB (that function allocates)
 #  Timeout : (time functon call lasts)
 # Function Code > Action > Upload a zip file
-
 ```
 
 ```go
@@ -26,8 +25,8 @@ import (
 )
 
 type InputEvent struct {
-	FirstName string `json:"firstname`
-	LastName string `json:"lastname`
+	FirstName string `json:"firstname"`
+	LastName string `json:"lastname"`
 }
 func Handler(event InputEvent) (string, error) {
 	// fmt.Println("Function invoked!")
@@ -50,8 +49,26 @@ func main() {
 ```
 
 - Example
-  - upload image to S3 serverless
+	- Download image from link
+  - Upload image to S3 using lambda (serverless)
+
 
 ```go
 
 ```
+
+```json
+{
+	"link": "https://cdn.shopify.com/s/files/1/2570/4610/products/BeefSample_1024x1024@2x.jpg?v=1650451645",
+	"key": "BeefSample.jpg"
+}
+```
+
+- Access Denied
+	- S3 Permission required
+	- Attach Policy to Role/Profile
+		- "S3FullAccess"
+
+- Trigger
+	- e.g. API Gateway
+	- API endpoint -> AWS Lambda
