@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 	"github.com/aws/aws-lambda-go/lambda"
+
+	"github.com/aws/aws-sdk-"
 )
 
 type InputEvent struct {
