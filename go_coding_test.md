@@ -889,16 +889,81 @@ func main() {
 - 미로탈출
 
 ```go
+// NxM 미로
+// (1,1) -> NxM 최단경로로 괴물을 피해서 갈때 움직인 칸의 수
+// 0: 괴물 1:괴물없는 부분
+package main
 
+import (
+	"fmt"
+	"strconv"
+)
+
+type coord struct {
+	r int
+	c int
+}
+
+func bfs(graph [][]int) int {
+	N := len(graph)
+	M := len(graph[0])
+
+	dr := []int{-1,0,1,0}
+	dc := []int{0,-1,0,1}
+
+	var nr,nc int
+	r, c := 0,0
+	queue := make([]coord, 0)
+	queue = append(queue, coord{r,c})
+	for len(queue) > 0 {
+		r = queue[0].r
+		c = queue[0].c
+		queue = queue[1:]
+		for i:=0; i<4; i++ {
+			nr = r + dr[i]
+			nc = c + dc[i]
+			if nr < 0 || nr >=N || nc < 0 || nc >=M {
+				continue
+			}
+			if graph[nr][nc] == 0 {
+				continue
+			}
+			if graph[nr][nc] == 1 {
+				graph[nr][nc] = graph[r][c] + 1
+				queue = append(queue, coord{r: nr, c: nc})
+			}
+		}
+	}
+
+	return graph[N-1][M-1]
+}
+
+func main() {
+	var N, M int
+
+	fmt.Scan(&N, &M)
+
+	graph := make([][]int, N)
+
+	var line string
+	for i:=0; i<N; i++ {
+		graph[i] = make([]int, M)
+		fmt.Scanln(&line)
+		for j:=0; j<M; j++ {
+			n,_ := strconv.Atoi(string(line[j]))
+			graph[i][j] = n
+		}
+	}
+
+	fmt.Println(bfs(graph))
+}
 ```
 
 
-
-
+### 정렬
 
 ```go
-
-# 선택 정렬
+// 선택 정렬
 def selection_sort(arr):
   for i in range(len(arr)):
     min_idx = i

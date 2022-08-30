@@ -64,9 +64,14 @@ docker login
 docker logout
 
 docker image ls
-docker image inspect imagename --format json
+docker image inspect imagename --format="{{ .RepoTags}}" httpd
+docker image inspect imagename --format="{{ .RepoTags}}" httpd
+docker image inspect imagename --format="{{ .RepoTags}}" httpd
 
 
 # docker login 이후
-docker search
+docker search httpd
+
+docker image history [OPTIONS] IMAGE
+docker image history httpd
 ```
