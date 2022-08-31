@@ -963,116 +963,205 @@ func main() {
 ### 정렬
 
 ```go
-// 선택 정렬
-def selection_sort(arr):
-  for i in range(len(arr)):
-    min_idx = i
-    for j in range(i+1, len(arr)):
-      if arr[j] < arr[min_idx]:
-        arr[j], arr[min_idx] = arr[min_idx], arr[j]
-  print(arr)
+package main
 
-# 삽입 정렬
-def insertion_sort(arr):
-  for i in range(len(arr)):
-    for j in range(i,0,-1):
-      if arr[j] < arr[j-1]:
-        arr[j], arr[j-1] = arr[j-1], arr[j]
-      else:
-        break 
-  print(arr)
+import (
+	"fmt"
+)
 
-# 퀵 정렬
-# def quick_sort(arr, start, end):
-#   if start >= end:
-#     return
-#   pivot = start
-#   left = start+1
-#   right = end
+// O(N^2)
+func selection_sort(arr []int) []int {
+	var min_idx int
+	for i:=0; i<len(arr); i++ {
+		min_idx = i
+		for j:=i+1; j<len(arr); j++ {
+			if arr[min_idx] > arr[j] {
+				min_idx = j
+			}
+		}
+		arr[min_idx], arr[i] = arr[i], arr[min_idx]
+	}
+	return arr
+}
 
-#   while left <= right:
-#     while left <= end and arr[left] <= arr[pivot]:
-#       left += 1
-#     while right > start and arr[right] >= arr[pivot]:
-#       right -=1
-#     if left > right:
-#       arr[right], arr[pivot] = arr[pivot], arr[right]
-#     else:
-#       arr[right], arr[left] = arr[left], arr[right]
+// O(N^2)
+func insert_sort(arr []int) []int {
+	for i := 0; i<len(arr); i++ {
+		for j := i; j>=1; j-- {
+			if arr[j] < arr[j-1] {
+				arr[j], arr[j-1] = arr[j-1], arr[j]
+			}
+		}
+	}
+	return arr
+}
 
-#   quick_sort(arr, start, right-1)
-#   quick_sort(arr, right+1, end)
-def quick_sort(arr):
-  if len(arr) <= 1:
-    return arr
-  
-  pivot = arr[0]
-  tail = arr[1:]
+// O(NlogN)
+func quick_sort(arr []int, start, end int) {
+	if start >=end {
+		return
+	}
+	pivot := start
 
-  left_side = [x for x in tail if x <= pivot]
-  right_side = [x for x in tail if x > pivot]
+	left := start+1
+	right := end
 
-  return quick_sort(left_side) + [pivot] + quick_sort(right_side)
+	for left <= right {
+		for left <= end && arr[left] <= arr[pivot] {
+			left++
+		}
+		for right > start && arr[right] > arr[pivot] {
+			right--
+		}
 
-def counting_sort(arr):
-  count_arr = [0] * (max(arr)+1)
+		if right > left {
+			arr[left], arr[right] = arr[right], arr[left]
+		} else {
+			// 엇갈림 -> for-loop exit
+			arr[right], arr[pivot] = arr[pivot], arr[right]
+		}
+	}
+	quick_sort(arr, start, right-1)
+	quick_sort(arr, right+1, end)
+}
 
-  for i in arr:
-    count_arr[i] += 1
 
-  for i in range(len(count_arr)):
-    for j in range(count_arr[i]):
-      print(i, end=' ')
+func getMinMax(arr []int) (int,int) {
+  min := arr[0]
+  max := arr[0]
 
+  for _,v := range arr {
+    if v < min {
+      min = v
+    }
+    if v > max {
+      max = v
+    }
+  }
+  return min,max
+}
 
+// O(N+K)
+//  N: 데이터수 K: 최대값
+func counting_sort(arr []int) []int{
+  min, max := getMinMax(arr)
+  countArr := make([]int, max-min+1)
 
+  for _,v := range arr {
+    countArr[v] += 1
+  }
 
-arr = [7, 5, 9, 0, 3, 1, 6, 2, 4, 8]
-selection_sort(arr)
+  sortedArr := make([]int, 0)
+  for i,v := range countArr {
+    for j:=0; j<v; j++ {
+      sortedArr = append(sortedArr, i)
+    }
+  }
+  return sortedArr
+}
 
-arr = [7, 5, 9, 0, 3, 1, 6, 2, 4, 8]
-insertion_sort(arr)
+func main() {
+	arr := []int {7,5,9,0,3,1,6,2,4,8}
+	fmt.Println(selection_sort(arr))
 
-arr = [5, 7, 9, 0, 3, 1, 6, 2, 4, 8]
-arr = quick_sort(arr)
-print(arr)
+	arr = []int {7,5,9,0,3,1,6,2,4,8}
+	fmt.Println(insert_sort(arr))
 
-arr = [7, 5, 9, 0, 3, 1, 6, 2, 9, 1, 4, 8, 0, 5, 2]
-counting_sort(arr)
+	arr = []int {7,5,9,0,3,1,6,2,4,8}
+	quick_sort(arr, 0, len(arr)-1)
+	fmt.Println(arr)
 
+  arr = []int {7,5,9,0,3,1,6,2,9,1,4,8,0,5,2}
+	fmt.Println(counting_sort(arr))
+}
 ```
-
-    [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
-    [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
-    [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
-    0 0 1 1 2 2 3 4 5 5 6 7 8 9 9 
 
 - 선택 정렬 O(N^2)
 - 삽입 정렬 O(N^2)
 - 퀵 정렬 O(NlogN)
 - 계수 정렬 O(N+K) : 모든 데이터가 양의 정수, 데이터수 N, 최대정수값 K
-- 파이썬 정렬 라이브러리 O(NlogN)
+- Go 정렬 라이브러리 O(NlogN)
   - sorted
   - sort
   - key매개변수를 이용한 정렬기준 설정 가능
 
-
 ```go
-N = int(input())
+/** Go언어 제공 sort 패키지 활용! */
 
-arr = []
-for i in range(N):
-  arr.append(int(input()))
+package main
 
-arr.sort(reverse=True)
+import (
+	"fmt"
+  "sort"
+)
 
-for i in arr:
-  print(i, end=' ')
+type Student struct {
+  Name string
+  Age int
+  Score int
+}
 
+type Students []Student
+
+// 구조체 정렬 시 필요한 정의 메소드
+// Len(), Less(), Swap()
+func (s Students) Len() int {
+  return len(s)
+}
+
+func (s Students) Less(i, j int) bool {
+  // return s[i].Name < s[j].Name
+  // return s[i].Age < s[j].Age
+  return s[i].Score < s[j].Score
+}
+
+func (s Students) Swap(i, j int) {
+  s[i], s[j] = s[j], s[i]
+}
+
+func main() {
+  slice := []Student {
+    {"B", 19, 90},
+    {"C", 25, 97},
+    {"A", 8, 55},
+    {"D", 42, 30},
+  }
+
+  // 1. 구조체 정렬
+  sort.Sort(Students(slice))
+  fmt.Println(slice)
+
+  // 2-1. int 정렬
+  arr := []int {7,5,9,0,3,1,6,2,4,8}
+  sort.Ints(arr)
+  fmt.Println(arr)
+
+  // 2-2. IntSlice 인터페이스 정렬
+  arr = []int {7,5,9,0,3,1,6,2,4,8}
+  sort.IntSlice(arr).Sort()
+  fmt.Println(arr)
+
+  // 3-1. float64 정렬
+  floatArr := []float64 {7.12,5.1,9,0,3.14,1,6,2,4,8.99}
+  sort.Float64s(floatArr)
+  fmt.Println(floatArr)
+
+  // 3-2. float64 인터페이스 정렬
+  floatArr = []float64 {7.12,5.1,9,0,3.14,1,6,2,4,8.99}
+  sort.Float64Slice(floatArr).Sort()
+  fmt.Println(floatArr)
+
+  // 4-1. string 정렬
+  strArr := []string {"c", "a", "d", "e", "b"}
+  sort.Strings(strArr)
+  fmt.Println(strArr)
+
+  // 4-2. StringSlice 인터페이스 정렬
+  strArr = []string {"c", "a", "d", "e", "b"}
+  sort.StringSlice(strArr).Sort()
+  fmt.Println(strArr)
+}
 ```
-
-    27 15 12 
-
 
 ```go
 
