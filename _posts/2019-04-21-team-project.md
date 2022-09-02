@@ -1,28 +1,25 @@
 ---
 layout: post
-title: 팀프로젝트
+title: 프로젝트
 categories: [project]
 tags: [team, spring, java, web, project]
 fullview: true
 comments: true
 ---
 
-**WEB/WAS 운영** <i>'2022.03.21 ~ Present</i>
-- [Go SDK]()
-- [AWS]()
-- [AWS CLI]()
-- [WAS 서버]()
-- [WEB 서버]()
+**인프라 운영** <i>2022.03 ~ Present</i>
+- [Go AWS SDK 프로젝트](doc_goproject)
+- [AWS CLI](doc_aws_cli)
 - [Kubernetes]()
 
-**백엔드 개발 - Starpass** <i>'19.11.15 ~ 2022.03.21</i>
+**백엔드 개발 - Starpass** <i>2019.11 ~ 2022.03</i>
 - [Java - Spring]()
 - [AWS]()
 - [MySQL]()
 - [JavaScript]()
 
-**교육기관 프로젝트** <i>'19.04.22 ~ '19.11.15</i>
-- [Java Swing App](food)
-- [Web App](parking)
-- [Spring Web App](developmental)
+**교육기관 프로젝트** <i>2019.04 ~ 2019.11</i>
+- [주차장 Web App - Spring](parking)
+- [개발 커뮤니티 Web App - Spring](developmental)
+- [음식주문 App - Java Swing](food)
 
