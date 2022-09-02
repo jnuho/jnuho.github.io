@@ -146,10 +146,10 @@ aws elbv2 describe-load-balancers
 ### aws ecs execute-command
 
 ```sh
-aws ecs execute-command --cluster awsdc-ecl-pss-stg-pipods --task xxx --container awsdc-ecn-pss-stg-odsbatch --interactive --command "/bin/sh" --profile stg
+aws ecs execute-command --cluster ccc --task xxx --container containerrname --interactive --command "/bin/sh" --profile stg
 
 aws lightsail get-load-balancer-metric-data \
-  --load-balancer-name AWSDC-ALB-PSS-PRD-FDM \
+  --load-balancer-name ALBNAME \
   --metric-name RequestCount \
   --period 3600 \
   --start-time 1652054606 \
@@ -354,6 +354,6 @@ aws ecs describe-tasks \
 
 
 aws ecr get-lifecycle-policy \
-  --repository-name awsdc-ecr-css-prd-kalendar-fe \
+  --repository-name rponame \
   --output yaml \
   --profile prd

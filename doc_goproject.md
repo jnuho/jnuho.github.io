@@ -10,4 +10,4 @@
   - 사용언어 :
     - 백엔드: Go, 프론트엔드: Javascript, HTML, CSS
 
-![go sdk app](Animation.gif)
+![go sdk app](assets/images/Animation.gif)
