@@ -1163,42 +1163,189 @@ func main() {
 }
 ```
 
-```go
 
-N = int(input())
-
-arr = []
-for i in range(N):
-  arr.append(input().split())
-
-arr = sorted(arr,key=lambda x: x[1])
-
-for i in arr:
-  print(i[0], end=' ')
-```
-
-    이순신 홍길동 
-
+- sort1. 위에서 아래로
 
 ```go
+package main
 
-N, K = map(int, input().split())
+import (
+	"fmt"
+  "sort"
+)
 
-A = list(map(int, input().split()))
-B = list(map(int, input().split()))
+// reverse
+func quick_sort(arr []int, start, end int) {
+  if start >= end {
+    return
+  }
+  pivot := start
+  left := start+1
+  right := end
 
-A.sort()
-B.sort(reverse=True)
-for i in range(K):
-  if A[i] <B[i]:
-    A[i], B[i] = A[i], B[i]
-  else:
-    break
 
-print(sum(A))
+  for left <= right {
+    for left <= end && arr[left] >= arr[pivot] {
+      left++
+    }
+    for right > start && arr[right] <= arr[pivot] {
+      right--
+    }
+    if left > right {
+      arr[pivot], arr[right] = arr[right], arr[pivot]
+    } else {
+      arr[left], arr[right] = arr[right], arr[left]
+    }
+  }
+
+  quick_sort(arr, start, right-1)
+  quick_sort(arr, right+1, end)
+}
+
+func main() {
+  var N int
+  fmt.Scanln(&N)
+  arr := make([]int, N)
+
+  for i:=0; i< len(arr); i++ {
+    fmt.Scanln(&arr[i])
+  }
+
+  //quick_sort(arr, 0, len(arr)-1)
+  sort.Sort(sort.Reverse(sort.IntSlice(arr)))
+  fmt.Println(arr)
+}
+```
+
+- sort2. 위에서 아래로
+
+```go
+package main
+
+import (
+	"fmt"
+  "sort"
+)
+
+type Student struct {
+  Name string
+  Score int
+}
+
+type Students []Student
+
+func (s Students) Len() int{
+  return len(s)
+}
+
+func (s Students) Less(i, j int) bool {
+  return s[i].Score < s[j].Score
+}
+
+func (s Students) Swap(i, j int) {
+  s[i], s[j] = s[j], s[i]
+}
+
+func main() {
+  var N int
+  fmt.Scanln(&N)
+  students := make([]Student, 0)
+
+  var name string
+  var score int
+  for i:=0; i< N; i++ {
+    fmt.Scan(&name, &score)
+    students = append(students, Student{Name: name, Score: score})
+  }
+
+  sort.Sort(Students(students))
+  for _,s := range students {
+    fmt.Print(s.Name, " ")
+  }
+  fmt.Println()
+
+  sort.Sort(sort.Reverse(Students(students)))
+  for _,s := range students {
+    fmt.Print(s.Name, " ")
+  }
+  fmt.Println()
+}
+```
+
+- sort3.두 배열의 원소교체
+
+```go
+// sort2. 위에서 아래로
+package main
+
+import (
+	"fmt"
+  "sort"
+)
+
+func quick_sort(arr []int, start, end int) {
+  if start >= end {
+    return
+  }
+  pivot := start
+  left := start+1
+  right := end
+
+  for left <= right {
+    for left <= end && arr[left] < arr[pivot] {
+      left++
+    }
+    for right > start && arr[right] >= arr[pivot] {
+      right--
+    }
+    if left > right {
+      arr[right], arr[pivot] = arr[pivot], arr[right]
+    } else {
+      arr[left], arr[right] = arr[right], arr[left]
+    }
+  }
+  quick_sort(arr, start, right-1)
+  quick_sort(arr, right+1, end)
+}
+
+func main() {
+  var N,K int
+  fmt.Scan(&N, &K)
+  arr1 := make([]int, N)
+  arr2 := make([]int, N)
+  for i:=0; i<N; i++ {
+    fmt.Scan(&arr1[i])
+  }
+  for i:=0; i<N; i++ {
+    fmt.Scan(&arr2[i])
+  }
+  sort.Sort(sort.IntSlice(arr1))
+  sort.Sort(sort.IntSlice(arr2))
+
+  for i:=0; i<K; i++ {
+    if arr1[i] < arr2[N-i-1] {
+      arr1[i], arr2[N-i-1] = arr2[N-i-1], arr1[i]
+    }
+  }
+
+  sum:=0
+  for i:=0; i<N; i++ {
+    sum += arr1[i]
+  }
+  fmt.Println(sum)
+}
 ```
 
 
+### 이진 탐색
+
+- 순차 탐색
+
+```go
+```
+
+
+- 이진 탐색
 
 ```go
 def binary_search(array, target, start, end):
