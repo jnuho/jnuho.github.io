@@ -159,6 +159,7 @@ Upper Bound : 문제 해결 역량 & 코드포스 블루이상, ACM-ICPC 서울�
 
 
 # 03 Greedy 알고리즘
+
 - 현재 상황에서 가장 좋아 보이는 것만을 선택하는 알고리즘
 - 매 순간 가장 좋아 보이는 것을 선택하며, 현재 선택이 나중에 미칠 영향은 고려 X
 - 그리디 알고리즘 정당성 검토 필수 e.g. 큰단위 동전에 작은 단위 동전의 배수 일때만 가능 500, 400, 100는 적용 X
@@ -319,7 +320,6 @@ func main() {
 ```
 
 # 04 구현
-
 
 ```go
 // top left (1,1) bottom right (N,N)
@@ -539,6 +539,7 @@ func main() {
 # 05 DFS/BFS
 
 ### 자료구조 기초
+
 - Search 탐색
 - Data Structure
     - Stack
@@ -1342,31 +1343,88 @@ func main() {
 - 순차 탐색
 
 ```go
+// 5 Dongbin
+// A B C Dongbin E
+// 3
+package main
+
+import (
+	"fmt"
+)
+
+func sequential_search(target string, arr []string) int {
+
+  for i:=0; i<len(arr); i++ {
+    if arr[i] == target {
+      return i + 1
+    }
+  }
+  return -1
+}
+
+func main() {
+  var N int // 리스트 개수
+  var target string // 찾는 이름
+  fmt.Scan(&N, &target)
+
+  arr := make([]string, N)
+  for i:=0; i<N; i++ {
+    fmt.Scan(&arr[i])
+  }
+
+  fmt.Println(sequential_search(target, arr))
+}
 ```
 
 
-- 이진 탐색
+- 이진 탐색 (binary search)
 
 ```go
-def binary_search(array, target, start, end):
-  if start > end:
-      return None
-  mid = (start+end)//2
-  if array[mid] == target:
+// 10 7
+// 1 3 5 7 9 11 13 15 17 19
+// 4
+package main
+
+import (
+	"fmt"
+)
+
+func binary_search(arr []int, target, start, end int) int {
+  if start > end {
+    return -1
+  }
+
+  if len(arr) < 1 {
+    return -1
+  }
+
+  mid := (start+end) / 2
+  if arr[mid] == target {
     return mid
-  elif array[mid] > target:
-    return binary_search(array,target, start, mid-1)
-  else:
-    return binary_search(array, target, mid+1,end)
+  } else if arr[mid] > target {
+    return binary_search(arr, target, start, mid-1)
+  } else {
+    return binary_search(arr, target, mid+1, end)
+  }
+}
 
-N, target = map(int, input().split())
-array = list(map(int, input().split()))
+func main() {
+  var N int // 리스트 개수
+  var target int // 찾는 숫자
+  fmt.Scan(&N, &target)
 
-result = binary_search(array, target, 0, N-1)
-if result == None:
-  print("원소가 존재하지 않습니다.")
-else:
-  print(result+1)
+  arr := make([]int, N)
+  for i:=0; i<N; i++ {
+    fmt.Scan(&arr[i])
+  }
 
+  result := binary_search(arr, target, 0, len(arr)-1)
+  if result == -1 {
+    fmt.Println("NOT FOUND!")
+  } else {
+    fmt.Println(result + 1)
+  }
+}
 ```
+
 

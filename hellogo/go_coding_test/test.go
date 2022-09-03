@@ -1,59 +1,46 @@
-// sort2. 위에서 아래로
+// 10 7
+// 1 3 5 7 9 11 13 15 17 19
+// 4
 package main
 
 import (
 	"fmt"
-  "sort"
 )
 
-func quick_sort(arr []int, start, end int) {
-  if start >= end {
-    return
+func binary_search(arr []int, target, start, end int) int {
+  if start > end {
+    return -1
   }
-  pivot := start
-  left := start+1
-  right := end
 
-  for left <= right {
-    for left <= end && arr[left] < arr[pivot] {
-      left++
-    }
-    for right > start && arr[right] >= arr[pivot] {
-      right--
-    }
-    if left > right {
-      arr[right], arr[pivot] = arr[pivot], arr[right]
-    } else {
-      arr[left], arr[right] = arr[right], arr[left]
-    }
+  if len(arr) < 1 {
+    return -1
   }
-  quick_sort(arr, start, right-1)
-  quick_sort(arr, right+1, end)
+
+  mid := (start+end) / 2
+  if arr[mid] == target {
+    return mid
+  } else if arr[mid] > target {
+    return binary_search(arr, target, start, mid-1)
+  } else {
+    return binary_search(arr, target, mid+1, end)
+  }
 }
 
 func main() {
-  var N,K int
-  fmt.Scan(&N, &K)
-  arr1 := make([]int, N)
-  arr2 := make([]int, N)
-  for i:=0; i<N; i++ {
-    fmt.Scan(&arr1[i])
-  }
-  for i:=0; i<N; i++ {
-    fmt.Scan(&arr2[i])
-  }
-  sort.Sort(sort.IntSlice(arr1))
-  sort.Sort(sort.IntSlice(arr2))
+  var N int // 리스트 개수
+  var target int // 찾는 숫자
+  fmt.Scan(&N, &target)
 
-  for i:=0; i<K; i++ {
-    if arr1[i] < arr2[N-i-1] {
-      arr1[i], arr2[N-i-1] = arr2[N-i-1], arr1[i]
-    }
+  arr := make([]int, N)
+  for i:=0; i<N; i++ {
+    fmt.Scan(&arr[i])
   }
 
-  sum:=0
-  for i:=0; i<N; i++ {
-    sum += arr1[i]
+  result := binary_search(arr, target, 0, len(arr)-1)
+  if result == -1 {
+    fmt.Println("NOT FOUND!")
+  } else {
+    fmt.Println(result + 1)
   }
-  fmt.Println(sum)
 }
+
