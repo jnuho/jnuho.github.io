@@ -1710,4 +1710,72 @@ func main() {
   - '프로그램이 실행되는 도중에'
   - 동적계획법: 메모리 공간을 약간 더 사용하여 연산속도 비약적 증가
   - 다이나믹 프로그래밍에는 탑다운, 보텀업 방식 2가지 + 메모이제이션 기법
+  - 피보나치수열 `a_n+2 = f(a_n+1, a_n) = a_n+1 + a_n  where a_1=a_2=1`
 
+```go
+// 피보나치수가 클수록 기하급수적 증가
+// n=100이면 2^100 : 연산불가능
+package main
+
+import (
+  "fmt"
+)
+
+func fibo(n int) int {
+  if n==1 || n == 2 {
+    return 1
+  }
+  return fibo(n-1) + fibo(n-2)
+}
+
+func main() {
+  fmt.Println(fibo(4))
+}
+```
+
+- 다이나믹 프로그래밍 사용가능 조건 (e.g. 피보나치 수열 문제)
+  1. 큰 문제를 작은 문제로 나눌 수 있다.
+  2. 작은 문제에서 구한 정답은 그것을 포함하는 큰 문제에서도 동일하다.
+- 메모이제이션 Memoization 기법 활용 하여 해결
+  - 다이내믹 프로그래밍을 구현하는 방법 중 하나
+  - 한번 구한 결과를 메모리 공간에 메모해 두고, 같은식으로 다시 호출 시 그 결과를 그대로 가져옴
+  - 캐싱; Caching
+
+- Memoization기법으로 피보나치수열 문제 보완
+  - 재귀적 방법: Top-Down
+  - 반복문 방법: Bottom-Up (좀 더 효율적)
+
+```go
+// Memoization 기법 -> 피보나치수열 보완
+// Top-Down
+package main
+
+import (
+  "fmt"
+)
+
+var arr []int
+
+func init() {
+  arr = make([]int, 100)
+}
+
+func fibo(n int) int {
+  if n==1 || n == 2 {
+    return 1
+  }
+  if arr[n] != 0 {
+    return arr[n]
+  }
+  arr[n] = fibo(n-1) + fibo(n-2)
+  return arr[n]
+}
+
+func main() {
+  fmt.Println(fibo(90))
+}
+```
+
+```go
+
+```
