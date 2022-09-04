@@ -1377,7 +1377,7 @@ func main() {
 ```
 
 
-- 이진 탐색 (binary search)
+- 이진 탐색 (Recursion)
 
 ```go
 // 10 7
@@ -1427,4 +1427,287 @@ func main() {
 }
 ```
 
+
+- 이진 탐색 (for-loop)
+
+```go
+// 10 7
+// 1 3 5 7 9 11 13 15 17 19
+// 4
+package main
+
+import (
+	"fmt"
+)
+
+func binary_search(arr []int, target, start, end int) int {
+  if start > end || len(arr) < 1 {
+    return -1
+  }
+  var mid int
+
+  for start <= end {
+    mid = (start + end) / 2
+    if arr[mid] == target {
+      return mid
+    } else if arr[mid] > target {
+       end = mid-1
+    } else {
+      start = mid+1
+    }
+  }
+
+  return -1
+}
+
+func main() {
+  var N int
+  var target int
+  fmt.Scan(&N, &target)
+
+  arr := make([]int, N)
+  for i:=0; i<N; i++ {
+    fmt.Scan(&arr[i])
+  }
+
+  result := binary_search(arr, target, 0, len(arr)-1)
+  if result == -1 {
+    fmt.Println("NOT FOUND!")
+  } else {
+    fmt.Println(result + 1)
+  }
+}
+```
+
+
+- 트리 자료구조
+  - 이진탐색의 전제조건은 데이터 정렬
+  - 내부적으로 정렬된 데이터 저장할때 '이진 트리구조'를 활용
+  - Binary Search Tree - BST
+    - 부모노드와 자식노드
+    - 루트노드(최상단노드) -> 서브트리 -> 단말 노드(최하단노드)
+    - 트리는 파일 시스템과 같이 계층적이고 정렬된 데이터를 다루기에 적합
+    - 부모노드보다 왼쪽 자식노드가 작다
+    - 부모노드보다 오른쪽 자식노드가 크다
+
+
+- 1.부품찾기
+  - N개 부품에서 M개 요청 부품 있는지 여부
+
+
+```go
+// 1-1. Slice(List)이용
+// 5
+// 8 3 7 9 2
+// 3
+// 5 7 9
+// no yes yes
+package main
+
+import (
+  "fmt"
+)
+
+func binary_search(arr []int, target, start, end int) int {
+  if start > end || len(arr) < 1 {
+    return -1
+  }
+
+  mid := (start+end) / 2
+
+  if arr[mid] == target {
+    return mid
+  } else if arr[mid] > target {
+    return binary_search(arr, target, start, mid-1)
+  } else {
+    return binary_search(arr, target, mid+1, end)
+  }
+}
+
+func main() {
+  var N,M int
+
+  fmt.Scanln(&N)
+  arr1 := make([]int, N)
+  for i:=0; i<N; i++ {
+    fmt.Scanf("%d", &arr1[i])
+  }
+  fmt.Scanln(&M)
+  arr2 := make([]int, M)
+  for i:=0; i<M; i++ {
+    fmt.Scanf("%d", &arr2[i])
+  }
+
+  var result int
+  for i:=0; i<M; i++ {
+    result = binary_search(arr1, arr2[i], 0, len(arr1)-1)
+    if result != -1 {
+      fmt.Print("yes ")
+    } else{
+      fmt.Print("no ")
+    }
+  }
+  fmt.Println()
+}
+```
+
+```go
+// 2.Map(set과 비슷한 원리)활용
+// 부품찾기-Map이용 (set과 비슷한 원리)
+// 5
+// 8 3 7 9 2
+// 3
+// 5 7 9
+// no yes yes
+package main
+
+import (
+  "fmt"
+)
+
+
+func main() {
+  var N,M int
+
+  fmt.Scanln(&N)
+
+  // 맵에 첫번째 부품리스트 저장
+  var key int
+  map1 := make(map[int]int)
+  for i:=0; i<N; i++ {
+    fmt.Scanf("%d", &key)
+    map1[key] = 1
+  }
+
+  // 요청 부품리스트 입력과 동시에 Map 포함여부
+  // -> result에 저장 (yes/no)
+  fmt.Scanln(&M)
+  result := make([]string, M)
+  for i:=0; i<M; i++ {
+    fmt.Scanf("%d", &key)
+    if map1[key] == 1 {
+      result[i]= "yes"
+    } else {
+      result[i]= "no"
+    }
+  }
+
+  fmt.Println(result)
+}
+```
+
+- 2. 떡볶이 떡 만들기
+
+```go
+// 1.떡볶이 떡 만들기 - 순차탐색
+// 4 6
+// 19 15 10 17
+// 15
+package main
+
+import (
+  "fmt"
+)
+
+func getMax(arr []int) int {
+  max :=arr[0]
+  for i:=0; i<len(arr); i++ {
+    if arr[i] > max {
+      max = arr[i]
+    }
+  }
+  return max
+}
+func getDduck(arr []int, cutter int) int {
+  result := 0
+  for i:=0; i<len(arr); i++ {
+    if arr[i] > cutter {
+      result += arr[i]-cutter
+    }
+  }
+  return result
+}
+
+func main() {
+  var N,M int
+  fmt.Scan(&N, &M)
+
+  arr := make([]int, N)
+  for i:=0; i<N; i++ {
+    fmt.Scanf("%d", &arr[i])
+  }
+  max := getMax(arr)
+  for i:= 0; i <=max; i++ {
+    if getDduck(arr, i) == M {
+      fmt.Println(i)
+      break
+    }
+  }
+}
+```
+
+```go
+// 2.떡볶이 떡 만들기 - 이진탐색
+// 4 6
+// 19 15 10 17
+// 15
+package main
+
+import (
+  "fmt"
+)
+
+func getMax(arr []int) int {
+  max :=arr[0]
+  for i:=0; i<len(arr); i++ {
+    if arr[i] > max {
+      max = arr[i]
+    }
+  }
+  return max
+}
+func getDduck(arr []int, cutter int) int {
+  result := 0
+  for i:=0; i<len(arr); i++ {
+    if arr[i] > cutter {
+      result += arr[i]-cutter
+    }
+  }
+  return result
+}
+
+func main() {
+  var N,M int
+  fmt.Scan(&N, &M)
+
+  arr := make([]int, N)
+  for i:=0; i<N; i++ {
+    fmt.Scanf("%d", &arr[i])
+  }
+  max := getMax(arr)
+  left, right := 0, max
+  var mid, sum int
+
+  for left <=right {
+    mid = (left+right) / 2
+    sum = getDduck(arr,mid)
+    if sum == M {
+      fmt.Println(mid)
+      break
+    } else if sum > M {
+      left = mid+1
+    } else {
+      right = mid-1
+    }
+  }
+}
+```
+
+
+### 다이나믹 프로그래밍
+
+- 다이나믹 프로그래밍
+  - '프로그램이 실행되는 도중에'
+  - 동적계획법: 메모리 공간을 약간 더 사용하여 연산속도 비약적 증가
+  - 다이나믹 프로그래밍에는 탑다운, 보텀업 방식 2가지 + 메모이제이션 기법
 

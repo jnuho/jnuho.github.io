@@ -1,46 +1,54 @@
-// 10 7
-// 1 3 5 7 9 11 13 15 17 19
-// 4
+// 2.떡볶이 떡 만들기 - 이진탐색
+// 4 6
+// 19 15 10 17
+// 15
 package main
 
 import (
-	"fmt"
+  "fmt"
 )
 
-func binary_search(arr []int, target, start, end int) int {
-  if start > end {
-    return -1
+func getMax(arr []int) int {
+  max :=arr[0]
+  for i:=0; i<len(arr); i++ {
+    if arr[i] > max {
+      max = arr[i]
+    }
   }
-
-  if len(arr) < 1 {
-    return -1
+  return max
+}
+func getDduck(arr []int, cutter int) int {
+  result := 0
+  for i:=0; i<len(arr); i++ {
+    if arr[i] > cutter {
+      result += arr[i]-cutter
+    }
   }
-
-  mid := (start+end) / 2
-  if arr[mid] == target {
-    return mid
-  } else if arr[mid] > target {
-    return binary_search(arr, target, start, mid-1)
-  } else {
-    return binary_search(arr, target, mid+1, end)
-  }
+  return result
 }
 
 func main() {
-  var N int // 리스트 개수
-  var target int // 찾는 숫자
-  fmt.Scan(&N, &target)
+  var N,M int
+  fmt.Scan(&N, &M)
 
   arr := make([]int, N)
   for i:=0; i<N; i++ {
-    fmt.Scan(&arr[i])
+    fmt.Scanf("%d", &arr[i])
   }
+  max := getMax(arr)
+  left, right := 0, max
+  var mid, sum int
 
-  result := binary_search(arr, target, 0, len(arr)-1)
-  if result == -1 {
-    fmt.Println("NOT FOUND!")
-  } else {
-    fmt.Println(result + 1)
+  for left <=right {
+    mid = (left+right) / 2
+    sum = getDduck(arr,mid)
+    if sum == M {
+      fmt.Println(mid)
+      break
+    } else if sum > M {
+      left = mid+1
+    } else {
+      right = mid-1
+    }
   }
 }
-
