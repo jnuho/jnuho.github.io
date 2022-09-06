@@ -1,15 +1,17 @@
-- Go AWS Sdk
-  - https://github.com/jnuho/goproject
-  - 주요기능 : 
-    - https://aws.amazon.com/sdk-for-go/
-    - ALB/NLB -> TargetGroup -> ECS/EC2 자원 조회
+- Go Application Using AWS Go Sdk
+  - [https://github.com/jnuho/goproject](https://github.com/jnuho/goproject)
+  - Features : 
+    - [https://aws.amazon.com/sdk-for-go/](https://aws.amazon.com/sdk-for-go/) 활용
+    - ALB -> TargetGroup -> Target (ECS / EC2) 자원 TargetHealth 및 container-ip / instance-id 조회
     - ECS 자원 상세조회 : 각 Task내의 Container 및 이미지, IP 정보 상세조회
     - ECR 이미지 : Tag 및 이미지 uri 조회 최신 순 조회
+    - ECR `>` Lifecycle Policy (PUT/GET) API 활용
   - 구현 시 고려사항 :
-    - AWS 자원간에 의존성 있는데, API에서 조회 결과로 복잡한 의존관계를 한번의 호출로 조회할 수 없음
-    - 의존 관계에 있는 각 자원 API 호출하여 Go언어로 데이터를 가공하여 결과 얻음
-  - 사용언어 :
-    - 백엔드: Go, 프론트엔드: Javascript, HTML, CSS
+    - AWS 자원간 의존성이 있는데, API에서 조회 결과로 모든 의존관계를 한번의 호출로 조회할 수 없음
+    - 각 자원 조회 API 호출하여 Go언어 객체로 저장 및 수정 / 정렬 처리 및 html 페이지에 동적으로 업데이트
+  - 사용 Language :
+    - 백엔드: Go
+    - 프론트엔드: Javascript, HTML, CSS
 
 ![go sdk app](assets/images/Animation.gif)
 
@@ -19,6 +21,14 @@
 
 ```go
 import "github.com/aws/aws-sdk-go/aws/session"
+
+// AWS 프로파일 명 (~/.aws/config)
+type AwsProfile struct{
+	dev string
+	stg string
+	prd string
+}
+var awsProfile AwsProfile
 
 // 세션객체 초기화
 func InitSession(profile string) *session.Session {
@@ -39,23 +49,22 @@ func InitSession(profile string) *session.Session {
   }
   return sess
 }
-
 ```
 
 - 구조체 Repo 정의
 - Repo 반환 인터페이스 정의
 - Repo 구조체 구현 메소드 정의
-  - func (repo *Repo) getAWSTargetGroups()
-  - func (repo *Repo) getAWSTargetHealths(tgarn string)
-  - func (repo *Repo) getAWSEcsClusterDetails(clusterArn string)
-  - func (repo *Repo) getAWSEcsSvcList(clusterArns []*string)
-  - func (repo *Repo) getAWSListClusters()
-  - func (repo *Repo) getAWSEcsClusters(clusters []*string)
-  - func (repo *Repo) getAWSEcsDescribeTaskDefinition(services []*ecs.Service)
-  - func (repo *Repo) getAWSEcsListAndDescribeTasks(clusterName, serviceName string)
-  - func (repo *Repo) getAWSEcsDescribeService(clusterName, serviceName string)
-  - func (repo *Repo) getAWSEcrRepos(repoName string)
-  - func (repo *Repo) getAWSEcrDescribeImages(repoUri, repoName string)
+  - `func (repo *Repo) getAWSTargetGroups()`
+  - `func (repo *Repo) getAWSTargetHealths(tgarn string)`
+  - `func (repo *Repo) getAWSEcsClusterDetails(clusterArn string)`
+  - `func (repo *Repo) getAWSEcsSvcList(clusterArns []*string)`
+  - `func (repo *Repo) getAWSListClusters()`
+  - `func (repo *Repo) getAWSEcsClusters(clusters []*string)`
+  - `func (repo *Repo) getAWSEcsDescribeTaskDefinition(services []*ecs.Service)`
+  - `func (repo *Repo) getAWSEcsListAndDescribeTasks(clusterName, serviceName string)`
+  - `func (repo *Repo) getAWSEcsDescribeService(clusterName, serviceName string)`
+  - `func (repo *Repo) getAWSEcrRepos(repoName string)`
+  - `func (repo *Repo) getAWSEcrDescribeImages(repoUri, repoName string)`
   
 
 ```go
