@@ -1,26 +1,38 @@
 package main
 
 import (
-  "fmt"
+	"fmt"
 )
 
-var arr []int
+var d []int
 
-func init() {
-  arr = make([]int, 100)
+func initD(N int){
+  d = make([]int, N)
 }
 
-func fibo(n int) int {
-  if n==1 || n == 2 {
-    return 1
+func max(i,j int ) int {
+  if i>j {
+    return i
+  } else {
+    return j
   }
-  if arr[n] != 0 {
-    return arr[n]
-  }
-  arr[n] = fibo(n-1) + fibo(n-2)
-  return arr[n]
 }
 
 func main() {
-  fmt.Println(fibo(90))
+  var N int
+  fmt.Scanln(&N)
+  initD(N)
+
+  arr := make([]int, N)
+  for i:=0; i<N; i++ {
+    fmt.Scanf("%d", &arr[i])
+  }
+
+  d[0] = arr[0]
+  d[1] = max(arr[0], arr[1])
+
+  for i:=2; i< len(d); i++ {
+    d[i] = max(d[i-1], d[i-2] + arr[i])
+  }
+  fmt.Println(d[N-1])
 }
