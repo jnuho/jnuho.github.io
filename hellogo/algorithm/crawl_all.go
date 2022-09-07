@@ -6,6 +6,7 @@ import (
   "os"
   "strings"
   "strconv"
+  "sort"
 
   "github.com/gocolly/colly/v2"
 )
@@ -36,7 +37,7 @@ func main() {
 
   c.OnHTML("div.truncate a", func(e *colly.HTMLElement) {
     
-    os := strings.Index(e.Text, ".")
+    pos := strings.Index(e.Text, ".")
     idx,_ := strconv.Atoi(e.Text[:pos])
 
     problems[idx] = e.Attr("href")
@@ -57,9 +58,15 @@ func main() {
 
 	// Wait until threads are finished
 	c.Wait()
+  keys := make([]int, 0)
+  for k := range problems {
+    keys = append(keys, k)
+  }
+  sort.Ints(keys)
 
-  for key,val := range problems {
-    fmt.Println(key, val)
+
+  for _,i := range keys {
+    fmt.Println(i, problems[i])
   }
 	// Write(Append) to file
 	//defer writeToFile(problem, result)
