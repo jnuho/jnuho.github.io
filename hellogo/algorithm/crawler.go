@@ -4,6 +4,8 @@ import (
   "fmt"
 	"log"
   "os"
+  "strings"
+  "strconv"
 
   "github.com/gocolly/colly/v2"
 )
@@ -20,7 +22,7 @@ func main() {
 		colly.Async(),
 	)
 	c.Limit(&colly.LimitRule{DomainGlob: "*", Parallelism: 2})
-	var result string
+	//var result string
 
 	url := "https://leetcode.com/problems/"
   //https://leetcode.com/problems
@@ -30,22 +32,14 @@ func main() {
   //  /problems/two-sum
   //url += problem
 
-  c.OnHTML("div[role='rowgroup']", func(e *colly.HTMLElement) {
-    fmt.Println(e)
+  problems := make(map[int]string)
+
+  c.OnHTML("div.truncate a", func(e *colly.HTMLElement) {
     
-    result = e.ChildText("div[role='row']") + "\n\n"
-    result += e.ChildText("div[role='cell']")
-		//result = e.ChildText("div#problem_description")
-		//result += e.ChildText("div#problem_input")
-		//result += e.ChildText("div#problem_output")
-		//result += "\n[INPUT 1]\n" + e.ChildText("pre#sample-input-1")
-		//result += "\n[OUTPUT 1]\n" + e.ChildText("pre#sample-output-1")
-		//result += "\n[INPUT 2]\n" + e.ChildText("pre#sample-input-2")
-		//result += "\n[OUTPUT 2]\n" + e.ChildText("pre#sample-output-2")
-		//result += "\n[INPUT 3]\n" + e.ChildText("pre#sample-input-3")
-		//result += "\n[OUTPUT 3]\n" + e.ChildText("pre#sample-output-3")
-		//result += "\n[INPUT 4]\n" + e.ChildText("pre#sample-input-4")
-		//result += "\n[OUTPUT 4]\n" + e.ChildText("pre#sample-output-4")
+    os := strings.Index(e.Text, ".")
+    idx,_ := strconv.Atoi(e.Text[:pos])
+
+    problems[idx] = e.Attr("href")
 		//result = "/**\n" + url + "\n\n" + result + "\n*/\n"
 		
 		//result += "package main\n\n"
@@ -64,7 +58,9 @@ func main() {
 	// Wait until threads are finished
 	c.Wait()
 
-  fmt.Print(result)
+  for key,val := range problems {
+    fmt.Println(key, val)
+  }
 	// Write(Append) to file
 	//defer writeToFile(problem, result)
 }
