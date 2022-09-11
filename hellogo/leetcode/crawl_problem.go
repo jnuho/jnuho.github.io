@@ -4,9 +4,6 @@ import (
   "fmt"
 	"log"
   "os"
-  "strings"
-  "strconv"
-  "sort"
 
   "github.com/gocolly/colly/v2"
 )
@@ -25,7 +22,7 @@ func main() {
 	c.Limit(&colly.LimitRule{DomainGlob: "*", Parallelism: 2})
 	//var result string
 
-	url := "https://leetcode.com/problems/"
+	url := "https://leetcode.com/problems/two-sum/"
   //https://leetcode.com/problems
   //div role = "row"
   //  div role="cell"[1]
@@ -33,16 +30,11 @@ func main() {
   //  /problems/two-sum
   //url += problem
 
-  problems := make(map[int]string)
-
-  c.OnHTML("div.truncate a", func(e *colly.HTMLElement) {
+  c.OnHTML("div.main__2_tD" , func(e *colly.HTMLElement) {
     
-    pos := strings.Index(e.Text, ".")
-    idx,_ := strconv.Atoi(e.Text[:pos])
-
-    problems[idx] = e.Attr("href")
+    fmt.Println(e)
+    fmt.Println(e.Text)
 		//result = "/**\n" + url + "\n\n" + result + "\n*/\n"
-		
 		//result += "package main\n\n"
 		//result += "import (\n"
 		//result += "  \"fmt\"\n"
@@ -58,16 +50,7 @@ func main() {
 
 	// Wait until threads are finished
 	c.Wait()
-  keys := make([]int, 0)
-  for k := range problems {
-    keys = append(keys, k)
-  }
-  sort.Ints(keys)
 
-
-  for _,i := range keys {
-    fmt.Println(i, problems[i])
-  }
 	// Write(Append) to file
 	//defer writeToFile(problem, result)
 }
