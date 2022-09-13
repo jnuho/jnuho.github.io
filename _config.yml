@@ -33,7 +33,7 @@ tags_path: tags.html
 
 # set it as url of an image
 # sidebar_background_image: https://source.unsplash.com/_TuI8tZHlk4
-sidebar_background_image: https://images.unsplash.com/photo-1554679665-f5537f187268?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1974&q=80
+sidebar_background_image: https://images.unsplash.com/photo-1511207538754-e8555f2bc187?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2127&q=80
 
 BASE_PATH:
 
