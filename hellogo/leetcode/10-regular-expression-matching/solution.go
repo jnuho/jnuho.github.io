@@ -4,7 +4,7 @@ import (
 	"fmt"
 )
 
-// '.' Matches any single character.​​​​
+// '.' Matches any single character.
 // '*' Matches zero or more of the preceding element.
 func isMatch(s string, p string) bool {
 	for _, r := range p {

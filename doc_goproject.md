@@ -5,7 +5,7 @@
     - ALB -> TargetGroup -> Target (ECS / EC2) 자원 TargetHealth 및 container-ip / instance-id 조회
     - ECS 자원 상세조회 : 각 Task내의 Container 및 이미지, IP 정보 상세조회
     - ECR 이미지 : Tag 및 이미지 uri 조회 최신 순 조회
-    - ECR `>` Lifecycle Policy (PUT/GET) API 활용
+    - ECR > Lifecycle Policy (PUT/GET) API 활용
   - 구현 시 고려사항 :
     - AWS 자원간 의존성이 있는데, API에서 조회 결과로 모든 의존관계를 한번의 호출로 조회할 수 없음
     - 각 자원 조회 API 호출하여 Go언어 객체로 저장 및 수정 / 정렬 처리 및 html 페이지에 동적으로 업데이트
@@ -22,7 +22,7 @@
 ```go
 import "github.com/aws/aws-sdk-go/aws/session"
 
-// AWS 프로파일 명 (~/.aws/config)
+// 파라미터로 ~/.aws/config 에 저장된 3개의 프로파일 명을 받아서 저장
 type AwsProfile struct{
 	dev string
 	stg string
@@ -45,7 +45,7 @@ func InitSession(profile string) *session.Session {
     SharedConfigState: session.SharedConfigEnable,
   })
   if err != nil {
-    panic(err)
+    log.Error(err)
   }
   return sess
 }
