@@ -3,31 +3,15 @@ package main
 import "fmt"
 
 func twoSum(nums []int, target int) []int {
-	if len(nums) < 2 {
-		return []int{}
-	}
-
-	hashmap := map[int]int{}
-
-	// Target = A + B
-	for key,A := range nums {
-		B := target - A
-		_, ok := hashmap[B]
-
-		if ok {
-			return []int{hashmap[B], key}
-		}
-		hashmap[A] = key
-	}
-	return nil
-}
-
-
-func twoSum(nums []int, target int) []int {
 	hashmap := make(map[int]int)
 
 	for i:=0; i< len(nums); i++ {
+		if find, ok := hashmap[target - nums[i]]; ok {
+			return []int{find, i}
+		}
+		hashmap[nums[i]] = i
 	}
+	return []int{}
 }
 
 func main() {
