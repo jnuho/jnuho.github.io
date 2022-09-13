@@ -25,6 +25,9 @@ func twoSum(nums []int, target int) []int {
 
 func twoSum(nums []int, target int) []int {
 	hashmap := make(map[int]int)
+
+	for i:=0; i< len(nums); i++ {
+	}
 }
 
 func main() {
