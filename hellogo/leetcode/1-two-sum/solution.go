@@ -22,8 +22,8 @@ func twoSum(nums []int, target int) []int {
 	return nil
 }
 
-func twoSum(nums []int, target int) {
 
+func twoSum(nums []int, target int) []int {
 }
 
 func main() {
