@@ -17,7 +17,7 @@
 
 <div>
 <img src="assets/images/Animation.gif"
-height="45%" width="45%" alt="go sdk app">
+height="52%" width="52%" alt="go sdk app">
 </div>
 
 
