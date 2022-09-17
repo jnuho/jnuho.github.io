@@ -11,11 +11,15 @@ func threeSum(nums []int) [][]int {
 	}
 	sort.Ints(nums)
 
-	l := 0
-	r := len(nums)-1
-	for l < r-1 {
+	l, r, mid := 0, len(nums)-1, 0
+
+	for l <= r-2 {
+		target := -(arr[l] + arr[r])
+		i := binary_search(arr[l:r+1],
 
 	}
+
+	return [][]int{}
 }
 
 // returns array index of a target element
