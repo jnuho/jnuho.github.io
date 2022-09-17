@@ -11,11 +11,20 @@ func threeSum(nums []int) [][]int {
 	}
 	sort.Ints(nums)
 
+	result := make([][]int, 0)
+
 	l, r, mid := 0, len(nums)-1, 0
 
 	for l <= r-2 {
 		target := -(arr[l] + arr[r])
-		i := binary_search(arr[l:r+1],
+		i := binary_search(arr[l+1:r], target)
+		if i != -1 {
+			result = append(result, []int{arr[l], arr[i], arr[r]})
+		} else if target >= 0 {
+			l++
+		} else if target < 0 {
+			r--
+		}
 
 	}
 
