@@ -13,7 +13,12 @@
     - 백엔드: Go
     - 프론트엔드: Javascript, HTML, CSS
 
-![go sdk app](assets/images/Animation.gif)
+<!-- ![go sdk app](assets/images/Animation.gif)-->
+
+<div>
+<img src="assets/images/Animation.gif"
+height="50%" width="50%" alt="go sdk app">
+</div>
 
 
 
