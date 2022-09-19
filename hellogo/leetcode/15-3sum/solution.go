@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	//"sort"
+	"sort"
 )
 
 func threeSum(nums []int) [][]int {
