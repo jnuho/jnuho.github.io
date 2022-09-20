@@ -1490,6 +1490,16 @@ func main() {
     - 부모노드보다 왼쪽 자식노드가 작다
     - 부모노드보다 오른쪽 자식노드가 크다
 
+```
+Such tree can be represented by a linked data structure in which each node is an object.
+Each node contains 'key' with satellite data, 'left' and 'right' child nodes, and 'parent' node.
+The root node is the only node in the tree whose parent is NIL.
+The keys in a binary search tree are always stored in such a way as to satisfy the binary-search-tree property:
+x: node in a BST
+if y is in the left subtree of x, then y.key <= x.key
+if y is in the right subtree of x, then y.key >= x.key
+
+```
 
 - 1.부품찾기
   - N개 부품에서 M개 요청 부품 있는지 여부
