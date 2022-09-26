@@ -21,12 +21,12 @@
 
 		// limit for iteration
 		final int limit = listCount + fetchSize;
-		BatchPlayvoteVO param = new BatchPlayvoteVO();
+		BatchVO param = new BatchVO();
 		for (int ii = 0; ii < limit;) {
 			param.setPage_index(ii);
 			param.setRecord_count_per_page(fetchSize);
 
-			List<BatchVoteVO> mainList = batchApiMapper.getPlayVoteInfoList(param);
+			List<BatchVoteVO> mainList = batchApiMapper.getVoteInfoList(param);
 			for (BatchPlayvoteVO m : mainList) {
 				batchApiMapper.updateVote(m);
 			}
