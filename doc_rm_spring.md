@@ -1,22 +1,20 @@
 
-- Backend Development<b>2019.11 ~ 2022.03</b>
-	- Git
-		- Code Review : PR, Branch merge, <i>Code conflict resolution</i>
-		- Branch : 'master< develop< personal branch'
-	- Java - Spring
-		- API development for voting platform of SBS inkigayo TV program
-			- APIs included : "Vote, Count votes (Batch Schedule) and Update user info, comments"
-			- SMS authentication (AWS Java SDK)
-			- 'Sign in with Apple' SDK for oauth login
-		- Code optimization for handling user requests
-		- Code Refactoring for code readability and reusability
+- Git
+	- Code Review : PR, Merge
+	- Branch : 'main < develop < personal branch'
+- Java (Spring)
+	- API development for SBS inkigayo voting platform
+		- APIs : "Vote, Count votes, Update user info, Add user comments"
+		- SMS authentication (AWS Java SDK)
+		- 'Sign in with Apple' SDK for oauth login
+	- Code optimization for handling thousands of user requests
+	- Refactoring for code readability and reusability
 
 
 ```java
 /**
-	* The Following is a snippet of what I've been writing
-	*		as a Java backend developer
-	*/
+ * a snippet of what I've been writing as a backend developer
+ */
 
 	@Override
 	@Transactional
@@ -30,17 +28,16 @@
 		vote = setTotalVotePointInfo(vote);
 
 		// Operation for SELECT FOR UPDATE
-		//	retrieves data for update
-		//	(data is locked during Lock Wait Time)
+		//	retrieves data for update (update is locked during Lock Wait Time)
 		VoteDetailUserVO detailUser = selectVoteDetailUserForUpdate(vote);
 
 		// Validate remaining user points
 		validateVoteInfo(vote, vote.getVote_use_count());
 
-		// Insert vote tran_no, hist_seq
+		// Insert vote result data : tran_no, hist_seq
 		insertVoteHistory(vote);
 
-		// We process point data based on use request that includes point use type parameter
+		// Process point deduction based on the user request which includes use point type
 		String voteUsePointType = param.getVote_use_point_type();
 		if (VoteUsePointType.SILVER.equals(voteUsePointType)) {
 			useSilverPoint(vote);
@@ -50,9 +47,9 @@
 			useGoldPoint(vote);
 		}
 
-		// Insert another vote history.
-		//	this history data is used for statistical purpose
-		//	e.g. vote candidate recommendation or viewing target candidate history
+		// Insert another vote history data
+		//	which is used for statistical purpose
+		//	e.g. for future vote candidate recommendation or viewing voting history
 		insertVoteHist(vote);
 
 		// Update Vote aggregate data
@@ -60,11 +57,10 @@
 		detailUser.setVote_count(vote.getVote_use_count());
 		updateVoteDetailUser(detailUser);
 
-		// Return remaining vote count for each user after the transaction is complete
+		// Return remaining vote count for a user after the transaction is complete
 		//	in case of a vote platform that restrict the vote counts for each user
 		if (!VoteLimitCountType.NOLIMIT.equals(vote.getVote_limit_cnt_type())) {
 			int remain_cnt = selectRemainCnt(vote);
-
 			ResultDoPlayVoteVO result = new ResultDoPlayVoteVO();
 			result.setVote_remain_cnt(remain_cnt);
 			result.setCode(ErrorCode.SUCCESS.getCode());
