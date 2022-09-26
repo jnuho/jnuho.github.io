@@ -4,41 +4,40 @@
 		- Code Review : PR, Branch merge, <i>Code conflict resolution</i>
 		- Branch : 'master< develop< personal branch'
 	- Java - Spring
-		- backend API development
-			- Voting platform for <i>SBS inkigayo</i> TV program
+		- API development for voting platform of SBS inkigayo TV program
 			- APIs included : "Vote, Count votes (Batch Schedule) and Update user info, comments"
-			- SMS authentication (AWS Java SDK) for each user
-			- Apple oauth login sdk 'Sign in with Apple'
+			- SMS authentication (AWS Java SDK)
+			- 'Sign in with Apple' SDK for oauth login
 		- Code optimization for handling user requests
-		- Code Refactoring for readability and code reusability
+		- Code Refactoring for code readability and reusability
 
 
 ```java
 /**
-	* The Following code fragment is just a snippet of what I've been writing
-	* while I was working as a Java backend developer
+	* The Following is a snippet of what I've been writing
+	*		as a Java backend developer
 	*/
 
 	@Override
 	@Transactional
 	public ResultVO insertVote(VoteInsertVO param) throws Exception {
 
-		// Get vote info including target candidate that a user is tring to vote
+		// Get vote info including target candidate that a user is requesting
 		VoteInsertVO vote = getVoteUserInfo(param);
 
-		// Calculate total vote points a user is intended to consume
-		//	our internal point system include point conversion process here!
+		// Calculate total vote points
+		//	internal point system include point conversion!
 		vote = setTotalVotePointInfo(vote);
 
 		// Operation for SELECT FOR UPDATE
-		//	retrieve data for update
-		//	(User data is secured during Lock Wait Time: select @@innodb_lock_wait_timeout)
+		//	retrieves data for update
+		//	(data is locked during Lock Wait Time)
 		VoteDetailUserVO detailUser = selectVoteDetailUserForUpdate(vote);
 
-		// Validate remaining user points before allowing transaction
+		// Validate remaining user points
 		validateVoteInfo(vote, vote.getVote_use_count());
 
-		// Insert vote data (tran_no, hist_seq)
+		// Insert vote tran_no, hist_seq
 		insertVoteHistory(vote);
 
 		// We process point data based on use request that includes point use type parameter
@@ -61,8 +60,8 @@
 		detailUser.setVote_count(vote.getVote_use_count());
 		updateVoteDetailUser(detailUser);
 
-		// Return remaining vote count for each user after this transaction is complete
-		//	in case of a vote that restrict the vote counts for each user
+		// Return remaining vote count for each user after the transaction is complete
+		//	in case of a vote platform that restrict the vote counts for each user
 		if (!VoteLimitCountType.NOLIMIT.equals(vote.getVote_limit_cnt_type())) {
 			int remain_cnt = selectRemainCnt(vote);
 
