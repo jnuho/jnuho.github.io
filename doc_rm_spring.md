@@ -2,7 +2,7 @@
 - Git
 	- Code Review : PR, Merge
 	- Branch : 'main < develop < personal branch'
-- Java (Spring)
+- Java - Spring
 	- API development for SBS inkigayo voting platform
 		- APIs : "Vote, Count votes, Update user info, Add user comments"
 		- SMS authentication (AWS Java SDK)
