@@ -1,19 +1,20 @@
 
 - Git
-	- Code Review : PR, Merge
-	- Branch : 'main < develop < personal branch'
-- Java - Spring
-	- API development for SBS inkigayo voting platform
-		- APIs : "Vote, Count votes, Update user info, Add user comments"
-		- SMS authentication (AWS Java SDK)
-		- 'Sign in with Apple' SDK for oauth login
-	- Code optimization for handling thousands of user requests
-	- Refactoring for code readability and reusability
+	- PR, Code Review, Merge
+	- Branch : 'main < test < develop'
+- Java
+	- RESTful API development for SBS inkigayo voting platform
+	- SDKs used : AWS SNS, AWS S3
+	- APIs used : Payletter, Apple login, 
+	- Scheduling Tasks (Spring Framework) for Batch Job
+	- Refactoring for readability and reusability of codes
 
+
+### Refactoring
 
 ```java
 /**
- * a snippet of what I've been writing as a backend developer
+ * a snippet of what I've been working as a backend developer
  */
 
 	@Override
@@ -73,4 +74,30 @@
 			return result;
 		}
 	}
+```
+
+### for-loop optimization
+
+```java
+// ...
+		// fetch size (query limit count) for each sql query execution
+		final int fetchSize = AppConstants.DEFAULT_FETCH_SIZE;
+
+		// total list count
+		final int listCount = batchApiMapper.getVoteListCnt();
+
+		// limit for iteration
+		final int limit = listCount + fetchSize;
+		BatchPlayvoteVO param = new BatchPlayvoteVO();
+		for (int ii = 0; ii < limit;) {
+			param.setPage_index(ii);
+			param.setRecord_count_per_page(fetchSize);
+
+			List<BatchVoteVO> mainList = batchApiMapper.getPlayVoteInfoList(param);
+			for (BatchPlayvoteVO m : mainList) {
+				batchApiMapper.updateVote(m);
+			}
+			ii += fetchSize;
+		}
+// ...
 ```
