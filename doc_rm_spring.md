@@ -9,6 +9,32 @@
 	- Scheduling Tasks (Spring Framework) for Batch Job
 	- Refactoring for readability and reusability of codes
 
+### for-loop optimization
+
+```java
+// ...
+		// fetch size (query limit count) for each sql query execution
+		final int fetchSize = AppConstants.DEFAULT_FETCH_SIZE;
+
+		// total list count
+		final int listCount = batchApiMapper.getVoteListCnt();
+
+		// limit for iteration
+		final int limit = listCount + fetchSize;
+		BatchPlayvoteVO param = new BatchPlayvoteVO();
+		for (int ii = 0; ii < limit;) {
+			param.setPage_index(ii);
+			param.setRecord_count_per_page(fetchSize);
+
+			List<BatchVoteVO> mainList = batchApiMapper.getPlayVoteInfoList(param);
+			for (BatchPlayvoteVO m : mainList) {
+				batchApiMapper.updateVote(m);
+			}
+			ii += fetchSize;
+		}
+// ...
+```
+
 
 ### Refactoring
 
@@ -76,28 +102,3 @@
 	}
 ```
 
-### for-loop optimization
-
-```java
-// ...
-		// fetch size (query limit count) for each sql query execution
-		final int fetchSize = AppConstants.DEFAULT_FETCH_SIZE;
-
-		// total list count
-		final int listCount = batchApiMapper.getVoteListCnt();
-
-		// limit for iteration
-		final int limit = listCount + fetchSize;
-		BatchPlayvoteVO param = new BatchPlayvoteVO();
-		for (int ii = 0; ii < limit;) {
-			param.setPage_index(ii);
-			param.setRecord_count_per_page(fetchSize);
-
-			List<BatchVoteVO> mainList = batchApiMapper.getPlayVoteInfoList(param);
-			for (BatchPlayvoteVO m : mainList) {
-				batchApiMapper.updateVote(m);
-			}
-			ii += fetchSize;
-		}
-// ...
-```
