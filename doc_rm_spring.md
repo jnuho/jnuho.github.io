@@ -1,23 +1,22 @@
 
-Skills
+* SKILLS
 ```
-Git
-	 PR, Code Review, Merge
-	 Branch : 'main < test < develop'
+- Git
+  PR, Code Review, Merge
+  Branch : 'main < test < develop'
 
-Java
-	 RESTful API development for SBS inkigayo voting platform
-	 SDKs used : AWS SNS, AWS S3
-	 APIs used : Payletter, Apple login
-	 Scheduling (Spring Framework) for Batch Job
-	 Refactoring for readability and reusability of codes
+- Java
+  RESTful API development for SBS inkigayo voting platform
+  SDKs used : AWS SNS, AWS S3
+  APIs used : Payletter, Apple login
+  Scheduling (Spring Framework) for Batch Job
+  Refactoring for readability and reusability of codes
 
-Test
-	Junit unit test
+- Test
+  Junit unit test
 ```
 
-
-For-loop optimization
+* FOR-LOOP OPTIMIZATION
 ```java
 /**
  * Limit fetch size (query limit count) for each sql query execution
@@ -45,7 +44,7 @@ for (int ii = 0; ii < limit;) {
 // ...
 ```
 
-Refactoring
+* REFACTORING
 ```java
 /**
  * API for executing voting process includes updating and retrieving from database
@@ -111,7 +110,7 @@ public ResultVO insertVote(VoteInsertVO param) throws Exception {
 ```
 
 
-Unit Test
+UNIT TEST
 ```java
 package com.oo.ooo.home;
 
