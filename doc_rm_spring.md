@@ -207,7 +207,7 @@ public class DataApiTest extends SpringTestBase {
 	 */
 	@Test
 	public void testGetStarInfo_2() throws Exception {
-		String login_id = "kimansub87@gmail.com";
+		String login_id = "ooo";
 		DataParamVO param = new DataParamVO();
 		param.setLogin_id(login_id);
 
