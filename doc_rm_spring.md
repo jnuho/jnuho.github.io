@@ -1,5 +1,5 @@
 
-- SKILLS
+SKILLS
 ```
 - Git
   PR, Code Review, Merge
@@ -16,7 +16,7 @@
   Junit unit test
 ```
 
-- FOR-LOOP OPTIMIZATION
+FOR-LOOP OPTIMIZATION
 ```java
 /**
  * Limit fetch size (query limit count) for each sql query execution
@@ -44,7 +44,7 @@ for (int ii = 0; ii < limit;) {
 // ...
 ```
 
-- REFACTORING
+REFACTORING
 ```java
 /**
  * API for executing voting process includes updating and retrieving from database
@@ -110,7 +110,7 @@ public ResultVO insertVote(VoteInsertVO param) throws Exception {
 ```
 
 
-- UNIT TEST
+UNIT TEST
 ```java
 package com.oo.ooo.home;
 
