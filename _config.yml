@@ -7,7 +7,7 @@ highlighter: rouge
 markdown: kramdown
 disqus: dbyll
 google_analytics: dbyll
-title: 이준호
+title: JUN HO LEE
 
 defaults:
   -
@@ -18,7 +18,7 @@ defaults:
 
 description: Stylish Jekyll Theme
 author:
-  name: Jun Ho Lee
+  name: JUN HO LEE
   email: jnuho@outlook.com
   github: jnuho
   twitter: 

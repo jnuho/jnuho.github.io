@@ -1,22 +1,28 @@
 
-- Git
-	- PR, Code Review, Merge
-	- Branch : 'main < test < develop'
-- Java
-	- RESTful API development for SBS inkigayo voting platform
-	- SDKs used : AWS SNS, AWS S3
-	- APIs used : Payletter, Apple login
-	- Scheduling (Spring Framework) for Batch Job
-	- Refactoring for readability and reusability of codes
-- Test
-	- Junit unit test
+Skills
+```
+Git
+	 PR, Code Review, Merge
+	 Branch : 'main < test < develop'
 
-### For-loop optimization
+Java
+	 RESTful API development for SBS inkigayo voting platform
+	 SDKs used : AWS SNS, AWS S3
+	 APIs used : Payletter, Apple login
+	 Scheduling (Spring Framework) for Batch Job
+	 Refactoring for readability and reusability of codes
 
+Test
+	Junit unit test
+```
+
+
+For-loop optimization
 ```java
-// ...
-// Limit fetch size (query limit count) for each sql query execution
-//	so that it does not put stress on database
+/**
+ * Limit fetch size (query limit count) for each sql query execution
+ *	so that it does not put stress on database
+ */
 final int fetchSize = AppConstants.DEFAULT_FETCH_SIZE;
 
 // Total list count
@@ -25,6 +31,7 @@ final int listCount = batchApiMapper.getVoteListCnt();
 // Limit for iteration
 final int limit = listCount + fetchSize;
 BatchVO param = new BatchVO();
+
 for (int ii = 0; ii < limit;) {
 	param.setPage_index(ii);
 	param.setRecord_count_per_page(fetchSize);
@@ -38,15 +45,12 @@ for (int ii = 0; ii < limit;) {
 // ...
 ```
 
-
-### Refactoring
-
+Refactoring
 ```java
 /**
  * API for executing voting process includes updating and retrieving from database
  *	refactoring helped to improve readability
  */
-
 @Override
 @Transactional
 public ResultVO insertVote(VoteInsertVO param) throws Exception {
@@ -107,8 +111,7 @@ public ResultVO insertVote(VoteInsertVO param) throws Exception {
 ```
 
 
-### Unit Test
-
+Unit Test
 ```java
 package com.oo.ooo.home;
 
@@ -228,8 +231,6 @@ public class DataApiTest extends SpringTestBase {
 		assertEquals(null, result.getVote_battle_rank());
 	}
 }
-
-
 ```
 
 ```java
@@ -259,7 +260,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
 /**
- * 스프링 테스트 베이스
+ * SpringTestBase class
  *
  * @author junho
  *
@@ -290,7 +291,7 @@ public class SpringTestBase {
 	}
 
 	/**
-	 * 객체를 JSON으로 로그 출력
+	 * print object as JSON
 	 *
 	 * @param name
 	 * @param value

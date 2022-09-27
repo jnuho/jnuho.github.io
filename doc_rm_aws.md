@@ -1,73 +1,72 @@
 
-- AWS Infra
-  - Subnets are configured as Public and Private in a VPC
-  - Before creating ElastiCache Cluster, we define Security Group with inbound port 6379 open
-  - Choose VPC and Subnets when creating ElastiCache Cluster
-    - VPC: choose the same VPC that EC2 uses
-    - [Subnet Group](https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/SubnetGroups.html): choose private subnet
+AWS Infra
+- Subnets are configured as Public and Private in a VPC
+- Before creating ElastiCache Cluster, we define Security Group with inbound port 6379 open
+- Choose VPC and Subnets when creating ElastiCache Cluster
+	- VPC: choose the same VPC that EC2 uses
+	- [Subnet Group](https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/SubnetGroups.html): choose private subnet
 
 ![diagram](https://d2cg24p20j4o18.cloudfront.net/playvote/000/20210819/82331f92-bc8c-403e-a1d1-5d51bc6fec79.jpg)
 
-- Create AWS Resources in order
-  1. [VPC](#vpc)
-  2. [인터넷 게이트웨이](#인터넷-게이트웨이)
-  3. [서브넷, 라우팅 테이블](#서브넷-라우팅-테이블)
-  4. [보안 그룹](#보안-그룹)
-  5. [EC2](#ec2)
-  5. [ElastiCache](#elasticache)
+Create AWS Resources in order
+1. [VPC](#vpc)
+2. [Internet Gateway](#internet-gateway)
+3. [Subnet, Routing Table](#subnet-routing-table)
+4. [Security Group](#security-group)
+5. [EC2](#ec2)
+5. [ElastiCache](#elasticache)
 
 #### VPC
 - CIDR 172.20.0.0/16
 
-#### 인터넷 게이트웨이
+#### Internet Gateway
 - VPC에 Attach
 
-#### 서브넷, 라우팅 테이블
-- 퍼블릭
-  - 서브넷 : CIDR 172.20.0.0/24
-  - 라우트테이블 - 생성한 인터넷 게이트웨이 추가 및 퍼브릭 서브넷 연결
+#### Subnet, Routing Table
+- Public
+  - Subnet : CIDR 172.20.0.0/24
+  - Routing table - Add internet gateway and link to subnet
 
-- 프라이빗
-  - 서브넷 : CIDR 172.20.10.0/23
-  - 라우트테이블 - 프라이빗 서브넷 연결
+- Private
+  - Subnet : CIDR 172.20.10.0/23
+  - Routing table - link to private subnet
 
-#### 보안 그룹
-같은 VPC내 보안 그룹 구분
+#### Security Group
+Define security groups in a VPC
 
 - sg-bastion
-  - 인바운드: SSH 오피스ip:22
+  - inbound: SSH yourip:22
 
 - sg-starpass-was
-  - 인바운드: sg-bastion:22
+  - inbound: sg-bastion:22
 
 - sg-starpass-redis
-  - 인바운드: sg-was/web/bastion:6379
+  - inbound: sg-was/web/bastion:6379
 
 
 #### EC2
-- starpass-was-00에 redis클라이언트 설치
+- install redis client in starpass-was-00 EC2 instance
 
 ```sh
-# 리눅스 in general
 wget http://download.redis.io/redis-stable.tar.gz
 tar -xvzf redis-stable.tar.gz
 cd redis-stable
 make && make install
 
-# 우부투 환경
+# in Ubuntu
 sudo apt update
 sudo apt install redis
 
-# 접속 시도
-redis-cli -h {ElastiCache 엔드포인트} -p {보안그룹에 정의된 포트 6379}
+# connect to redis
+redis-cli -h {ElastiCache endpoint} -p {port defined in a SG 6379}
 
 > flushall
 > keys *
 ```
 
 #### ElastiCache
-- redis 선택
-- 노드유형: r5,m5,r4,m4,r3,m3,t3,t2 메모리 및 네트워크 성능 선택
+- 'Redis'
+- Node type: r5,m5,r4,m4,r3,m3,t3,t2 메모리 및 네트워크 성능 선택
 - 서브넷그룹 '생성' starpass-was-00, starpass-bastion와 같은 VPC, 프라이빗 서브넷 선택
 - 보안그룹 sg-starpass-redis 선택 
 - 자동 백업 활성화 체크해제
