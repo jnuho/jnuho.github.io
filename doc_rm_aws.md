@@ -1,14 +1,14 @@
 
-- 인프라 OverView
-  - 같은 VPC 내에, 퍼블릭/프라이빗 서브넷으로 구분
-  - 캐시 클러스터 미생성 상태. 보안그룹은 생성되어 있음(인바운드 6379)
-  - 클러스터 생성 시 VPC, 서브넷그룹 선택
-    - VPC: EC2와 같은 VPC 선택
-    - [서브넷그룹](https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/SubnetGroups.html): 프라이빗 서브넷 선택 
+- AWS Infra
+  - Subnets are configured as Public and Private in a VPC
+  - Before creating ElastiCache Cluster, we define Security Group with inbound port 6379 open
+  - Choose VPC and Subnets when creating ElastiCache Cluster
+    - VPC: choose the same VPC that EC2 uses
+    - [Subnet Group](https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/SubnetGroups.html): choose private subnet
 
 ![diagram](https://d2cg24p20j4o18.cloudfront.net/playvote/000/20210819/82331f92-bc8c-403e-a1d1-5d51bc6fec79.jpg)
 
-- 인프라 구축 테스트
+- Create AWS Resources in order
   1. [VPC](#vpc)
   2. [인터넷 게이트웨이](#인터넷-게이트웨이)
   3. [서브넷, 라우팅 테이블](#서브넷-라우팅-테이블)

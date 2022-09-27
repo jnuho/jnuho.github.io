@@ -16,7 +16,7 @@
 ```java
 // ...
 // Limit fetch size (query limit count) for each sql query execution
-//	so that each request does not put 
+//	so that it does not put stress on database
 final int fetchSize = AppConstants.DEFAULT_FETCH_SIZE;
 
 // Total list count

@@ -1,6 +1,7 @@
 
 - From the book "Kubernetes in Actions, 2E."
 
+
 - Declarative model to define an application
 	- You describe the components that make up your application
 	- Kubernetes turns this description into a running application
