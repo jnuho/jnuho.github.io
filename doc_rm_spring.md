@@ -1,5 +1,5 @@
 
-* SKILLS
+- SKILLS
 ```
 - Git
   PR, Code Review, Merge
@@ -16,7 +16,7 @@
   Junit unit test
 ```
 
-* FOR-LOOP OPTIMIZATION
+- FOR-LOOP OPTIMIZATION
 ```java
 /**
  * Limit fetch size (query limit count) for each sql query execution
@@ -44,7 +44,7 @@ for (int ii = 0; ii < limit;) {
 // ...
 ```
 
-* REFACTORING
+- REFACTORING
 ```java
 /**
  * API for executing voting process includes updating and retrieving from database
@@ -110,7 +110,7 @@ public ResultVO insertVote(VoteInsertVO param) throws Exception {
 ```
 
 
-UNIT TEST
+- UNIT TEST
 ```java
 package com.oo.ooo.home;
 
@@ -122,7 +122,7 @@ import com.rowem.passicon.SpringTestBase;
 
 
 /**
- * OO 조회 테스트
+ * OO GET Test
  *
  * @author junho
  *
@@ -173,9 +173,9 @@ public class DataApiTest extends SpringTestBase {
 	}
 
 	/**
-	 * 0-1 홈화면 테스트
+	 * 0-1 Home API test
 	 *
-	 * 케이스1. 마이스타 X 투표이력 X, 백오피스 > 추천스타 리스트 0개(전부 비활성 stat=2)
+	 * CASE1. mystar X, vote hist X, backoffice > recommend star list 0 (all deactivated: stat=2)
 	 *
 	 * @throws Exception
 	 */
@@ -185,10 +185,10 @@ public class DataApiTest extends SpringTestBase {
 		DataParamVO param = new DataParamVO();
 		param.setLogin_id(login_id);
 
-		// 마이스타 X
+		// mystar X
 		deleteData();
 
-		// 투표이력 X
+		// vote hist X
 		List<StarInfoVO> recom_votehist_list = homeApiMapper.selectStarVoteLogList(param);
 		assertEquals(0, recom_votehist_list.size());
 
@@ -203,7 +203,7 @@ public class DataApiTest extends SpringTestBase {
 	}
 
 	/**
-	 * 케이스2. 마이스타 X 투표이력 X, 백오피스 > 추천스타 리스트 1개 이상 (활성 stat=1)
+	 * case2. mystar X, vote history X, backoffice > recommend star list at least 1 (activated  stat=1)
 	 *
 	 * @throws Exception
 	 */
@@ -213,10 +213,10 @@ public class DataApiTest extends SpringTestBase {
 		DataParamVO param = new DataParamVO();
 		param.setLogin_id(login_id);
 
-		// 마이스타 X
+		// mystar X
 		deleteData();
 
-		// 투표이력 X
+		// vote history X
 		List<StarInfoVO> recom_votehist_list = homeApiMapper.selectStarVoteLogList(param);
 		assertEquals(0, recom_votehist_list.size());
 
