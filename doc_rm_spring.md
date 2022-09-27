@@ -1,22 +1,24 @@
 
-SKILLS
+Ⅰ SKILLS
 ```
-- Git
+Git
   PR, Code Review, Merge
   Branch : 'main < test < develop'
 
-- Java
+Java
   RESTful API development for SBS inkigayo voting platform
   SDKs used : AWS SNS, AWS S3
   APIs used : Payletter, Apple login
   Scheduling (Spring Framework) for Batch Job
+  Code Optimization (e.g. for-loop)
   Refactoring for readability and reusability of codes
-
-- Test
   Junit unit test
 ```
 
-FOR-LOOP OPTIMIZATION
+<br>
+<br>
+
+CODE OPTIMIZATION
 ```java
 /**
  * Limit fetch size (query limit count) for each sql query execution
@@ -43,6 +45,9 @@ for (int ii = 0; ii < limit;) {
 }
 // ...
 ```
+
+<br>
+<br>
 
 REFACTORING
 ```java
@@ -109,6 +114,8 @@ public ResultVO insertVote(VoteInsertVO param) throws Exception {
 }
 ```
 
+<br>
+<br>
 
 UNIT TEST
 ```java
