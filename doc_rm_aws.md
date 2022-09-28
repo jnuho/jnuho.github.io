@@ -1,7 +1,7 @@
 
 AWS Infra
 - Subnets are configured as Public and Private in a VPC
-- Before creating ElastiCache Cluster, we define Security Group with inbound port 6379 open
+- Before creating ElastiCache cluster, we define Security Group with inbound port 6379 open
 - Choose VPC and Subnets when creating ElastiCache Cluster
 	- VPC: choose the same VPC that EC2 uses
 	- [Subnet Group](https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/SubnetGroups.html): choose private subnet
@@ -16,13 +16,13 @@ Create AWS Resources in order
 5. [EC2](#ec2)
 5. [ElastiCache](#elasticache)
 
-#### VPC
+✻ VPC
 - CIDR 172.20.0.0/16
 
-#### Internet Gateway
+✻ Internet Gateway
 - VPC에 Attach
 
-#### Subnet, Routing Table
+✻ Subnet, Routing Table
 - Public
   - Subnet : CIDR 172.20.0.0/24
   - Routing table - Add internet gateway and link to subnet
@@ -31,7 +31,7 @@ Create AWS Resources in order
   - Subnet : CIDR 172.20.10.0/23
   - Routing table - link to private subnet
 
-#### Security Group
+✻ Security Group
 Define security groups in a VPC
 
 - sg-bastion
@@ -44,7 +44,7 @@ Define security groups in a VPC
   - inbound: sg-was/web/bastion:6379
 
 
-#### EC2
+✻ EC2
 - install redis client in starpass-was-00 EC2 instance
 
 ```sh
