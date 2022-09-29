@@ -51,13 +51,13 @@ tar -xvzf redis-stable.tar.gz
 cd redis-stable
 make && make install
 
-# in Ubuntu
-sudo apt update
-sudo apt install redis
+Redis Install
+- sudo apt update
+- sudo apt install redis
 
-# connect to redis
-redis-cli -h {ElastiCache endpoint} -p {port defined in a SG 6379}
-
+Connect to Redis
+- redis-cli -h {ElastiCache endpoint} -p {port defined in a SG 6379}
+```
 > flushall
 > keys *
 ```
