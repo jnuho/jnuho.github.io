@@ -189,3 +189,10 @@ k get ingress -A
 ### 2022-09-29
 
 
+
+pod 는서비스를 통해 연결 + alb
+EKS 자체관리노드형
+
+
+- safenet, 안전관리시스템
+
