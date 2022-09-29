@@ -1,7 +1,6 @@
 
 - From the book "Kubernetes in Actions, 2E."
 
-
 - Declarative model to define an application
 	- You describe the components that make up your application
 	- Kubernetes turns this description into a running application
@@ -65,10 +64,6 @@
 - KEEPING THE APPLICATION HEALTHY
   - 어플리케이션이 실행되면, kubelet은 어플리케이션이 종료되는 경우, 재시작하여 healthy한 상태를 유지함
   - 어플리케이션 인스턴스를 represent하는 object를 업데이트하여, 어플리케이션의 status를 report함
-
-
-
-
 
 - Docker Container
 
@@ -491,17 +486,9 @@ kubectl get node <node-name> -o yaml
 
 
 # one can access the API directly through proxy using plain HTTP
-
 kubectl proxy
-
 
 kubectl explain node.spec
 kubectl get node kind-control-plane -o yaml
-
 ```
-
-
-
-
-
 
