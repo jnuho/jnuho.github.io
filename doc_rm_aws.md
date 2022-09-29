@@ -64,13 +64,14 @@ redis-cli -h {ElastiCache endpoint} -p {port defined in a SG 6379}
 
 ElastiCache
 - 'Redis'
-- Node type: r5, m5,r4,m4,r3,m3,t3,t2 메모리 및 네트워크 성능 선택
-- 서브넷그룹 '생성' starpass-was-00, starpass-bastion와 같은 VPC, 프라이빗 서브넷 선택
-- 보안그룹 sg-starpass-redis 선택 
-- 자동 백업 활성화 체크해제
+- Node type: select memory type (r5, m5,r4,m4,r3,m3,t3,t2) and network type
+- Create subnet group : same VPC as starpass-was-00, starpass-bastion > Select private subnet
+- Select sg-starpass-redis for security group
+- Uncheck auto-backup
 
 
 Test
-- ElastiCache접근은 보안그룹에 인바운드 규칙에 정의된 호스트 이외 ip에서는 접근 불가
-- 스프링 환경에서 jedis를 접근가능 한지 여부 확인하기 위해, 해당 EC2에서 redis-cli로 접속 테스트
-- EC2환경에 아파치서버 구동하여 캐시저장 조회 테스트 필요
+- ElastiCache is only accessible from ip defined in the Security Group inbound rules.
+- EC2 redis-cli connection test to check jedis working from Spring environemnt.
+- Test cache storing by using apache web server in EC2
+

@@ -3,8 +3,10 @@ I had a chance to work on database design and query optimization.
 Followings are what I did as a backend engineer.
 ```
 
-- Define Table Entity
-- Define Indexes for table columns if necessary
+What I learned about database :
+```
+Define Table Entity
+Define Indexes for table columns if necessary
 	- preferable if there are large number of data rows
 	- preferable if the column is most of the time NOT NULL
 	- 3-4 indices are preferable
@@ -18,9 +20,12 @@ Followings are what I did as a backend engineer.
 		- e.g. Given 1,2,3, must use (1 and 3) Or (1 and 2)
 		- the order in which columns are used in the where clause is trivial
 
-- Define primary, foreign, unique keys for columns
-- Optimize query with index columns and row limit
-- Make use of EXPLAIN statement to get detailed info about how statements are executed
+Define primary, foreign, unique keys for columns
+
+Optimize query with index columns and row limit
+
+Make use of EXPLAIN statement to get detailed info about how statements are executed
+```
 
 ```sql
 CREATE TABLE `VOTE_HISTORY` (

@@ -1,33 +1,53 @@
-- Go Application Using AWS Go Sdk
-  - [https://github.com/jnuho/goproject](https://github.com/jnuho/goproject)
-  - Features : 
-    - [https://aws.amazon.com/sdk-for-go/](https://aws.amazon.com/sdk-for-go/) 활용
-    - ALB -> TargetGroup -> Target (ECS / EC2) 자원 TargetHealth 및 container-ip / instance-id 조회
-    - ECS 자원 상세조회 : 각 Task내의 Container 및 이미지, IP 정보 상세조회
-    - ECR 이미지 : Tag 및 이미지 uri 조회 최신 순 조회
-    - ECR `>` Lifecycle Policy (PUT/GET) API 활용
-  - 구현 시 고려사항 :
-    - AWS 자원간 의존성이 있는데, API에서 조회 결과로 모든 의존관계를 한번의 호출로 조회할 수 없음
-    - 각 자원 조회 API 호출하여 Go언어 객체로 저장 및 수정 / 정렬 처리 및 html 페이지에 동적으로 업데이트
-  - 사용 Language :
-    - 백엔드: Go
-    - 프론트엔드: Javascript, HTML, CSS
-
-<!-- ![go sdk app](assets/images/Animation.gif)-->
+Go Application Using AWS Go Sdk
+- [repository](https://github.com/jnuho/goproject)
+- [aws sdk for go](https://aws.amazon.com/sdk-for-go/)
 
 <div>
 <img src="assets/images/Animation.gif"
-height="60%" width="60%" alt="go sdk app">
+height="50%" width="50%" alt="go sdk app">
 </div>
 
+Skills
+```
+Backend : Go
+Frontend : Javascript, HTML, CSS
+```
+
+Features
+```
+GET operation on EC2
+	Target Group
+	Target's instance id (or container ip), port, target health
+	Load Balancer
+GET operation on ECS
+	Cluster
+	Service
+	Task Definition
+	Container
+GET operation on ECR
+	Repository
+	Image
+	Lifecycle Policy
+GET operation on Tags
 
 
-- Aws Profile 관리
+Typing 'Enter Key' or clicking 'Search Button'
+	appends a list of resources in which onclick event would trigger another GET API call
+	for detailed info of the clicked resource element.
 
+In order to sort a list of resources (ECR image uris),
+	I used "sort" library of golang and overide 'Len', 'Less', 'Swap' methods
+	in order to set custom rules of ordering.
+
+```
+
+<br>
+
+Aws Profile
 ```go
 import "github.com/aws/aws-sdk-go/aws/session"
 
-// AWS 프로파일 명 (~/.aws/config)
+// AWS profile names (~/.aws/config)
 type AwsProfile struct{
 	dev string
 	stg string
@@ -35,7 +55,7 @@ type AwsProfile struct{
 }
 var awsProfile AwsProfile
 
-// 세션객체 초기화
+// Init session object
 func InitSession(profile string) *session.Session {
 	if profile == "dev" {
 		profile = awsProfile.dev
@@ -56,51 +76,51 @@ func InitSession(profile string) *session.Session {
 }
 ```
 
-- 구조체 Repo 정의
-- Repo 반환 인터페이스 정의
-- Repo 구조체 구현 메소드 정의
-  - `func (repo *Repo) getAWSTargetGroups()`
-  - `func (repo *Repo) getAWSTargetHealths(tgarn string)`
-  - `func (repo *Repo) getAWSEcsClusterDetails(clusterArn string)`
-  - `func (repo *Repo) getAWSEcsSvcList(clusterArns []*string)`
-  - `func (repo *Repo) getAWSListClusters()`
-  - `func (repo *Repo) getAWSEcsClusters(clusters []*string)`
-  - `func (repo *Repo) getAWSEcsDescribeTaskDefinition(services []*ecs.Service)`
-  - `func (repo *Repo) getAWSEcsListAndDescribeTasks(clusterName, serviceName string)`
-  - `func (repo *Repo) getAWSEcsDescribeService(clusterName, serviceName string)`
-  - `func (repo *Repo) getAWSEcrRepos(repoName string)`
-  - `func (repo *Repo) getAWSEcrDescribeImages(repoUri, repoName string)`
+Define struct Repo
+Define interface that returns Repo
+Define methods that implement Repo struct
+- `func (repo *Repo) getAWSTargetGroups()`
+- `func (repo *Repo) getAWSTargetHealths(tgarn string)`
+- `func (repo *Repo) getAWSEcsClusterDetails(clusterArn string)`
+- `func (repo *Repo) getAWSEcsSvcList(clusterArns []*string)`
+- `func (repo *Repo) getAWSListClusters()`
+- `func (repo *Repo) getAWSEcsClusters(clusters []*string)`
+- `func (repo *Repo) getAWSEcsDescribeTaskDefinition(services []*ecs.Service)`
+- `func (repo *Repo) getAWSEcsListAndDescribeTasks(clusterName, serviceName string)`
+- `func (repo *Repo) getAWSEcsDescribeService(clusterName, serviceName string)`
+- `func (repo *Repo) getAWSEcrRepos(repoName string)`
+- `func (repo *Repo) getAWSEcrDescribeImages(repoUri, repoName string)`
   
 
 ```go
-// 세션 리포지토리
+// Session repository
 type Repo struct {
   sess *session.Session
 }
 
-// 세션 리포지토리 인터페이스
+// Session repository interface
 func RepoInterface(param *session.Session) *Repo {
   return &Repo{sess: param}
 }
 
 /**
- * 세션 리포지토리 Repo 구현체
+ * Session repository Repo implementation
  */
 
-// TG 조회 -> tgMap 저장
+// Get TG -> store to tgMap
 func (repo *Repo) getAWSTargetGroups() {
 
-  // 데이터 초기화
+  // Initialize object for storing data
   tgMap = make(map[string]*elbv2.TargetGroup)
 
-  // ELBV2 서비스 생성
+  // Create elbv2 Service
   svc := elbv2.New(repo.sess)
-  input := &elbv2.DescribeTargetGroupsInput{ // 요청 파라미터
+  input := &elbv2.DescribeTargetGroupsInput{ // request parameter
     Names: []*string {
       // aws.String("awsdc-tg-erp-dev-tdms-7080"),
     },
   }
-  // ELBV2 서비스 api DescribeTargetGroups 호출
+  // ELBV2 service calls api DescribeTargetGroups
   pageNum := 0
   // result, err := svc.DescribeTargetGroups(input)
   err := svc.DescribeTargetGroupsPages(input, func(page *elbv2.DescribeTargetGroupsOutput, lastPage bool) bool {

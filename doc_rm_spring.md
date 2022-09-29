@@ -1,12 +1,12 @@
 
-SKILLS
+Backend Development
 ```
 Git
-  PR, Code Review, Merge
+  Pull Request, Code Review, Merge
   Branch : 'main < test < develop'
 
 Java
-  RESTful API development for SBS inkigayo voting platform
+  API development for SBS inkigayo voting platform
   SDKs used : AWS SNS, AWS S3
   APIs used : Payletter, Apple login
   Scheduling (Spring Framework) for Batch Job
@@ -63,7 +63,7 @@ public ResultVO insertVote(VoteInsertVO param) throws Exception {
 
 	// Calculate total vote points
 	//	internal point system include point conversion!
-	vote = setTotalVotePointInfo(vote);
+	setTotalVotePointInfo(vote);
 
 	// Operation for SELECT FOR UPDATE
 	//	retrieves data for update (update is locked during Lock Wait Time)
