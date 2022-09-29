@@ -3,8 +3,7 @@ Go Application Using AWS Go Sdk
 - [aws sdk for go](https://aws.amazon.com/sdk-for-go/)
 
 <div>
-<img src="assets/images/Animation.gif"
-height="50%" width="50%" alt="go sdk app">
+<img src="assets/images/Animation.gif" height="40%" width="40%" alt="go sdk app">
 </div>
 
 Skills
@@ -32,13 +31,14 @@ GET operation on Tags
 
 
 Typing 'Enter Key' or clicking 'Search Button'
-	appends a list of resources in which onclick event would trigger another GET API call
-	for detailed info of the clicked resource element.
+	appends a list of resources on the web page below the text input.
+
+Onclick event on each list element would trigger
+	ajax GET API call for detailed info of the clicked resource element.
+	The list element will unfold or show a modal windows for detailed info.
 
 In order to sort a list of resources (ECR image uris),
-	I used "sort" library of golang and overide 'Len', 'Less', 'Swap' methods
-	in order to set custom rules of ordering.
-
+	"sort" library of golang was used with overridden methods 'Len', 'Less' and 'Swap'
 ```
 
 <br>
@@ -136,5 +136,5 @@ func (repo *Repo) getAWSTargetGroups() {
     return
   }
 }
-
 ```
+
