@@ -43,13 +43,13 @@ DB서버는 AWS를 가용 현재는 프리웨어 만료로인해 사용중지
 
 Ⅲ Screenshots
 
+![pkdemo2](/assets/images/pkdemo2.gif){:height="50%" width="50%"}
+![pkdemo1](/assets/images/pkdemo1.gif){:height="50%" width="50%"}
+![pkdemo3](/assets/images/pkdemo3.gif){:height="50%" width="50%"}
 ![mainPage](/assets/images/mainPage.png){:height="50%" width="50%"}
 ![searchPage](/assets/images/searchPage.png){:height="50%" width="50%"}
 ![reviewPage](/assets/images/reviewPage.png){:height="50%" width="50%"}
 ![myPage1](/assets/images/myPage1.png){:height="50%" width="50%"}
 ![myPage2](/assets/images/myPage2.png){:height="50%" width="50%"}
-![pkdemo1](/assets/images/pkdemo1.gif){:height="50%" width="50%"}
-![pkdemo2](/assets/images/pkdemo2.gif){:height="50%" width="50%"}
-![pkdemo3](/assets/images/pkdemo3.gif){:height="50%" width="50%"}
 
 Ⅳ ⅤⅥ
