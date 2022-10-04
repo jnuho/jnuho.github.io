@@ -1,6 +1,36 @@
 
 - From the book "도커, 컨테이너 빌드업!"
 
+- 도커엔진 컨테이너 기술은 리눅스 자체기술에 기반
+	- chroot, namespace, cgroup을 조합한 LnuX Container, LXC
+
+
+- nodejs 앱 테스트
+
+```sh
+# 이미지 다운로드
+docker pull node
+
+# 컨테이너화
+docker run -d -it --name=nodejs_test node:latest
+
+# 컨테이너 실행 확인
+docker ps
+
+# 소스코드 로컬->컨테이너 내부
+docker cp nodejs_test.js nodejs_test:/nodejs_test.js
+
+# 실행중인 npm이 설치된 nodejs_test 컨테이너에 bash shell로 접속
+docker exec -it nodejs_test /bin/bash
+
+>	ls
+	nodejs_test.js
+> node -v
+# 샘플코드 테스트 실행
+> node nodejs_test.js
+```
+
+
 
 ```sh
 docker ps -a
@@ -75,3 +105,4 @@ docker search httpd
 docker image history [OPTIONS] IMAGE
 docker image history httpd
 ```
+

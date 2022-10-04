@@ -3,8 +3,9 @@
 ```
 Define Table
 Define Indexes for table columns
-	- index is preferable if there are large number of data rows and the column is NOT NULL
-	- 3-4 indices are ok
+	- indices for a table is preferable if there are a number of data rows
+	- index for a column is preferable if the column is NOT NULL
+	- 3-4 indices for a table are ok
 	- updating or deleting performance decreases for tables with many indices
 	- choose index column with High Cardinality
 		- high : uncommon and unique. e.g. autoincrement seq, timestamp
