@@ -1,7 +1,7 @@
 
 AWS Infra
-- Public and private Subnets in a VPC
-- Security Group with inbound port 6379 open
+- Public/private subnets in a VPC
+- Security Group inbound port 6379 open
 - ElastiCache Cluster : choose created VPC, Subnets
 	- VPC: ElastiCache must be in a same VPC as EC2
 	- Subnet Group: choose private Subnet

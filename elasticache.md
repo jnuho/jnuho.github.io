@@ -268,6 +268,7 @@ keys *
   - 로컬에 톰캣 WAS localhost:8180
   - 도커 redis-server, redis-cli (둘사이는 통신은 도커 네트워크 생성)
   - 톰캣 WAS -> 도커 redis-server 통신은 lettuce 라이브러리
+
 ```sh
 # https://emflant.tistory.com/235
 docker pull redis:alpine
