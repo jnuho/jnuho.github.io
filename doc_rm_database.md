@@ -1,5 +1,5 @@
 
-✻ What I learned about Database :
+**✻ What I learned :**
 ```
 Define Table
 Define Indexes for table columns
@@ -30,7 +30,9 @@ Optimize query with index columns and row limit
 Make use of EXPLAIN statement to get detailed info about how statements are executed
 ```
 
-✻ Example
+<br>
+
+**✻ Example**
 ```sql
 CREATE TABLE `VOTE_HISTORY` (
 	`SEQ` BIGINT(21) NOT NULL AUTO_INCREMENT COMMENT 'seq',
