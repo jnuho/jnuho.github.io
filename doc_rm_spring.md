@@ -17,7 +17,7 @@ Java
 
 <br>
 
-**✻ Code Optimization**
+✻**Code Optimization**
 ```java
 /**
  * Limit fetch size (query limit count) for each sql query execution
@@ -48,7 +48,7 @@ for (int ii = 0; ii < limit;) {
 <br>
 <br>
 
-**✻ Refactoring**
+✻**Refactoring**
 ```java
 /**
  * API for executing voting process includes updating and retrieving from database
@@ -116,7 +116,7 @@ public ResultVO insertVote(VoteInsertVO param) throws Exception {
 <br>
 <br>
 
-**✻ Unit test**
+✻**Unit test**
 ```java
 package com.oo.ooo.home;
 

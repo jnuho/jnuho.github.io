@@ -1,4 +1,4 @@
-Go Application Using AWS Go Sdk
+**Go Application Using AWS Go Sdk**
 - [repository](https://github.com/jnuho/goproject)
 - [aws sdk for go](https://aws.amazon.com/sdk-for-go/)
 
@@ -6,7 +6,7 @@ Go Application Using AWS Go Sdk
 <img src="assets/images/Animation.gif" height="40%" width="40%" alt="go sdk app">
 </div>
 
-Skills
+**Skills**
 ```
 Backend : Go
 Frontend : Javascript, HTML, CSS
@@ -43,7 +43,7 @@ In order to sort a list of resources (ECR image uris),
 
 <br>
 
-Aws Profile
+**Aws Profile**
 ```go
 import "github.com/aws/aws-sdk-go/aws/session"
 
@@ -76,9 +76,10 @@ func InitSession(profile string) *session.Session {
 }
 ```
 
-Define struct Repo
-Define interface that returns Repo
-Define methods that implement Repo struct
+**Define struct Repo**<br>
+**Define interface that returns Repo**<br>
+**Define methods that implement Repo struct**<br>
+
 - `func (repo *Repo) getAWSTargetGroups()`
 - `func (repo *Repo) getAWSTargetHealths(tgarn string)`
 - `func (repo *Repo) getAWSEcsClusterDetails(clusterArn string)`
