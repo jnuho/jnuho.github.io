@@ -1,5 +1,5 @@
 
-- From the book "도커, 컨테이너 빌드업!"
+❒ From the book "도커, 컨테이너 빌드업!"
 
 - 도커엔진 컨테이너 기술은 리눅스 자체기술에 기반
 	- chroot, namespace, cgroup을 조합한 LnuX Container, LXC
@@ -128,10 +128,10 @@ docker system events --format '{{json .}}'
 #   macOs..
 
 # 로그내용 중 msg 키워드 정보가 상세 로그 내용임
-journalctl -u docker.service
+sudo journalctl -u docker.service
 
 # 유사한 도커 데몬 디버그
-dockerd -D
+sudo dockerd -D
 
 
 # 리눅스 시스템에도 기본적인  로그 수집 데몬이 있음
@@ -160,4 +160,50 @@ docker search httpd
 docker image history [OPTIONS] IMAGE
 docker image history httpd
 ```
+
+- docker pull
+	- docker hub에서 로컬로 다운하면서 생성된 레이어 distribution id 출력
+	- 이미지 변경 되면, 로컬 저장된 이미지를 제외한 새로운 레이어 계층들만 로컬에 다운로드
+
+
+
+```sh
+docker tag 원본이미지:[태그] 참조이미지:[태그]
+
+docker images
+	REPO		TAG				IMAGE ID
+	httpd		latest		b2c2ec
+docker tag b2c2ec debian-httpd:1.0
+
+docker images
+	REPO					TAG				IMAGE ID
+	debin-httpd		1.0				b2c2ec
+	httpd					latest		b2c2ec
+
+docker login
+	username:
+	password:
+
+docker push [본인아이디]/httpd:3.0
+
+docker pull [본인아이디]/httpd:3.0
+
+```
+
+
+
+- 도커 이미지를 파일로 관리
+
+```sh
+```
+
+
+
+
+
+
+
+
+
+
 
