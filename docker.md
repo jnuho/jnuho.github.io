@@ -12,7 +12,7 @@
 docker pull node
 
 # 컨테이너화
-docker run -d -it --name=nodejs_test node:latest
+docker run -dp 8080:80 -it --name=nodejs_test node:latest
 
 # 컨테이너 실행 확인
 docker ps
@@ -23,7 +23,7 @@ cat > nodejs_test.js
 	http.createServer(function (req, res) {
 		res.writeHead(200, {'Content-Type': 'text/plain'});
 		res.end('Hello World!');
-	}).listen(8080);
+	}).listen(80);
 
 docker cp nodejs_test.js nodejs_test:/nodejs_test.js
 
@@ -33,17 +33,29 @@ docker exec -it nodejs_test /bin/bash
 >	ls
 	nodejs_test.js
 > node -v
-> node nodejs_test.js
+> node nodejs_test.js &
+> exit
 
+curl localhost:8080
+	Hello World!
 ```
-
-
 
 ```sh
 # docker run --publish [host_port]:[container_port]
 # docker run -dp 8080:80 docker/getting-started:pwd
 # 호스트 PC에서 localhost:8080으로 접근
 ```
+
+- Kubernetes: Container orchestration tool
+	- 다수의 컨테이너 관리
+	- 컨테이너 간 네트워킹 문제 해결
+	- 컨테이너 인스턴스 확장
+
+- Kubernetes Managed Service
+	- EKS
+	- GKE
+	- AKS
+
 
 ```sh
 cat > Dockerfile
@@ -58,21 +70,25 @@ cat > Dockerfile
 	CMD ["apachectl", "-D", "FOREGROUND"]
 ```
 
-- Kubernetes: Container orchestration tool
-	- 다수의 컨테이너 관리
-	- 컨테이너 간 네트워킹 문제 해결
-	- 컨테이너 인스턴스 확장
+```sh
+# 호스트가 아닌, 컨테이너 서비스를 통해 명령어 실행
+docker run -it busybox sh
+docker run busybox echo 'Hello World'
 
-- Kubernetes Managed Service
-	- EKS
-	- GKE
-	- AKS
+```
 
 
+```
+docker run명령어 [클라이언트]
+	-> 서버의 도커데몬
+	-> docker.sock의 도커 API로 컨테이너 생성
+	-> 수행된 컨테이너에 포함된 서비스 결과를 [클라이언트]에 전달
+```
+	
 
-
-
-docker ps -a
+```sh
+docker -v
+docker version
 
 docker info
 docker system info
