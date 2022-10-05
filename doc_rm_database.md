@@ -1,5 +1,5 @@
 
-**✻ What I learned :**
+❍ What I learned :
 ```
 Define Table
 Define Indexes for table columns
@@ -32,7 +32,7 @@ Make use of EXPLAIN statement to get detailed info about how statements are exec
 
 <br>
 
-**✻ Example**
+❍ Example
 ```sql
 CREATE TABLE `VOTE_HISTORY` (
 	`SEQ` BIGINT(21) NOT NULL AUTO_INCREMENT COMMENT 'seq',

@@ -18,6 +18,13 @@ docker run -d -it --name=nodejs_test node:latest
 docker ps
 
 # 소스코드 로컬->컨테이너 내부
+cat > nodejs_test.js
+	var http = require('http');
+	http.createServer(function (req, res) {
+		res.writeHead(200, {'Content-Type': 'text/plain'});
+		res.end('Hello World!');
+	}).listen(8080);
+
 docker cp nodejs_test.js nodejs_test:/nodejs_test.js
 
 # 실행중인 npm이 설치된 nodejs_test 컨테이너에 bash shell로 접속
@@ -26,13 +33,45 @@ docker exec -it nodejs_test /bin/bash
 >	ls
 	nodejs_test.js
 > node -v
-# 샘플코드 테스트 실행
 > node nodejs_test.js
+
 ```
 
 
 
 ```sh
+# docker run --publish [host_port]:[container_port]
+# docker run -dp 8080:80 docker/getting-started:pwd
+# 호스트 PC에서 localhost:8080으로 접근
+```
+
+```sh
+cat > Dockerfile
+	FROM ubuntu:18.04
+	MAINTAINER RABOOF <raboof@email.com>
+	RUN \
+				apt-get update && \
+				apt-get install -y apache2
+
+	RUN sed -i 's/80/7080/g' /etc/apache2/ports.conf
+	EXPOSE 7080
+	CMD ["apachectl", "-D", "FOREGROUND"]
+```
+
+- Kubernetes: Container orchestration tool
+	- 다수의 컨테이너 관리
+	- 컨테이너 간 네트워킹 문제 해결
+	- 컨테이너 인스턴스 확장
+
+- Kubernetes Managed Service
+	- EKS
+	- GKE
+	- AKS
+
+
+
+
+
 docker ps -a
 
 docker info
