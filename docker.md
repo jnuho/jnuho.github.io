@@ -185,8 +185,12 @@ docker login
 	password:
 
 docker push [본인아이디]/httpd:3.0
-
 docker pull [본인아이디]/httpd:3.0
+
+
+# 베이스 이미지에 특정 애플리케이션을 서비스와 코드를
+# 포함해 컨테이너로 포함해 실행하는 경우 docker commit으로
+# 컨테이너를 이미지로 저장가능
 
 ```
 
@@ -196,8 +200,6 @@ docker pull [본인아이디]/httpd:3.0
 
 ```sh
 ```
-
-
 
 
 
