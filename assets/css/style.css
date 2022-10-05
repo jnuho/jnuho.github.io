@@ -116,12 +116,12 @@ article.home div a:hover, article.home pre a:hover { color: #2c3e50; text-decora
 article img { max-width: 100%; }
 
 article.home div {
-	font-family: "Fira Code", Courier, monospace;
+	font-family: "Consolas", Courier, monospace;
 	font-size: 14.3px;
 }
 
 pre, p {
-	font-family: "Fira Code", Courier, monospace;
+	font-family: "Consolas", Courier, monospace;
 	font-size: 14.3px;
 }
 
