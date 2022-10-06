@@ -138,7 +138,11 @@ sudo dockerd -D
 syslogd
 rsyslogd
 # [참고] 도커로그를 호스트 운영체제 로그수집 데몬에 연결해서 로그 기록 할 수도 있음
+```
 
+- docker login, pull, push
+
+```sh
 # 도커 허브
 # tag생략 시 latest
 docker pull imagename:tag
@@ -159,15 +163,13 @@ docker search httpd
 
 docker image history [OPTIONS] IMAGE
 docker image history httpd
-```
 
-- docker pull
-	- docker hub에서 로컬로 다운하면서 생성된 레이어 distribution id 출력
-	- 이미지 변경 되면, 로컬 저장된 이미지를 제외한 새로운 레이어 계층들만 로컬에 다운로드
+# docker pull
+# docker hub에서 로컬로 다운하면서 생성된 레이어 distribution id 출력
+# 이미지 변경 되면, 로컬 저장된 이미지를 제외한 새로운 레이어 계층들만 로컬에 다운로드
+docker pull httpd:latest
 
 
-
-```sh
 docker tag 원본이미지:[태그] 참조이미지:[태그]
 
 docker images
@@ -180,32 +182,48 @@ docker images
 	debin-httpd		1.0				b2c2ec
 	httpd					latest		b2c2ec
 
-docker login
-	username:
-	password:
-
 docker push [본인아이디]/httpd:3.0
 docker pull [본인아이디]/httpd:3.0
-
 
 # 베이스 이미지에 특정 애플리케이션을 서비스와 코드를
 # 포함해 컨테이너로 포함해 실행하는 경우 docker commit으로
 # 컨테이너를 이미지로 저장가능
-
 ```
 
+
+- docker login 방법
+	1. username/password
+	2. access token
+
+```sh
+# 1.
+docker login
+	username:
+	password:
+
+
+cat ~/.docker/config.json
+	{
+					"auths": {
+									"https://index.docker.io/v1/": {
+													"auth": "...."
+									}
+					}
+	}
+docker info | grep username
+# config.json 파일의 auth 값이 삭제되고, docker info에서도 사용자명이 제거됨
+docker logout
+
+# 2.
+# hub.docker.com > Account settings > Security > New Access Token
+
+```
 
 
 - 도커 이미지를 파일로 관리
 
 ```sh
 ```
-
-
-
-
-
-
 
 
 

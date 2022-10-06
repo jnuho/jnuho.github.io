@@ -117,12 +117,12 @@ article img { max-width: 100%; }
 
 article.home div {
 	font-family: "Consolas", Courier, monospace;
-	font-size: 13.4px;
+	font-size: 13.8px;
 }
 
 pre, p {
 	font-family: "Consolas", Courier, monospace;
-	font-size: 13.4px;
+	font-size: 13.8px;
 }
 
 h1,h2,h3,h4,h5,h6 { font-family: 'Fira Code', sans-serif; }
