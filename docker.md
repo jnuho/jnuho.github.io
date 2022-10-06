@@ -19,11 +19,11 @@ docker ps
 
 # 소스코드 로컬->컨테이너 내부
 cat > nodejs_test.js
-	var http = require('http');
-	http.createServer(function (req, res) {
-		res.writeHead(200, {'Content-Type': 'text/plain'});
-		res.end('Hello World!');
-	}).listen(80);
+var http = require('http');
+http.createServer(function (req, res) {
+	res.writeHead(200, {'Content-Type': 'text/plain'});
+	res.end('Hello World!');
+}).listen(80);
 
 docker cp nodejs_test.js nodejs_test:/nodejs_test.js
 
@@ -121,7 +121,7 @@ docker system events --format '{{json .}}'
 
 # 도커데몬 디버깅을위한
 # OS별 도커데몬 로그 위치
-#   우분투,CENTOS /var/lib/docker
+#   우분투, CENTOS /var/lib/docker
 #   RHEL /var/log/messages
 #   데비안 /var/log/message.log
 #   윈도우 ~AppData\Local
