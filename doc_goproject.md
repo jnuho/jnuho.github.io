@@ -44,6 +44,43 @@ In order to sort a list of resources (ECR image uris),
 <br>
 
 ❒ Aws Profile
+```
+# IAM Role with permission policies :
+#		Creatre role
+#			Add Permissions
+
+AmazonEC2FullAccess
+	Provides full access to Amazon EC2 via the AWS Management Console.
+
+IAMFullAccess
+	Provides full access to IAM via the AWS Management Console.
+
+AmazonEC2ContainerRegistryFullAccess
+	Provides administrative access to Amazon ECR resources
+
+AmazonS3FullAccess
+	Provides full access to all buckets via the AWS Management Console.
+
+ReadOnlyAccess
+	Provides read-only access to AWS services and resources.
+
+AmazonSESFullAccess
+	Provides full access to Amazon SES via the AWS Management Console.
+
+AmazonAPIGatewayAdministrator
+	Provides full access to create/edit/delete APIs in Amazon API Gateway via the AWS Management Console.
+
+AmazonECS_FullAccess
+	Provides administrative access to Amazon ECS resources and enables ECS features through access to other AWS service resources, including VPCs, Auto Scaling groups, and CloudFormation stacks.
+
+AWSCloudFormationFullAccess
+	Provides full access to AWS CloudFormation.
+
+AWSLambda_FullAccess
+	Grants full access to AWS Lambda service, AWS
+```
+
+
 ```go
 import "github.com/aws/aws-sdk-go/aws/session"
 
@@ -138,4 +175,6 @@ func (repo *Repo) getAWSTargetGroups() {
   }
 }
 ```
+
+
 
