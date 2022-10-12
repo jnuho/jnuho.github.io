@@ -1,6 +1,5 @@
-### AWS 자원 조회
-
-- [영문 Ver.](doc_goproject)
+- AWS 자원 조회
+	- [영문 Ver.](doc_goproject)
 
 - 진행 배경
 	- 최근 EC2 -> ECS 이관 및 생성 작업이 많아 지면서 ECS 자원조회에 중점을 두고 진행
@@ -24,7 +23,10 @@
 
 ![go sdk app](./assets/images/goproject_kor.png)
 
+
+
 - Aws Profile 관리
+
 ```go
 import "github.com/aws/aws-sdk-go/aws/session"
 
