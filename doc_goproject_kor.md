@@ -1,5 +1,5 @@
 - AWS 자원 조회
-	- [영문 Ver.](doc_goproject)
+	- [Eng.](doc_goproject)
 
 - 진행 배경
 	- 최근 EC2 -> ECS 이관 및 생성 작업이 많아 지면서 ECS 자원조회에 중점을 두고 진행
@@ -22,7 +22,6 @@
 	- Cloud접속 > http://oo.oo.oo.ooo:port 기능 사용
 
 ![go sdk app](./assets/images/goproject_kor.png)
-
 
 
 - Aws Profile 관리
