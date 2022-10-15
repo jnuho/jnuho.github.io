@@ -1,11 +1,11 @@
 
 ❒ backend Development
 ```
-Git
+- Git
   Pull Request, Code Review, Merge
   Branch : 'main < test < develop'
 
-Java
+- Java
   API development for SBS inkigayo voting platform
   SDKs used : AWS SNS, AWS S3
   APIs used : Payletter, Apple login

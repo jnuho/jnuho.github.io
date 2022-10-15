@@ -387,7 +387,7 @@ func main() {
 
 ```go
 package main
-import "fmt
+import "fmt"
 
 func factorial(n int) int {
 

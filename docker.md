@@ -12,6 +12,7 @@
 docker pull node
 
 # 컨테이너화
+# 	--publish [host_port]:[container_port]
 docker run -dp 8080:80 -it --name=nodejs_test node:latest
 
 # 컨테이너 실행 확인
@@ -19,11 +20,11 @@ docker ps
 
 # 소스코드 로컬->컨테이너 내부
 cat > nodejs_test.js
-var http = require('http');
-http.createServer(function (req, res) {
-	res.writeHead(200, {'Content-Type': 'text/plain'});
-	res.end('Hello World!');
-}).listen(80);
+	var http = require('http');
+	http.createServer(function (req, res) {
+		res.writeHead(200, {'Content-Type': 'text/plain'});
+		res.end('Hello World!');
+	}).listen(80);
 
 docker cp nodejs_test.js nodejs_test:/nodejs_test.js
 
@@ -201,29 +202,135 @@ docker login
 	username:
 	password:
 
-
 cat ~/.docker/config.json
 	{
-					"auths": {
-									"https://index.docker.io/v1/": {
-													"auth": "...."
-									}
-					}
+		"auths": {
+			"https://index.docker.io/v1/": {
+				"auth": "...."
+			}
+		}
 	}
 docker info | grep username
+
 # config.json 파일의 auth 값이 삭제되고, docker info에서도 사용자명이 제거됨
 docker logout
 
 # 2.
-# hub.docker.com > Account settings > Security > New Access Token
+# 	hub.docker.com > Account settings > Security > New Access Token
+# 	복사된 액세스 토큰 사용하여 로그인
+vi .access_token
 
+cat .access_token | docker login --username jnuho --password-stdin
 ```
 
 
 - 도커 이미지를 파일로 관리
+	- hub.docker.com 에서 이미지 내려받아 내부망으로 이전하는 경우
+	- 신규 애플리케이션 서비스위해 Dockerfile로 새롭게 생성한 이미지를 저장 및 배포해야 하는 경우
+	- Container를 commit하여 생성한 이미지를 저장 및 배포해야 하는 경우
+	- 개발 및 수정한 이미지 등
 
 ```sh
+docker image save [옵션] <파일명> [image명]
+docker image load [옵션]
+
+# 이미지-> .tar 저장
+docker pull mysql:5.7
+docker images
+docker image save mysql:5.7 > test-mysql57.tar
+ls -lh test-mysql57.tar
+
+# 묶인 파일내용 확인
+tar tvf test-mysql57.tar
+
+docker image rm mysql:5.7
+docker images
+
+# 이미지<- .tar 로드: 방법1
+docker image load < test-mysql57.tar
+docker images
+
+# 이미지<- .tar 로드: 방법2
+cat test-mysql57.tar | docker import - mysql57:1.0
+docker images
+
+
+# 이미지 용량 줄이기 : gzip
+docker image save mysql:5.7 | gzip > test-mysql57zip.tar.gz
+ls -lh test-mysql57zip.tar.gz
+docker image rm mysql:5.7
+docker images
+docker image load < test-mysql57zip.tar.gz
+docker images
 ```
+
+- 도커 이미지 삭제
+
+```sh
+docker image rm [option] {이미지이름[:태그] | 이미지ID}
+docker rmi {옵션} {이미지이름[:태그] | 이미지 ID}
+
+docker pull ubuntu:14.04
+docker image rm ubuntu:14.04
+
+docker image rm b2c2a
+docker image rm -f b2c2a
+
+# show images ids
+docker images -q
+
+# remove all images
+docker rmi $(docker images -q)
+
+docker rmi $(docker images | grep debian)
+docker rmi $(docker images | grep -v centos)
+
+# 상태가 exited 인 container를 찾아서 모두 삭제
+vi .bashrc
+	alias cexrm='docker rm $(docker ps --filter 'status=exited' -a -q)'
+source .bashrc
+alias
+
+# -a옵션으로 사용 중이 아닌 모든 이미지 제거
+docker image prune -a
+docker image prune -a -f --filter "until=48h"
+
+
+# 도커 컨테이너의 PID 1번 프로세스도 init 프로세스?
+# 호스트의 셸 프로세스 ID
+echo $$
+	32370
+
+docker run -it centos:8 bash
+> echo $$
+	1
+
+# 다른 터미널에서 실행 중인 PID 조회
+ps -ef | grep 32370
+```
+
+- 컨테이너 실행
+
+```sh
+# docker run과 달리, container 내부접근 없이 생성(스냅샷)만 수행
+docker crerate -it --name container-test1 ubuntu:14.04
+docker ps -a
+docker start container-test1
+docker ps
+
+# 컨테이너에 접속
+docker attach container-test1
+	exit
+docker rm container-test1
+
+
+# docker run
+docker run -it --name container-test1 ubuntu:14.04 bash
+	exit
+docker rm container-test1	
+
+```
+
 
 
 
