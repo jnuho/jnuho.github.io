@@ -315,22 +315,324 @@ ps -ef | grep 32370
 # docker run과 달리, container 내부접근 없이 생성(스냅샷)만 수행
 docker crerate -it --name container-test1 ubuntu:14.04
 docker ps -a
+# status : created -> up
 docker start container-test1
 docker ps
 
-# 컨테이너에 접속
+# 컨테이너에 접속 - 실행중인 어플리케이션 컨테이너에 단순한 조회 작업 수행
 docker attach container-test1
 	exit
 docker rm container-test1
 
 
-# docker run
+# docker run = [pull] + create + start + [command]
 docker run -it --name container-test1 ubuntu:14.04 bash
 	exit
 docker rm container-test1	
 
+docker run -it --name container-test1 ubuntu:14.04 hostname
+
+```
+
+- docker run 옵션
+	- https://docs.docker.com/engine/reference/run/
+
+
+- 실습1. Mysql 컨테이너 실행 후 database생성
+
+```sh
+docker pull mysql:5.7
+docker images | grep mysql
+
+docker run -it mysql:5.7 /bin/bash
+> cat /etc/os-release
+> /etc/init.d/mysql start
+> mysql -uroot
+mysql> show databases;
+mysql> create database dockerdb;
+mysql> show databases;
+> cd /var/lib/mysql
+> ls
+... dockerdb...
+
+docker ps -a
+docker start ba5a
+docker exec -it ba5a bash
+
+# 컨테이너 종료시키지 않고 나가려면 ctrl+p+q
+docker inspect flamboyant_nash | grep IPAddress
+docker exec -it flamboyant_nash bash
+
+# 다른이름으로 새로운 컨테이너 실행
+docker run -it mysql:5.7 bash
+```
+
+
+- 컨테이너 모니터링 도구 cAdvisor (google) 컨테이너 실행
+
+```sh
+# http://hostip:9559 에서 볼수 있음
+docker run \
+	--volume=/:/rootfs:ro \
+	--volume=/var/run:/var/run:rw \
+	--volume=/sys:/sys:ro \
+	--volume=/var/lib/docker/:/var/lib/docker:ro \
+	--publish=9559:8080 \
+	--detach=true \
+	--name=cadvisor \
+	google/cadvisor:latest
+
+docker ps
+	CONTAINER ID   IMAGE                    COMMAND                  CREATED         STATUS         PORTS
+	NAMES
+	1c653c540628   google/cadvisor:latest   "/usr/bin/cadvisor -…"   8 seconds ago   Up 7 seconds   0.0.0.0:9559->8080/tcp, :::9559->8080/tcp   cadvisor
+
+```
+
+- 실습2. 웹서비스 실행 nginx 컨테이너
+
+```sh
+docker pull nginx:1.8
+docker images
+docker run --name webserver1 -d -p 8001:80 nginx:1.18
+docker ps
+sudo netstat -nlp | grep 8001
+curl localhost:8001
+docker stats webserver1
+docker top webserver1
+
+# -f: 실시간, -t 마지막로그
+docker logs -f webserver1
+docker stop webserver1
+docker start webserver1
+
+vi index.html
+	<h1> Hello Jpub Docker. </h1>
+docker cp index.html webserver1:/usr/share/nginx/html/index.html
+curl localhost:8001
+
+# 프로세스 일시중단
+docker pause webserver1
+docker ps
+docker unpause webserver1
+docker ps
+docker restart webserver1
 ```
 
 
 
+
+
+- 실습3. 파이썬 프로그래밍 환경 구축 - 컨테이너 내부에서 python 실행
+
+```sh
+cat > py_lotto.py
+
+from random import shuffle
+from time import sleep
+gamenum = input('로또 게임 횟수 입력:')
+for i in range(int(gamenum)):
+	balls = [x+1 for x in range(45)]
+	ret = []
+	for j in range(6):
+		shuffle(balls)
+		number = balls.pop()
+		ret.append(number)
+	ret.sort()
+	print('로또번호[%d]: ' %(i+1), end='')
+	print(ret)
+	sleep(1)
+
+# 파이썬 컨테이너 실행 후 py_lotto.py 코드복사
+docker run -it -d --name=python_test -p 8900:8900 python
+docker cp py_lotto.py python_test:/
+
+# 파이썬 컨테이너에 설치된 모듈 확인
+docker exec -it python_test bash
+> python --version
+> pip list
+> python -c 'help("modules")'
+
+docker exec -it python_test python /py_lotto.py
+```
+
+
+- 실습4. Nginx 환경 conf 로컬에서 수정후 다시 컨테이너에 복사
+
+
+```sh
+docker run -d -p 8010:80 --name=webserver10 nginx:latest
+# 컨테이너 -> 로컬로 복사
+docker cp webserver10:/etc/nginx/nginx.conf ./nginx.conf
+# 변경후 다시 로컬->컨테이너로 복사
+docker cp nginx.conf webserver10:/etc/nginx/nginx.conf
+docker restart webserver10
+```
+
+- 실습5. nodjs 테스트 환경을 위한 컨테이너 실행
+
+```sh
+cat > nodejs_test.js
+var http = require('http');
+var content = function(req, res) {
+	resp.end("Good morning Korea~!" + "\n");
+	resp.writeHead(200);
+}
+var web = http.createServer(content);
+web.listen(8002);
+
+# Host OS에서 실행시 nodejs 미설치로 에러발생!
+node nodejs_test.js
+
+# 컨테이너에서 실행 가능
+docker pull node
+docker run -d -it -p 8002:8002 --name=nodejs_test node
+docker ps
+
+docker cp nodejs_test.js nodejs_test:/nodejs_test.js
+
+# 컨테이너 내부에서 nodejs_test.js를 실행!
+docker exec -it nodejs_test node /nodejs_test.js
+
+curl localhost:8002
+
+# 노드 서버  실행 중인 컨테이너 이름변경하고 싶다면 docker rename
+# 동적으로 변경됨!
+# docker rename <기존 Container명> <새로운 Container명>
+docker renmae nodejs_test nodeapp
+docker ps
+
+
+# nodejs_test.js를 실행하는 컨테이너를 다시 이미지로 저장 가능
+```
+
+
+- 실습6. base 이미지로 실행 후 변경한  컨테이너를 이미지로 저장
+
+
+```sh
+docker run -it --name=webserver8 -d -p 8008:80 nginx:latest
+docker ps
+curl localhost:8008
+
+cat > index.html
+<h1> Hello World! </h1>
+docker cp index.html webserver8:/usr/share/nginx/html/index.html
+# 추가된 웹소스 변경 정보 확인
+# 	A 추가, D 삭제, C 변경
+docker diff webserver8
+	C /usr/share/nginx/html/index.html
+
+# 컨테이너 -> 이미지
+docker commit -a "jpub" webserver8 webfront:1.0
+
+docker images | grep webfront
+# 이미지 -> 도커허브
+docker login
+
+# 본인ID/이미지:태그
+docker tag webfront:1.0 jnuho/webfront:1.0
+docker push jnuho/webfront:1.0
+
+docker run -it --name webserver9 -d -p 8009:80 jnuho/webfront:1.0
+curl localhost:8009
+```
+
+
+
+- 도커 볼륨 활용
+	- 도커가 유니언 파일시스템: 이미지-> 여러 컨테이너 프로세스
+	- 서비스의 데이터와 로직 분리 해야 함
+	- 도커 볼륨은 컨테이너에서 생성, 재사용 가능, 호스트 OS에서 접근 가능
+	- 일반적으로 컨테이너 Lifecycle에 따라 컨테이너 중지시 삭제 됨
+	- 도커 볼륨은 독립적으로 운영 되므로 컨테이너 중지시에도 유지 됨
+
+
+- 도커 볼륨 타입
+
+1. volume
+	- 볼륨 생성:  `docker volume create 볼륨명`
+	- 도커 명령어로 볼륨 관리
+	- 여러 컨테이너 간에 안전하게 공유 가능
+	- 볼륨 드라이버를 통해 원격 호스트 및 클라우드 환경에 볼륨 내용 저장 및 암호화 가능
+	- 새 볼륨으로 지정될 영역에 데이터 미리 채우고 컨테이너 연결 하면, 컨테이너에서 바로 데이터 사용 가능
+
+```sh
+# 볼륨 생성
+docker volume create my-appvol-1
+docker volume ls
+
+docker volume inspect my-appvol-1
+
+# --mount 옵션으로 볼륨 지정
+docker run -d --name vol-test1 \
+	--mount source=my-appvol-1,target=/app \
+	ubuntu:20.04
+
+# -v 옵션으로 볼륨 지정
+docker run -d --name vol-test2 \
+	-v my-appvol-1:/var/log \
+	ubuntu:20.04
+
+# 볼륨 미리 만들지 않아도 자동 생성
+docker run -d --name vol-test3 \
+	-v my-appvol-2:/var/log \
+	ubuntu:20.04
+
+docker volume ls
+DRIVER	VOLUME NAME
+local		my-appvol-1
+local		my-appvol-2
+
+docker inspect vol-test1
+	"Mounts": [{}]...
+docker inspect --format="{{ .Mounts}}" vol-test1
+	[{}]
+
+# 자원 삭제: 컨테이너 제거-> 볼륨 삭제
+docker volume rm my-appvol-1
+docker stop vol-test1 vol-test2
+docker rm vol-test1 vol-test2
+docker volume rm my-appvol-1
+```
+
+
+2. bind mount
+	- 도커 볼륨 기법에 비해 사용 제한적
+	- 호스트 파일 시스템 절대경로: 컨테이너 내부 경로를 직접 마운트 하여 사용
+	- 사용자가 파일,디렉토리 생성시 해당 호스트 파일시스템의 소유자 권한으로 연결.
+		- 존재하지 않는경우 자동생성됨. 이 자동생성 디렉토리는 루트 사용자 소유가 됨
+	- 컨테이너 실행시 지정하여 사용하고, 컨테이너 제거 시,  바인드 마운트는 해제되지만, 호스트 디렉터리는 유지
+
+
+```sh
+# --mount 옵션으로 사전에 생성한 경로와 바인드 마운트 지정.
+mkdir /home/foo/target
+docker run -d -it --name bind-test1 \
+	--mount type=bind,source=$(pwd)"/target,target=/var/log \
+	centos:8
+
+
+# -v 옵션으로 사전에 생성한 경로와 바인드 마운트 지정.
+docker run -d -it --name bind-test2 \
+	-v "$(pwd)"/target:/var/log \
+	centos:8
+
+...
+```
+
+3. tmpfs mount
+	- bind mount 방법은 컨테이너 중지후 데이터 유지하지만
+		- tmpfs마운트 방법은 임시적이며, 호스트 메모리에서만 지속되므로
+		- 컨테이너가 중지되면 tmpfs 마운트가 제거되고 내부에 기록된 파일은 유지되지 않는다.
+
+```sh
+```
+
+
+- 도커 볼륨 활용: 데이터베이스의 데이터 지속성 유지
+	- 컨테이너 장애로 중단되어도, 새로운 컨테이너에 동일볼륨 연결시 DB, Table, Data 모두 동일하게 지속가능
+
+```sh
+```
 
