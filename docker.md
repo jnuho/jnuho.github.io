@@ -617,22 +617,82 @@ docker run -d -it --name bind-test1 \
 docker run -d -it --name bind-test2 \
 	-v "$(pwd)"/target:/var/log \
 	centos:8
-
 ...
+
 ```
 
 3. tmpfs mount
 	- bind mount 방법은 컨테이너 중지후 데이터 유지하지만
-		- tmpfs마운트 방법은 임시적이며, 호스트 메모리에서만 지속되므로
+		- tmpfs 마운트 방법은 임시적이며, 호스트 메모리에서만 지속되므로
 		- 컨테이너가 중지되면 tmpfs 마운트가 제거되고 내부에 기록된 파일은 유지되지 않는다.
+
 
 ```sh
 ```
 
-
-- 도커 볼륨 활용: 데이터베이스의 데이터 지속성 유지
+- 도커 볼륨 활용1: 데이터베이스의 데이터 지속성 유지
 	- 컨테이너 장애로 중단되어도, 새로운 컨테이너에 동일볼륨 연결시 DB, Table, Data 모두 동일하게 지속가능
 
 ```sh
+# 볼륨 생성
+docker volume create mysql-data-vol
+docker volume ls
+
+# mysql 컨테이너 실행 시 데이터베이스 설정도 추가하여 실행
+# 	hub.docker.com의 mysql페이지에 환경변수 설명 참조
+docker run -it --name=mysql-vtest \
+	-e MYSQL_ROOT_PASSWORD=jhlee \
+	-e MYSQL_DATABASE=dockertest \
+	-v mysql-data-vol:/var/lib/mysql -d \
+	mysql:5.7
+
+docker exec -it mysql-vtest bash
+
+/etc/init.d/mysql start
+mysql -uroot -p
+show databases;
+use dockertest;
+create table mytab (c1 int, c2 char);
+insert into mytab values (1, 'a');
+select * from mytab;
+exit
+ls /var/lib/mysql/dockertest/
+exit
+
+docker inspect --format="{{ .Mounts }}" mysql-vtest
+sudo ls -l /var/lib/docker/volumes/mysql-data-vol/_data/dockertest
+
+# 컨테이너 장애 테스트 케이스: 컨테이너 정지,제거 후 동일 볼륨지정 컨테이너 실행 시
+# 	기존 데이터 그대로 유지 확인
+docker stop mysql-vtest
+docker rm mysql-vtest
+docker run -it --name=mysql-vtest \
+	-e MYSQL_ROOT_PASSWORD=jhlee \
+	-e MYSQL_DATABASE=dockertest \
+	-v mysql-data-vol:/var/lib/mysql -d \
+	mysql:5.7
+
 ```
 
+
+- 도커 볼륨 활용2: 웹서비스의 로그 정보 보호 및 분석을 위한 바인드 마운트 설정
+	- access.log통해 장애 상황 정보 및 실시간 접근 로그 확인
+	- awk를 이용하여 로그 분석 가능
+
+
+```sh
+mkdir nginx-log
+docker run -d -p 8011:80 \
+	-v /home/jhlee/nginx-log:/var/log/nginx \
+	nginx:1.19
+
+
+http://localhost:8011
+tail -f nginx-log/access.log
+
+# 지정된 날짜/시간 내에 기록된 IP 정보를 내림차순으로 카운트하여 횟수와 IP 주소 출력.(예, 01/Mar/2021:12:32:37)
+awk '$4>"[로그에 기록된 날짜, 시간]" && $4<"[로그에 기록된 날짜, 시간]"' access.log | awk '{ print $1}' | sort | uniq -c | sort -r | more
+```
+
+
+- 도커 볼륨 활용3: 컨테이너 간 데이터 공유를 위한 데이터 컨테이너 만들기
