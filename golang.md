@@ -877,7 +877,7 @@ fmt.Println(s2)
   - `type rune int32`
 
 ```go
-	// 문자 하나를 표혀하는데 rune 타입 사용
+	// 문자 하나를 표현하는데 rune 타입 사용
 	// UTF-8은 1~3바이트
 	// 알파벳 문자열크기 =1, 한글 문자열 크기 = 3
 	var c rune = '한'
@@ -5432,3 +5432,7 @@ cp /root/demo /goapp
 # http://{ip}:3000/
 # 서버 
 ```
+
+
+
+

@@ -30,6 +30,20 @@ func main() {
 	}
 	fmt.Println(N)
 }
+
+
+package main
+import "fmt"
+func main() {
+	arr = []int{3, 5,1}
+	summary := 0
+	for _, x := range arr {
+	}
+
+}
+
+
+
 ```
 
 $O(N)$ 최악의 경우로 복잡도 고려

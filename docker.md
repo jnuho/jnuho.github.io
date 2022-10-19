@@ -697,11 +697,23 @@ awk '$4>"[로그에 기록된 날짜, 시간]" && $4<"[로그에 기록된 날�
 
 - 도커 볼륨 활용3: 컨테이너 간 데이터 공유를 위한 데이터 컨테이너 만들기
 
+- docker-compose 실습 : go-playground
+	- goplay.tools 로컬에서 실행
+	- 이미지(latest) : https://hub.docker.com/r/x1unix/go-playground
 
 
+```yml
+# docker-compose.yml
 
-
-
-```sh
-
+version: '2'
+services:
+  playground:
+    image: x1unix/go-playground:latest
+    environment:
+      APP_CLEAN_INTERVAL=10m    # Build files remove interval
+      APP_DEBUG=false           # Enable debug mode
+    ports:
+      - 127.0.0.1:8000:8000
 ```
+
+
