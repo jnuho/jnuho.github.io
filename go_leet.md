@@ -11,7 +11,7 @@ go mod tidy
 
 - [1-two-sum](https://raw.githubusercontent.com/jnuho/jnuho.github.io/master/hellogo/leetcode/1-two-sum/README.md) [☇](https://raw.githubusercontent.com/jnuho/jnuho.github.io/master/hellogo/leetcode/1-two-sum/solution.go) [☇](https://raw.githubusercontent.com/jnuho/jnuho.github.io/master/hellogo/leetcode/1-two-sum/solution_test.go)
 
-- [2-add-two-numbers](https://raw.githubusercontent.com/jnuho/jnuho.github.io/master/hellogo/leetcode/2-add-two-numbers/README.md) [☇](https://raw.githubusercontent.com/jnuho/jnuho.github.io/master/hellogo/leetcode/2-add-two-numbers/solution.go) [☇](https://raw.githubusercontent.com/jnuho/jnuho.github.io/master/hellogo/leetcode/2-add-two-numbers/solution_test.go)
+- [2-add-two-numbers](https://raw.githubusercontent.com/jnuho/jnuho.github.io/master/hellogo/leetcode/2-add-two-numbers/README.md) [☇1](https://raw.githubusercontent.com/jnuho/jnuho.github.io/master/hellogo/leetcode/2-add-two-numbers/solution.go) [☇2](https://raw.githubusercontent.com/jnuho/jnuho.github.io/master/hellogo/leetcode/2-add-two-numbers/solution_simple.go) [☇](https://raw.githubusercontent.com/jnuho/jnuho.github.io/master/hellogo/leetcode/2-add-two-numbers/solution_test.go)
 
 - [3-longest-substring-without-repeating-characters](https://raw.githubusercontent.com/jnuho/jnuho.github.io/master/hellogo/leetcode/3-longest-substring-without-repeating-characters/README.md) [☇](https://raw.githubusercontent.com/jnuho/jnuho.github.io/master/hellogo/leetcode/3-longest-substring-without-repeating-characters/solution.go) [☇](https://raw.githubusercontent.com/jnuho/jnuho.github.io/master/hellogo/leetcode/3-longest-substring-without-repeating-characters/solution_test.go)
 
