@@ -3,8 +3,9 @@ package main
 import (
 	"fmt"
 )
+
 type ListNode struct {
-	Val int
+	Val  int
 	Next *ListNode
 }
 
@@ -25,7 +26,7 @@ func addTwoNumbers(l1 *ListNode, l2 *ListNode) *ListNode {
 	carry := 0
 	sum := 0
 
-	for t1 != nil || t2 != nil || carry == 1{
+	for t1 != nil || t2 != nil || carry == 1 {
 
 		if t1 != nil {
 			n1 = t1.Val
@@ -40,10 +41,10 @@ func addTwoNumbers(l1 *ListNode, l2 *ListNode) *ListNode {
 			n2 = 0
 		}
 
-		sum = n1+n2+carry
-		carry = sum/10
+		sum = n1 + n2 + carry
+		carry = sum / 10
 
-		temp.Next = &ListNode{sum %10, nil}
+		temp.Next = &ListNode{sum % 10, nil}
 		temp = temp.Next
 	}
 
@@ -55,7 +56,7 @@ func iToListNode(i int) *ListNode {
 	temp := dummyHead
 
 	for {
-		temp.Next = &ListNode{i%10, nil}
+		temp.Next = &ListNode{i % 10, nil}
 		temp = temp.Next
 		i /= 10
 
@@ -71,7 +72,7 @@ func listNodeToI(l *ListNode) int {
 	res := 0
 	mul := 1
 
-	for t!=nil {
+	for t != nil {
 		res += t.Val * mul
 		mul *= 10
 		t = t.Next
@@ -84,7 +85,7 @@ func printNode(l1 *ListNode) {
 		fmt.Print(l1.Val)
 		l1 = l1.Next
 
-		if l1 !=nil {
+		if l1 != nil {
 			fmt.Print("->")
 		}
 	}
@@ -97,16 +98,17 @@ func main() {
 	l2 := iToListNode(465)
 	printNode(l1)
 	printNode(l2)
-	res := addTwoNumbers(l1,l2)
+	res := addTwoNumbers(l1, l2)
 	printNode(res)
 
 	num := listNodeToI(res)
 	fmt.Println(num)
 
-
 	// 9999999 + 9999 = 10009998
 	l1 = iToListNode(9999999)
 	l2 = iToListNode(9999)
-	printNode(addTwoNumbers(l1,l2))
-	fmt.Println(listNodeToI(addTwoNumbers(l1,l2)))
+	printNode(addTwoNumbers(l1, l2))
+	fmt.Println(listNodeToI(addTwoNumbers(l1, l2)))
 }
+
+
