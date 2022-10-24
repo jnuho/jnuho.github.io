@@ -1,30 +1,75 @@
-- AWS 자원 조회
-	- [Eng.](doc_goproject)
+❒ AWS 자원 조회
+- [Eng.](doc_goproject)
 
-- 진행 배경
+❒ 진행 배경
 	- 최근 EC2 -> ECS 이관 및 생성 작업이 많아 지면서 ECS 자원조회에 중점을 두고 진행
-- 사용 기술
-	- 프론트엔드 : Javascript, HTML, CSS
-	- 백엔드 : Go언어, Go AWS SDK 라이브러리
-- 주요 기능
+
+❒ 사용 기술
+
+```
+Backend : Go, Go AWS SDK
+Frontend : Javascript, HTML, CSS
+```
+
+❒ 주요 기능
 	- TG 조회 : ALB -> TG -> Target 자원 상태(health) container-ip / instance-id 조회
 	- ECS 조회 : 각 Task내의 Container 및 이미지, IP 정보 상세조회
 	- ECR : Tag 및 이미지 uri 조회 -> Go활용한 최신 순 정렬
-- 구현 시 고려사항 :
-	- CLI(go cobra library)로 구현하려고 했으나 cmd창을 열어 타이핑하는 작업은 오히려 불편하다고 생각하여,
+
+❒ 구현 시 고려사항 :
+	- CLI(go cobra library)로 구현하려고 했으나 cmd창을 열어 타이핑하는 작업은 불편하다고 생각하여,
 	- 웹페이지 url (ip:port)로 간편하게 사용할 수 있도록 구현방법 수정
 		- 해당 url은 프라이빗 클라우드 내부 vpn으로만 접근 가능
 	- AWS 자원간 의존성이 있는데, AWS가 제공하는 단일 API로 원하는 자원상태 조회가 힘듦
 	- 자원 조회 API를 여러개 호출하여 Go언어로 조회 데이터 manipulate 및 정렬 처리하여 보기쉽게 화면출력
-- 진행 상태
-	- 확장성이 있는 어플리케이션이기 때문에, 추후 로그 조회, EC2, EKS 조회 등의 기능도 언제든지 추가가능
-- 테스트
-	- Cloud접속 > http://oo.oo.oo.ooo:port 기능 사용
+
+❒ 진행 상태
+	- 로그 조회, EC2, EKS 조회 등의 기능 추가 예정
+	- 컨테이너화 진행 중
+
+❒ 테스트
+	- Cloud접속 > http://o.o.o.o:port 기능 사용
 
 ![go sdk app](./assets/images/goproject_kor.png)
 
 
-- Aws Profile 관리
+❒ Aws Profile 관리
+
+```
+# IAM Role with permission policies :
+#		Create role
+#			Add Permissions
+
+AmazonEC2FullAccess
+	Provides full access to Amazon EC2 via the AWS Management Console.
+
+IAMFullAccess
+	Provides full access to IAM via the AWS Management Console.
+
+AmazonEC2ContainerRegistryFullAccess
+	Provides administrative access to Amazon ECR resources
+
+AmazonS3FullAccess
+	Provides full access to all buckets via the AWS Management Console.
+
+ReadOnlyAccess
+	Provides read-only access to AWS services and resources.
+
+AmazonSESFullAccess
+	Provides full access to Amazon SES via the AWS Management Console.
+
+AmazonAPIGatewayAdministrator
+	Provides full access to create/edit/delete APIs in Amazon API Gateway via the AWS Management Console.
+
+AmazonECS_FullAccess
+	Provides administrative access to Amazon ECS resources and enables ECS features through access to other AWS service resources, including VPCs, Auto Scaling groups, and CloudFormation stacks.
+
+AWSCloudFormationFullAccess
+	Provides full access to AWS CloudFormation.
+
+AWSLambda_FullAccess
+	Grants full access to AWS Lambda service, AWS
+```
 
 ```go
 import "github.com/aws/aws-sdk-go/aws/session"

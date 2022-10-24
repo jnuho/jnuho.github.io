@@ -1,33 +1,91 @@
 package main
 
 import (
+	"encoding/gob"
+	"encoding/json"
 	"fmt"
+	"os"
+	"time"
+
 	"log"
 	"net/http"
 )
 
-const port = ":8080"
+var (
+	port   = ":8080"
+	logger = log.New(os.Stdout, "[TEST] ", log.Ldate|log.Ltime|log.Lmicroseconds|log.Lshortfile)
+)
 
-func main() {
+type Data struct {
+	Name  string
+	Value float64
+	TS    string
+}
 
-	mainRouter := http.NewServeMux()
-	mainRouter.HandleFunc("/", handler)
-
-	log.Println("Serving---go http server http://localhost" + port)
-	if err := http.ListenAndServe(port, mainRouter); err != nil {
-		log.Printf("ERROR Happend! %v\n", err)
+func wrapFunc(fn func(w http.ResponseWriter, req *http.Request)) func(w http.ResponseWriter, req *http.Request) {
+	return func(w http.ResponseWriter, req *http.Request) {
+		start := time.Now()
+		fn(w, req)
+		logger.Printf("wrapFunc : %s %s | Took %s", req.Method, req.URL.Path, time.Since(start))
 	}
 }
 
-/**
-curl http://localhost:8080
-Hello World!
-*/
-func handler(w http.ResponseWriter, r *http.Request) {
-	switch r.Method {
+func wrapHandlerFunc(h http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, req *http.Request) {
+		start := time.Now()
+		//fn(w, req)
+		h.ServeHTTP(w, req)
+		logger.Printf("wrapHandlerFunc : %s %s | Took %s", req.Method, req.URL.Path, time.Since(start))
+	}
+}
+
+func handler(w http.ResponseWriter, req *http.Request) {
+	switch req.Method {
 	case "GET":
-		fmt.Fprintln(w, "Hello World!")
+		fmt.Fprintf(w, "Hello World!")
 	default:
 		http.Error(w, "Method Not Allowed", 405)
+	}
+}
+
+func handlerJSON(w http.ResponseWriter, req *http.Request) {
+	switch req.Method {
+	case "GET":
+		data := Data{}
+		data.Name = "Go"
+		data.Value = 1000
+		data.TS = time.Now().String()[:19]
+		if err := json.NewEncoder(w).Encode(data); err != nil {
+			panic(err)
+		}
+	default:
+		http.Error(w, "Method Not Allowed", 405)
+	}
+}
+
+func handlerGOB(w http.ResponseWriter, req *http.Request) {
+	switch req.Method {
+	case "GET":
+		data := Data{}
+		data.Name = "Go"
+		data.Value = 1000
+		data.TS = time.Now().String()[:19]
+		if err := gob.NewEncoder(w).Encode(data); err != nil {
+			panic(err)
+		}
+	default:
+		http.Error(w, "Method Not Allowed", 405)
+	}
+}
+
+func main() {
+	mainRouter := http.NewServeMux()
+	mainRouter.HandleFunc("/", wrapFunc(handler))
+	mainRouter.HandleFunc("/json", wrapHandlerFunc(handlerJSON))
+	mainRouter.HandleFunc("/gob", wrapHandlerFunc(handlerGOB))
+
+	log.Println("Serving http://localhost" + port)
+	if err := http.ListenAndServe(port, mainRouter); err != nil {
+		panic(err)
 	}
 }
