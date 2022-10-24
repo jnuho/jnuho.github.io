@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/gob"
 	"encoding/json"
-	"fmt"
 	"os"
 	"time"
 
@@ -22,34 +21,27 @@ type Data struct {
 	TS    string
 }
 
-func wrapFunc(fn func(w http.ResponseWriter, req *http.Request)) func(w http.ResponseWriter, req *http.Request) {
-	return func(w http.ResponseWriter, req *http.Request) {
-		start := time.Now()
-		fn(w, req)
-		logger.Printf("wrapFunc : %s %s | Took %s", req.Method, req.URL.Path, time.Since(start))
-	}
-}
-
 func wrapHandlerFunc(h http.HandlerFunc) http.HandlerFunc {
-	return func(w http.ResponseWriter, req *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
 		start := time.Now()
-		//fn(w, req)
-		h.ServeHTTP(w, req)
-		logger.Printf("wrapHandlerFunc : %s %s | Took %s", req.Method, req.URL.Path, time.Since(start))
+		h.ServeHTTP(w, r)
+		logger.Printf("wrapHandlerFunc : %s %s | Took %s", r.Method, r.URL.Path, time.Since(start))
 	}
 }
 
-func handler(w http.ResponseWriter, req *http.Request) {
-	switch req.Method {
+func handler(w http.ResponseWriter, r *http.Request) {
+	switch r.Method {
 	case "GET":
-		fmt.Fprintf(w, "Hello World!")
+		log.Printf("GET: Hello World, PATH=%v", r.URL.Path)
+	case "POST":
+		log.Printf("POST: Hello World, PATH=%v", r.URL.Path)
 	default:
 		http.Error(w, "Method Not Allowed", 405)
 	}
 }
 
-func handlerJSON(w http.ResponseWriter, req *http.Request) {
-	switch req.Method {
+func handlerJSON(w http.ResponseWriter, r *http.Request) {
+	switch r.Method {
 	case "GET":
 		data := Data{}
 		data.Name = "Go"
@@ -63,8 +55,8 @@ func handlerJSON(w http.ResponseWriter, req *http.Request) {
 	}
 }
 
-func handlerGOB(w http.ResponseWriter, req *http.Request) {
-	switch req.Method {
+func handlerGOB(w http.ResponseWriter, r *http.Request) {
+	switch r.Method {
 	case "GET":
 		data := Data{}
 		data.Name = "Go"
@@ -80,9 +72,7 @@ func handlerGOB(w http.ResponseWriter, req *http.Request) {
 
 func main() {
 	mainRouter := http.NewServeMux()
-	mainRouter.HandleFunc("/", wrapFunc(handler))
-	mainRouter.HandleFunc("/json", wrapHandlerFunc(handlerJSON))
-	mainRouter.HandleFunc("/gob", wrapHandlerFunc(handlerGOB))
+	mainRouter.HandleFunc("/", wrapHandlerFunc(handler))
 
 	log.Println("Serving http://localhost" + port)
 	if err := http.ListenAndServe(port, mainRouter); err != nil {
