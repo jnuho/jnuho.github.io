@@ -6,5 +6,27 @@
 <body>
 	<h1>Hello world!</h1>
 	<cite>Hi I'm testing:  Go http web server</cite>
+	<button class="search-btn">Search</button>
+
+
+  <!-- JQUERY -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js" ></script>
+  <!-- JQUERY-UI -->
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+
+  <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+  <!-- AJAX 쿼리를 사용가능하게 jquery 사용 -->
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+	<script>
+		$('.search-btn').on("click", function(event) {
+			$.post("/targetgroup", {profile: "prd", tgname: "AAAA"}, function(items){
+				console.log(items)
+			});
+		});
+	</script>
+
 </body>
+
+
 </html>

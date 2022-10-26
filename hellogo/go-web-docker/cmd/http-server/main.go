@@ -39,7 +39,10 @@ func wrapFunc(h http.HandlerFunc) http.HandlerFunc {
 func GetTgHandler(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "POST":
-		log.Println("ALALALALAL")
+		r.ParseForm() // Parses the request body
+		log.Println(r.Form)
+		x := r.Form.Get("email") // x will be "" if parameter is not set
+		log.Println(x)
 		data := Data{}
 		data.Name = "Go"
 		data.Value = 1000
@@ -47,15 +50,15 @@ func GetTgHandler(w http.ResponseWriter, r *http.Request) {
 		if err := json.NewEncoder(w).Encode(data); err != nil {
 			log.Fatal(err)
 		}
-		rd.JSON(w, http.StatusOK, Success{Success: true})
+		// rd.JSON(w, http.StatusOK, Success{Success: true})
 	default:
 		http.Error(w, "Method Not Allowed", 405)
 	}
 }
 
 func main() {
-	// flag port default 8080
-	ptr := flag.String("port", "8080", "Port to listen to")
+	// flag port default 3001
+	ptr := flag.String("port", "3001", "Port to listen to")
 	flag.Parse()
 	port := ":" + *ptr
 

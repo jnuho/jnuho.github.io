@@ -29,3 +29,5 @@ go run main.go -port 8080
 curl -X POST -H "Content-Type: application/json" \
     -d '{"name": "linuxize", "email": "linuxize@example.com"}' \
     http://localhost:8080/targetgroup
+
+
