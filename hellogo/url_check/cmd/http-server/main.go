@@ -76,7 +76,7 @@ func GetTgHandler(w http.ResponseWriter, r *http.Request) {
 
 	urls = make(map[string]string, 0)
 
-	f, err := excelize.OpenFile("../../assets/WebURL.xlsx")
+	f, err := excelize.OpenFile("../../assets/WebURL-DR.xlsx")
 	if err != nil {
 		log.Fatal(err)
 		return
