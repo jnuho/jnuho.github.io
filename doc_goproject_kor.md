@@ -2,8 +2,8 @@
 - [Eng.](doc_goproject)
 
 ❚ 진행 배경
-- EC2 -> ECS 이관 및 생성 작업이 많아 지면서 ECS 자원조회에 중점을 두고 진행
-- 자원 생성 시 stage 별 데이터 확인이 필요하여 console 대신 sdk 활용 app 생성
+- EC2 -> ECS 이관 및 생성 작업에 필요한, ECS, TG, ALB 등 자원조회 기능 필요
+- 자원 생성 시 stage 별 데이터 확인 필요하여 AWS Console 대신, SDK 활용
 
 ❚ 사용 기술
 
@@ -15,21 +15,20 @@ Frontend : Javascript, HTML, CSS
 ❚ 주요 기능
 - 조회 : ALB > TargetGroup > Target Health >  Container_Ip, Instance_Id
 - 조회 : ECS Task의 Container, Image, IP 등
-- 조회 : ECR tag, image uri -> 최신 업로드 순 정렬
+- 조회 : ECR tag, image uri -> 최신순 정렬
 
 ❚ 구현 시 고려사항 :
-- CLI (go cobra library)로 구현 대신
-- 웹페이지 url (ip:port)로 간편하게 사용할 수 있도록 구현방법 수정
-	- 해당 url은 프라이빗 클라우드 내부 vpn으로만 접근 가능
+- CLI (go cobra library) 툴 대신, 웹페이지 url (ip:port)로 간편하게 사용할 수 있는 web 어플리케이션 생성
+	- url:  프라이빗 클라우드 내부 vpn으로만 접근 가능
 - AWS 자원간 의존성이 있는데, AWS가 제공하는 단일 API로 원하는 자원상태 조회가 힘듦
-- 여러개 API 호출 결과를 통해 object list 만들어, 정렬 처리 (Override Len, Less, Swap functions)
+- AWS API 호출 결과들로 object list 만들어, 정렬 처리 (Override Len, Less, Swap functions)
 
 ❚ 진행 상태
-- Cloudwatch 로그 조회, EC2 조회, Task event 조회(down, up) 등의 기능 추가 예정
-- 컨테이너화 진행
-	- Dockerfile 빌드, Image생성, 컨테이너 Run
-	- EC2 role based access로, aws credential 관리 -> EC2 내의 도커 컨테이너로 credential propagate 테스트 중
-- CI/CD 적용 예정 - Github Actions
+- Web application (go, javascript, html, css) 완성
+- 컨테이너화
+	- Dockerfile 빌드, Image 생성, 컨테이너 Run
+	- EC2 role based access로, aws credential 관리 -> 도커 컨테이너로 credential propagation 테스트 중
+- Cloudwatch 로그, EC2, Task event 조회(down, up) 추가 예정
 
 ❚ 테스트
 - Cloud접속 -> Vpn > http://{ip_addr}:port
