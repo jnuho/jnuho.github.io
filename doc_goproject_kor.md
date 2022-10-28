@@ -1,44 +1,51 @@
-❒ AWS 자원 조회
+❙ AWS 자원 조회
 - [Eng.](doc_goproject)
 
-❒ 진행 배경
-- 최근 EC2 -> ECS 이관 및 생성 작업이 많아 지면서 ECS 자원조회에 중점을 두고 진행
+❙ 진행 배경
+- EC2 -> ECS 이관 및 생성 작업이 많아 지면서 ECS 자원조회에 중점을 두고 진행
+- 자원 생성 시 stage 별 데이터 확인이 필요하여 console 대신 sdk 활용 app 생성
 
-❒ 사용 기술
+❙ 사용 기술
 
 ```
 Backend : Go, Go AWS SDK
 Frontend : Javascript, HTML, CSS
 ```
 
-❒ 주요 기능
-- TG 조회 : ALB -> TG -> Target 자원 상태(health) container-ip / instance-id 조회
-- ECS 조회 : 각 Task내의 Container 및 이미지, IP 정보 상세조회
-- ECR : Tag 및 이미지 uri 조회 -> Go활용한 최신 순 정렬
+❙ 주요 기능
+- 조회 : ALB > TargetGroup > Target Health >  Container_Ip, Instance_Id
+- 조회 : ECS Task의 Container, Image, IP 등
+- 조회 : ECR tag, image uri -> 최신 업로드 순 정렬
 
-❒ 구현 시 고려사항 :
-- CLI(go cobra library)로 구현하려고 했으나 cmd창을 열어 타이핑하는 작업은 불편하다고 생각하여,
+❙ 구현 시 고려사항 :
+- CLI (go cobra library)로 구현 대신
 - 웹페이지 url (ip:port)로 간편하게 사용할 수 있도록 구현방법 수정
 	- 해당 url은 프라이빗 클라우드 내부 vpn으로만 접근 가능
 - AWS 자원간 의존성이 있는데, AWS가 제공하는 단일 API로 원하는 자원상태 조회가 힘듦
-- 자원 조회 API를 여러개 호출하여 Go언어로 조회 데이터 manipulate 및 정렬 처리하여 보기쉽게 화면출력
+- 여러개 API 호출 결과를 통해 object list 만들어, 정렬 처리 (Override Len, Less, Swap functions)
 
-❒ 진행 상태
-- 로그 조회, EC2, EKS 조회 등의 기능 추가 예정
-- 컨테이너화 진행 중
+❙ 진행 상태
+- Cloudwatch 로그 조회, EC2 조회, Task event 조회(down, up) 등의 기능 추가 예정
+- 컨테이너화 진행
+	- Dockerfile 빌드, Image생성, 컨테이너 Run
+	- EC2 role based access로, aws credential 관리 -> EC2 내의 도커 컨테이너로 credential propagate 테스트 중
+- CI/CD 적용 예정 - Github Actions
 
-❒ 테스트
-- Cloud접속 > http://o.o.o.o:port 기능 사용
+❙ 테스트
+- Cloud접속 -> Vpn > http://{ip_addr}:port
 
 ![go sdk app](./assets/images/goproject_kor.png)
 
 
-❒ Aws Profile 관리
+❙ Aws Profile 관리
+- `credential_source=Ec2InstanceMetadata`
+	- AWS CLI / SDK가 EC2 인스턴스에 attach된 IAM Role 사용하여 Source credential 가져옴
+
+- EC2인스턴스에 IAM Role Attach하기
 
 ```
 # IAM Role with permission policies :
-#		Create role
-#			Add Permissions
+#		Create role > Add Permissions
 
 AmazonEC2FullAccess
 	Provides full access to Amazon EC2 via the AWS Management Console.
@@ -71,6 +78,7 @@ AWSLambda_FullAccess
 	Grants full access to AWS Lambda service, AWS
 ```
 
+- Credential 접근: go aws sdk
 ```go
 import "github.com/aws/aws-sdk-go/aws/session"
 
@@ -103,9 +111,9 @@ func InitSession(profile string) *session.Session {
 }
 ```
 
-❒ 구조체 Repo 정의<br>
-❒ Repo 반환 인터페이스 정의<br>
-❒ Repo 구조체 구현 메소드 정의
+❙ 구조체 Repo 정의<br>
+❙ Repo 반환 인터페이스 정의<br>
+❙ Repo 구조체 구현 메소드 정의
 - `func (repo *Repo) getAWSTargetGroups()`
 - `func (repo *Repo) getAWSTargetHealths(tgarn string)`
 - `func (repo *Repo) getAWSEcsClusterDetails(clusterArn string)`

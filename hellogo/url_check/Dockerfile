@@ -8,7 +8,7 @@ WORKDIR /src
 
 RUN go build -o /tmp/http-server ./cmd/http-server/main.go
 
-# FROM alpine:edge
+FROM alpine:edge
 COPY --from=build /tmp/http-server /sbin/http-server
 
 CMD /sbin/http-server
