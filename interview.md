@@ -25,16 +25,18 @@
 	- [socket](https://github.com/WeareSoft/tech-interview/blob/master/contents/network.md#socketio%EC%99%80-websocket%EC%9D%98-%EC%B0%A8%EC%9D%B4)
 	- [async sync](https://github.com/WeareSoft/tech-interview/blob/master/contents/etc.md#blocking-non-blocking-vs-synchronous-asynchronous)
 	- [load balancer vs reverse proxy](https://www.nginx.com/resources/glossary/reverse-proxy-vs-load-balancer/)
-	- [authorization - JWT](https://velog.io/@syleemk/%EB%A9%B4%EC%A0%91-%EB%8C%80%EB%B9%84-%EC%84%9C%EB%B2%84-%EA%B8%B0%EB%B0%98-%EC%9D%B8%EC%A6%9D-%EC%84%B8%EC%85%98-%ED%86%A0%ED%81%B0)
+	- [authorization - JWT](https://inpa.tistory.com/entry/WEB-%F0%9F%93%9A-JWTjson-web-token-%EB%9E%80-%F0%9F%92%AF-%EC%A0%95%EB%A6%AC)
 
 
 
 ```
-백엔드 개발하면서 새로 코드를 짜는것 뿐아니라,
-이미 작성 되어있는 코드를 읽고 변경하는 과정이 많았는데
-이때 코드 리팩토링과 깔끔한 코드를 짜는 것의 중요성을 꺠달았습니다.
+개발하면서 이미 작성 되어있는 코드를 읽고 변경하는 과정이 많았는데
+이때 코드 리팩토링과 깔끔한 코드를 짜는 것의 중요성을 깨달았습니다.
 
-따라서 개발할때 이 원칙을 중요시 생각합니다.
+따라서 이 원칙을 중요시 생각하여 작성하는 편입니다.
+팀원들이 모두 보는 코드이기 때문에, 필요하다면 커멘트도 달고 있지만,
+커멘트 없이도 이해하기 쉬운 코드를 짜는것이 목표입니다.
+
 개발 API에 대한 테스트 케이스를 작성하고,
 maven build 시 spring 설정에 따라 테스트 케이스 검증 과정
 그리고 팀원들과의 코드리뷰 및 브랜치 머지과정
