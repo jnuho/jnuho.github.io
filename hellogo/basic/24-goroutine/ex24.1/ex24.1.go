@@ -6,16 +6,16 @@ import (
 )
 
 func PrintHangul() {
-	hanguls := []rune{'가','나','다','라','마','바', '사'}
-	for _,v := range hanguls {
-		time.Sleep(300*time.Millisecond)
+	hanguls := []rune{'가', '나', '다', '라', '마', '바', '사'}
+	for _, v := range hanguls {
+		time.Sleep(300 * time.Millisecond)
 		fmt.Printf("%c", v)
 	}
 }
 
 func PrintNumbers() {
-	for i:=0; i<5; i++ {
-		time.Sleep(400*time.Millisecond)
+	for i := 0; i < 5; i++ {
+		time.Sleep(400 * time.Millisecond)
 		fmt.Printf("%d", i+1)
 	}
 }
