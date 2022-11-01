@@ -28,6 +28,7 @@ Frontend : Javascript, HTML, CSS
 - 컨테이너화
 	- Dockerfile 빌드, Image 생성, 컨테이너 Run
 	- EC2 role based access로, aws credential 관리 -> 도커 컨테이너로 credential propagation 테스트 중
+	- 고루틴 및 채널 적용: API 호출시 다수의 AWS api 통신하는 경우
 - Cloudwatch 로그, EC2, Task event 조회(down, up) 추가 예정
 
 ❚ 테스트

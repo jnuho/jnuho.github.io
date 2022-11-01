@@ -3857,7 +3857,15 @@ func main() {
   - 작업 시작전에 원하면 언제든지 작업 취소 가능
 
 ```go
-ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+func main() {
+	wg.Add(1)
+
+	// 5초 후 컨텍스트의 Done()채널에 시그널을 보내 작업종료 요청
+	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
+	go PrintEverySecond(ctx)
+
+	wg.Wait()
+}
 ```
 
 - 특정 값을 설정한 컨텍스트
