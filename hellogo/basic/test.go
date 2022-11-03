@@ -1,8 +1,8 @@
 package main
 
 import (
-	"context"
 	"fmt"
+	"math/rand"
 	"sync"
 	"time"
 )
@@ -11,26 +11,35 @@ var (
 	wg sync.WaitGroup
 )
 
-func PrintEverySecond(ctx context.Context) {
-	tick := time.Tick(time.Second)
-	for {
-		select {
-		case <-ctx.Done():
-			fmt.Println("Done")
-			wg.Done()
-			return
-		case <-tick:
-			fmt.Println("Tick")
-		}
+func diningProblem(name string, first, second *sync.Mutex, firstName, secondName string) {
+	for i := 0; i < 100; i++ {
+		fmt.Printf("%s 밥을 먹으려 합니다.\n", name)
+
+		first.Lock()
+		fmt.Printf("%s %s를 획득.\n", name, firstName)
+		second.Lock()
+		fmt.Printf("%s %s를 획득.\n", name, secondName)
+
+		fmt.Printf("%s 밥을 먹습니다.\n", name)
+
+		time.Sleep(time.Duration(rand.Intn(1000)) * time.Millisecond)
+		second.Unlock()
+		first.Unlock()
+
 	}
+	wg.Done()
 }
 
 func main() {
-	wg.Add(1)
+	rand.Seed(time.Now().UnixNano())
 
-	// 5초 후 컨텍스트의 Done()채널에 시그널을 보내 작업종료 요청
-	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
-	go PrintEverySecond(ctx)
+	first := &sync.Mutex{}
+	second := &sync.Mutex{}
+
+	wg.Add(2)
+
+	go diningProblem("A", first, second, "포크", "수저")
+	go diningProblem("B", second, first, "수저", "포크")
 
 	wg.Wait()
 }

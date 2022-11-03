@@ -3259,7 +3259,7 @@ func main() {
   - 동일한 메모리 자원에 여러개 고루틴 접근!
 		- e.g. 입금1000, 출금1000 을 10개의 고루틴이 동시 실행 하는 상황
 		- 두개 고루틴이 각각 1000원 입금했는데 2000이 아닌 1000이된상태에서 다시 두번 출금시 < 0 : panic!
-		- 해결책: 한 고루티에서 값을 변경할때 다른 고루티이 접근하지 못하도록 mutex 활용 (mutual exclusion)
+		- 해결책: 한 고루티에서 값을 변경할때 다른 고루틴이 접근하지 못하도록 mutex 활용 (mutual exclusion)
 
 ```go
 package main
@@ -3289,6 +3289,8 @@ func main() {
   wg.Add(10)
 
   for i:=0; i< 10; i++ {
+		// 하나의 자원에 다수의 고루틴이 접근 함
+		// 뮤텍스를 통해 Lock 걸어 해결
     go func() {
       for {
         DepositAndWithdraw(account)
@@ -3407,8 +3409,8 @@ func main() {
 
 - 또 다른 자원 관리 기법
   - 영역을 나누는 방법
-		- 각 고루틴은 할당된 작업마 하므로 고루틴(작업자)간 간섭 없음
-		- 고루틴 간 간섭이 없어서 뮤텍스토 필요 없음
+		- 각 고루틴은 할당된 작업만 하므로 고루틴(작업자)간 간섭 없음
+		- 고루틴 간 간섭이 없어서 뮤텍스도 필요 없음
   - 역할을 나누는 방법 : Channel과 함께 설명
 
 ```go
@@ -3430,7 +3432,7 @@ type SquareJob struct {
 func (j *SquareJob) Do() {
   fmt.Printf("%d 작업 시작\n", j.index)
   time.Sleep(1 * time.Second)
-  fmt.Printf("%d 작업 완료 - 작업결괴: %d\n", j.index, j.index * j.index)
+  fmt.Printf("%d 작업 완료 - 작업결과: %d\n", j.index, j.index * j.index)
 }
 
 func main() {
@@ -3452,6 +3454,7 @@ func main() {
   }
   wg.Wait()
 }
+
 ```
 
 ### 25.채널과 컨텍스트

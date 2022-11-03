@@ -173,3 +173,10 @@ func (repo *Repo) getAWSTargetGroups() {
 }
 ```
 
+
+❚ 컨테이너화
+
+
+```sh
+```
+
