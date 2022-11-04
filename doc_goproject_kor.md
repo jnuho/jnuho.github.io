@@ -1,5 +1,7 @@
 ❚ AWS 자원 조회
-- [Eng.](doc_goproject)
+- [Eng Ver.](doc_goproject)
+- [repository](https://github.com/jnuho/goproject)
+- [aws sdk for go](https://aws.amazon.com/sdk-for-go/)
 
 ❚ 진행 배경
 - EC2 -> ECS 이관 및 생성 작업에 필요한, ECS, TG, ALB 등 자원조회 기능 필요
