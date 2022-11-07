@@ -754,6 +754,10 @@ pdftk input.pdf cat 5-420 output output.pdf
 # 'Left Top Right Bottom'
 pdfcrop --margins '12 10 12 10' input.pdf output.pdf
 pdfcrop --margins '-25 -20 -25 -5' 트러블슈팅.pdf 트러블슈팅_cr.pdf
+
+
+pdfcrop --margins '0 -20 0 -5' 토비1_cr.pdf 토비1_crcr.pdf
+pdfcrop --margins '0 -20 0 -5' 토비2_cr.pdf 토비2_crcr.pdf
 ```
 
 - 맥에서 만든 zip파일 한글깨짐
