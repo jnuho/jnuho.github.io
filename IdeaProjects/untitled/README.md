@@ -89,24 +89,23 @@ public class UserDao {
 		return user;
 	}
 
-}
+	public static void main(String[] args) {
+		UserDao dao = new UserDao();
 
-public static void main(String[] args) {
-	UserDao dao = new UserDao();
+		User user = new User();
+		user.setId("1");
+		user.setName("Bob");
+		user.setPassword("fooo");
 
-	User user = new User();
-	user.setId("1");
-	user.setName("Bob");
-	user.setPassword("fooo");
+		dao.add(User);
+		System.out.Println(user.getId() + " 등록 성공");
 
-	dao.add(User);
-	System.out.Println(user.getId() + " 등록 성공");
+		User user2 = dao.get(user.getId());
+		System.out.Println("조회 성공: name=" + user2.getName());
+		System.out.Println("조회 성공: password=" + user2.getPassword());
 
-	User user2 = dao.get(user.getId());
-	System.out.Println("조회 성공: name=" + user2.getName());
-	System.out.Println("조회 성공: password=" + user2.getPassword());
-
-	System.out.Println(user.getId() + " 조회 성공");
+		System.out.Println(user.getId() + " 조회 성공");
+	}
 }
 
 ```
@@ -120,71 +119,75 @@ public static void main(String[] args) {
 - 커넥션만들기 추출 getConnection()
 
 ```java
-public void add(User user) throws ClassNotFoundException, SQLException {
-	Connection c = getConnection();
-	PreparedStatement ps = c.prepareStatement(
-		"insert into users(id, name, password) values(?,?,?)");
-	ps.setString(user.getId());
-	ps.setString(user.geName());
-	ps.setString(user.getPassword());
-	ps.executeUpdate();
+public class UserDao {
+	public void add(User user) throws ClassNotFoundException, SQLException {
+		Connection c = getConnection();
+		PreparedStatement ps = c.prepareStatement(
+				"insert into users(id, name, password) values(?,?,?)");
+		ps.setString(user.getId());
+		ps.setString(user.geName());
+		ps.setString(user.getPassword());
+		ps.executeUpdate();
 
-	ps.close();
-	c.close();
-}
+		ps.close();
+		c.close();
+	}
 
-public User get(String id) throws ClassNotFoundException, SQLException {
-	Connection c = getConnection();
-	PreparedStatement ps = c.prepareStatement(
-		"select * from users where id = ?");
-	ps.setString(id);
-	ResultSet rs = ps.executeQuery();
-	rs.next();
+	public User get(String id) throws ClassNotFoundException, SQLException {
+		Connection c = getConnection();
+		PreparedStatement ps = c.prepareStatement(
+				"select * from users where id = ?");
+		ps.setString(id);
+		ResultSet rs = ps.executeQuery();
+		rs.next();
 
-	User user = new User();
-	user.setId(rs.getString("id"));
-	user.setName(rs.getString("name"));
-	user.setPassword(rs.getString("password"));
+		User user = new User();
+		user.setId(rs.getString("id"));
+		user.setName(rs.getString("name"));
+		user.setPassword(rs.getString("password"));
 
-	rs.close();
-	ps.close();
-	c.close();
+		rs.close();
+		ps.close();
+		c.close();
 
-	return user;
-}
+		return user;
+	}
 
-public Connection getConnection() throws ClassNotFoundException, SQLException {
-	Class.forName("com.mysql.jdbc.Driver");
-	Connection c = DriverManager.getConnection(
-		"jdbc:mysql://localhost/springbook", "spring", "book"
-	);
-	return c;
+	public Connection getConnection() throws ClassNotFoundException, SQLException {
+		Class.forName("com.mysql.jdbc.Driver");
+		Connection c = DriverManager.getConnection(
+				"jdbc:mysql://localhost/springbook", "spring", "book"
+		);
+		return c;
+	}
 }
 ```
 
 
-- 커넥션만들기 독립 UserDao의 확장 클래스의 DB연결 인터페이스 제공: 상속(inheritance)
+- 커넥션만들기 독립
+	- UserDao 확장 클래스의 DB연결 인터페이스 제공: 상속(inheritance)
 	- 2개 업체-> UserDao 사용하여 각각 자체 구현 DB 커넥션 코드 사용 하려함
 	- UserDao 개발자는 getConnection() 코드를 공개하지 않을때 구현방법?
 
-- 템플릿 메소드 패턴
-  - 서브 클래스에서 오버라이드
-  - `protectded void hookMethod() {}`: 선택적으로 오버라이드
-  - `public abstract void abstractMethod() {}`: 반드시 오버라이드
-  
-- 팩토리메소드 패턴
-  - 객체 생성방법을 결정하고, 그렇게 만들어진 오브젝트를 돌려주는 오브젝트
-  - UserDao, ConnectionMaker: 애플리케이션의 핵심적인 데이터 로직과 기술 로직
-  - DaoFactory:  애플리케이션의 오브젝트들을 구성하고 그 관계를 정의
-
 - 커넥션 만들기의 독립
-	- 템플릿 메소드 패턴: 슈퍼클래스에서 기본적인 로직흐름만들고
-	- 그 기능의 일부를 추상메소드나 오버라이딩가능한 protected 메소드로 만듦
+	- 템플릿 메소드 패턴
+		- 슈퍼클래스에서 기본적인 로직흐름만들고
+		- 서브클래스에서 그 기능의 일부를 추상메소드나 오버라이딩가능한 protected 메소드로 만듦
 	- 팩토리 메소드 패턴 : 서브클래스에서 구체적인 오브젝트 생성방법 결정
-	- "UserDao에 팩토리 메소드 패턴을 적용해서 getConnection()을 분리"
-	- "디자인패턴": 소프트웨어 설계시 특정 상황에서 자주만나는
-		- 문제를 해결하기 위한 재사용 가능한 솔루션
+		- "UserDao에 팩토리 메소드 패턴을 적용해서 getConnection()을 분리"
+		- "디자인패턴": 소프트웨어 설계시 특정 상황에서 자주만나는
+			- 문제를 해결하기 위한 재사용 가능한 솔루션
 
+
+- 템플릿 메소드 패턴
+	- 서브 클래스에서 오버라이드
+	- `protectded void hookMethod() {}`: 선택적으로 오버라이드
+	- `public abstract void abstractMethod() {}`: 반드시 오버라이드
+
+- 팩토리메소드 패턴
+	- 객체 생성방법을 결정하고, 그렇게 만들어진 오브젝트를 돌려주는 오브젝트
+	- UserDao, ConnectionMaker: 애플리케이션의 핵심적인 데이터 로직과 기술 로직
+	- DaoFactory:  애플리케이션의 오브젝트들을 구성하고 그 관계를 정의
 
 ```
 UserDao [add(), get(), getConnection()]
@@ -228,7 +231,7 @@ public class UserDao {
 
 	// 추상메소드-> 메소드구현은 서브클래스가 담당
 	// 또는 오버라이딩이 가능한 'protected' 메소드 정의
-	public abstract Connection getConnection throws ClassNotFoundException, SQLException;
+	public abstract Connection getConnection() throws ClassNotFoundException, SQLException;
 
 }
 ```
