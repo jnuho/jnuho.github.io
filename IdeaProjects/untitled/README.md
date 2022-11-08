@@ -1,5 +1,4 @@
 
-
 - 스프링 컨테이너
 	- '애플리케이션 컨텍스트' 스프링 런타임
 	- 애플리케이션 오브젝트 생성하고 관리: 웹모듈에서 동작하는 서비스나 서블릿으로 등록해서 사용
@@ -21,9 +20,10 @@ public class User {
 	String name;
 	String password;
 
-	//Public Getter, Setter
+	//public Getter, Setter
 }
 ```
+
 ```sql
 CREATE TABLE USERS (
 	id varchar(10) primary key,
@@ -48,11 +48,124 @@ CREATE TABLE USERS (
 		- JDBC API가 만들어내는 exception을 직접 처리하거나 메소드에 throws 선언하여 메소드 밖으로 던짐
 
 ```java
+package springbook.user.dao;
+
+public class UserDao {
+
+	public void add(User user) throws ClassNotFoundException, SQLException {
+		Class.forName("com.mysql.jdbc.Driver");
+		Connection c = DriverManager.getConnection(
+			"jdbc:mysql//localhost/springbook", "spring", "book");
+		PreparedStatement ps = c.prepareStatement(
+			"insert into users(id, name, password) values(?,?,?)");
+		ps.setString(user.getId());
+		ps.setString(user.geName());
+		ps.setString(user.getPassword());
+		ps.executeUpdate();
+
+		ps.close();
+		c.close();
+	}
+
+	public User get(String id) throws ClassNotFoundException, SQLException {
+		Class.forName("com.mysql.jdbc.Driver");
+		Connection c = DriverManger.getConnection(
+			"jdbc:mysql//localhost/springbook", "spring", "book");
+		PreparedStatement ps = c.prepareStatement(
+			"select * from users where id = ?");
+		ps.setString(id);
+		ResultSet rs = ps.executeQuery();
+		rs.next();
+
+		User user = new User();
+		user.setId(rs.getString("id"));
+		user.setName(rs.getString("name"));
+		user.setPassword(rs.getString("password"));
+
+		rs.close();
+		ps.close();
+		c.close();
+
+		return user;
+	}
+
+}
+
+public static void main(String[] args) {
+	UserDao dao = new UserDao();
+
+	User user = new User();
+	user.setId("1");
+	user.setName("Bob");
+	user.setPassword("fooo");
+
+	dao.add(User);
+	System.out.Println(user.getId() + " 등록 성공");
+
+	User user2 = dao.get(user.getId());
+	System.out.Println("조회 성공: name=" + user2.getName());
+	System.out.Println("조회 성공: password=" + user2.getPassword());
+
+	System.out.Println(user.getId() + " 조회 성공");
+}
 
 ```
 
+- DAO의 분리
+	- 애플리케이션 설계 변경에따른 영향도 최소화
+	- 관심사의 분리
+
+- UserDao의 관심사 (1. DB 커넥션, 2. DB Statement 실행, 3. 리소스 close())
+
+- 커넥션만들기 추출 getConnection()
+
+```java
+public void add(User user) throws ClassNotFoundException, SQLException {
+	Connection c = getConnection();
+	PreparedStatement ps = c.prepareStatement(
+		"insert into users(id, name, password) values(?,?,?)");
+	ps.setString(user.getId());
+	ps.setString(user.geName());
+	ps.setString(user.getPassword());
+	ps.executeUpdate();
+
+	ps.close();
+	c.close();
+}
+
+public User get(String id) throws ClassNotFoundException, SQLException {
+	Connection c = getConnection();
+	PreparedStatement ps = c.prepareStatement(
+		"select * from users where id = ?");
+	ps.setString(id);
+	ResultSet rs = ps.executeQuery();
+	rs.next();
+
+	User user = new User();
+	user.setId(rs.getString("id"));
+	user.setName(rs.getString("name"));
+	user.setPassword(rs.getString("password"));
+
+	rs.close();
+	ps.close();
+	c.close();
+
+	return user;
+}
+
+public Connection getConnection() throws ClassNotFoundException, SQLException {
+	Class.forName("com.mysql.jdbc.Driver");
+	Connection c = DriverManager.getConnection(
+		"jdbc:mysql://localhost/springbook", "spring", "book"
+	);
+	return c;
+}
+```
 
 
+- 커넥션만들기 독립 UserDao의 확장 클래스의 DB연결 인터페이스 제공: 상속(inheritance)
+	- 2개 업체-> UserDao 사용하여 각각 자체 구현 DB 커넥션 코드 사용 하려함
+	- UserDao 개발자는 getConnection() 코드를 공개하지 않을때 구현방법?
 
 - 템플릿 메소드 패턴
   - 서브 클래스에서 오버라이드
@@ -64,10 +177,153 @@ CREATE TABLE USERS (
   - UserDao, ConnectionMaker: 애플리케이션의 핵심적인 데이터 로직과 기술 로직
   - DaoFactory:  애플리케이션의 오브젝트들을 구성하고 그 관계를 정의
 
+- 커넥션 만들기의 독립
+	- 템플릿 메소드 패턴: 슈퍼클래스에서 기본적인 로직흐름만들고
+	- 그 기능의 일부를 추상메소드나 오버라이딩가능한 protected 메소드로 만듦
+	- 팩토리 메소드 패턴 : 서브클래스에서 구체적인 오브젝트 생성방법 결정
+	- "UserDao에 팩토리 메소드 패턴을 적용해서 getConnection()을 분리"
+	- "디자인패턴": 소프트웨어 설계시 특정 상황에서 자주만나는
+		- 문제를 해결하기 위한 재사용 가능한 솔루션
+
+
+```
+UserDao [add(), get(), getConnection()]
+	ㄴNUserDao [getConnection()]
+	ㄴDUserDao [getConnection()]
+```
+
+```java
+public class UserDao {
+
+	public void add(User user) throws ClassNotFoundException, SQLException {
+		Connection c = getConnection();
+		PreparedStatement ps = c.preparedStatement(
+			"insert into users(id, name, password) values(?,?,?)");
+		ps.setString(1, user.getId());
+		ps.setString(2,user.getName());
+		ps.setString(3, user.getPassword());
+		ps.executeUpdate();
+
+		ps.close();
+		c.close();
+	}
+
+	public User get(String id) throws ClassNotFoundException, SQLException {
+		Connection c = getConnection();
+		PreparedStatement ps = c.preparedStatement(
+			"select * from users where id=?");
+		ps.setString(1, id);
+
+		ResultSet rs = ps.executeQuery();
+		rs.next();
+		User user = new User();
+		user.setId(rs.getString("id"));
+		user.setName(rs.getString("name"));
+		user.setPassword(rs.getString("password"));
+
+		rs.close();
+		ps.close();
+		c.close();
+	}
+
+	// 추상메소드-> 메소드구현은 서브클래스가 담당
+	// 또는 오버라이딩이 가능한 'protected' 메소드 정의
+	public abstract Connection getConnection throws ClassNotFoundException, SQLException;
+
+}
+```
+
+```java
+public class NUserDao extends UserDao{
+	// add, get은 상속됨
+
+	// N사의implementation
+	public Connection getConnection throws ClassNotFoundException, SQLException {
+		Class.forName("com.mysql.jdbc.Driver");
+		Connection c = DriverManager.getConnection(
+			"jdbc:mysql://localhost/springbook", "spring", "book"
+		);
+		return c;
+	}
+}
+```
+
+```java
+public class DUserDao extends UserDao{
+	// add, get은 상속됨
+
+	// D사의implementation
+	public Connection getConnection throws ClassNotFoundException, SQLException {
+		...
+	}
+
+}
+```
+
+- 상속의 한계점
+	- 다중상속 문제발생
+		- 만약 UserDao가 다른목적으로 다른 상속을 이미 사용하고 있다면?
+	- 상속 상하위 클래스 관계는 생각보다 너무 밀접
+		- 서브클래스가 슈퍼클래스 기능 여전히 사용 가능
+		- 슈퍼클래스 수정 시, 서브 클래스도 코드 수정소요
+	- 커넥션 생성 확장기능을 다른 Dao클래스에서 사용 X
+		- Dao클래스 추가시 구현 코드가 계속 중복
+
+
+
+- 클래스의 분리
+	- 하지만 N, D사의 UserDao 확장 시, UserDao클래스만 제공하고,
+	- 커넥션기능 각 업체별 구현 제공 불가능 해짐
+		- UserDao 코드 수정 없이 D사 구현 커넥션 제공 메소드 사용 불가능 (e.g. D사의 openConnection())
+		- DB커넥션을 제공하는 클래스가 뭔지 UserDao클래스가 알고 있어야 함!
+			- UserDao가 DB커넥션 가져오는 구체적인 방법에 종속 되어 버림
+
+```java
+package springbook.user.dao;
+
+public class SimpleConnectionMaker {
+	public Connection makeConnection() throws ClassNotFoundException, SQLException {
+		Class.forName("com.mysql.jdbc.Driver");
+		Connection c = DriverManger.getConnection(
+			"jdbc:mysql//localhost/springbook", "spring", "book");
+		return c;
+	}
+}
+```
+
+```java
+public class UserDao {
+	private SimpleConnectionMaker simpleConnectionMaker;
+
+	public UserDao() {
+		simpleConnectionMaker = new SimpleConnectionMaker();
+	}
+
+	public void add(User user) throws ClassNotFoundException, SQLException {
+		Connection c = simpleConnectionMaker.makeConnection();
+		// ...
+	}
+
+	public User get(String id) throws ClassNotFoundException, SQLException {
+		Connection c = simpleConnectionMaker.makeConnection();
+		// ...
+	}
+}
+```
+
+
+
+
+
+
+
+
+
+
 - 제어권의 이전을 통한 제어관계 역전
   - 사용 오브젝트 결정, 생성, 오브젝트 메소드 호출
   - 이런 흐름을 역전하여 자신이 사용할 오브젝트를 스스로 선택하거나 생성하지 않음
-  - 위임받은 제어 권한을 갖는 특벼한 오브젝트에 의해 결정되고 만들어지도록 함
+  - 위임받은 제어 권한을 갖는 특별한 오브젝트에 의해 결정되고 만들어지도록 함
 
 
 - `@RunWith`
@@ -215,3 +471,7 @@ CREATE TABLE users (
 - 템플릿과 콜백
   - 템플릿
   - 콜백: 실행 되는 것을 목적으로 다른 오브젝트 메소드에 전달되는 오브젝트
+
+
+
+
