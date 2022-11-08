@@ -45,14 +45,147 @@ CREATE TABLE USERS (
     - Connection, Statement, ResultSet 등 리소스는 close() 해준다
     - JDBC API가 만들어내는 exception을 직접 처리하거나 메소드에 throws 선언하여 메소드 밖으로 던짐
 
+
 ```java
+public class User {
+	private String id;
+	private String name;
+	private String passwordk;
+}
+```
+
+```java
+public class UserDao {
+	public void add(User user) throws ClassNotFoundException, SQLException {
+		Connection c = getConnection();
+		PreparedStatement ps = c.preparedStatement(
+			"insert into users(id, name, password) values(?,?,?)");
+		ps.setString(1, user.getId());
+		ps.setString(2,user.getName());
+		ps.setString(3, user.getPassword());
+		ps.executeUpdate();
+
+		ps.close();
+		c.close();
+	}
+
+	public User get(String id) throws ClassNotFoundException, SQLException {
+		Connection c = getConnection();
+		PreparedStatement ps = c.preparedStatement(
+			"select * from users where id=?");
+		ps.setString(1, id);
+
+		ResultSet rs = ps.executeQuery();
+		rs.next();
+		User user = new User();
+		user.setId(rs.getString("id"));
+		user.setName(rs.getString("name"));
+		user.setPassword(rs.getString("password"));
+
+		rs.close();
+		ps.close();
+		c.close();
+	}
+
+	public Connection getConnection throws ClassNotFoundException, SQLException {
+		Class.forName("com.mysql.jdbc.Driver");
+		Connection c = DriverManager.getConnection(
+			"jdbc:mysql://localhost/springbook", "spring", "book"
+		);
+		return c;
+	}
+}
 
 ```
 
 
 
 
+- 커넥션 만들기의 독립
+	- 템플릿 메소드 패턴: 슈퍼클래스에서 기본적인 로직흐름만들고
+	- 그 기능의 일부를 추상메소드나 오버라이딩가능한 protected 메소드로 만듦
+	- 팩토리 메소드 패턴 : 서브클래스에서 구체적인 오브젝트 생성방법 결정
+	- "UserDao에 팩토리 메소드 패턴을 적용해서 getConnection()을 분리"
+	- "디자인패턴": 소프트웨어 설계시 특정 상황에서 자주만나는
+		- 문제를 해결하기 위한 재사용 가능한 솔루션
 
+
+```
+UserDao [add(), get(), getConnection()]
+	ㄴNUserDao [getConnection()]
+	ㄴDUserDao [getConnection()]
+```
+
+```java
+public class UserDao {
+	public void add(User user) throws ClassNotFoundException, SQLException {
+		Connection c = getConnection();
+		PreparedStatement ps = c.preparedStatement(
+			"insert into users(id, name, password) values(?,?,?)");
+		ps.setString(1, user.getId());
+		ps.setString(2,user.getName());
+		ps.setString(3, user.getPassword());
+		ps.executeUpdate();
+
+		ps.close();
+		c.close();
+	}
+
+	public User get(String id) throws ClassNotFoundException, SQLException {
+		Connection c = getConnection();
+		PreparedStatement ps = c.preparedStatement(
+			"select * from users where id=?");
+		ps.setString(1, id);
+
+		ResultSet rs = ps.executeQuery();
+		rs.next();
+		User user = new User();
+		user.setId(rs.getString("id"));
+		user.setName(rs.getString("name"));
+		user.setPassword(rs.getString("password"));
+
+		rs.close();
+		ps.close();
+		c.close();
+	}
+
+	// 추상메소드-> 메소드구현은 서브클래스가 담당
+	// 또는 오버라이딩이 가능한 'protected' 메소드 정의
+	public abstract Connection getConnection throws ClassNotFoundException, SQLException;
+
+}
+```
+
+```java
+public class NUserDao extends UserDao{
+	// add, get은 상속됨
+
+	// N사의implementation
+	public Connection getConnection throws ClassNotFoundException, SQLException {
+		Class.forName("com.mysql.jdbc.Driver");
+		Connection c = DriverManager.getConnection(
+			"jdbc:mysql://localhost/springbook", "spring", "book"
+		);
+		return c;
+	}
+}
+```
+```java
+public class DUserDao extends UserDao{
+	// add, get은 상속됨
+
+	// D사의implementation
+	public Connection getConnection throws ClassNotFoundException, SQLException {
+		...
+	}
+
+}
+```
+
+- 상속의 한계점
+	- 다중상속 문제발생
+		- 만약 UserDao가 다른목적으로 다른 상속을 이미 사용하고 있다면?
+	- 상속 상하위 클래스 관계는 생각보다 너무 밀접
 
 
 
