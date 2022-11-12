@@ -477,5 +477,3 @@ CREATE TABLE users (
 
 
 
-
-
