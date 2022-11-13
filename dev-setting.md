@@ -48,6 +48,7 @@ IGNORE 1 ROWS;
 ### Mysql5.7 setup using docker
 
 - Install docker desktop (Win10)
+
 ```
 [NOTE] Docker를 설치하기 전에
   '작업관리자' > 성능 > 가상화 ('사용')에 사용안함 으로 설정되어 있다면
@@ -56,6 +57,7 @@ IGNORE 1 ROWS;
 ```
 
 - Docker CLI
+
 ``` sh
 # docker 설치여부 확인
 docker version
@@ -106,6 +108,7 @@ docker system prune
 ```
 
 - 데이터베이스 (스키마) 생성
+
 ```
 MYSQL을 docker로 실행(docker run)혹은 로컬 MYSQL Server가 실행된 상태에서
 MySQL workbench를 실행하려면 database를 만들어야 합니다.
@@ -123,8 +126,8 @@ Enter password: root
 ```
 
 ``` sql
-CREATE DATABASE /*!32312 IF NOT EXISTS*/STARPASS;
-USE STARPASS;
+CREATE DATABASE testdb;
+USE testdb;
 ```
 
 # Linux Volume control
@@ -141,11 +144,13 @@ amixer -D pulse sset Master toggle
 ```
 
 * check volume percentage
+* 
 ```commandline
 amixer get Master
 ```
 
 * play/pause/next/previous
+* 
 ```commandline
 rhythmbox-client --play-pause
 rhythmbox-client --previous
@@ -153,6 +158,7 @@ rhythmbox-client --next
 ```
 
 # Spring Tool Suite 4 plugins
+
 ```
 http://vrapper.sourceforge.net/update-site/stable
 https://eclipse-color-theme.github.io/update/
@@ -161,13 +167,16 @@ http://propedit.sourceforge.jp/eclipse/updates/
 ```
 
 # Applying .jar to application
+
 download tar.gz and do the following
+
 ```commandline
 sudo mkdir /opt/APP_NAME
 sudo tar -xzvf ide.tar.gz -C /opt/APP_NAME
 ```
 
 [How to move everything to parent directory](https://superuser.com/questions/88202/how-do-i-move-files-and-directories-to-the-parent-folder-in-linux/542214)
+
 ```commandline
 cd /opt/APP_NAME/APP_NAME_DUP
 sudo find . -maxdepth 1 -exec mv {} .. \;
@@ -191,6 +200,7 @@ cd /opt/APP_NAME/bin/ && ./APP_NAME.sh
 ```
 
 # APP_NAME create shortcut
+
 ```commandline
 sudo vim /usr/share/applications/APP_NAME.desktop
 ```

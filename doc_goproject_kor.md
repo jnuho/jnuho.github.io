@@ -3,6 +3,10 @@
 - [repository](https://github.com/jnuho/goproject)
 - [aws sdk for go](https://aws.amazon.com/sdk-for-go/)
 
+<div>
+<img src="assets/images/goproject.gif" height="60%" width="60%" alt="go sdk app">
+</div>
+
 ❚ 진행 배경
 - EC2 -> ECS 이관 및 생성 작업에 필요한, ECS, TG, ALB 등 자원조회 기능 필요
 - 자원 생성 시 stage 별 데이터 확인 필요하여 AWS Console 대신, SDK 활용

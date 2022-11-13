@@ -47,68 +47,6 @@ CREATE TABLE USERS (
 		- Connection, Statement, ResultSet 등 리소스는 close() 해준다
 		- JDBC API가 만들어내는 exception을 직접 처리하거나 메소드에 throws 선언하여 메소드 밖으로 던짐
 
-```java
-package springbook.user.dao;
-
-public class UserDao {
-
-	public void add(User user) throws ClassNotFoundException, SQLException {
-		Class.forName("com.mysql.jdbc.Driver");
-		Connection c = DriverManager.getConnection(
-			"jdbc:mysql//localhost/springbook", "spring", "book");
-		PreparedStatement ps = c.prepareStatement(
-			"insert into users(id, name, password) values(?,?,?)");
-		ps.setString(user.getId());
-		ps.setString(user.geName());
-		ps.setString(user.getPassword());
-		ps.executeUpdate();
-
-		ps.close();
-		c.close();
-	}
-
-	public User get(String id) throws ClassNotFoundException, SQLException {
-		Class.forName("com.mysql.jdbc.Driver");
-		Connection c = DriverManger.getConnection(
-			"jdbc:mysql//localhost/springbook", "spring", "book");
-		PreparedStatement ps = c.prepareStatement(
-			"select * from users where id = ?");
-		ps.setString(id);
-		ResultSet rs = ps.executeQuery();
-		rs.next();
-
-		User user = new User();
-		user.setId(rs.getString("id"));
-		user.setName(rs.getString("name"));
-		user.setPassword(rs.getString("password"));
-
-		rs.close();
-		ps.close();
-		c.close();
-
-		return user;
-	}
-
-	public static void main(String[] args) {
-		UserDao dao = new UserDao();
-
-		User user = new User();
-		user.setId("1");
-		user.setName("Bob");
-		user.setPassword("fooo");
-
-		dao.add(User);
-		System.out.Println(user.getId() + " 등록 성공");
-
-		User user2 = dao.get(user.getId());
-		System.out.Println("조회 성공: name=" + user2.getName());
-		System.out.Println("조회 성공: password=" + user2.getPassword());
-
-		System.out.Println(user.getId() + " 조회 성공");
-	}
-}
-
-```
 
 - DAO의 분리
 	- 애플리케이션 설계 변경에따른 영향도 최소화
@@ -117,11 +55,40 @@ public class UserDao {
 - UserDao의 관심사 (1. DB 커넥션, 2. DB Statement 실행, 3. 리소스 close())
 
 - 커넥션만들기 추출 getConnection()
+  - mysql-connector-java-8.0.29.jar 다운로드, classpath 추가
+
+```sh
+docker run -d -p 3306:3306 -e MYSQL_ROOT_PASSWORD=root --name mysql8 mysql:8.0 --lower_case_table_names=1
+docker exec -it CONTAINTER_ID sh
+
+> mysql -u root -p
+Enter password: root
+
+CREATE USER 'spring'@'%' IDENTIFIED BY 'book'; 
+GRANT ALL PRIVILEGES ON *.* TO 'spring'@'%';
+GRANT ALL PRIVILEGES ON springbook.* TO 'spring'@'%';
+# DROP USER 'spring'@'%';
+
+> exit
+> mysql -u spring -p
+Enter password: book
+
+> show databases;
+> CREATE DATABASE springbook;
+> USE springbook;
+
+> CREATE TABLE Users  (
+	id varchar(10) primary key,
+	name varchar(20) not null,
+	password varchar(10) not null
+)
+```
 
 ```java
 public class UserDao {
 	public void add(User user) throws ClassNotFoundException, SQLException {
 		Connection c = getConnection();
+		
 		PreparedStatement ps = c.prepareStatement(
 				"insert into users(id, name, password) values(?,?,?)");
 		ps.setString(user.getId());
@@ -135,9 +102,11 @@ public class UserDao {
 
 	public User get(String id) throws ClassNotFoundException, SQLException {
 		Connection c = getConnection();
+		
 		PreparedStatement ps = c.prepareStatement(
 				"select * from users where id = ?");
 		ps.setString(id);
+		
 		ResultSet rs = ps.executeQuery();
 		rs.next();
 
@@ -163,28 +132,43 @@ public class UserDao {
 }
 ```
 
+```java
+public class Main {
+	public static void main(String[] args) {
+		UserDao dao = new UserDao();
+
+		User user = new User();
+		user.setId("1");
+		user.setName("Bob");
+		user.setPassword("fooo");
+
+		dao.add(User);
+		System.out.Println(user.getId() + " 등록 성공");
+
+		User user2 = dao.get(user.getId());
+		System.out.Println("조회 성공: name=" + user2.getName());
+		System.out.Println("조회 성공: password=" + user2.getPassword());
+
+		System.out.Println(user.getId() + " 조회 성공");
+	}
+}
+```
 
 - 커넥션만들기 독립
+	- UserDao 코드 제공 시, 각 업체들이 getConnection() 자체 구현 DB 커넥션 코드 사용하려 함
+		- UserDao 개발자가 코드를 공개하지 않고 바이너리만 제공하고자 할때, 구현방법
+		- => 상속을 통한 확장 (class extends abstract class)
 	- UserDao 확장 클래스의 DB연결 인터페이스 제공: 상속(inheritance)
-	- 2개 업체-> UserDao 사용하여 각각 자체 구현 DB 커넥션 코드 사용 하려함
-	- UserDao 개발자는 getConnection() 코드를 공개하지 않을때 구현방법?
-
-- 커넥션 만들기의 독립
-	- 템플릿 메소드 패턴
-		- 슈퍼클래스에서 기본적인 로직흐름만들고
-		- 서브클래스에서 그 기능의 일부를 추상메소드나 오버라이딩가능한 protected 메소드로 만듦
-	- 팩토리 메소드 패턴 : 서브클래스에서 구체적인 오브젝트 생성방법 결정
-		- "UserDao에 팩토리 메소드 패턴을 적용해서 getConnection()을 분리"
-		- "디자인패턴": 소프트웨어 설계시 특정 상황에서 자주만나는
-			- 문제를 해결하기 위한 재사용 가능한 솔루션
-
 
 - 템플릿 메소드 패턴
-	- 서브 클래스에서 오버라이드
+	- 슈퍼클래스에서 기본적인 로직 흐름 만들고
+	- 서브클래스에서 그 기능의 일부를 추상메소드나 오버라이딩 가능한 protected 메소드로 만드는 방법
 	- `protectded void hookMethod() {}`: 선택적으로 오버라이드
 	- `public abstract void abstractMethod() {}`: 반드시 오버라이드
 
-- 팩토리메소드 패턴
+- 팩토리 메소드 패턴 : 서브클래스에서 구체적인 오브젝트 생성방법 결정
+	- "UserDao에 팩토리 메소드 패턴을 적용해서 getConnection()을 분리"
+	- "디자인패턴": 소프트웨어 설계시 특정 상황에서 자주만나는 문제를 해결하기 위한 재사용 가능한 솔루션
 	- 객체 생성방법을 결정하고, 그렇게 만들어진 오브젝트를 돌려주는 오브젝트
 	- UserDao, ConnectionMaker: 애플리케이션의 핵심적인 데이터 로직과 기술 로직
 	- DaoFactory:  애플리케이션의 오브젝트들을 구성하고 그 관계를 정의
@@ -241,7 +225,7 @@ public class NUserDao extends UserDao{
 	// add, get은 상속됨
 
 	// N사의implementation
-	public Connection getConnection throws ClassNotFoundException, SQLException {
+	public Connection getConnection() throws ClassNotFoundException, SQLException {
 		Class.forName("com.mysql.jdbc.Driver");
 		Connection c = DriverManager.getConnection(
 			"jdbc:mysql://localhost/springbook", "spring", "book"
@@ -251,16 +235,36 @@ public class NUserDao extends UserDao{
 }
 ```
 
+
+- 추상클래스의 getConnection() 이 protected 메소드라면,
+  - @Override 어노테이션으로 getConnection() 오버라이드
+
 ```java
 public class DUserDao extends UserDao{
 	// add, get은 상속됨
 
 	// D사의implementation
-	public Connection getConnection throws ClassNotFoundException, SQLException {
-		...
+	public Connection getConnection() throws ClassNotFoundException, SQLException {
+		//...
 	}
 
 }
+```
+
+- `abstract`와 `protected` 차이점
+
+```
+abstract 메소드는 abstract 로 선언된 클래스의 구현부를 일부러 비어놓아서,
+그것을 상속하는 클래스는 반드시 해당 메소드를 구현해주어야 하는 방식이다.
+부모클래스는 그자체로는 존재 할수 없고, 단지 추상적인 개념일 뿐이다.
+제 세상에 태어나는(instance)것은  자식 클래스에 의해서 이루어 지기 때문에, 
+자식 클래스는 반드시 abstract를 구현해야만 한다.
+
+이에 반해 protected로 구현된 메소드는 반드시 자식클래스가 Override를 해야 할 필요가 없다.
+대부분의 경우에는 상속하는 클래스가 직접 구현할 필요는 없지만,
+그래도 특수한 상황에서는 protected로 선언된 메소드는 override해서 처리해야 할 수도 있음을
+유저에게 알려주는 것이다. 즉 protected는 클래스 상속을 하는 개발자에게 주의를 주는 방식인 셈이다.
+(abtraction은 override를 강제하는 구조라고 볼 수 있다)
 ```
 
 - 상속의 한계점
@@ -272,11 +276,10 @@ public class DUserDao extends UserDao{
 	- 커넥션 생성 확장기능을 다른 Dao클래스에서 사용 X
 		- Dao클래스 추가시 구현 코드가 계속 중복
 
-
-
 - 클래스의 분리
+	- DB 커넥션 제공하는 클래스 정의
 	- 하지만 N, D사의 UserDao 확장 시, UserDao클래스만 제공하고,
-	- 커넥션기능 각 업체별 구현 제공 불가능 해짐
+	- 커넥션기능 각 업체별 구현 제공 불가능 해짐 (처음 문제로 복귀)
 		- UserDao 코드 수정 없이 D사 구현 커넥션 제공 메소드 사용 불가능 (e.g. D사의 openConnection())
 		- DB커넥션을 제공하는 클래스가 뭔지 UserDao클래스가 알고 있어야 함!
 			- UserDao가 DB커넥션 가져오는 구체적인 방법에 종속 되어 버림
@@ -315,19 +318,165 @@ public class UserDao {
 ```
 
 
+- 인터페이스의 도립
+  - 두개 클래스가 긴밀하게 연결되어 있지 않도록 중간에 추상적인 느슨한 연결고리 정의
 
 
+```java
+package springbook.user.dao;
+
+public interface ConnectionMaker{
+	public Connection makeConnection() throws ClassNotFoundException, SQLException;
+}
+```
+
+```java
+package springbook.user.dao;
+
+public class DConnectionMaker implements ConnectionMaker {
+	public Connection makeConnection() throws ClassNotFoundException, SQLException {
+		Class.forName("com.mysql.jdbc.Driver");
+		Connection c = DriverManger.getConnection(
+				"jdbc:mysql//localhost/springbook", "spring", "book");
+		return c;
+	}
+}
+```
+
+```java
+package springbook.user.dao;
+
+public class NConnectionMaker implements ConnectionMaker {
+	public Connection makeConnection() throws ClassNotFoundException, SQLException {
+		Class.forName("com.mysql.jdbc.Driver");
+		Connection c = DriverManger.getConnection(
+		"jdbc:mysql//localhost/springbook", "spring", "book");
+		return c;
+	}
+}
+```
+
+- 인터페이스 사용시 문제점
+  - UserDao에서 커넥션을 만들때 인터페이스는 초기화 불가능하여 D사의 커넥션메이커 사용함
+  - 구체적인 클래스까지 알아야하는 문제 발생. DB커넥션 기능의 확장이 자유롭지 못함
+  - UserDao는 독립적으로 확장가능한 클래스로서 역할 못하게 됨
+  - UserDao에는 어떤 ConnectionMaker 구현클래스를 사용할지를 결정하는 코드가 남아있음
+  - 생성자에서 오브젝트를 정의하는것이 아닌, 외부에서 래퍼런스를 받아서 사용도 가능
+
+```java
+package springbook.user.dao;
+
+public class UserDao {
+
+	private ConnectionMaker connectionMaker;
+	public UserDao() {
+		connectionMaker = new DConnectionMaker();
+	}
+}
+```
 
 
+- 관계설정 책임의 분리
+
+```java
+public class UserDao {
+
+	private ConnectionMaker connectionMaker;
+
+	public UserDao(ConnectionMaker connectionMaker) {
+		this.connectionMaker = connectionMaker;
+	}
+}
+```
+```java
+public class Main {
+	public static void main(String[] args) throws ClassNotFoundException, SQLException {
+		// ...
+		ConnectionMaker connectionMaker = new DConnectionMaker();
+		UserDao dao = new UserDao(connectionMaker);
+		dao.add(user);
+		// ...
+	}
+
+}
+```
+
+- 객체지향 설계 원칙 SOLID
+	- 단일 책임원칙
+	- 개발 폐쇄 원칙
+	- 리스코프 치환 원칙
+	- 인터페이스 분리 원칙
+	- 의존관계 역전 원칙
+
+- 원칙과 패턴
+	- 개방 폐쇄 원칙
+	- 높은 응집도
+	- 낮은 결합도
+	- 전략 패턴
 
 
+- 제어의 역전
+  - 오브젝트 팩토리
+  - 팩토리: 객체생성 방법 결정하고 그렇게 만들어진 오브젝트 반환하는 일을하는 오브젝트
+
+```java
+public class UserDaoTest {
+
+	public static void main(String[] args) throws ClassNotFoundException, SQLException {
+		// UserDaoTest가 어떤 커넥션클래스를 사용할지 결정하는 기능까지 떠안게됨!
+		ConnectionMaker connectionMaker = new DConnectionMaker();
+		UserDao dao = new UserDao(connectionMaker);
+		dao.add(user);
+		//...
+	}
+}
+```
+
+- DaoFactory가 UserDao, ConnectionMaker 생성작업 하도록 수정
+	- UserDao는 바이너리, DaoFactory는 코드로 제공. (세부 구현코드는 숨길 수 있음)
+	- 애플리케이션 컴포넌트, 애플리케이션 구조결정 오브젝트를 분리!
+
+```java
+package springbook.user.dao;
+
+public class DaoFactory {
+
+	public UserDao userDao() {
+		return new UserDao(connectionMaker());
+	}
+
+//	public AccountDao userDao() {
+//		return new AccountDao(connectionMaker());
+//	}
+//	public MessageDao userDao() {
+//		return new MessageDao(connectionMaker());
+//	}
+
+	public ConnectionMaker connectionMaker() {
+		return new DConnectionMaker();
+	}
+}
+```
+
+```java
+public class UserDaoTest {
+	
+	public static void main(String[] args) throws ClassNotFoundException, SQLException {
+		UserDao dao = new DaoFactory().userDao();
+		dao.add(user);
+		System.out.println(user.getId() + " 등록성공");
+	}
+	
+}
+```
 
 
 - 제어권의 이전을 통한 제어관계 역전
-  - 사용 오브젝트 결정, 생성, 오브젝트 메소드 호출
-  - 이런 흐름을 역전하여 자신이 사용할 오브젝트를 스스로 선택하거나 생성하지 않음
-  - 위임받은 제어 권한을 갖는 특별한 오브젝트에 의해 결정되고 만들어지도록 함
-
+	- main()에서 사용 오브젝트 결정, 생성, 오브젝트 메소드 호출 (모든작업을 사용하는 쪽에서 제어)
+	- 이런 흐름을 역전하여 자신이 사용할 오브젝트를 스스로 선택하거나 생성하지 않음
+	- 위임받은 제어 권한을 갖는 특별한 오브젝트에 의해 결정되고 만들어지도록 함
+	- UserDao가 가지고있던 어떤 ConnectionMaker 만들고 사용할지에 대한 권한을 DaoFactory에 넘김
+	- UserDao도 DaoFactory에 의해 수정적으로 만들어지고, 자신이 사용할 오브젝트도 DaoFactory가 공급
 
 - `@RunWith`
     - 다른 프레임워크와 test 컨텍스트를 통합하여 사용하거나
@@ -335,18 +484,19 @@ public class UserDao {
     - JUnit 5에서는 `@ExtendWith` 사용
 
 - 스프링 IOC
-  - 스프링 빈:
-    - 스프링이 제어권을 가지고 직접 만들고 관계를 부여하는 오브젝트
-    - 오브젝트 단위의 애플리케이션 컴포넌트
-    - 스프링 컨테이너가 생성과 관계설정, 사용 등을 제어해주는 제어의 역전이 적용된 오브젝트
-    - `@Bean` : 오브젝트 생성을 담당하는 IoC용 메소드에 추가
-      - 빈의 이름 : getBean("메소드명"). @Bean 붙힌 메소드명
-      - 빈의 클래스 : 빈 오브젝트를 어떤 클래스를 이용해서 만들지 정의
-      - 빈의 의존 오브젝트 : 빈의 생성자나 수정자 메소드를 통해 의존 오브젝트 넣어줌
-    - `@Configuration` 애플리케이션 컨텍스트 또는 빈팩토리가 사용할 설정정보
-      - 빈팩토리를 위한 오브젝트 설정을 담당하는 클래스
-  - 빈팩토리 : 빈의 생성과 관계설정 제어 담당하는 IoC 오브젝트
-  - 빈팩토리 vs. 어플리케이션 컨텍스트(IoC방식을 따라 만들어진 일종의 빈팩토리)
+  - 애플리케이션 컨텍스트: IOC 방식을 따라 만들어진 빈 팩토리
+	- 스프링 빈:
+		- 스프링이 제어권을 가지고 직접 만들고 관계를 부여하는 오브젝트
+		- 오브젝트 단위의 애플리케이션 컴포넌트
+		- 스프링 컨테이너가 생성과 관계설정, 사용 등을 제어해주는 제어의 역전이 적용된 오브젝트
+		- `@Bean` : 오브젝트 생성을 담당하는 IoC용 메소드에 추가
+			- 빈의 이름 : getBean("메소드명"). @Bean 붙힌 메소드명
+			- 빈의 클래스 : 빈 오브젝트를 어떤 클래스를 이용해서 만들지 정의
+			- 빈의 의존 오브젝트 : 빈의 생성자나 수정자 메소드를 통해 의존 오브젝트 넣어줌
+		- `@Configuration` 애플리케이션 컨텍스트 또는 빈팩토리가 사용할 설정정보
+			- 빈팩토리를 위한 오브젝트 설정을 담당하는 클래스
+	- 빈팩토리 : 빈의 생성과 관계설정 제어 담당하는 IoC 오브젝트
+	- 빈팩토리 vs. 어플리케이션 컨텍스트(IoC방식을 따라 만들어진 일종의 빈팩토리)
 
 - 자바 싱글톤 패턴
   - new DaoFactory().userDao() vs. 어플리케이션 컨텍스트의 의존관계 검색에 의한 UserDao객체 생성
