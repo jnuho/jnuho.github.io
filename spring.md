@@ -525,7 +525,7 @@ public class DaoFactory {
 ```
 
 - DaoFactory를 사용하는 애플리케이션 컨텍스트
-  - AnnotationConfigApplicationContext: DaoFactory 같이 @Configuration붙은 자바코드를 설정정보로 사용하기 위함
+  - AnnotationConfigApplicationContext: DaoFactory 같이 @Configuration 붙은 자바코드를 설정정보로 사용하기 위함
 
 ```java
 import org.springframework.context.ApplicationContext;
@@ -559,8 +559,44 @@ public class UserDaoTest {
 ```
 
 - 애플리케이션 컨텍스트의 동작방식
-  - 오브젝트 팩토리 vs. 애플리케이션 컨텍스트(IoC 컨테이너/빈팩토리)
+  - 오브젝트 팩토리 vs. 애플리케이션 컨텍스트 (IoC 컨테이너/빈팩토리)
+  - DaoFactory 는 DAO 오브젝트 생성하고, DB 생성 오브젝트와 관계 맺어주는 등 제한적 역할
+  - 애플리케이션 컨텍스트는 애플리에키션에서 IoC를 적용해, 관리할 모든 오브젝트에 대한
+    - 생성과 관계설정 담당. DaoFactory와 달리, 직접 오브젝트를 생성하고 관계를
+    - 맺어주는 코드가 없고, 그런 생성정보와 연관관계 정보를 별도의 설정정보를 통해 얻는다.
 
+- 스프링 IoC 용어 정리
+  - 빈: 스프링이 IoC방식으로 관리하는 오브젝트
+  - 빈팩토리: 스프링 IoC담당 컨테이너. 빈 등록/생성/조회
+  - 애플리케이션 컨텍스트: 빈팩토리를 확장한 IoC 컨테이너. 빈의 관리 기능 외에도, 스프링 제공 부가기능 담당.
+  - 설정정보/ 설정 메타정보
+  - 컨테이너 또는 IoC 컨테이너: IoC 방식으로 빈을 관리 함 (== 애플리케이션 컨텍스트 / 빈팩토리)
+  - 스프링 프레임워크: IoC 컨테이너, 애플리케이션 컨텍스트를 포함해서, 스프링이 제공하는 모든 기능을 통틀어 말함.
+
+- 싱글톤 레지스트리와 오브젝트 스코프
+  - 스프링은 기본적으로 별다른 설정을 하지 않으면 내부에서 생성 되는 빈 오브젝트를 모두 싱글톤으로 만듦.
+
+```java
+// 서로 다른 오브젝트 2개 생성됨 (오브젝트 주소 다름)
+DaoFactory factory = new DaoFactory();
+UserDao dao1 = factory.userDao();
+UserDao dao2 = factory.userDao();
+
+// dao1 != dao2
+System.out.println(dao1);
+System.out.println(dao2);
+```
+
+```java
+// 오브젝트 1개만 생성됨 (오브젝트 주소 같음)
+ApplicationContext context = new AnnotationConfigApplicationContext(DaoFactory.class);
+UserDao dao3 = context.getBean("userDao", UserDao.class);
+UserDao dao4 = context.getBean("userDao", UserDao.class);
+
+// dao3 == dao4
+System.out.println(dao3);
+System.out.println(dao4);
+```
 
 - 자바 싱글톤 패턴
   - new DaoFactory().userDao() vs. 어플리케이션 컨텍스트의 의존관계 검색에 의한 UserDao객체 생성
