@@ -10,7 +10,7 @@ public class DaoFactory {
 
 	@Bean
 	public UserDao userDao() {
-		return new UserDao();
+		return new UserDao(connectionMaker());
 	}
 
 //	public AccountDao userDao() {
