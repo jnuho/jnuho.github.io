@@ -722,6 +722,7 @@ public class UserDao {
   - dependency lookup
 
 - 차이점
+	- 런타임시, 의존관계 맺을 오브젝트를 메소드나 생성자를 통한 주입이 아닌, 스스로 컨테이너에게 요청
   - DI를 원하는 오브젝트는 먼저 자기 자신이 컨테이너가 관리하는 빈이 되어야 함
   - 의존관계 검색 방식에서는 검색하는 오브젝트는 자신이 스프링의 빈일 필요가 없음 e.g. UserDao
   - ConnectionMaker만 스프링빈이면 됨
@@ -729,6 +730,45 @@ public class UserDao {
   - DI방법을 좀더 선호. 다만 static 메소드인 main에서는 의존성 검색 필요
   - 사용자 요청을 받을 때 마다 이런식의 구현이 필요하지만, 스프링이 서블릿으로 제공
   - UserDao는 ConnectionMaker에만 의존
+
+1. DaoFactory 이용한 UserDao 생성자 (의존관계 검색)
+
+```java
+public UserDao() {
+	DaoFactory daoFactory = new DaoFactory();
+	this.connectionMaker = daoFactory.connectionMaker();
+}
+```
+
+2. 의존관계 검색을 이용하는 UserDao 생성자 (의존관계 검색)
+
+```java
+public UserDao() {
+	AnnotationConfigApplicationContext context
+		= new AnnotationConfigApplicationContext(DaoFactory.class);
+	this.connectionMaker = context.getBean("connectionMaker", ConnectionMaker.class);
+}
+```
+
+```java
+
+public static void main(String[] args) throws ClassNotFoundException, SQLException{
+	// 의존관계 주입대신, 검색사용
+	// static 메소드인 main에 DI를 통해 오브젝트 주입받을 수 없기때문에 '의존관계 검색' 사용
+	ApplicationContext context=new AnnotationConfigApplicationContext(DaoFactory.class);
+	UserDao dao=context.getBean("userDao",UserDao.class);
+}
+
+```
+
+- 의존관계 주입의 응용
+  - UserDao는 ConnectionMaker 인터페이스에만 의존하므로, 커넥션연결 카운트 횟수계산기능 추가가능
+  - DaoFactory만 수정해서 ConnectionMaker 구현클래스 DConnectionMaker 수정하거나 신규 구현클래스 CountingConnectionMaker 를 사용하도록 DaoFactory 코드를 수정하면 됨.
+
+```java
+```
+
+
 
 - 메소드를 이용한 DI
   - 수정자 메소드 setter
@@ -791,3 +831,11 @@ DataSource dataSource;
 	- JUnit 4 테스트케이스 실행 플로우를 변경하기 위해 사용
 	- JUnit 5에서는 `@ExtendWith` 사용
 
+- WAS
+	- 사용자-> Service(비즈니스로직) -> DAO (DB연결하고 쿼리전송) -> Model(DTO: 자바빈)
+																			DAO -> Mybatis/Mapper
+																			DAO -> DB
+
+![image info](./assets/images/was.png)
+
+<br>

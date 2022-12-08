@@ -14,15 +14,15 @@ public class UserDao {
 
 	// 매번 새로운 값으로 바뀌는 정보를 담은 인스턴스 변수
 	// : 멀티스레드 환경에서 사용하면 심각한 문제가 발생한다!
-	private Connection c;
-	private User user;
+	//	private Connection c;
+	//	private User user;
 
 	public UserDao(ConnectionMaker connectionMaker) {
 		this.connectionMaker = connectionMaker;
 	}
 
 	public void add(User user) throws ClassNotFoundException, SQLException {
-		this.c = connectionMaker.getConnection();
+		Connection c = connectionMaker.getConnection();
 		PreparedStatement ps = c.prepareStatement(
 				"insert into users(id, name, password) values(?,?,?)");
 
@@ -38,7 +38,7 @@ public class UserDao {
 	}
 
 	public User get(String id) throws ClassNotFoundException, SQLException {
-		this.c = connectionMaker.getConnection();
+		Connection c = connectionMaker.getConnection();
 		PreparedStatement ps = c.prepareStatement(
 				"select * from users where id=?");
 		ps.setString(1, id);
@@ -46,10 +46,10 @@ public class UserDao {
 		ResultSet rs = ps.executeQuery();
 		rs.next();
 
-		this.user = new User();
-		this.user.setId(rs.getString("id"));
-		this.user.setName(rs.getString("name"));
-		this.user.setPassword(rs.getString("password"));
+		User user = new User();
+		user.setId(rs.getString("id"));
+		user.setName(rs.getString("name"));
+		user.setPassword(rs.getString("password"));
 
 		rs.close();
 		ps.close();
