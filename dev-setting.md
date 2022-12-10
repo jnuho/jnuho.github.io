@@ -762,17 +762,15 @@ pdftk input.pdf cat 5-420 output output.pdf
 
 # add(+) or remove(-) margins
 # 'Left Top Right Bottom'
+pdfcrop --margins '-24 -20 -24 -12' tobi1.pdf tobi1_cr.pdf
+pdfcrop --margins '-24 -20 -24 -12' tobi2.pdf tobi2_cr.pdf
+
 pdfcrop --margins '-60 -60 -60 -15' JPA.pdf JPA_cr.pdf
 pdftk A=JPA_cr.pdf cat Aodd output JPA_odd.pdf
 pdftk A=JPA_cr.pdf cat Aeven output JPA_even.pdf
 pdfcrop --margins '0 0 -15 -10' JPA_odd.pdf JPA_odd_cr.pdf
 pdfcrop --margins '-13 0 0 -10' JPA_even.pdf JPA_even_cr.pdf
 pdftk A=JPA_odd_cr.pdf B=JPA_even_cr.pdf shuffle A B output JPA_final.pdf
-
-
-
-pdfcrop --margins '0 -20 0 -5' 토비1_cr.pdf 토비1_crcr.pdf
-pdfcrop --margins '0 -20 0 -5' 토비2_cr.pdf 토비2_crcr.pdf
 ```
 
 - 맥에서 만든 zip파일 한글깨짐
@@ -781,8 +779,6 @@ pdfcrop --margins '0 -20 0 -5' 토비2_cr.pdf 토비2_crcr.pdf
 ```sh
 unzip -O cp949 filename.zip -d filename
 ```
-
-
 
 - pdf 홀짝으로 나눠서 각각 수정 후 merge
 
