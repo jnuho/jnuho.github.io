@@ -762,8 +762,13 @@ pdftk input.pdf cat 5-420 output output.pdf
 
 # add(+) or remove(-) margins
 # 'Left Top Right Bottom'
-pdfcrop --margins '12 10 12 10' input.pdf output.pdf
-pdfcrop --margins '-25 -20 -25 -5' 트러블슈팅.pdf 트러블슈팅_cr.pdf
+pdfcrop --margins '-60 -60 -60 -15' JPA.pdf JPA_cr.pdf
+pdftk A=JPA_cr.pdf cat Aodd output JPA_odd.pdf
+pdftk A=JPA_cr.pdf cat Aeven output JPA_even.pdf
+pdfcrop --margins '0 0 -15 -10' JPA_odd.pdf JPA_odd_cr.pdf
+pdfcrop --margins '-13 0 0 -10' JPA_even.pdf JPA_even_cr.pdf
+pdftk A=JPA_odd_cr.pdf B=JPA_even_cr.pdf shuffle A B output JPA_final.pdf
+
 
 
 pdfcrop --margins '0 -20 0 -5' 토비1_cr.pdf 토비1_crcr.pdf
