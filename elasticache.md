@@ -10,7 +10,7 @@
 
 <!-- ![elasticache_and_ec2](https://docs.aws.amazon.com/AmazonElastiCache/latest/mem-ug/images/ElastiCache-inVPC-AccessedByEC2-SameVPC.png) -->
 
-![diagram](https://d2cg24p20j4o18.cloudfront.net/playvote/000/20210819/82331f92-bc8c-403e-a1d1-5d51bc6fec79.jpg)
+![diagram](./assets/images/aws_architecture.jpg)
 
 - 인프라 구축 테스트
   1. [VPC](#vpc)
