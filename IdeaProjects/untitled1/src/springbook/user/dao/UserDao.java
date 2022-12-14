@@ -12,14 +12,14 @@ public class UserDao {
 	// UserDao의 connectionMaker 인스턴스 필드에 저장됨!
 	private ConnectionMaker connectionMaker;
 
+	public void setConnectionMaker(ConnectionMaker connectionMaker) {
+		this.connectionMaker = connectionMaker;
+	}
+
 	// 매번 새로운 값으로 바뀌는 정보를 담은 인스턴스 변수
 	// : 멀티스레드 환경에서 사용하면 심각한 문제가 발생한다!
 	//	private Connection c;
 	//	private User user;
-
-	public UserDao(ConnectionMaker connectionMaker) {
-		this.connectionMaker = connectionMaker;
-	}
 
 	public void add(User user) throws ClassNotFoundException, SQLException {
 		Connection c = connectionMaker.getConnection();

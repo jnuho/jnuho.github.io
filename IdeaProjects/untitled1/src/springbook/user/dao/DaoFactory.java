@@ -10,15 +10,10 @@ public class DaoFactory {
 
 	@Bean
 	public UserDao userDao() {
-		return new UserDao(connectionMaker());
+		UserDao userDao = new UserDao();
+		userDao.setConnectionMaker(connectionMaker());
+		return userDao;
 	}
-
-//	public AccountDao userDao() {
-//		return new AccountDao(connectionMaker());
-//	}
-//	public MessageDao userDao() {
-//		return new MessageDao(connectionMaker());
-//	}
 
 	@Bean
 	public ConnectionMaker connectionMaker() {

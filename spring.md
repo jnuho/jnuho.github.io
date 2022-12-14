@@ -76,7 +76,7 @@ Enter password: book
 	ID VARCHAR(10) PRIMARY KEY,
 	NAME VARCHAR(20) NOT NULL,
 	PASSWORD VARCHAR(10) NOT NULL
-)
+);
 ```
 
 ```java
@@ -765,7 +765,12 @@ public static void main(String[] args) throws ClassNotFoundException, SQLExcepti
   - UserDao는 ConnectionMaker 인터페이스에만 의존하므로, 커넥션연결 카운트 횟수계산기능 추가가능
   - DaoFactory만 수정해서 ConnectionMaker 구현클래스 DConnectionMaker 수정하거나 신규 구현클래스 CountingConnectionMaker 를 사용하도록 DaoFactory 코드를 수정하면 됨.
 
-```java
+```xml
+<beans>
+	<bean></bean>
+	
+</beans>
+
 ```
 
 
@@ -774,8 +779,48 @@ public static void main(String[] args) throws ClassNotFoundException, SQLExcepti
   - 수정자 메소드 setter
   - 일반 메소드
 
+```java
+public class UserDao {
+
+	// 초기에 설정하면  사용 중에는 바뀌지 않는 읽기 전용 인스턴스 변수
+	// DaoFactory에서 @Bean을 붙여 만들었기 때문에, 스프링이 관리하는 빈이 됨
+	// 별다른 설정 없다면, 기본적으로 싱글톤 오브젝트 한개만 만들어져,
+	// UserDao의 connectionMaker 인스턴스 필드에 저장됨!
+	private ConnectionMaker connectionMaker;
+
+	public void setConnectionMaker(ConnectionMaker connectionMaker) {
+		this.connectionMaker = connectionMaker;
+	}
+	//...
+}
+```
+
+```java
+package springbook.user.dao;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+// 애플리케이션 컨텍스트 또는 빈 팩토리가 사용할 설정정보 라는 표시
+@Configuration
+public class DaoFactory {
+
+	@Bean
+	public UserDao userDao() {
+		UserDao userDao = new UserDao();
+		userDao.setConnectionMaker(connectionMaker());
+		return userDao;
+	}
+
+	@Bean
+	public ConnectionMaker connectionMaker() {
+		return new DConnectionMaker();
+	}
+}
+```
+
 - XML을 이용한 설정
-  - DaoFactory의 bean인 userDao와 makeConnection을 xml로 대체가능
+  - DaoFactory의 @Bean인 zzuserDao와 makeConnection을 xml로 대체가능
 
 |자바 코드 설정정보 | XML 설정정보
 ---|---|---
@@ -792,7 +837,12 @@ public static void main(String[] args) throws ClassNotFoundException, SQLExcepti
     - ApplicationContext 빈을 가져올 필요없이 UserDao를 자동와이어링 가능
     - 같은타입의 빈이 2개이상이면 자동와이어링 불가능
     
-``` java
+
+
+
+
+
+```java
 @Autowired
 SimpleDriverDataSource simpleDataSource;
 
