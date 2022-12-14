@@ -765,15 +765,6 @@ public static void main(String[] args) throws ClassNotFoundException, SQLExcepti
   - UserDao는 ConnectionMaker 인터페이스에만 의존하므로, 커넥션연결 카운트 횟수계산기능 추가가능
   - DaoFactory만 수정해서 ConnectionMaker 구현클래스 DConnectionMaker 수정하거나 신규 구현클래스 CountingConnectionMaker 를 사용하도록 DaoFactory 코드를 수정하면 됨.
 
-```xml
-<beans>
-	<bean></bean>
-	
-</beans>
-
-```
-
-
 
 - 메소드를 이용한 DI
   - 수정자 메소드 setter
@@ -828,6 +819,23 @@ public class DaoFactory {
 빈 이름 | @Bean methodName() | `<bean id="methodName">`
 빈 클래스 | return new BeanClass() | `class="a.b.c...BeanClass`
 
+
+- ```src/applicationContext.xml```
+
+```xml
+<beans>
+	<bean id="connectionMaker" class="springbook.user.dao.DConnectionMaker" />
+	<bean id="userDao" class="springbook.user.dao.UserDao">
+	</bean>
+
+</beans>
+
+```
+
+
+
+
+
 - @Autowired
   - 테스트 컨텍스트 프레임워크는 변수타입과 일치하는 컨텍스트 내의 빈을 찾는다.
   - 타입일치 빈이 있으면 인스턴스 변수에 주입 (타입에 의한 자동 와이어링)
@@ -837,10 +845,6 @@ public class DaoFactory {
     - ApplicationContext 빈을 가져올 필요없이 UserDao를 자동와이어링 가능
     - 같은타입의 빈이 2개이상이면 자동와이어링 불가능
     
-
-
-
-
 
 ```java
 @Autowired
