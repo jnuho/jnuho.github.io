@@ -10,11 +10,10 @@ import java.sql.SQLException;
 
 public class UserDaoTest {
 
-	public static void main(String[] args) throws ClassNotFoundException, SQLException {
-//		ApplicationContext context = new AnnotationConfigApplicationContext(DaoFactory.class);
-//		UserDao dao = context.getBean("userDao", UserDao.class);
-//		ApplicationContext context = new ClassPathXmlApplicationContext("daoContext.xml", UserDao.class);
-		// "springbook/user/dao/daoContext.xml"
+//	public static void main(String[] args) throws ClassNotFoundException, SQLException {
+
+//	@Test
+	public void addAndGet() throws ClassNotFoundException, SQLException {
 		ApplicationContext context = new GenericXmlApplicationContext("applicationContext.xml");
 		UserDao dao = context.getBean("userDao", UserDao.class);
 

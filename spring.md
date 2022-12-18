@@ -820,21 +820,111 @@ public class DaoFactory {
 빈 클래스 | return new BeanClass() | `class="a.b.c...BeanClass`
 
 
-- ```src/applicationContext.xml```
+- XML로 정의 : src/applicationContext.xml
+  - DaoFactory 대체
 
 ```xml
 <beans>
-	<bean id="connectionMaker" class="springbook.user.dao.DConnectionMaker" />
+	<bean id="connectionMaker" class="springbook.user.dao.DConnectionMaker"/>
+
 	<bean id="userDao" class="springbook.user.dao.UserDao">
+		<property name="connectionMaker" ref="connectionMaker" />
 	</bean>
 
 </beans>
+```
 
+- local/test/production 환경에서의 활용
+
+```xml
+<beans>
+	<bean id="localDBConnectionMaker" class="springbook.user.dao.LocalDBConnectionMaker" />
+	<bean id="testDBConnectionMaker" class="springbook.user.dao.TestDBConnectionMaker" />
+	<bean id="prdDBConnectionMaker" class="springbook.user.dao.PrdDBConnectionMaker" />
+	
+	<bean id="userDao" class="springbook.user.dao.UserDao">
+		<property name="connectionMaker" ref="localDBConnectionMaker"/>
+	</bean>
+</beans>
+```
+
+- 자바제공 DataSource 인터페이스로 대체적용하기
+
+```java
+package javax.sql;
+
+import java.sql.SQLException;
+
+public interface DataSource extends CommonDataSource, Wrapper {
+	Connection getConnection() throws SQLException;
+}
+```
+
+```java
+import javax.sql.DataSource;
+import java.sql.SQLException;
+
+public class UserDao {
+	private DataSource dataSource;
+
+	public void setDataSource(DataSource dataSource) {
+		this.dataSource = dataSource;
+	}
+
+	public void add(User user) throws SQLException {
+		Connection c = dataSource.getConnection();
+		// ...
+	}
+}
+```
+
+- DaoFactory에 userDao 빈과 dataSource빈 메소드를 수정
+
+```java
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+public class DaoFactory {
+	SimpleDriverDataSource dataSource = new SimpleDriverDataSource();
+
+	@Bean
+	public UserDao userDao() {
+		UserDao userDao = new UserDao();
+		userDao.setDataSource(dataSource());
+		return userDao;
+	}
+
+	@Bean
+	public DataSource dataSource() {
+		SimpleDriverDataSource dataSource = new SimpleDriverDataSource();
+		dataSource.setDriverClass(com.mysql.jdbc.Driver.class);
+		dataSource.setUrl("jdbc:mysql://localhost/springbook");
+		dataSource.setUsername("spring");
+		dataSource.setPassword("book");
+
+		return dataSource;
+	}
+}
 ```
 
 
+- SimpleDataSource를 XML방식으로 빈생성 및 DI하기
 
-
+```xml
+<beans xmlns="http://www.springframework.org/schema/beans"
+			 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			 xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+	<bean id="dataSource" class="org.springframework.jdbc.datasource.SimpleDriverDataSource" >
+		<property name="driverClass" value="com.mysql.jdbc.Driver" />
+		<property name="url" value="jdbc:mysql://localhost/springbook" />
+		<property name="username" value="spring" />
+		<property name="password" value="book" />
+	</bean>
+	<bean id="userDao" class="springbook.user.dao.UserDao">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+</beans>
+```
 
 - @Autowired
   - 테스트 컨텍스트 프레임워크는 변수타입과 일치하는 컨텍스트 내의 빈을 찾는다.
@@ -873,7 +963,7 @@ DataSource dataSource;
   - ApplicationContext : 테스트 개수에 상관없이 한 개 만들어지고, 모든 테스트에서 공유됨
 
 - 디펜던시 인젝션 pom.xml 또는 @Autowired
-  - JdbcContext는 인터페이스 없으므로 pom.xml대신 수동 DI 사용
+  - JdbcContext는 인터페이스 없으므로 pom.xml대신 수동 DI 사용[jpa.md](jpa.md)
 
 
 - 템플릿과 콜백
