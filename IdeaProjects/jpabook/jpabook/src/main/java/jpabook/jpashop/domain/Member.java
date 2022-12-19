@@ -9,10 +9,11 @@ public class Member {
 	@Column(name = "MEMBER_ID")
 	private Long id;
 
-	private String name;
-	private String city;
-	private String street;
-	private String zipcode;
+	@Column(name = "USERNAME")
+	private String username;
+
+	@Column(name = "TEAM_ID")
+	private Long teamId;
 
 	public Long getId() {
 		return id;
@@ -22,35 +23,19 @@ public class Member {
 		this.id = id;
 	}
 
-	public String getName() {
-		return name;
+	public String getUsername() {
+		return username;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setUsername(String username) {
+		this.username = username;
 	}
 
-	public String getCity() {
-		return city;
+	public Long getTeamId() {
+		return teamId;
 	}
 
-	public void setCity(String city) {
-		this.city = city;
-	}
-
-	public String getStreet() {
-		return street;
-	}
-
-	public void setStreet(String street) {
-		this.street = street;
-	}
-
-	public String getZipcode() {
-		return zipcode;
-	}
-
-	public void setZipcode(String zipcode) {
-		this.zipcode = zipcode;
+	public void setTeamId(Long teamId) {
+		this.teamId = teamId;
 	}
 }

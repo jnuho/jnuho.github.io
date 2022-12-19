@@ -14,13 +14,14 @@ public class JpaMain {
 		EntityTransaction tx = em.getTransaction();
 		tx.begin();
 		try {
-			Member m = new Member();
-			m.setUsername("C");
+			Team team = new Team();
+			team.setName("TeamA");
+			em.persist(team);
 
-			System.out.println("===");
-			em.persist(m);
-			System.out.println("id== " + m.getId());
-			System.out.println("===");
+			Member member = new Member();
+			member.setUsername("member1");
+			member.setTeamId(team.getId());
+			em.persist(member);
 
 			tx.commit();
 		} catch(Exception e) {

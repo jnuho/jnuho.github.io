@@ -9,12 +9,15 @@ import java.util.Date;
 public class Member {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "MEMBER_ID")
 	private Long id;
 
-	@Column(name = "name", nullable=false)
+	@Column(name = "USERNAME")
 	private String username;
 
-	public Member() {}
+	@Column(name = "TEAM_ID")
+	private Long teamId;
+
 	public Long getId() {
 		return id;
 	}
@@ -29,5 +32,13 @@ public class Member {
 
 	public void setUsername(String username) {
 		this.username = username;
+	}
+
+	public Long getTeamId() {
+		return teamId;
+	}
+
+	public void setTeamId(Long teamId) {
+		this.teamId = teamId;
 	}
 }

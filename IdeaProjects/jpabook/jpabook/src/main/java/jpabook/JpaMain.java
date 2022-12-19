@@ -17,9 +17,6 @@ public class JpaMain {
 		EntityTransaction tx = em.getTransaction();
 		tx.begin();
 		try {
-			Order order = em.find(Order.class, 1L);
-			Long memberId = order.getMemberId();
-			Member member = em.find(Member.class, memberId);
 
 			tx.commit();
 		} catch(Exception e) {

@@ -370,9 +370,14 @@ create table Member (
 ```
 
 
+- 연관관계 매핑 기초
+  - 방향: 단방향, 양방향
+  - 다중성: N:1, 1:N, 1:1
+  - 연관관계의 주인(Owner)
 
 
-- 주인관계 사용시 주의사항
+
+- 주인(Owner)관계 사용시 주의사항
   - Member, Team
   - 무한루프 가능: toString(), lombok, JSON 생성 라이브러리
     - lombok toString() 사용자제
