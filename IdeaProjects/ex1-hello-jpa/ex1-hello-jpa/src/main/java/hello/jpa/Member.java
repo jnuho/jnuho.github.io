@@ -1,22 +1,33 @@
 package hello.jpa;
 
 import javax.persistence.*;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Date;
 
 @Entity
 public class Member {
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "MEMBER_ID")
 	private Long id;
 
 	@Column(name = "USERNAME")
 	private String username;
 
-	@Column(name = "TEAM_ID")
-	private Long teamId;
+//	@Column(name = "TEAM_ID")
+//	private Long teamId;
+
+	// 객체 team과 DB 조인컬럼 TEAM_ID 명시
+	@ManyToOne
+	@JoinColumn(name = "TEAM_ID")
+	private Team team;
+
+	public Team getTeam() {
+		return team;
+	}
+
+	public void changeTeam(Team team) {
+		this.team = team;
+//		team.getMembers().add(this);
+	}
 
 	public Long getId() {
 		return id;
@@ -32,13 +43,5 @@ public class Member {
 
 	public void setUsername(String username) {
 		this.username = username;
-	}
-
-	public Long getTeamId() {
-		return teamId;
-	}
-
-	public void setTeamId(Long teamId) {
-		this.teamId = teamId;
 	}
 }

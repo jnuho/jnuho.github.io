@@ -59,7 +59,6 @@ import javax.persistence.Id;
 
 @Entity
 public class Member {
-
 	@Id
 	private Long id;
 	private String name;
@@ -68,7 +67,7 @@ public class Member {
 
 - Persistence 설정정보 -> EntityManagerFactory -> EntityManager
   - emf: 웹서버 올라오는 시점에 1개 객체 생성됨 (싱글톤)
-  - em: 생성/삭제 반복: thread공유 하면 안됨!
+  - em: 생성/삭제 반복: thread 공유 하면 안됨!
   - JPA 모든 변경은 트랜젝션 안에서
 
 - JPQL
@@ -99,7 +98,8 @@ public class Member {
 package hello.jpa;
 
 		import javax.persistence.EntityManager;
-		import javax.persistence.EntityManagerFactory; import javax.persistence.EntityTransaction;
+		import javax.persistence.EntityManagerFactory;
+		import javax.persistence.EntityTransaction;
 		import javax.persistence.Persistence;
 		import java.util.List;
 
@@ -158,7 +158,6 @@ public class JpaMain {
 		emf.close();
 	}
 }
-
 ```
 
 - 영속 엔티티의 동일성 보장
@@ -294,10 +293,8 @@ tx.commit();
   - AUTO_INCREMENT는 INSERT 실행 한 후에야 ID 알 수 있음
  
 ```java
-  System.out.println("===");
   em.persist(m);
   System.out.println("id== " + m.getId()); // select없이 INSERT실행후 받아 옴
-  System.out.println("===");
 ```
 
 ```java
@@ -362,28 +359,149 @@ create table Member (
 ```
 
 - 객체지향적 설계 (Order 등 클래스 필드로 Member 정의)
+  - Order 클래스 멤버로 Member 필드 정의함
+  - Order order = em.find(Order.class, 1L);
+  - Member member = order.getMember();
 
-```java
-  // Order 클래스 멤버로 Member 필드 정의함
-  Order order = em.find(Order.class, 1L);
-  Member member = order.getMember();
-```
-
+- em.persist 하고 find시에 DB아닌 영속성컨텍스트에서 가져옴
+  - DB 쿼리 보려면 em.flush()
 
 - 연관관계 매핑 기초
   - 방향: 단방향, 양방향
   - 다중성: N:1, 1:N, 1:1
   - 연관관계의 주인(Owner)
 
+- 단방향 연관관계
+  - Member의 필드 Team
+
+```java
+package hello.jpa;
+
+import javax.persistence.*;
+
+@Entity
+public class Member {
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name = "MEMBER_ID")
+	private Long id;
+
+	@Column(name = "USERNAME")
+	private String username;
+
+	// 객체 team과 DB 조인컬럼 TEAM_ID 명시
+	@ManyToOne
+	@JoinColumn(name = "TEAM_ID")
+	private Team team;
+
+	//getter setter
+}
+```
+
+- 양방향 연관관계 (연관관계의 주인 개념)
+  - Member의 필드 Team, Team의 필드 members
+  - 테이블관점에서는 FK 하나로 양방향으로 연결이 자유롭지만 객체는 그렇지 못함
+  - 객제관계의 경우 단방향이 2개 있음, 테이블은 team_id 하나로 관계 정의
+  - 주인은 FK있는 테이블의 객체! 주인의 상대편 객체에 mappedBy="주인"
+  - FK있는곳이 N(member), 상대 테이블은 1(Team) => N에 해당하는 테이블 객체를 '연관관계 주인'으로!
+  - 주인객체를 수정할때 사용. 주인이 아닌 상대객체는 ReadOnly! (Team의 members)
+    - team.getMembers().add(member); 이렇게 하면 Member의 team_id값이 세팅 안됨!
+    - member.setTeam(team); 으로 업데이트 해줘야 함!
+
+- 양방향 연관관계의 경우 양쪽에 값을 넣어주는 것이 맞음
+
+```java
+@Entity
+public class Team {
+
+	@Id
+	@GeneratedValue
+	@Column(name = "TEAM_ID")
+	private Long id;
+
+	private String name;
+
+	// Member객체의 필드명 "team"을 맵핑
+	@OneToMany(mappedBy = "team")
+	private List<Member> members = new ArrayList<>();
+
+	// getter setter
+}
+```
 
 
 - 주인(Owner)관계 사용시 주의사항
-  - Member, Team
-  - 무한루프 가능: toString(), lombok, JSON 생성 라이브러리
+  - Member, Team 연관관계 편의 메소드 정의! 
+    - Member.changeTeam(m){ .. 여기서 team.getMembers().add(this);... }
+    - JpaMain.java에서 team에 member add 하는 해당 코드 지워주면됨
+    - 둘중 하나 정하면됨 -> 무한루프조심!
+      - 1. m.changeTeam{this.team=team; team.getMembers.add(m);}
+      - 2. t.addMember(m){m.setTeam(this); members.add(m);}
+  - 무한루프 가능: toString(), lombok, JSON 생성 라이브러리에서 문제 될 수 있음
     - lombok toString() 사용자제
-    - 컨트롤러에서 return 타입 엔티티 사용하지 말기 => DTO로 변환해서 반환
+    - 컨트롤러에서 return 타입 엔티티 사용하지 말기 => "DTO로 변환해서 반환"
   - 단방향 객체설계 후에 추후 필요시 수정 `Team 클래스에 private List<Member> members;`
   - 연관관계의 주인은 외래 키의 위치를 기준으로 정해야함 (e.g. `Member`가 외래키 들고있음)
+
+
+```java
+package hello.jpa;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
+import javax.persistence.Persistence;
+import java.util.List;
+
+public class JpaMain {
+	public static void main(String[] args) {
+		// persistence.xml에 정의된 hello 설정정보 가져옴
+		EntityManagerFactory emf = Persistence.createEntityManagerFactory("hello");
+		EntityManager em = emf.createEntityManager();
+
+		EntityTransaction tx = em.getTransaction();
+		tx.begin();
+		try {
+			Team team = new Team();
+			team.setName("TeamA");
+			em.persist(team);
+
+			Member member = new Member();
+			member.setUsername("member1");
+			member.setTeam(team);
+			em.persist(member);
+
+			// 편의메소드 정의 Member.changeTeam(m){ .. 여기서 team.getMembers().add(this);... }
+//			team.getMembers().add(member);
+//			em.flush();
+//			em.clear();
+
+			// flush();clear(); 없을경우 밑에서 출력 안됨
+			//1차 캐시 (team객체에 컬렉션 세팅안되어있음)
+			Team findTeam = em.find(Team.class, team.getId());
+			List<Member> members = findTeam.getMembers();
+			for (Member m : members) {
+				System.out.println("m=" + m.getUsername());
+			}
+
+			tx.commit();
+		} catch(Exception e) {
+			tx.rollback();
+		} finally {
+			em.close();
+		}
+
+		emf.close();
+	}
+}
+```
+
+- 실습예제 2
+  - MEMBER:ORDERS = 1:N
+  - ORDERS : ORDER_ITEM : ITEM = 1:N:1
+
+
+![jpashop](./assets/images/jpashop.png)
 
 - 1:1
   - 주 테이블 외래키
@@ -394,4 +512,5 @@ create table Member (
 
 - 다:다
   - 실무 사용지양
+
 
