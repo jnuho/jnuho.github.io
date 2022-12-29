@@ -1,12 +1,13 @@
 
+- [2. JPA 시작](#2-JPA-시작)
+- [3. 영속성 관리](#3-영속성-관리)
+- [4. 앤티티 매핑](#4-앤티티-매핑)
+
+### 2. JPA 시작
 
 - 객체답게 모델링 할수록 매핑작업만 늘어남 (MyBatis) -> JPA도입
   - 객체를 자바 컬렉션에 저장하듯이 DB에 저장하는 JPA
   - Java Persistence API (자바 진영의 ORM 기술 표준)
-  - ORM: 객체와 관계형데이터베이스 RDB 맵핑
-  - EJB 엔티디 빈(자바표준) -> 하이버네이트(오픈소스) -> JPA (자바표준)
-  - SQL 중심 개발에서 객체중심 개발로 변환
-- JPA와 CRUD
   - `jpa.persist(member);`
   - `Member member = jpa.find(memmberId);`
   - `member.setName("변경힐 이름");`
@@ -19,6 +20,8 @@
   - JPA 하이버네이트
   - H2 데이터베이스
 - src > main > resources > META-INF 디렉토리 > persistence.xml 생성
+
+- pom.xml
 
 ```xml
 <dependencies>
@@ -50,6 +53,8 @@ CREATE TABLE MEMBER (
 );
 SELECT * FROM MEMBER;
 ```
+
+### 3. 영속성 관리
 
 ```java
 package hello.jpa;
@@ -97,11 +102,11 @@ public class Member {
 ```java
 package hello.jpa;
 
-		import javax.persistence.EntityManager;
-		import javax.persistence.EntityManagerFactory;
-		import javax.persistence.EntityTransaction;
-		import javax.persistence.Persistence;
-		import java.util.List;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
+import javax.persistence.Persistence;
+import java.util.List;
 
 public class JpaMain {
 	public static void main(String[] args) {
@@ -216,25 +221,29 @@ tx.commit();
 
 
 
-- 엔티티 매핑
-  - 객체와 테이블 매핑 @Entity @Table
-    - @Table(name="MBR") // 테이블을 다른이름으로 매핑하고 싶을때 (INSERT INTO MBR...)
-  - 데이터베이스 스키마 자동생성
-  - 필드와 컬럼 매핑 @Column
-  - 기본키 매핑 @Id
-  - 연관관계 매핑 @ManyToOne, @JoinColumn
+### 4. 앤티티 매핑
 
 - @Entity
+	- 엔티티 이름은 유니크 해야함. 패키지에 같은 이름 엔티티클래스 있는경우 다른 name="??"명시 필요
   - JPA로 테이블 매핑할 클래스는 필수
   - '기본생성자' 필수 (public, protected)
   - final 클래스, enum, interface, inner클래스 사용 X
   - 저장할 필드에 final 사용 X
 
+- @Table
+	- 객체와 테이블 매핑 @Entity @Table
+		- @Table(name="MBR") // 테이블을 다른이름으로 매핑하고 싶을때 (INSERT INTO MBR...)
+		- 명시하지 않으면 엔티티 클래스이름으로 데이터베이스 처리 e.g. `INSERT INTO Member (...)`
+	- 데이터베이스 스키마 자동생성
+	- 필드와 컬럼 매핑 @Column
+	- 기본키 매핑 @Id
+	- 연관관계 매핑 @ManyToOne, @JoinColumn
+	
 - 데이터베이스 스키마 자동 생성
   - '개발서버'에서만 사용 권유 (create, update)
   - '테스트서버'는 (update, validate)
   - '스테이징'/'운영서버'는 다듬은 후 사용. 주의! (validate, none)
-  - name="hibernate.hbm2ddl.auto" value="create"
+  - `<property name="hibernate.hbm2ddl.auto" value="create" />`
     - 애플리케이션 로딩 시점에 create table
     - value: create, create-drop, update, validate, none
     - update: 컬럼 지우는건 안됨. 컬럼 필드 Member에 추가하고 Drop 이 아닌 Alter로 DB반영
@@ -247,12 +256,13 @@ tx.commit();
   - @Column 컬럼매핑
     - name
     - insertable,updatable: TRUE디폴트. 컬럼수정 시 DB에 반영할지여부
-    - nullable (DDL) : true디폴트
-    - unique (DDL) : 제약조건명이 랜덤으로 생성되므로 잘안쓰고 직접 unique 제약 DDL 따로 실행
-    - columnDefinition (DDL) 컬럼정의 직접하고싶을때
-      - (..., columnDefinition="varchar(100) default `EMPTY`")
-    - length (DDL)
-    - precision, scale (DDL)
+		- **DDL** 생성기능
+			- nullable (DDL) : true디폴트
+			- unique (DDL) : 제약조건명이 랜덤으로 생성되므로 잘안쓰고 직접 unique 제약 DDL 따로 실행
+			- columnDefinition (DDL) 컬럼정의 직접하고싶을때
+				- (..., columnDefinition="varchar(100) default `EMPTY`")
+			- length (DDL)
+			- precision, scale (DDL)
       - BigDecimal 타입에서 사용
   - @Temporal 날짜 타입 매핑: 요즘은 필요 X
     - LocalDate, LocalDateTime으로 쓰면됨 : 어노테이션없어도 JPA에서 생성해줌
@@ -267,35 +277,63 @@ tx.commit();
   - @Lob BLOB, CLOB 매핑: 문자면 CLOB, 나머지는 BLOB 매핑
   - @Transient 특정필드를 컬럼에 매핑: 메모리에서만 씀-> DB컬럼 반영안됨
 
-- 기본키 매핑 @Id
-  - 직접할당 : @Id만 사용
+
+```java
+// 유니크 제약조건 이름정의
+@Entity(name = "Member")
+@Table(name = "MEMBER", uniqueConstraints = {@UniqueConstraint(
+	name = "NAME_AGE_UNIQUE",
+	columnNames = {"NAME", "AGE"},
+	)}
+)
+public class Member{
+}
+```
+
+- 기본키 매핑 @Id : Primary Key (엔티티객체를 찾을 수 있는 유니크한 키값)
+  - 직접할당 : @Id만 사용 (옵션 없는 디폴트)
+		- 적용가능 데이터타입:  String, Date, BigDecimal, BigInteger
   - 자동할당 : @GeneratedValue
     - IDENTITY 기본키 생성을 데이터베이스에 위임 (e.g. MySQL auto_increment)
     - SEQUENCE 오라클에서 주로 사용 (private Long id; Integer대신 Long 권장)
-      - @SequenceGenerator(...)
-      - call next value for MEMBER_SEQ로 seq 값을 받아와서 INSERT할때 MEMBER.ID에 넣어줌
-      - allocationSize=50: DB에 50->100->.. 단위로 생성 하고, 메모리에서는 1씩
-    - TABLE 키생성 전용 테이블 하나 만듦. 성능적으로 안좋음. 운영서버에서 쓰기 부담
-      - @TableGenerator(name = "...", table = "MY_SEQUENCES", pkColumnValue = “MEMBER_SEQ", allocationSize = 1)
-    - AUTO
-  - 권장 식별자 전략
-    - 기본키 제약조건: not null, unique, 변하면안됨(설계가 힘듦)
-      - 주로 not null, unique 조건 까지
-      - 대리키(대체키)로 사용 권장
-      - *권장 : Long형 + 대체키 + 키 생성전략 사용
-      - auto_increment 또는 uuid/랜덤 값을 기본키 값으로 권장
+			- MYSQL과 같은 데이터베이스는 시퀀스가 없으므로 사용 부적절
+			- CREATE 시퀀스 하여 해당 시퀀스에서 값을 받아오는 방식
+      - **엔티티에 추가** (필드에 같이 작성해도 됨) : `@SequenceGenerator(name="MEMEBER_SEQ_GENERATOR", sequenceName="MEMBER_SEQ",initialValue=1, allocationSize=1)`
+				- `call next value for MEMBER_SEQ로 seq 값을 받아와서 INSERT할때 MEMBER.ID에 넣어줌
+				- `name` : 컬럼에서 `@GeneratedValue(..., generator="MEMBER_SEQ_GENERATOR")`
+				- `sequenceName` : 매핑할 데이터베이스 시퀀스 이름
+				- `allocationSize=50` : DB에 50->100->.. 단위로 생성 하고, 메모리에서는 1씩
+			- **필드에 추가** : @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="MEMBER_SEQ_GENERATOR")
+			- 매핑할 DDL: `create sequence [sequenceName] start with [initialValue] increment by [allocationSize]`
+    - AUTO: 데이터베이스에 맞는 전략 자동으로 선택
+			- 오라클 : SEQUENCE전략
+			- MYSQL : IDENTITY
+		- TABLE : 키생성 전용 테이블 하나 만듦. 성능적으로 안좋음. 운영서버에서 쓰기 부담
+			- 모든 데이터베이스에서 사용가능
+			- `@TableGenerator(name = "...", table = "MY_SEQUENCES", pkColumnValue = “MEMBER_SEQ", allocationSize = 1)`
+
+```java
+private static void logic(EntityManager em) {
+	Member m = new Member();
+	em.persist(m);
+	// 출력 m.id = 1
+	System.out.println("m.id = " + m.getId());
+}
+```
+
+- 권장 식별자 전략
+	- 기본키 제약조건: not null, unique, 변하면안됨(설계가 힘듦)
+		- 주로 not null, unique 조건 까지
+		- 대리키(대체키)로 사용 권장
+		- *권장 : Long형 + 대체키 + 키 생성전략 사용
+		- auto_increment 또는 uuid/랜덤 값을 기본키 값으로 권장
 
 - IDENTITY 전략 특징
   - 기본키 생성을 데이터베이스에 위임 (e.g. MySQL auto_increment)
   - PK값이 DB에 들어가야 값을 알 수 있음
   - IDENTITY 전략에서만 예외적으로 tx.commit();이 아닌,
   - em.persist(member); 호출 시점에 바로 INSERT 쿼리 날림
-  - AUTO_INCREMENT는 INSERT 실행 한 후에야 ID 알 수 있음
- 
-```java
-  em.persist(m);
-  System.out.println("id== " + m.getId()); // select없이 INSERT실행후 받아 옴
-```
+  - auto_increment는 INSERT 실행 한 후에야 ID 알 수 있음
 
 ```java
 @Entity
@@ -322,7 +360,6 @@ public class Member {
 
 	public Member() {}
 }
-
 ```
 
 ```sql
@@ -337,8 +374,6 @@ create table Member (
   primary key (id)
 )
 ```
-
-
 
 
 - 실전예제1 - 요구사항 분석과 기본 매핑
