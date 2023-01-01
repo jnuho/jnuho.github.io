@@ -257,17 +257,25 @@ tx.commit();
     - name
     - insertable,updatable: TRUE디폴트. 컬럼수정 시 DB에 반영할지여부
 		- **DDL** 생성기능
-			- nullable (DDL) : true디폴트
+			- nullable (DDL) : true디폴트 `data varchar(255) not null`
 			- unique (DDL) : 제약조건명이 랜덤으로 생성되므로 잘안쓰고 직접 unique 제약 DDL 따로 실행
-			- columnDefinition (DDL) 컬럼정의 직접하고싶을때
-				- (..., columnDefinition="varchar(100) default `EMPTY`")
-			- length (DDL)
-			- precision, scale (DDL)
+        - `alter table Tablename add constraint UK_Xxx unique (username)`
+      - columnDefinition (DDL) 컬럼정의 직접하고싶을때
+        - (..., columnDefinition="varchar(100) default `EMPTY`")
+      - length (DDL) @Column(length = 400)
+        - `data varchar(400)`
+      - precision, scale (DDL) @Column(precision=10, scale=2)
+        - `cal numeric(10,2)` // H2, PostgresSQL
+        - `cal number(10,2)` // 오라클
+        - `cal decimal(10,2)` // MySQL
       - BigDecimal 타입에서 사용
   - @Temporal 날짜 타입 매핑: 요즘은 필요 X
     - LocalDate, LocalDateTime으로 쓰면됨 : 어노테이션없어도 JPA에서 생성해줌
     - private LocalDate testLocalDate;
     - private LocalDateTime testLocalDateTime;
+    - @Temporal(TemporalType.DATE/TIME/TIMESTAMP)
+    - 자바타입 Date -> DDL (date, time, timestamp)
+      - datetime: MYSQL, timestamp: H2,Oracle, PostgreSQL
   - @Enumerated enum 타입 매핑
     - EnumType.ORDINAL 기본값 enum 순서를 데이터베이스에 저장
     - EnumType.STRING 기본값 enum 이름을 데이터베이스에 저장
@@ -374,6 +382,7 @@ create table Member (
   primary key (id)
 )
 ```
+
 
 
 - 실전예제1 - 요구사항 분석과 기본 매핑
@@ -532,20 +541,28 @@ public class JpaMain {
 ```
 
 - 실습예제 2
-  - MEMBER:ORDERS = 1:N
-  - ORDERS : ORDER_ITEM : ITEM = 1:N:1
-
+  - MEMBER 1 : ORDERS N
+  - ORDERS 1 : ORDER_ITEM N : ITEM 1
+  - 양방향 연관관계는 개발상 편의로 필요할 때만 추가
+  - 단방향 활용만으로 대부분 구현 가능 @ManyToOne @JoinColumn(name="???")
 
 ![jpashop](./assets/images/jpashop.png)
 
-- 1:1
+- 다대일 N:1 @ManyToOne
+
+
+- 일대다 1:N @OneToMany
+
+
+- 일대일 1:1 @OneToOne
   - 주 테이블 외래키
     - Member-Locker
     - Member에 FK(LOCKER_ID) 정의하는 방법 선호
     - Member 조회하는 경우가 많고, 조인없이 Locker에 대한 정보 얻을 수 있음
   - 대상 테이블 외래키
 
-- 다:다
-  - 실무 사용지양
+
+- 다대다 N:M @ManyToMany
+  - 실무 사용 지양!
 
 
