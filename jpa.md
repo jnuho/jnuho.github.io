@@ -549,20 +549,28 @@ public class JpaMain {
 ![jpashop](./assets/images/jpashop.png)
 
 - 다대일 N:1 @ManyToOne
-
+  - DB는 N인 테이블에 FK 있음
+    - e.g Member: Team = N:1
+    - FK=MEMBER.TEAM_ID
+    - PK=TEAM.TEAM_ID
 
 - 일대다 1:N @OneToMany
-
+  - 일대다 단방향 매핑 보다는, 다대일 양방향 매핑을 사용! (권장)
+  - 일대다 양방향:
+    - Member클래스에 정의
+    - @ManyToOne @JoinColumn(name="TEAM_ID", insertable=false, updatable=false)
 
 - 일대일 1:1 @OneToOne
   - 주 테이블 외래키
     - Member-Locker
     - Member에 FK(LOCKER_ID) 정의하는 방법 선호
     - Member 조회하는 경우가 많고, 조인없이 Locker에 대한 정보 얻을 수 있음
+    - Member의 필드로 정의:	`@OneToOne @JoinColumn(name = "LOCKER_ID") private Locker locker;`
   - 대상 테이블 외래키
-
+    - 프록시 기능의 한계로, 지연로딩 안되고 즉시로딩 됨.
 
 - 다대다 N:M @ManyToMany
   - 실무 사용 지양!
+
 
 
