@@ -573,4 +573,30 @@ public class JpaMain {
   - 실무 사용 지양!
 
 
+### 7. 고급 매핑
 
+- 상속관계 객체 (e.g. Item: Album, Movie, Book)
+  - 테이블로 구현시 3가지 방법 가능 (e.g. 3개테이블, 부모+3개테이블, 1개테이블에 DTYPE구분)
+  - JPA에서 위 방법들 모두 매핑가능
+
+- Join 전략 (부모 테이블 클래스에 정의)
+  - @Inheritance(strategy=InheritanceType.JOINED)
+    - 부모클래스 @DiscriminatorColumn, 자식클래스 @DiscriminatorValue("A")
+    - 정교화된 설계. 외래키 활용가능. 저장공간 효율화. 조회시 조인많이 사용 성능저하. INSERT시 쿼리 2번호출.
+    - 저장공간이 효율화 되어, 조인이 문제되지 않음 (가장 권장 되는 전략)
+  - @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+    - 성능적 장점-조인필요없음
+    - @DiscriminatorColumn 없어도 디폴트로 하나의 테이블에 DTYPE 컬럼 생성 됨
+    - 자식엔티티 필드들 모두 null 허용해야 하는 단점
+    - 테이블 데이터가 증가하여 성능적으로 느려질 수 있음
+  - @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+    - !쓰면 안되는 전략!
+    - 공통 테이블 없이 객체마다 테이블만 생성됨
+    - Item 부모클래스를 abstract class로 선언 해야함 (Item테이블은 생성 안되도록)
+    - @DiscriminatorColumn 어노테이션 무의미함
+    - [주의] 조회시 UNION으로 세개 테이블 합쳐서 조회해서 성능적 단점
+
+
+```java
+
+```

@@ -1,6 +1,4 @@
-package jpabook;
-
-import jpabook.jpashop.domain.Member;
+package hello.jpa;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -39,3 +37,4 @@ public class Locker {
 		this.name = name;
 	}
 }
+
