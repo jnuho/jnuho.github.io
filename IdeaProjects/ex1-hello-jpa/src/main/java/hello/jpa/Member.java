@@ -1,9 +1,10 @@
 package hello.jpa;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
-public class Member {
+public class Member extends BaseEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "MEMBER_ID")
@@ -20,9 +21,10 @@ public class Member {
 	@JoinColumn(name = "TEAM_ID")
 	private Team team;
 
-	@OneToOne
-	@JoinColumn(name = "LOCKER_ID")
-	private Locker locker;
+	private String createdBy;
+	private LocalDateTime createdDate;
+	private String lastModifiedBy;
+	private LocalDateTime lastModifiedDate;
 
 	public Team getTeam() {
 		return team;

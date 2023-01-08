@@ -2,6 +2,10 @@
 - [2. JPA 시작](#2-JPA-시작)
 - [3. 영속성 관리](#3-영속성-관리)
 - [4. 앤티티 매핑](#4-앤티티-매핑)
+- [5. 연관관계 매핑 기초](#5-연관관계-매핑-기초)
+- [6. 다양한 연관관계 매핑](#6-다양한-연관관계-매핑)
+- [7. 고급 매핑](#7-고급-매핑)
+- [8. 프록시와 연관관계 관리](#8-프록시와-연관관계-관리)
 
 ### 2. JPA 시작
 
@@ -540,7 +544,7 @@ public class JpaMain {
 }
 ```
 
-- 실습예제 2
+- 실전 예제 2
   - MEMBER 1 : ORDERS N
   - ORDERS 1 : ORDER_ITEM N : ITEM 1
   - 양방향 연관관계는 개발상 편의로 필요할 때만 추가
@@ -572,6 +576,7 @@ public class JpaMain {
 - 다대다 N:M @ManyToMany
   - 실무 사용 지양!
 
+- 실전 예제 3
 
 ### 7. 고급 매핑
 
@@ -596,7 +601,66 @@ public class JpaMain {
     - @DiscriminatorColumn 어노테이션 무의미함
     - [주의] 조회시 UNION으로 세개 테이블 합쳐서 조회해서 성능적 단점
 
+- 대부분 JOINED 전략 사용
+- 데이터 중요도 낮고 적은 데이터면 SINGLE_TABLE
+
+
+- `@MappedSuperclass`
+  - 공통 매핑정보가 필요할 때
+  - 객체입장에서 속성만 상속받아서 쓰고 싶을 때
+  - 상속관계 매핑 X
+  - 추상클래스 권장
+
+- 실전 예제 4
 
 ```java
+```
 
+### 8. 프록시와 연관관계 관리
+
+- Member, Team 조회를 나눔
+- Team 조회 하지 않는 케이스 고려
+
+
+- 프록시
+  - em.find() DB통해서 실제 엔티티 객체 조회
+  - em.getReference() DB 조회 미루는 가짜 (프록시) 엔티티 객체 조회
+    - Proxy: Entity target=null, getId(), getName()
+    - 실제 클래스를 상속받아 만들어짐
+
+
+```java
+package hello.jpa;
+
+public class JpaMain {
+	public static void main(String[] args) {
+		// persistence.xml에 정의된 hello 설정정보 가져옴
+		EntityManagerFactory emf = Persistence.createEntityManagerFactory("hello");
+		EntityManager em = emf.createEntityManager();
+		EntityTransaction tx = em.getTransaction();
+		tx.begin();
+		try {
+			Member member = new Member();
+			member.setUsername("hello");
+
+			em.persist(member);
+
+			em.flush();
+			em.clear();
+
+//			Member findMember = em.find(Member.class, member.getId());
+			Member findMember = em.getReference(Member.class, member.getId());
+			System.out.println("findMember = " + findMember.getClass());
+			System.out.println("findMember.id = " + findMember.getId());
+			System.out.println("findMember.username = " + findMember.getUsername());
+
+			tx.commit();
+		} catch(Exception e) {
+			tx.rollback();
+		} finally {
+			em.close();
+		}
+		emf.close();
+	}
+}
 ```
