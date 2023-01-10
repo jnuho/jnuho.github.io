@@ -6,6 +6,7 @@
 - [6. 다양한 연관관계 매핑](#6-다양한-연관관계-매핑)
 - [7. 고급 매핑](#7-고급-매핑)
 - [8. 프록시와 연관관계 관리](#8-프록시와-연관관계-관리)
+- [9. 값 타입](#9-값-타입)
 
 ### 2. JPA 시작
 
@@ -414,10 +415,12 @@ create table Member (
 - em.persist 하고 find시에 DB아닌 영속성컨텍스트에서 가져옴
   - DB 쿼리 보려면 em.flush()
 
-- 연관관계 매핑 기초
-  - 방향: 단방향, 양방향
-  - 다중성: N:1, 1:N, 1:1
-  - 연관관계의 주인(Owner)
+### 5. 연관관계 매핑 기초
+
+- 방향: 단방향, 양방향
+- 다중성: N:1, 1:N, 1:1
+- 연관관계의 주인(Owner)
+
 
 - 단방향 연관관계
   - Member의 필드 Team
@@ -618,23 +621,39 @@ public class JpaMain {
 
 ### 8. 프록시와 연관관계 관리
 
-- Member, Team 조회를 나눔
-- Team 조회 하지 않는 케이스 고려
-
+- Member 를 DB에서 조회 시, Team엔티티가 실제 사용될떄 까지 DB조회를 지연
+	- Team 조회 하지 않는 케이스 고려
+	- 지연로딩 기능을 사용하려면, 실제 엔티티 객체 대신에,
+	- 데이터베이스 조회를 지연할 수 있는 가짜 객체가 필요 : 프록시 객체
 
 - 프록시
+	- 연관된 객체를 처음부터 데이터베이스에서 조회하는 것이 아니라,
+	- 실제 사용하는 시점까지 데이터베이스 조회를 미룸
+	- 함께 자주 사용 객체들은 조인으로 함께 조회하는 것이 효율적
   - em.find() DB통해서 실제 엔티티 객체 조회
   - em.getReference() DB 조회 미루는 가짜 (프록시) 엔티티 객체 조회
     - Proxy: Entity target=null, getId(), getName()
     - 실제 클래스를 상속받아 만들어짐
+		- 데이터베이스 조회 X, 엔티티 객체 생성 X, 데이터 접근을 위임한 프록시 객체 반환
 
+- 프록시 초기화
+	- member.getName() 처럼 실제 사용될 때, 데이터베이스 조회해서 실제 엔티티 객체 생성
+
+1. 프록시 객체에 `member.getName()` 호출해서 실제 데이터 조회
+	- `em.getReference(Member.class, "id1");` 로 반환한 MemberProxy로 `getName()` 호출
+	- 식별자 getId() 호출시에는 초기화 되지 않음! 프록시객체는 이미 식별자를 가지고 있기 때문
+   - `@Access(AccessType.FIELD)`로 설정 시, 초기화 함 (getId()가 id만 조회하는 메소드인지 알 수 없으므로)
+   - 연관관계 설정 할 때는, 식별자 값만 사용하므로, 프록시를 사용하면, 데이터베이스 접근 횟수를 줄일 수 있음.
+   - 연관관계 설정 할 때는, 엔티티 접근방식을 FIELD로 설정해도, 엔티티 초기화 하지 않음.
+2. 실제 엔티티가 생성되어 있지 않으면, 영속성 컨텍스트에 실제 엔티티 생성 요청 ('초기화')
+	- 이미 영속성 컨텍스트에 엔티티 있으면 데이터 베이스 조회할 필요 없으므로, 프록시가 아닌 실제 엔티티 반환
+3. 영속성컨텍스트는 DB 조회하여 실제 엔티티 객체 생성
+4. 프록시 객체는 생성된 실제 엔티티 객체의 참조를 Member target 멤버변수에 보관함
+5. 프록시 객체는 실제 엔티티 객체의 `getName()`을 호출하여 결과 반환.
 
 ```java
-package hello.jpa;
-
 public class JpaMain {
 	public static void main(String[] args) {
-		// persistence.xml에 정의된 hello 설정정보 가져옴
 		EntityManagerFactory emf = Persistence.createEntityManagerFactory("hello");
 		EntityManager em = emf.createEntityManager();
 		EntityTransaction tx = em.getTransaction();
@@ -642,7 +661,7 @@ public class JpaMain {
 		try {
 			Member member = new Member();
 			member.setUsername("hello");
-
+			
 			em.persist(member);
 
 			em.flush();
@@ -663,4 +682,174 @@ public class JpaMain {
 		emf.close();
 	}
 }
+```
+
+- 프록시 확인
+	- boolean isLoaded = emf.PersistenceUnitUtil.isLoaded(entity)`
+	- 프록시로 조회한건지 확인 `member.getClass().getName()`
+
+
+
+- 즉시로딩과 지연로딩
+	- 프록시 객체는 주로 연관된 엔티티를 지연로딩 할 때 사용
+ 
+- 즉시로딩 
+	- `em.find(Member.class, "member1");
+	- Member.team 필드에 다음과 같이 선언
+	- `@ManyToOne(fetch = FetchType.EAGER)`
+	- 로딩 최적화를 위해 조인쿼리 호출
+- 지연로딩
+	- 연관된 엔티티를 프록시로 조회(프록시객체). 프록시를 실제 사용할때 초기화 하면서 데이터베이스 조회
+	- `member.getTeam().getName()` 처럼 조회한 팀 엔티티를 실제 사용하는 시점에 JPA가 SQL을 호출해서 팀 엔티티 조회
+	- `@ManyToOne(fetch = FetchType.LAZY)`
+	- `em.find(Member.class, "member1")` 호출 시 DB에서 멤버만 조회
+	- `Team team = member.getTeam()` 팀은 DB에서 조회 하지 않고, team 멤버변수에 프록시 객체를 넣어둔다
+	- `team.getName()` 팀 객체 실제 사용 할 때, DB 조회하여 프록시 객체 초기화
+
+
+- 즉시로딩 예시
+
+```java
+public class Member extends BaseEntity {
+	// ...
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "TEAM_ID")
+	private Team team;
+}
+```
+```java
+public class JpaMain {
+	public static void main(String[] args) {
+		// ...
+		try {
+			Member member = em.find(Member.class, "member1"); // 회원, 팀 조인 SQL 호출
+			Team team = member.getTeam(); // 객체 그래프 탐색 (로딩된 실제 team1 엔티티)
+
+			tx.commit();
+		} catch(Exception e) {
+			tx.rollback();
+		} finally {
+			em.close();
+		}
+		emf.close();
+	}
+}
+```
+
+- 지연로딩 예시
+
+```java
+public class Member extends BaseEntity {
+	// ...
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "TEAM_ID")
+	private Team team;
+}
+```
+```java
+public class JpaMain {
+	public static void main(String[] args) {
+		// ...
+		try {
+			Member member = em.find(Member.class, "member1"); // 회원 조회 SQL 호출
+			Team team = member.getTeam(); // 객체 그래프 탐색 (프록시 객체)
+			System.out.println("team.name = " + team.getName()); // 팀객체 실제 사용 전까지 DB 조회 안하다가 사용시 조회
+
+			tx.commit();
+		} catch(Exception e) {
+			tx.rollback();
+		} finally {
+			em.close();
+		}
+		emf.close();
+	}
+}
+```
+
+
+- 지연로딩 활용
+  - 회원:팀 = N:1 (자주사용 : EAGER)
+  - 주문:회원 = N:1 (자주사용 안함 : LAZY)
+  - 상품:주문 = N:1 (자주사용 : EAGER)
+
+```java
+@Entity
+public class Member {
+	@ManyToOne(fetch = FetchType.EAGER)
+	private Team team;
+
+	@OneToMany(fetch = FetchType.LAZY)
+	private List<Order> orders;
+}
+```
+
+- 프록시와 컬렉션 래퍼
+  - 엔티티에 Member.orders 컬렉션이 있으면, 하이버네이트가 내장컬렉션 (컬렉션래퍼)으로 변경
+  - 엔티티를 지연로딩 하면 프록시 객체로 지연로딩
+
+- JPA 기본 페치 전략
+  - 모든 연관관계에 지연로딩 사용 권장!
+
+- @ManyToOne @OneToOne
+  - `(optional = false)` 내부 조인
+	- `(optional = true)` 외부 조인
+
+- @OneToMany @ManyToMany
+	- `(optional = false)` 외부 조인
+	- `(optional = true)` 외부 조인
+
+
+- 영속성 전이: CASCADE
+  - 부모 엔티티 저장시, 자식 엔티티도 저장 가능
+	- w/o CASCADE 옵션
+		- `Parent{ @OneToMany(mappeBy = "parent") List<Child> children= new(); }`
+		- `Child{ @ManyToOne Parent parent;}`
+			- `c.setParent(p);`
+			- `p.getChildren().add(c);`
+			- `em.persist(parent);`
+			- `em.pesist(c1);`
+			- `em.persist(c2);`
+	- w/ CASCADE 옵션: 부모만 persist하면 자식들도 자동으로
+		- `Parent{ @OneToMany(mappeBy = "parent", cascade= CascadeType.PERSIST) List<Child> children= new(); }`
+		- `Child{ @ManyToOne Parent parent;}`
+			- `c.setParent(p);`
+			- `p.getChildren().add(c);`
+			- `em.persist(parent);`
+
+- 영속성 전이: 삭제
+  - w/o REMOVE옵션
+		- `em.remove(c1);`
+		- `em.remove(c2);`
+		- `em.remove(p);`
+	- w/ REMOVE옵션
+		- `CascadeType.REMOVE`
+		- `em.remove(p);`
+
+```java
+public enum CascadeType {
+	ALL,
+	PERSIST,
+	MERGE,
+	REMOVE,
+	REFRESH,
+	DETACH
+}
+```
+
+- 고아객체
+
+
+## 9. 값 타입
+
+- 기본 값 타입
+  - int, double / 래퍼클래스 Integer / String
+- 임베디드 타입 (복합 값 타입)
+  - 직접정의한 임베디드 타입 (근무기간, 집주소)
+  - `@Embedded Period workPeriod` -> `@Embeddable public class Period {}`
+	- `@Embedded Address homeAddress` -> `@Embeddable public class Address {}`
+- 컬렉션 값 타입 
+
+
+```java
+
 ```
