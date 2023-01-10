@@ -800,8 +800,10 @@ public class Member {
 
 
 - 영속성 전이: CASCADE
+
+- 영속성 전이: 저장
   - 부모 엔티티 저장시, 자식 엔티티도 저장 가능
-	- w/o CASCADE 옵션
+	- w/o PERSIST 옵션
 		- `Parent{ @OneToMany(mappeBy = "parent") List<Child> children= new(); }`
 		- `Child{ @ManyToOne Parent parent;}`
 			- `c.setParent(p);`
@@ -809,21 +811,26 @@ public class Member {
 			- `em.persist(parent);`
 			- `em.pesist(c1);`
 			- `em.persist(c2);`
-	- w/ CASCADE 옵션: 부모만 persist하면 자식들도 자동으로
-		- `Parent{ @OneToMany(mappeBy = "parent", cascade= CascadeType.PERSIST) List<Child> children= new(); }`
+	- w/ PERSIST 옵션: 부모만 persist하면 자식들도 자동으로
+		- `Parent{ @OneToMany(mappedBy = "parent", cascade= CascadeType.PERSIST) List<Child> children= new(); }`
 		- `Child{ @ManyToOne Parent parent;}`
 			- `c.setParent(p);`
 			- `p.getChildren().add(c);`
 			- `em.persist(parent);`
 
 - 영속성 전이: 삭제
-  - w/o REMOVE옵션
+  - w/o REMOVE 옵션
 		- `em.remove(c1);`
 		- `em.remove(c2);`
 		- `em.remove(p);`
-	- w/ REMOVE옵션
+	- w/ REMOVE 옵션
 		- `CascadeType.REMOVE`
 		- `em.remove(p);`
+
+- CASCADE 종류
+  - casecade = {CascadeType.PERSIST, CascadeType.REMOVE}
+  - em.persist(), em.remove() 이후 flush() 호출 할 때 전이: DELETE 쿼리 발생
+  - 부모를 제거하면 자식도 같이 제거됨 CascadeType.REMOVE 와 같음
 
 ```java
 public enum CascadeType {
@@ -837,7 +844,43 @@ public enum CascadeType {
 ```
 
 - 고아객체
+  - 부모 엔티티 컬렉션에서 자식 엔티티 참조만 제거하면 자식 엔티티 자동 제거 됨.
+  - 자식이 참조하는 엔티티가 하나일때만 가능. 특정 엔티티가 개인 소유하는 엔티티에만 이 기능 적용 가능.
+  - `@OneToOne`, `@OneToMany` 일때만 적용 가능.
 
+- 영속성전이 + 고아객체, 생명주기
+  - CascadeType.ALL + orphanRemoval=true
+  - 부모엔티티를 통해 자식 엔티티 생명주기 관리
+  - 자식을 저장하려면 부모에 등록만 하면됨
+  - `parent.addChild(child1);`
+  - `parent.getChildren().remove(child2);`
+
+```java
+
+@Entity
+public class Parent {
+
+	@OneToMany(mappedBy="parent", orphanRemoval= true)
+	private List<Child> children = new ArrayList<Child>();
+}
+```
+
+```java
+public class JpaMain {
+	public static void main(String[] args) {
+		// emf, em, tx 생성
+		tx.begin();
+		try {
+			Parent parent1 = em.find(Parent.class, id);
+			parent1.getChildren().remove(0); // 컬렉션에서 자식 제거
+			
+			tx.commit();
+		} catch(Exception e) {
+			tx.rollback();
+		}
+	}
+}
+```
 
 ## 9. 값 타입
 
