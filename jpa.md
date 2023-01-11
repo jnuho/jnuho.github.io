@@ -612,7 +612,179 @@ public class JpaMain {
   - 공통 매핑정보가 필요할 때
   - 객체입장에서 속성만 상속받아서 쓰고 싶을 때
   - 상속관계 매핑 X
-  - 추상클래스 권장
+  - 추상클래스 권장 public abstract class BaseEntity {id, name, age, ...}
+  - @Entity 객체들이 BaseEntity를 상속 (extends)
+
+- `@AttributeOveride`
+  - 부모에게 물려받은 매핑정보 재정의
+  - 엔티티에 해당어노테이션 `(name="", column=@Column(name="MEMBER_ID"))`
+
+- `@AssociationOverride`
+	- 연관관계 재정의
+
+- 복합 키와 식별관계 매핑
+  - 식별 관계: 부모테이블 기본키를 내려받아, 자식테이블 '기본키 + 외래키'로 사용
+	- 비식별 관계: 부모테이블 기본키를 내려받아, 자식테이블 '외래키'로 사용
+    - 필수적(Mandator) 비식별관계 : 외래키에 NULL 허용 X
+    - 선택적(Optional) 비식별관계 : 외래키에 NULL 허용 O. 연관관계를 맺을지 말지 선택 가능
+
+- 복합 키: 비식별 관계 매핑
+  - 식별자 `@Id` 를 2개이상 만들려면 별도의 식별자 클래스 만들어야 함.
+	- `@IdClass` :  관계형 데이터베이스에 맞춘 방법
+  - `@EmbeddedId` : 객체 지향적 방법
+
+- `@IdClass` :  관계형 데이터베이스에 맞춘 방법
+	- requirements for 해당식별자 적용 클래스 :
+		- 식별자 클래스 속성명 == 엔티티에서 사용하는 식별자의 속성명 같아야 함 (Parent.id1 = ParentId.id1)
+		- Serializable 인터페이스 구현
+		- equals(), hashCode() 구현
+		- 기본생성자 정의
+		- 식별자클래스는 public 클래스 이어야 함
+
+```java
+@Entity
+@IdClass(ParentId.class)
+public class Parent{
+	@Id
+	@Column(name = "PARENT_ID1")
+	private String id1;
+	
+	@Id
+	@Column(name = "PARENT_ID2")
+	private String id2;
+	
+	// 
+}
+```
+
+```java
+public class ParentId implements Serializable {
+	private String id1;
+	private String id2;
+	
+	public ParentId(){}
+	public ParentId(String id1, String id2){
+		this.id1 = id1;
+		this.id2 = id2;
+	}
+	@Override
+	public boolean equals(Object o) {}
+	@Override
+	public int hashCode(){}
+}
+```
+
+- 부모테이블 기본 키 컬럼이 복합 키 이므로, 자식테이블의 외래 키 도 복합 키 이다.
+
+```java
+@Entity
+public class Child {
+	
+	@Id
+	private String id;
+	
+	@ManyToOne
+	@JoinColumns({
+			@JoinColumn(name="PARENT_ID1", referencedColumnName="PARENT_ID1"),
+			@JoinColumn(name="PARENT_ID2", referencedColumnName="PARENT_ID2")
+	})
+	private Parent parent;
+}
+```
+
+- `@EmbeddedId` : 객체 지향적 방법
+	- requirements for 해당식별자 적용 클래스 :
+		- `@Embeddable` 어노테이션 붙여야 함
+		- Serializable 인터페이스 구현
+		- equals(), hashCode() 구현
+		- 기본생성자 정의
+		- 식별자클래스는 public 클래스 이어야 함
+
+```java
+@Entity
+public class Parent {
+	@EmbeddedId
+	private ParentId id;
+	
+	private String name;
+}
+```
+```java
+@Embeddable
+public class ParentId implements Serializable {
+	@Column(name="PARENT_ID1")
+	private String id1;
+	@Column(name="PARENT_ID2")
+	private String id2;
+	// equals, hashCode 구현
+}
+```
+
+```java
+@Entity
+public class Child {
+	@Id
+	private String id;
+	
+	@ManyToOne
+	@JoinColumns({
+			@JoinColumn(name="PARENT_ID1", referencedColumnName="PARENT_ID1"),
+			@JoinColumn(name="PARENT_ID2", referencedColumnName="PARENT_ID2")
+	})
+	private Parent parent;
+}
+```
+
+```java
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
+import javax.persistence.Persistence;
+
+public class JpaMain {
+	public static void main(String[] args) {
+		// emf, em, tx
+		tx.begin();
+		try {
+			Parent parent = new Parent("id1", "id2");
+			
+			tx.commit();
+		} catch(Exception e) {
+			tx.rollback();
+		} finally {
+			em.close();
+		}
+		emf.close();
+	}
+}
+```
+
+```java
+public class JpaMain {
+	public static void main(String[] args) {
+		// emf, em, tx 생성
+		tx.begin();
+		try {
+			Parent parent = new Parent();
+			
+			ParentId parentId = new ParentId("myId1", "myId2");
+			parent.setId(parentId);
+			parent.setName("parentName");
+			
+			em.persist(parent);
+			
+			tx.commit();
+		} catch(Exception e) {
+			tx.rollback();
+		} finally {
+			em.close();
+		}
+		emf.close();
+	}
+}
+```
+
 
 - 실전 예제 4
 
@@ -791,8 +963,9 @@ public class Member {
   - 모든 연관관계에 지연로딩 사용 권장!
 
 - @ManyToOne @OneToOne
-  - `(optional = false)` 내부 조인
-	- `(optional = true)` 외부 조인
+	- `(optional = true)` 외부
+	- `(optional = false)` 내부 조인 조인
+  - 
 
 - @OneToMany @ManyToMany
 	- `(optional = false)` 외부 조인
