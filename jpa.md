@@ -623,23 +623,24 @@ public class JpaMain {
 	- 연관관계 재정의
 
 - 복합 키와 식별관계 매핑
-  - 식별 관계: 부모테이블 기본키를 내려받아, 자식테이블 '기본키 + 외래키'로 사용
-	- 비식별 관계: 부모테이블 기본키를 내려받아, 자식테이블 '외래키'로 사용
-    - 필수적(Mandator) 비식별관계 : 외래키에 NULL 허용 X
+  - 식별 관계: 부모테이블 기본키를 내려받아, 자식테이블 `기본키 + 외래키`로 사용
+	- 비식별 관계: 부모테이블 기본키를 내려받아, 자식테이블 `외래키`로 사용
+    - 필수적(Mandatory) 비식별관계 : 외래키에 NULL 허용 X
     - 선택적(Optional) 비식별관계 : 외래키에 NULL 허용 O. 연관관계를 맺을지 말지 선택 가능
 
-- 복합 키: 비식별 관계 매핑
-  - 식별자 `@Id` 를 2개이상 만들려면 별도의 식별자 클래스 만들어야 함.
-	- `@IdClass` :  관계형 데이터베이스에 맞춘 방법
-  - `@EmbeddedId` : 객체 지향적 방법
+### 복합 키: 비식별 관계 매핑
+
+- 식별자 `@Id` 를 2개이상 만들려면 별도의 식별자 클래스 만들어야 함.
+- `@IdClass` :  관계형 데이터베이스에 맞춘 방법
+- `@EmbeddedId` : 객체 지향적 방법
 
 - `@IdClass` :  관계형 데이터베이스에 맞춘 방법
-	- requirements for 해당식별자 적용 클래스 :
-		- 식별자 클래스 속성명 == 엔티티에서 사용하는 식별자의 속성명 같아야 함 (Parent.id1 = ParentId.id1)
-		- Serializable 인터페이스 구현
-		- equals(), hashCode() 구현
-		- 기본생성자 정의
-		- 식별자클래스는 public 클래스 이어야 함
+- 요구사항 for 해당식별자 적용 클래스 :
+	- 식별자 클래스 속성명 == 엔티티에서 사용하는 식별자의 속성명 같아야 함 (Parent.id1 == ParentId.id1)
+	- Serializable 인터페이스 구현
+	- equals(), hashCode() 구현
+	- 기본생성자 정의
+	- 식별자클래스는 public 클래스 이어야 함
 
 ```java
 @Entity
@@ -652,8 +653,6 @@ public class Parent{
 	@Id
 	@Column(name = "PARENT_ID2")
 	private String id2;
-	
-	// 
 }
 ```
 
@@ -693,7 +692,7 @@ public class Child {
 ```
 
 - `@EmbeddedId` : 객체 지향적 방법
-	- requirements for 해당식별자 적용 클래스 :
+	- 요구사항 for 해당식별자 적용 클래스 :
 		- `@Embeddable` 어노테이션 붙여야 함
 		- Serializable 인터페이스 구현
 		- equals(), hashCode() 구현
@@ -703,6 +702,7 @@ public class Child {
 ```java
 @Entity
 public class Parent {
+	
 	@EmbeddedId
 	private ParentId id;
 	
@@ -735,35 +735,12 @@ public class Child {
 }
 ```
 
+- `@Embeddable` : 생성
+
 ```java
-
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityTransaction;
-import javax.persistence.Persistence;
-
 public class JpaMain {
 	public static void main(String[] args) {
 		// emf, em, tx
-		tx.begin();
-		try {
-			Parent parent = new Parent("id1", "id2");
-			
-			tx.commit();
-		} catch(Exception e) {
-			tx.rollback();
-		} finally {
-			em.close();
-		}
-		emf.close();
-	}
-}
-```
-
-```java
-public class JpaMain {
-	public static void main(String[] args) {
-		// emf, em, tx 생성
 		tx.begin();
 		try {
 			Parent parent = new Parent();
@@ -771,9 +748,8 @@ public class JpaMain {
 			ParentId parentId = new ParentId("myId1", "myId2");
 			parent.setId(parentId);
 			parent.setName("parentName");
-			
+
 			em.persist(parent);
-			
 			tx.commit();
 		} catch(Exception e) {
 			tx.rollback();
@@ -785,15 +761,235 @@ public class JpaMain {
 }
 ```
 
+- `@Embeddable` : 조회
+
+```java
+public class JpaMain {
+	public static void main(String[] args) {
+		// emf, em, tx 생성
+		try {
+			ParentId parentId = new ParentId("myId1", "myId2");
+			Parent parent = em.find(Parent.class, parentId);
+			
+		} catch(Exception e) {
+		} finally {
+			em.close();
+		}
+		emf.close();
+	}
+}
+```
+
+- 복합 키와 `equals()`, `hashCode()`
+  - 영속성 컨텍스트는 id로 엔티티 관리, 식별자 비교 시, `equals()`,  `hashCode()` 사용
+  - 구현 안하면, 다른 엔티티 조회 하거나, 엔티티 찾을 수 없음
+
+- `@IdClass` vs. `@Embeddable`
+  - `@IdClass`는 JPQL이 길어질 수 있음
+
+### 복합 키: 식별 관계 매핑
+
+- `@IdClass`와 식별 관계
+
+```java
+// 부모
+@Entity
+public class Parent {
+	@Id
+	@Column(name = "PARENT_ID")
+	private String id;
+	private String name;
+}
+
+// 자식
+@Entity
+@IdClass(ChildId.clas)
+public class Child {
+	@Id
+	@ManyToOne
+	@JoinColumn(name = "PARENT_ID")
+	private Parent parent;
+
+	@Id
+	@Column(name = "CHILD_ID")
+	private String childId;
+	
+	private String name;
+}
+
+// 자식 ID
+public class ChildId implements Serializable {
+	private String parent; // Child.parent 매핑
+	private String childId; // Child.childId 매핑
+	// equals, hashCode
+}
+
+// 손자
+@Entity
+@IdClass(GrandChildId.class)
+public class GrandChild {
+	@Id
+	@ManyToOne
+	@JoinColumns({
+			@JoinColumn(name = "PARENT_ID"),
+			@JoinColumn(name = "CHILD_ID")
+	})
+	private Child child;
+	
+	@Id
+	@Column(name="GRANDCHILD_ID")
+	private String id;
+	
+	private String name;
+}
+
+// 손자 ID
+public class GrandChildId implements Serializable {
+	private ChildId child; // GrandChild.child 매핑
+	private String id; // GrandChild.id 매핑
+	
+	// equals, hashCode
+}
+```
+
+
+- `@EmbeddedId`와 식별 관계
+
+```java
+// 부모
+@Entity
+public class Parent {
+	@Id
+	@Column(name = "PARENT_ID")
+	private String id;
+
+	private String name;
+}
+
+// 자식
+@Entity
+public class Child {
+	@EmbeddedId
+	private ChildId id;
+
+	@MapsId("parentId") // ChildId.parentId 매핑
+	@ManyToOne
+	@JoinColumn(name = "PARENT_ID")
+	private Parent parent;
+
+	private String name;
+}
+
+// 자식 ID
+@Embeddable
+public class ChildId implements Serializable {
+	private String parentId; // @MapsId("parentId")로 매핑
+
+	@Column(name = "CHILD_ID")
+	private String id;
+
+	// equals, hashCode
+}
+
+// 손자
+@Entity
+public class GrandChild {
+
+	@EmbeddedId
+	private GrandChild id;
+
+	@MapsId("childId") // GrandChildId.childId 매핑
+	@ManyToOne
+	@JoinColumns({
+			@JoinColumn(name = "PARENT_ID"),
+			@JoinColumn(name = "CHILD_ID")
+	})
+	private Child child;
+
+	private String name;
+}
+
+// 손자 ID
+@Embeddable
+public class GrandChildId implements Serializable {
+	private ChildId childId; // @MapsId("childId")로 매핑
+	
+	@Column(name = "GRANDCHILD_ID")
+	private String id;
+	
+	// equals, hashCode
+}
+```
+
+- 일대일 식별관계
+
+```java
+@Entity
+public class Board {
+	@Id @GneratedValue
+	@Column(name = "BOARD_ID")
+	private Long id;
+	
+	private String title;
+	
+	@OneToOne(mappedBy = "board")
+	private BoardDetail boardDetail;
+}
+```
+
+```java
+@Entity
+public class BoardDetail {
+	
+	@Id
+	private Long boardId;
+	
+	@MapsId // BoardDetail.boardId 매핑
+	@OneToOne
+	@JoinColumn(name = "BOARD_ID")
+	private Board board;
+	
+	private String content;
+}
+```
+
+```java
+public void save(){
+	Board board = new Board();
+	board.setTitle("제목1");
+	em.persist(board);
+	
+	BoardDetail boardDetail = new BoardDetail();
+	boardDetail.setDetail("내용1");
+	boardDetail.setBoard(board);
+	em.persist(boardDetail);
+}
+```
+
+- 식별, 비식별 관계의 장단점
+  - 데이터베이스 설계 관점에서는 비식별관계 선호
+  - 식별관계로 설계 시 자식 테이블의 기본키 컬럼이 계속 늘어남: 조인 시 쿼리 복잡, 기본키 인덱스가 불필요하게 커짐
+  - 비식별 관계 사용하여 기본키는 Long 타입 대리 키 사용 권장 (비즈니스 로직과 상관 X)
+  - 선택적 비식별 보다, 필수적 비식별 권장
+
+
+- 조인 테이블
+  - 조인컬럼 사용 (외래키) (선택적 비식별: 외래키 컬럼 데이터 null 허용.)
+	- 조인테이블 사용 (테이블 사용; e.g. MEMBER_LOCKER 테이블 정의)
+    - 일대일, 일대다, 다대일, 다대다 조인테이블
+
+- 엔티티 하나에 여러테이블 매핑
+
 
 - 실전 예제 4
+
 
 ```java
 ```
 
 ### 8. 프록시와 연관관계 관리
 
-- Member 를 DB에서 조회 시, Team엔티티가 실제 사용될떄 까지 DB조회를 지연
+- Member 를 DB에서 조회 시, Team 엔티티가 실제 사용될떄 까지 DB 조회를 지연
 	- Team 조회 하지 않는 케이스 고려
 	- 지연로딩 기능을 사용하려면, 실제 엔티티 객체 대신에,
 	- 데이터베이스 조회를 지연할 수 있는 가짜 객체가 필요 : 프록시 객체
@@ -802,14 +998,14 @@ public class JpaMain {
 	- 연관된 객체를 처음부터 데이터베이스에서 조회하는 것이 아니라,
 	- 실제 사용하는 시점까지 데이터베이스 조회를 미룸
 	- 함께 자주 사용 객체들은 조인으로 함께 조회하는 것이 효율적
-  - em.find() DB통해서 실제 엔티티 객체 조회
-  - em.getReference() DB 조회 미루는 가짜 (프록시) 엔티티 객체 조회
+  - `em.find()` 조회한 엔티티를 사용하는 여부와 상관 없이, DB통해서 실제 엔티티 객체 조회
+  - `em.getReference()` 엔티티를 실제 사용 하는 시점까지 DB 조회를 미룸
+		- DB 조회 X, 엔티티 객체 생성 X, 데이터 접근을 위임한 프록시 객체 반환 : 가짜(프록시) 엔티티 객체
     - Proxy: Entity target=null, getId(), getName()
     - 실제 클래스를 상속받아 만들어짐
-		- 데이터베이스 조회 X, 엔티티 객체 생성 X, 데이터 접근을 위임한 프록시 객체 반환
 
 - 프록시 초기화
-	- member.getName() 처럼 실제 사용될 때, 데이터베이스 조회해서 실제 엔티티 객체 생성
+	- `member.getName()` 처럼 '실제 사용'될 때, DB 조회해서 실제 엔티티 객체 생성
 
 1. 프록시 객체에 `member.getName()` 호출해서 실제 데이터 조회
 	- `em.getReference(Member.class, "id1");` 로 반환한 MemberProxy로 `getName()` 호출
@@ -859,7 +1055,6 @@ public class JpaMain {
 - 프록시 확인
 	- boolean isLoaded = emf.PersistenceUnitUtil.isLoaded(entity)`
 	- 프록시로 조회한건지 확인 `member.getClass().getName()`
-
 
 
 - 즉시로딩과 지연로딩
@@ -1035,23 +1230,6 @@ public class Parent {
 
 	@OneToMany(mappedBy="parent", orphanRemoval= true)
 	private List<Child> children = new ArrayList<Child>();
-}
-```
-
-```java
-public class JpaMain {
-	public static void main(String[] args) {
-		// emf, em, tx 생성
-		tx.begin();
-		try {
-			Parent parent1 = em.find(Parent.class, id);
-			parent1.getChildren().remove(0); // 컬렉션에서 자식 제거
-			
-			tx.commit();
-		} catch(Exception e) {
-			tx.rollback();
-		}
-	}
 }
 ```
 
