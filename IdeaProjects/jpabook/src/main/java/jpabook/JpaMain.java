@@ -17,18 +17,29 @@ public class JpaMain {
 		EntityTransaction tx = em.getTransaction();
 		tx.begin();
 		try {
-			Member member = new Member();
-			member.setUsername("hello");
+			Member member1 = new Member();
+			member1.setUsername("member1");
+			em.persist(member1);
 
-			em.persist(member);
+			Member member2 = new Member();
+			member2.setUsername("member2");
+			em.persist(member2);
 
 			em.flush();
 			em.clear();
 
-			Member findMember = em.find(Member.class, member.getId());
-			System.out.println("findMember.id = " + findMember.getId());
-			System.out.println("findMember.username = " + findMember.getUsername());
+			Member m1 = em.find(Member.class, member1.getId());
+			Member m1Ref = em.getReference(Member.class, member1.getId());
+			Member m2 = em.getReference(Member.class, member2.getId());
+//			System.out.println("findMember.id = " + findMember.getId());
+//			System.out.println("findMember.username = " + findMember.getUsername());
+			System.out.println("m1.getClass() = " + m1.getClass());
+			System.out.println("m1.getClass() = " + m1Ref.getClass()); // 영속성 컨텍스트에 있는데 굳이 proxy 사용 X
+			System.out.println("m1 == m1Ref = " + (m1 == m1Ref));
+			System.out.println("m2.getClass() = " + m2.getClass()); // Proxy
 
+			// 타입 체크 시 주의
+			System.out.println("m1 == m2 " + logic(m1, m2));
 
 			tx.commit();
 		} catch(Exception e) {
@@ -38,6 +49,11 @@ public class JpaMain {
 		}
 
 		emf.close();
+	}
+
+	private static boolean logic(Member m1, Member m2) {
+//		return m1.getClass() == m2.getClass(); // 한개는 프록시가 넘어온다면 false
+		return (m1 instanceof Member) && (m2 instanceof Member);
 	}
 
 	private static void printMember(Member member) {
