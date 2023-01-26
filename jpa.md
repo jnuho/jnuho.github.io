@@ -7,6 +7,7 @@
 - [7. 고급 매핑](#7-고급-매핑)
 - [8. 프록시와 연관관계 관리](#8-프록시와-연관관계-관리)
 - [9. 값 타입](#9-값-타입)
+- [10. 객체지향 쿼리언어](#10-객체지향-쿼리언어)
 
 ### 2. JPA 시작
 
@@ -1000,8 +1001,8 @@ public void save(){
 	- 함께 자주 사용 객체들은 조인으로 함께 조회하는 것이 효율적
   - `em.find()` 조회한 엔티티를 사용하는 여부와 상관 없이, DB통해서 실제 엔티티 객체 조회
   - `em.getReference()` 엔티티를 실제 사용 하는 시점까지 DB 조회를 미룸
-		- DB 조회 X, 엔티티 객체 생성 X, 데이터 접근을 위임한 프록시 객체 반환 : 가짜(프록시) 엔티티 객체
-    - Proxy: Entity target=null, getId(), getName()
+		- 데이터 접근을 위임한 프록시 (가짜) 엔티티객체 반환 (DB 조회 X, 엔티티 객체 생성 X)
+    - `Proxy { Entity target=null, getId(), getName()}`
     - 실제 클래스를 상속받아 만들어짐
 
 - 프록시 초기화
@@ -1009,12 +1010,12 @@ public void save(){
 
 1. 프록시 객체에 `member.getName()` 호출해서 실제 데이터 조회
 	- `em.getReference(Member.class, "id1");` 로 반환한 MemberProxy로 `getName()` 호출
-	- 식별자 getId() 호출시에는 초기화 되지 않음! 프록시객체는 이미 식별자를 가지고 있기 때문
-   - `@Access(AccessType.FIELD)`로 설정 시, 초기화 함 (getId()가 id만 조회하는 메소드인지 알 수 없으므로)
-   - 연관관계 설정 할 때는, 식별자 값만 사용하므로, 프록시를 사용하면, 데이터베이스 접근 횟수를 줄일 수 있음.
-   - 연관관계 설정 할 때는, 엔티티 접근방식을 FIELD로 설정해도, 엔티티 초기화 하지 않음.
+	- '식별자' getId() 호출시에는 초기화 되지 않음! 프록시객체는 이미 식별자를 가지고 있기 때문
+  - `@Access(AccessType.FIELD)`로 설정 시, 초기화 함 (getId()가 id만 조회하는 메소드인지 알 수 없으므로)
+  - 연관관계 설정 할 때는, 식별자 값만 사용하므로, 프록시를 사용하면, 데이터베이스 접근 횟수를 줄일 수 있음.
+  - 연관관계 설정 할 때는, 엔티티 접근방식을 FIELD로 설정해도, 엔티티 초기화 하지 않음.
 2. 실제 엔티티가 생성되어 있지 않으면, 영속성 컨텍스트에 실제 엔티티 생성 요청 ('초기화')
-	- 이미 영속성 컨텍스트에 엔티티 있으면 데이터 베이스 조회할 필요 없으므로, 프록시가 아닌 실제 엔티티 반환
+	- 이미 영속성 컨텍스트에 엔티티 있으면 데이터베이스 조회할 필요 없으므로, 프록시가 아닌 실제 엔티티 반환
 3. 영속성컨텍스트는 DB 조회하여 실제 엔티티 객체 생성
 4. 프록시 객체는 생성된 실제 엔티티 객체의 참조를 Member target 멤버변수에 보관함
 5. 프록시 객체는 실제 엔티티 객체의 `getName()`을 호출하여 결과 반환.
@@ -1053,20 +1054,22 @@ public class JpaMain {
 ```
 
 - 프록시 확인
-	- boolean isLoaded = emf.PersistenceUnitUtil.isLoaded(entity)`
+	- boolean isLoaded = emf.getPersistenceUnitUtil().isLoaded(entity);`
 	- 프록시로 조회한건지 확인 `member.getClass().getName()`
+		- `jpabook.domain.Member_$$_javasist_0`
 
 
 - 즉시로딩과 지연로딩
 	- 프록시 객체는 주로 연관된 엔티티를 지연로딩 할 때 사용
  
 - 즉시로딩 
-	- `em.find(Member.class, "member1");
+	- 엔티티를 조회 할 떄 연관된 엔티티도 함께 조회
+	- `em.find(Member.class, "member1");` 호출시
 	- Member.team 필드에 다음과 같이 선언
-	- `@ManyToOne(fetch = FetchType.EAGER)`
+	- `@ManyToOne(fetch = FetchType.EAGER) @JoinColumn(name="TEAM_ID") Team team;`
 	- 로딩 최적화를 위해 조인쿼리 호출
 - 지연로딩
-	- 연관된 엔티티를 프록시로 조회(프록시객체). 프록시를 실제 사용할때 초기화 하면서 데이터베이스 조회
+	- 연관된 엔티티를 프록시로 조회 (프록시객체). 프록시를 실제 사용할때 초기화 하면서 데이터베이스 조회
 	- `member.getTeam().getName()` 처럼 조회한 팀 엔티티를 실제 사용하는 시점에 JPA가 SQL을 호출해서 팀 엔티티 조회
 	- `@ManyToOne(fetch = FetchType.LAZY)`
 	- `em.find(Member.class, "member1")` 호출 시 DB에서 멤버만 조회
@@ -1089,7 +1092,11 @@ public class JpaMain {
 	public static void main(String[] args) {
 		// ...
 		try {
-			Member member = em.find(Member.class, "member1"); // 회원, 팀 조인 SQL 호출
+			// 회원, 팀 조인 SQL 호출
+			// @ManyToOne(fetch= fetchType.EAGER)
+			// @JoinColumn(name="TEAM_ID", nullable=false) : 'INNER JOIN'
+			// @JoinColumn(name="TEAM_ID") : 'OUTER JOIN'
+			Member member = em.find(Member.class, "member1");
 			Team team = member.getTeam(); // 객체 그래프 탐색 (로딩된 실제 team1 엔티티)
 
 			tx.commit();
@@ -1120,8 +1127,9 @@ public class JpaMain {
 		try {
 			Member member = em.find(Member.class, "member1"); // 회원 조회 SQL 호출
 			Team team = member.getTeam(); // 객체 그래프 탐색 (프록시 객체)
-			System.out.println("team.name = " + team.getName()); // 팀객체 실제 사용 전까지 DB 조회 안하다가 사용시 조회
-
+			
+			// 팀객체 실제 사용 전까지 DB 조회 안하다가 사용시 조회
+			System.out.println("team.name = " + team.getName());
 			tx.commit();
 		} catch(Exception e) {
 			tx.rollback();
@@ -1140,34 +1148,40 @@ public class JpaMain {
   - 상품:주문 = N:1 (자주사용 : EAGER)
 
 ```java
+import javax.persistence.JoinColumn;
+
 @Entity
 public class Member {
 	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name="TEAM_ID")
 	private Team team;
 
-	@OneToMany(fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
 	private List<Order> orders;
 }
 ```
 
 - 프록시와 컬렉션 래퍼
-  - 엔티티에 Member.orders 컬렉션이 있으면, 하이버네이트가 내장컬렉션 (컬렉션래퍼)으로 변경
-  - 엔티티를 지연로딩 하면 프록시 객체로 지연로딩
+	- 엔티티를 지연로딩 하면 프록시 객체로 지연로딩 하지만,
+  - 엔티티에 Member.orders 컬렉션이 있으면, 하이버네이트가 내장컬렉션, 컬렉션래퍼가 지연로딩을 처리해 줌
+  - member.getOrders() 호출해도 컬렉션 초기화 안됨.
+  - member.getOrders().get(0) 처럼 컬렉션에서 실제 데이터를 조회 할떄 DB에서 초기화 함
+  - Member -> Orders는 LAZY 이지만, Order -> Product는 EAGER 이므로 연관된 상품도 함께 로딩 됨.
 
 - JPA 기본 페치 전략
-  - 모든 연관관계에 지연로딩 사용 권장!
+  - 모든 연관관계에 지연로딩 사용 권장 -> 실제 사용 상황 보고 꼭 필요한 곳에만 즉시 로딩 적용.
 
-- @ManyToOne @OneToOne
+- @ManyToOne @OneToOne 즉시로딩
 	- `(optional = true)` 외부
-	- `(optional = false)` 내부 조인 조인
-  - 
+	- `(optional = false)` 내부 조인
 
-- @OneToMany @ManyToMany
+- @OneToMany @ManyToMany 지연로딩 (리스트 객체들의 데이터 전부 로드할 때, 성능이슈 발생 방지)
 	- `(optional = false)` 외부 조인
 	- `(optional = true)` 외부 조인
-
+  - -> 데이터베이스 제약조건으로 이런 상황을 막을수는 없다. (일대다 관계 즉시 로딩 할때는 항상 외부조인 사용)
 
 - 영속성 전이: CASCADE
+  - 특정 엔티티를 영속상태로 만들때, 연관된 엔티티도 함께 영속상태로 만들고 싶을 때.
 
 - 영속성 전이: 저장
   - 부모 엔티티 저장시, 자식 엔티티도 저장 가능
@@ -1196,7 +1210,7 @@ public class Member {
 		- `em.remove(p);`
 
 - CASCADE 종류
-  - casecade = {CascadeType.PERSIST, CascadeType.REMOVE}
+  - `cascade = {CascadeType.PERSIST, CascadeType.REMOVE}`
   - em.persist(), em.remove() 이후 flush() 호출 할 때 전이: DELETE 쿼리 발생
   - 부모를 제거하면 자식도 같이 제거됨 CascadeType.REMOVE 와 같음
 
@@ -1220,6 +1234,7 @@ public enum CascadeType {
   - CascadeType.ALL + orphanRemoval=true
   - 부모엔티티를 통해 자식 엔티티 생명주기 관리
   - 자식을 저장하려면 부모에 등록만 하면됨
+  - `parent.getChildren().clear()`
   - `parent.addChild(child1);`
   - `parent.getChildren().remove(child2);`
 
@@ -1233,7 +1248,7 @@ public class Parent {
 }
 ```
 
-## 9. 값 타입
+### 9. 값 타입
 
 - 기본 값 타입
   - int, double / 래퍼클래스 Integer / String
@@ -1241,9 +1256,17 @@ public class Parent {
   - 직접정의한 임베디드 타입 (근무기간, 집주소)
   - `@Embedded Period workPeriod` -> `@Embeddable public class Period {}`
 	- `@Embedded Address homeAddress` -> `@Embeddable public class Address {}`
-- 컬렉션 값 타입 
+  - 임베디드를 포함한 모든 값타입은 엔티티 생명주기에 의존. 엔티티와 임베디드 타입 관계는 UML 컴포지션 관계
+  - UML표현: `Member {id:Long, name:String, workPeriod:Period, homeAddress:Address}`
+  - 오버라이드 가능: `@Embedded Address homeAddress @AttributeOverrides({...})`
+- 임베디드 타입과 null : Address 필드가 null이면 그 하위 필드 들도 null (e.g. Address.street == null)
 
+- 값 타입과 불변객체
+- 값 타입의 비교
+- 값 타입 컬렉션
 
 ```java
-
 ```
+
+## 10. 객체지향 쿼리언어
+
