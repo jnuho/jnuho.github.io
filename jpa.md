@@ -1336,4 +1336,128 @@ public class JpaMain {
 
 
 - JPQL
+  - 객체지향쿼리 언어
+  - SQL을 추상화해서 특정 데이터베이스 SQL에 의존하지 않음
+  - JPQL은 SQL로 변환 됨
+
+- SELECT
+	- 엔티티 이름 : 기본 클래스명 / @Entity(name="XXX")
+  - 별칭 필수
+  - TypedQuery (반환 타입명확히 지정할 수 있으면) vs. Query
+  - 결과조회 : `getResultList()` (컬렉션반환, 없으면 빈컬렉션)
+  - 결과조회 : `getSingleResult()` (결과가 0이거나 1보다 많으면 에러 발생)
+	- 파라미터 바인딩
+		- 이름 기준 파라미터
+		- 위치 기준 파라미터
+  - 프로젝션 : select절에 조회 할 대상을 지정 `[select {프로젝션대상} from]`
+    - 엔티티 프로젝션 (조회할 대상을 지정. 컬럼 일일이 나열 X)
+      - `select m from Member m` 
+      - `select m.team from Member m`
+		- 임베디드 타입 프로젝션
+      - 임베디드 타입은 엔티티와 거의 비슷하게 사용 됨. 조회의 시작점은 될 수 없음 (i.e. FROM Address)
+
+
+```java
+public class JpaMain {
+	public static void main(String[] args) {
+		// ... emf, em, tx 생성
+		
+		// 타입쿼리
+		TypedQuery<Member> query = em.createQuery("select m from Member m", Member.class);
+		List<Member> resultList = query.getResultList();
+		for (Member member : resultList) {
+			System.out.Println("member = " + member);
+		}
+
+		// 쿼리: select 절 조회 대상개수에 따라 리스트로 담김
+		Query query = em.createQuery("SELECT m.username from Member m");
+		List resultList = query.getResultList();
+		for (Object o : resultList) {
+			Object[] result = (Object[]) o;
+			System.out.Println("username = " + result[0]);
+			System.out.Println("age = " + result[1]);
+		}
+		
+		// 이름 기준 파라미터 바인딩
+		String usernameParam = "User1";
+		TypedQuery<Member> query = em.createQuery("select m from Member m where m.username= :username", Member.class);
+		query.setParameter("username", usernameParam);
+		List<Member> resultList = query.getResultList();
+		
+		// 위치 기준 파라미터 바인딩
+		List<Member> members =
+				em.createQuery("select m from Member m where m.username = ?1", Member.class)
+						.setParameter(1, usernameParam)
+						.getResultList();
+
+		
+		// 임베디드 타입 프로젝션
+		String query = "select o.address from Order o";
+		List<Address> addresses = em.createQuery(query, Address.class)
+				.getResultList();
+		
+		// 스칼라 타입 프로젝션 (숫자, 문자, 날짜 조회 또는 통계용쿼리)
+		List<String> usernames = em.createQuery("select username from Member m", String.class)
+				.getResultList();
+		
+		// 여러 값 조회
+		// 프로젝션에 여러값을 선택하면 TypeQuery를 사용 할 수 없고, Query를 사용 해야 함
+		Query query = em.createQuery("select m.username, m.age from Member m");
+		List resultList = query.getResultList();
+		Iterator iterator = resultList.iterator();
+		while (iterator.hasNext()) {
+			Object[] row = (Object[]) iterator.next();
+			String username = (String) row[0];
+			Integer age = (Integer) row[1];
+		}
+		
+		// 여러 값 조회 - 제네릭이 Object[] 사용하여 간결화
+		List<Object[]> resultList = em.createQuery("select m.username, m.age from Member m")
+				.getResultList();
+		for (Object[] row : resultList) {
+			String username = (String) row[0];
+			Integer age = (Integer) row[1];
+		}
+		
+		List<Object[]> resultList = em.createQuery("select o.member, o.product, o.orderAmount from Order o")
+				.getResultList();
+		for (Object[] row : resultList) {
+			Member member = (Member) row[0]; // 엔티티
+			Product product = (Product) row[1]; // 엔티티
+			int orderAmount = row[2]; // 스칼라
+			
+//			String username = (String) row[0];
+//			Integer age = (Integer) row[1];
+		}
+		
+		// NEW 명령어 미사용
+		List<Object[]> resultList = em.createQuery("select m.username, m.age from Member m");
+		List<UserDTO> userDtos = new ArrayList<UserDTO>();
+		for (Object[] row : resultList) {
+			UserDTO userDto = new UserDTO((String) row[0], (Integer) row[1]);
+			userDTOs.add(userDto);
+		}
+		
+		// NEW 명령어 사용 : Object[] -> DTO
+
+
+
+
+		}
+}
+```
+
+
+
+```java
+public class JpaMain {
+	public static void main(String[] args) {
+	}
+}
+
+```
+
+- UPDATE
+- DELETE
+
 
