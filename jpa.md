@@ -1270,3 +1270,70 @@ public class Parent {
 
 ## 10. 객체지향 쿼리언어
 
+
+- JPQL 엔티티 객체 대상 쿼리, SQL 데이터베이스 테이블 대상 쿼리
+- JPA가 지원하는 다양한 검색 방법 :
+  - JPQL
+  - Criteria 쿼리 : 복잡, poor readability
+	- Native SQL : SQL은 지원하지만 JPQL은 지원하지 않는 기능 사용 시 (특정 데이터베이스 의존)
+    - 직접 작성한 SQL을 데이터베이스에 전달
+	- QueryDSL : JPQL 빌더 역할
+  - JDBC 직접 사용, MyBatis같은 SQL 매퍼 프레임워크 사용. 필요하면 JDBC 직접사용
+
+
+```java
+public class JpaMain {
+	public static void main(String[]args){
+		EntityManagerFactory emf = Persistence.createEntityManagerFactory("hello");
+		EntityManager em = emf.createEntityManager();
+		EntityTransaction tx = em.getTransaction();
+		
+		tx.begin();
+		try{
+			// JPQL만 사용 시 (별도 검색 방법 X)
+			String jpql="select m from Member as m where m.username = 'kim'";
+			List<Member> list = em.createQuery(jpql, Member.class).getResultList();
+			
+			// QueryDSL 사용
+			JPAQuery query = new JPAQuery(em);
+			QMember member = QMember.member;
+			
+			List<Member> members = query.from(member)
+					.where(member.username.eq("kim"))
+					.list(member);
+			
+			// Native SQL 사용
+			String sql = "SELECT ID, AGE, TEAM_ID NAME FROM MEMBER WHERE NAME = 'kim'";
+			List<Member> resultList = em.createNativeQuery(sql, Member.class).getResultList();
+
+			// JDBC 직접사용, 마이바티스 같은 매퍼 프레임워크 사용 
+			// JDBC나 마이바티스를 JPA와 같이 사용 하면, 영속성컨텍스트를 적절한 시점에 강제 플러쉬 해야한다
+			// JDBC든 마이바티스 같은 SQL 매퍼를 사용하면, JPA를 우회해서 데이터베이스에 접근
+			// JPA 우회하는 SQL을 JPA가 인식하지 못하기 때문에,
+			// 영속성컨텍스트와, 데이터베이스 불일치 -> 데이터 무결성 훼손
+			// e.g. JPA로 100->900 업뎃 후 flush하지 않은 상태에서, JPA 우회 조회 시, 900이 아닌 1000으로 조회
+			// => JPA 우회해서 SQL 실행 직전에, 영속성컨텍스트를 수동으로 flush하여
+			// 		데이터베이스와 영속성컨텍스트를 동기화
+			// => AOP 활용하여 JPA 우회 SQL 실행하기 직전에 영속성컨텍스트를 수동으로 flush 해주는 방법이 있음!
+			Session session = em.unwrap(Session.class);
+			session.doWork(new Work() {
+				@Override
+				public void execute(Connection c) throws SQLException {
+					// work...
+				}
+			});
+			
+			
+		} catch(Exception e) {
+			tx.rollback();
+		} fianlly {
+			em.close();
+		}
+		emf.close();
+	}
+}
+```
+
+
+- JPQL
+
