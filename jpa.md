@@ -1057,6 +1057,9 @@ public class JpaMain {
 	- boolean isLoaded = emf.getPersistenceUnitUtil().isLoaded(entity);`
 	- 프록시로 조회한건지 확인 `member.getClass().getName()`
 		- `jpabook.domain.Member_$$_javasist_0`
+  - 영속성 컨텍스트에 찾는 엔티티가 이미 있으면(em,find()), em.getReference()를 호출해도 실제 엔티티 반환
+    - em.getReference() 먼저 호출해서 Proxy반환 되어도 밑에서 em.find()시 프록시가 반환되어 == 성립 보장
+  - em.detach(m) 또는 em.close() 후에 m.getUsername() 시 에러발생 LazyInitializationException
 
 
 - 즉시로딩과 지연로딩

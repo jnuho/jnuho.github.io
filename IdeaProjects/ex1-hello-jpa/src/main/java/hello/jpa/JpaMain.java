@@ -14,20 +14,18 @@ public class JpaMain {
 		EntityTransaction tx = em.getTransaction();
 		tx.begin();
 		try {
-
-			Member member = new Member();
-			member.setUsername("hello");
-
-			em.persist(member);
+			Member member1 = new Member();
+			member1.setUsername("hello1");
+			em.persist(member1);
 
 			em.flush();
 			em.clear();
 
-//			Member findMember = em.find(Member.class, member.getId());
-			Member findMember = em.getReference(Member.class, member.getId());
-			System.out.println("findMember = " + findMember.getClass());
-			System.out.println("findMember.id = " + findMember.getId());
-			System.out.println("findMember.username = " + findMember.getUsername());
+			Member m1 = em.find(Member.class, member1.getId());
+			System.out.println("m1 = " + m1.getClass());
+			Member ref = em.getReference(Member.class, member1.getId());
+			System.out.println("ref = " + ref.getClass());
+			System.out.println("m1 == ref " + (m1 == ref));
 
 			tx.commit();
 		} catch(Exception e) {
