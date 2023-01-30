@@ -14,9 +14,31 @@ echo $GOPATH
 
 # GOPATH 가 아닌 디렉토리에서 실행 /root/TestApp
 # fmt 라이브러리만 사용하므로 정상 실행
-cd ~
-mkdir TestApp && cd /root/TestApp
+mkdir -p ~/TestApp && cd ~/TestApp
+cat > main.go
+package main
+import (
+ "fmt"
+)
+func main() {
+ fmt.Println("Running the TestApp")
+}
 
+# 실행 성공!
+go run main.go
+
+cat > main.go
+package main
+import (
+    "fmt"
+    "github.com/Pallinder/go-randomdata"
+)
+func main(){
+    fmt.Println("Running the TestApp")
+    fmt.Println(randomdata.SillyName())
+}
+
+go run main.go
 
 # 외부 라이브러리 사용 시 It complains about not finding the package because :
 #  1.GOPATH밖 2.패키지 다운로드 안했기 떄문
@@ -24,7 +46,15 @@ mkdir TestApp && cd /root/TestApp
 #  go.mod file not found in current directory or any parent directory;
 #  use go module to fix this
 # go mod init /root/TestApp
-go mod init github.com/jnuho/goproject/TestApp
+go mod init github.com/jnuho/jnuho.github.io/hellogo/TestApp
+
+# module 정의 외에는 별 내용 없음 go build 실행 하여 디펜던시를 다운받아야 함
+cat go.mod
+	module github.com/jnuho/jnuho.github.io/hellogo/TestApp
+	go 1.18
+
+# 디펜던시 다운로드. 다른버전 사용하고자 하면,  go.mod 파일 수정 후 go build 재실행
+go build
 
 # go mod tidy fetch all the dependencies that you need for testing in your module.
 go mod tidy
