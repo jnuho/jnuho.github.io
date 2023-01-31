@@ -1276,12 +1276,11 @@ public class Parent {
 - JPQL 엔티티 객체 대상 쿼리, SQL 데이터베이스 테이블 대상 쿼리
 - JPA가 지원하는 다양한 검색 방법 :
   - JPQL
-  - Criteria 쿼리 : 복잡, poor readability
+  - Criteria 쿼리 : JPQL 작성 편하게 도와주는 빌더 클래스 제공. 복잡, poor readability
 	- Native SQL : SQL은 지원하지만 JPQL은 지원하지 않는 기능 사용 시 (특정 데이터베이스 의존)
     - 직접 작성한 SQL을 데이터베이스에 전달
-	- QueryDSL : JPQL 빌더 역할
+	- QueryDSL : JPQL 작성 편하게 도와주는 빌더 클래스 제공.
   - JDBC 직접 사용, MyBatis같은 SQL 매퍼 프레임워크 사용. 필요하면 JDBC 직접사용
-
 
 ```java
 public class JpaMain {
@@ -1349,21 +1348,30 @@ public class JpaMain {
   - 결과조회 : `getResultList()` (컬렉션반환, 없으면 빈컬렉션)
   - 결과조회 : `getSingleResult()` (결과가 0이거나 1보다 많으면 에러 발생)
 	- 파라미터 바인딩
-		- 이름 기준 파라미터
+		- 이름 기준 파라미터 (더 명확한 방법으로 권장)
 		- 위치 기준 파라미터
-  - 프로젝션 : select절에 조회 할 대상을 지정 `[select {프로젝션대상} from]`
+  - 프로젝션 : 조회 할 대상을 지정 `[select {프로젝션대상} from]`
     - 엔티티 프로젝션 (조회할 대상을 지정. 컬럼 일일이 나열 X)
       - `select m from Member m` 
       - `select m.team from Member m`
 		- 임베디드 타입 프로젝션
       - 임베디드 타입은 엔티티와 거의 비슷하게 사용 됨. 조회의 시작점은 될 수 없음 (i.e. FROM Address)
-
+  - 페이징 API
+    - typedQuery.setFirstResult
+    - typedQuery.setMaxResults
+		- typedQuery.getResultList
+	- 집합과 정렬 : COUNT, MAX, MIN, AVG, SUM
+		- 정렬 : GROUP BY, HAVING
+    - `select m.name, AVG(m.age), COUNT(m) from Member m GROUP BY m.name HAVING AVG(m,age) >= 10`
+  - 정렬 : ORDER BY
+    - `select m.name, m.age from Member m order by m.age ASC, m.username ASC`
+  - 내부조인
 
 ```java
 public class JpaMain {
 	public static void main(String[] args) {
 		// ... emf, em, tx 생성
-		
+
 		// 타입쿼리
 		TypedQuery<Member> query = em.createQuery("select m from Member m", Member.class);
 		List<Member> resultList = query.getResultList();
@@ -1379,29 +1387,28 @@ public class JpaMain {
 			System.out.Println("username = " + result[0]);
 			System.out.Println("age = " + result[1]);
 		}
-		
+
 		// 이름 기준 파라미터 바인딩
 		String usernameParam = "User1";
 		TypedQuery<Member> query = em.createQuery("select m from Member m where m.username= :username", Member.class);
 		query.setParameter("username", usernameParam);
 		List<Member> resultList = query.getResultList();
-		
+
 		// 위치 기준 파라미터 바인딩
 		List<Member> members =
 				em.createQuery("select m from Member m where m.username = ?1", Member.class)
 						.setParameter(1, usernameParam)
 						.getResultList();
 
-		
 		// 임베디드 타입 프로젝션
 		String query = "select o.address from Order o";
 		List<Address> addresses = em.createQuery(query, Address.class)
 				.getResultList();
-		
+
 		// 스칼라 타입 프로젝션 (숫자, 문자, 날짜 조회 또는 통계용쿼리)
 		List<String> usernames = em.createQuery("select username from Member m", String.class)
 				.getResultList();
-		
+
 		// 여러 값 조회
 		// 프로젝션에 여러값을 선택하면 TypeQuery를 사용 할 수 없고, Query를 사용 해야 함
 		Query query = em.createQuery("select m.username, m.age from Member m");
@@ -1412,7 +1419,7 @@ public class JpaMain {
 			String username = (String) row[0];
 			Integer age = (Integer) row[1];
 		}
-		
+
 		// 여러 값 조회 - 제네릭이 Object[] 사용하여 간결화
 		List<Object[]> resultList = em.createQuery("select m.username, m.age from Member m")
 				.getResultList();
@@ -1420,18 +1427,18 @@ public class JpaMain {
 			String username = (String) row[0];
 			Integer age = (Integer) row[1];
 		}
-		
+
 		List<Object[]> resultList = em.createQuery("select o.member, o.product, o.orderAmount from Order o")
 				.getResultList();
 		for (Object[] row : resultList) {
 			Member member = (Member) row[0]; // 엔티티
 			Product product = (Product) row[1]; // 엔티티
 			int orderAmount = row[2]; // 스칼라
-			
+
 //			String username = (String) row[0];
 //			Integer age = (Integer) row[1];
 		}
-		
+
 		// NEW 명령어 미사용
 		List<Object[]> resultList = em.createQuery("select m.username, m.age from Member m");
 		List<UserDTO> userDtos = new ArrayList<UserDTO>();
@@ -1439,24 +1446,46 @@ public class JpaMain {
 			UserDTO userDto = new UserDTO((String) row[0], (Integer) row[1]);
 			userDTOs.add(userDto);
 		}
-		
+
 		// NEW 명령어 사용 : Object[] -> DTO
-
-
-
-
+		TypedQuery<User> query = em.createQuery(
+				"select new jpabook.jpashop.model.UserDTO(m.username, m.age)" +
+						"from Member m", UserDTO.class);
+		List<UserDTO> resultList = query.getResultList();
+		
+		
+		// 내부조인
+		String teamName = "팀A";
+		String query = "select m from Member m INNER JOIN m.team t where t.name = :teamName";
+		List<Member> members = em.createQuery(query, Member.class)
+				.setParameter("teamName", teamName)
+				.getResultList();
+		query = "select m, t from Member m INNER JOIN m.team t";
+		List<Object[]> result = em.createQuery(query).getResultList();
+		for (Object[] row : resultList) {
+			Member member = (Member) row[0];
+			Team team = (Team) row[1];
 		}
+		
+		// 외부조인
+		query = "select m from Member m LEFT OUTER JOIN m.team t";
+		
+		
+		// 외부조인
+	}
 }
 ```
 
-
-
 ```java
-public class JpaMain {
-	public static void main(String[] args) {
+public class UserDTO {
+	private String username;
+	private int age;
+	
+	public UserDTO(String username, int age) {
+		this.username = username;
+		this.age = age;
 	}
 }
-
 ```
 
 - UPDATE
