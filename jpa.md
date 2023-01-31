@@ -1458,25 +1458,26 @@ public class JpaMain {
 		
 		// 내부조인
 		String teamName = "팀A";
-		String query = "select m from Member m INNER JOIN m.team t where t.name = :teamName";
-		List<Member> members = em.createQuery(query, Member.class)
+		String jpql = "select m from Member m INNER JOIN m.team t where t.name = :teamName";
+		List<Member> members = em.createQuery(jpql, Member.class)
 				.setParameter("teamName", teamName)
 				.getResultList();
-		query = "select m, t from Member m INNER JOIN m.team t";
+		jpql = "select m, t from Member m INNER JOIN m.team t";
 		List<Object[]> result = em.createQuery(query).getResultList();
-		for (Object[] row : resultList) {
+		for (Object[] row : resultList) {r
 			Member member = (Member) row[0];
 			Team team = (Team) row[1];
 		}
 		
 		// 외부조인
-		query = "select m from Member m LEFT OUTER JOIN m.team t";
-		List<Member> members = em.createQuery(query, Member.class).getResultList();
-
+		jpql = "select m from Member m LEFT OUTER JOIN m.team t";
+		List<Member> members = em.createQuery(jpql, Member.class).getResultList();
 
 		// 패치조인
 		// 연관된 엔티티나 컬렉션을 한번에 조회
-		query = "select m from Member m join fetch m.team";
+		jpql = "select m from Member m join fetch m.team";
+		List<Member> members = em.createQuery(jpql, Member.class)
+				.getResultList();
 		
 		
 		
