@@ -1366,6 +1366,8 @@ public class JpaMain {
   - 정렬 : ORDER BY
     - `select m.name, m.age from Member m order by m.age ASC, m.username ASC`
   - 내부조인
+  - 외부조인
+	- 패치조인
 
 ```java
 public class JpaMain {
@@ -1469,9 +1471,16 @@ public class JpaMain {
 		
 		// 외부조인
 		query = "select m from Member m LEFT OUTER JOIN m.team t";
+		List<Member> members = em.createQuery(query, Member.class).getResultList();
+
+
+		// 패치조인
+		// 연관된 엔티티나 컬렉션을 한번에 조회
+		query = "select m from Member m join fetch m.team";
 		
 		
-		// 외부조인
+		
+		
 	}
 }
 ```
