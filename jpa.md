@@ -1356,7 +1356,7 @@ public class JpaMain {
       - `select m.team from Member m`
 		- 임베디드 타입 프로젝션
       - 임베디드 타입은 엔티티와 거의 비슷하게 사용 됨. 조회의 시작점은 될 수 없음 (i.e. FROM Address)
-  - 페이징 API
+  - 페이징 API (10,20 -> 11~30 데이터 조회)
     - typedQuery.setFirstResult
     - typedQuery.setMaxResults
 		- typedQuery.getResultList
@@ -1366,8 +1366,11 @@ public class JpaMain {
   - 정렬 : ORDER BY
     - `select m.name, m.age from Member m order by m.age ASC, m.username ASC`
   - 내부조인
+    - `select m from Member m INNER JOIN m.team t where t.name = :teamname`
   - 외부조인
-	- 패치조인
+    - `select m from Member m LEFT OUTER JOIN m.team t`
+	- 컬렉션조인
+	- 패치조인 - 엔티티, 컬렉션
 
 ```java
 public class JpaMain {
@@ -1472,15 +1475,65 @@ public class JpaMain {
 		// 외부조인
 		jpql = "select m from Member m LEFT OUTER JOIN m.team t";
 		List<Member> members = em.createQuery(jpql, Member.class).getResultList();
-
+		
+		// 컬렉션조인
+		// 일대다, 다대다 관계처럼 컬렉션을 사용하는 곳에 조인
+		// 	회원->팀 조인은 다대일 관계 이면서 단일 값 연관필드 m.team 사용
+		// 	팀->회원 조인은 일대다 관계 이면서 컬렉션 값 연관필드 m.members 사용
+		jpql = "select t, m from Team t LEFT JOIN t.members m";
+		
+		// 세타조인
+		// 전혀 관계 없는 엔티티 조인
+		// Member.username 과 Team.name 은 전혀 관계가 없음.
+		jpql = "select count(m) from Member m, Team t where m.username = t.name";
+		
+		// JOIN ON 절 (JPA 2.1)
+		// 내부조인의 ON은 where절에 쓰는것과 같으므로, 외부조인에서만 사용함.
+		jpql = "select m, t from Member m LEFT JOIN m.team t ON t.name = 'A'";
+		jpql = "select m.*, t.* from Member m LEFT JOIN Team t ON m.TEAM_ID = t.id and t.name = 'A'";
+		
 		// 패치조인
-		// 연관된 엔티티나 컬렉션을 한번에 조회
-		jpql = "select m from Member m join fetch m.team";
+		// SQL 조인종류가 아닌, 연관된 엔티티나 컬렉션을 한번에 같이 조회하는 JPQL 기능
+		//   조인하는 테이블은 별칭 사용 X
+		// [LEFT [OUTER] | INNER] JOIN FETCH 조인경로
+		//  `select m` 또는 `select t`를 하더라도 join fetch 로 연관된 엔티티도 같이 조회 함
+		// 	엔티티 패치조인
+		//	select M.*, T.* FROM MEMBER M INNER JOIN TEAM T ON M.TEAM_ID = T.ID
+		jpql = "select m from Member m JOIN FETCH m.team";
 		List<Member> members = em.createQuery(jpql, Member.class)
 				.getResultList();
+		for (Member member : members) {
+			System.out.println("username = " + member.getUsername());
+			System.out.println("teamname = " + member.getTeam().getName());
+		}
+		// 	컬렉션 패치조인
+		//	select T.*, M.* from Team T INNER JOIN Member M ON T.ID = M.team_id where T.id = '팀A'
+		jpql = "select t from Team t JOIN FETCH t.members where t.name = '팀A'";
+		List<Team> teams = em.createQuery(jpql, Team.class).getResultList();
+		for (Team team : teams) {
+			System.out.println("teamname [" + team.getName() + "] : " + team); 
+			for (Member m : team.getMembers()) {
+				System.out.println("username [" + m.getUsername() + "] : " + m);
+			}
+		}
 		
+		// 패치조인과 DISTINCT : 쿼리에 distinct를 추가하고, 애플리케이션에서 한번더 거름
+		// SQL에서는 distinct t 를 하더라도 결과 로우데이터에 팀별 회원 데이터는 전부 다르므로 distinct 효과가 없음
+		// 애플리케이션 단에서, 같은 팀이므로 걸러짐 -> 최종 1개팀만 조회됨
+		jpql = "select distinct t from Team t join fetch t.members where t.name = '팀A'";
+		List<Team> teams = em.createQuery(jpql, Team.class).getResultList();
+		for (Team t : teams) {
+			System.out.println("team = " + team);
+		}
 		
+		// 패치조인 vs. 일반조인 차이
+		// 	일반 INNER 조인의 경우, `select t` 는 팀만 조회함. 연관된 Member는 조회 X
+		//		회원 엔티티를 지연로딩 설정하면, 프록시나 아직 초기화 되지 않은 컬렉션 래퍼를 반환!
+		//		즉시로딩 설정하면, 회원 컬렉션을 즉시로딩 하기 위해 쿼리를 한번 더 실행.
+		// 	패치 조인의 경우, `select t`는 팀과 연관된 멤버도 같이 조회
+		// JPQL은 반환할 때 연관관계 까지 고려하지 않음. SELECT에 지정한 엔티티만 조회!
 		
+		// 패치조인의 한계
 		
 	}
 }
@@ -1499,6 +1552,8 @@ public class UserDTO {
 ```
 
 - UPDATE
+
+
 - DELETE
 
 
