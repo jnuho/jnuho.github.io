@@ -1371,6 +1371,9 @@ public class JpaMain {
     - `select m from Member m LEFT OUTER JOIN m.team t`
 	- 컬렉션조인
 	- 패치조인 - 엔티티, 컬렉션
+  - 경로표현식
+  - 서브쿼리
+	- 조건식
 
 ```java
 public class JpaMain {
@@ -1499,6 +1502,10 @@ public class JpaMain {
 		//  `select m` 또는 `select t`를 하더라도 join fetch 로 연관된 엔티티도 같이 조회 함
 		// 	엔티티 패치조인
 		//	select M.*, T.* FROM MEMBER M INNER JOIN TEAM T ON M.TEAM_ID = T.ID
+		
+		// 회원과 팀을 지연로딩 설정 했을때, 회원을 조회할 때 패치조인으로 팀을 함께 조회 했으므로
+		// 팀 엔티티는 프록시가 아닌 실제 엔티티다. 연관된 팀을 사용해도 지연 로딩이 일어나지 않는다.
+		// 프록시가 아닌 실제 엔티티이므로 회원 엔티티가 영속성 컨텍스트에서 분리되어 준영속 상태가 되어도 연관된 팀을 조회할 수 있다.
 		jpql = "select m from Member m JOIN FETCH m.team";
 		List<Member> members = em.createQuery(jpql, Member.class)
 				.getResultList();
@@ -1534,7 +1541,40 @@ public class JpaMain {
 		// JPQL은 반환할 때 연관관계 까지 고려하지 않음. SELECT에 지정한 엔티티만 조회!
 		
 		// 패치조인의 한계
+		// 글로벌 로딩전략을 LAZY 지연로딩 설정 하고
+		// 필요시 JPQL에서 패치조인을 사용하여, 패치조인을 적용해서 함께 조회 하는 방식 권장
+		// 패치조인 대상에는 별칭을 줄 수 없음
+		// 둘 이상의 컬렉션을 패치 할 수 없음.
+		// 컬렉션을 패치조인 하면, 페이징 API 사용 X
 		
+		// 경로 표현식
+		// 	상태 필드 : select m.username, m.age from Member m
+		// 	단일값 연관 필드 : 묵시적 내부조인 발생 (단일값 연관 경로는 계속 탐색 할 수 있다)
+		/** jpql : select o.member.team from Order o where o.product.name = 'productA' and o.address.city = 'JINJU'
+				SQL : select t.*
+							from Order o
+							inner join Member m on o.member_id = m.id
+							inner join Team t on m.team_id = t.id
+							inner join Product p on o.product_id = p.id
+							where p.name = 'productA' and o.city = 'JINJU'
+		*/
+		// 	컬렉션 값 연관 필드 m.orders : 묵시적 내부조인 발생
+		//		select t.members.username from Team t // 실패!
+		//		select m.username from Team t join t.members m // 성공
+		//		컬렉션 사이즈
+		//		select t.members.size from Team t
+		
+		// 서브쿼리
+		//	WHERE, HAVING 절에서만 사용가능, SELECT, FROM절에서는 사용불가
+		//	select m from Member m where m.age > (select avg(m2.age) from Member m2)
+		//	select m from Member m where (select count(o) from Order o where m = o.member) > 0
+		//	서브쿼리 없이도 가능: select m from Member m where m.orders.size > 0
+		
+		// 서브쿼리함수
+		// [NOT] EXISTS
+		// {ALL | ANY | SOME} 서브쿼리 : ALL 조건을 모두 만족하면, ANY/SOME 조건을 하나라도 만족하면 참
+		
+		// 조건식
 	}
 }
 ```
@@ -1550,6 +1590,9 @@ public class UserDTO {
 	}
 }
 ```
+
+
+
 
 - UPDATE
 
