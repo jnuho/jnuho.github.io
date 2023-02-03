@@ -1573,8 +1573,43 @@ public class JpaMain {
 		// 서브쿼리함수
 		// [NOT] EXISTS
 		// {ALL | ANY | SOME} 서브쿼리 : ALL 조건을 모두 만족하면, ANY/SOME 조건을 하나라도 만족하면 참
+		// select o.orderAmount from Order o where o.orderAmount > ALL (select p.stockAmount from Product p)
+		// select m from Member m where m.team = ANY (select t from Team t)
+		
+		// IN
+		// select t from Team t where t IN (select t2 from Team t2 JOIN t2.members m2 where m2.age >= 20)
 		
 		// 조건식
+		// 타입 표현 (문자, 숫자, 날짜, Boolean, Enum, 엔티티)
+		// 연산자 우선순위
+		//		경로탐색
+		//		수학
+		//		비교
+		//		논리
+		
+		// 논리연산 AND OR NOT
+		// 비교식 = != < > >= <>
+		
+		// BETWEEN, IN, LIKE, NULL 비교
+		
+		// 컬렉션 식
+		//	빈 컬렉션 비교 식
+		//	{컬렉션값 연관 경로} IS [NOT] EMPTY
+		//	컬렉션 멤버 식
+		//	{엔티티나 값} [NOT] MEMBER [OF] {컬렉션 연관경로}
+		
+		// 스칼라 식
+		//	수학 식(+1, -1, +-*/사칙연산) , 문자함수(CONCAT, SUBSTRING,...), 수학함수(ABS, SQRT, ...), 날짜함수(CURENT_DATE, ...)
+		
+		// CASE 식
+		//	기본 CASE
+		jpql = "select case when m.age <=10 then '학생요금' when m.age >= 60 then '경로요금' else '일반요금' end from Member m";
+		//	심플 CASE
+		jpql = "select case t.name when '팀A' then '인센티브110%' when '팀B' then '인센티브120%' else '인센티브105%' from Team t";
+		//	COALESCE : 스칼라식 차례로 조회 해서 null이 아니면 반환
+		jpql = "select colaesce(m.username, '이름없는회원') from Member m";
+		//	NULLIF : 두값이 같으면 null 반환. 다르면 첫번째 값 반환
+		jpql = "select nullif(m.username, '관리자') from Member m";
 	}
 }
 ```
@@ -1583,7 +1618,7 @@ public class JpaMain {
 public class UserDTO {
 	private String username;
 	private int age;
-	
+
 	public UserDTO(String username, int age) {
 		this.username = username;
 		this.age = age;
@@ -1591,12 +1626,73 @@ public class UserDTO {
 }
 ```
 
+- 다형성 쿼리
+  - TYPE
+  - TREAT (타입캐스팅과 비슷)
+  - 사용자정의함수 호출
+		- function_innovation
+  - 기타 정리
+    - EMPTY STRING
+    - NULL
+  - 엔티티 직접 사용
+		- 기본키값: "select count(m) from Member m";
+		- 외래키값 
 
 
 
-- UPDATE
+```java
+@Entity
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name="DTYPE")
+public abstract class Item {
+}
 
+@Entity
+@DiscriminatorValue("B")
+public class Book extends Item {
+	private String author;
+}
+```
 
-- DELETE
+```java
+public class JpaMain {
+	public static void main(String[]args){
+		String jpql = "select i from Item i";
+		
+		// TYPE
+		// 	Item의 자식도 함께 조회 됨
+		List resultList = em.createQuery(jpql).getResultList();
+		jpql = "select i from Item i where type(i) IN (Book, Movie)";
+		// SQL : select i from Item i where i.DTYPE ('B', 'M');
+		
+		// TREAT (타입캐스팅)
+		jpql = "select i from Item i where treat(i as Book).author = 'kim'";
+		// SQL : select i.* from Item i where i.DTYPE = 'B' and i.author = 'kim'
+		
+		// 사용자 정의 함수 호출 (JPA 2.1)
+		
+		// 기본키값
+		// 외래키값
+		Team team = em.find(Team.class, 1L);
+		jpql = "select m from Member m where m.team = :team";
+		List resultList = em.createQuery(jpql)
+				.setParameter("team", team)
+				.getResultList();
+		jpql = "select m from Member m where m.team_id = :teamId";
+		resultList = em.createQuery(jpql)
+				.setParameter("teamId", 1L)
+				.getResultList();
+	}
+}
+```
+
+- Named 쿼리 : 정적 쿼리
+  - 동적 쿼리 : `em.createQuery("select ...");`
+  - 정적 쿼리 : 미리 정한 쿼리에 이름을 부여해서 필요할 때 사용.
+- Named 쿼리를 어노테이션에 정의
+
+- Criteria
+
+- QueryDSL
 
 

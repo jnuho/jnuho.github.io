@@ -45,18 +45,23 @@ go run main.go
 #  no required module provides package github.com/Pallinder/go-randomdata:
 #  go.mod file not found in current directory or any parent directory;
 #  use go module to fix this
+# Go모듈을 사용하여 해결
+
 # go mod init /root/TestApp
+# go.mod 파일 생성
 go mod init github.com/jnuho/jnuho.github.io/hellogo/TestApp
 
-# module 정의 외에는 별 내용 없음 go build 실행 하여 디펜던시를 다운받아야 함
+# go.mod에 현재 module 정의 외에는 별 내용 없음
+# go build 실행 하여 디펜던시를 다운받아야 함
 cat go.mod
 	module github.com/jnuho/jnuho.github.io/hellogo/TestApp
 	go 1.18
 
-# 디펜던시 다운로드. 다른버전 사용하고자 하면,  go.mod 파일 수정 후 go build 재실행
+# 디펜던시 다운로드. 다른 버전 사용하고자 하면,
+# go.mod 파일 수정 후 go build 재실행
 go build
 
-# go mod tidy fetch all the dependencies that you need for testing in your module.
+# `go mod tidy` fetch all the dependencies that you need for testing in your module.
 go mod tidy
 
 # 특정 버전의 패키지 사용
