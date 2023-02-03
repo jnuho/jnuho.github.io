@@ -2,44 +2,59 @@ package main
 
 import (
 	"fmt"
-	"math/rand"
-	"sync"
-	"time"
 )
 
-var (
-	wg sync.WaitGroup
-)
+var arr []int = make([]int, 2)
 
-func diningProblem(name string, first, second *sync.Mutex, firstName, secondName string) {
-	for i := 0; i < 100; i++ {
-		fmt.Printf("%s 밥을 먹으려 합니다.\n", name)
-
-		first.Lock()
-		fmt.Printf("%s %s를 획득.\n", name, firstName)
-		second.Lock()
-		fmt.Printf("%s %s를 획득.\n", name, secondName)
-
-		fmt.Printf("%s 밥을 먹습니다.\n", name)
-
-		time.Sleep(time.Duration(rand.Intn(1000)) * time.Millisecond)
-		second.Unlock()
-		first.Unlock()
-
-	}
-	wg.Done()
+func fibonacci(n int) int {
+	if n == 0 {
+				arr[0] = arr[0] + 1
+				fmt.Printf("0")
+        return 0
+    } else if n == 1 {
+				arr[1] = arr[1] + 1
+				fmt.Printf("1")
+        return 1
+    } else {
+        return fibonacci(n-1) + fibonacci(n-2)
+    }
 }
 
+/** 1은 2번 출력되고, 0은 1번 출력된다.
+N이 주어졌을 때, fibonacci(N)을 호출했을 때, 0과 1이 각각 몇 번 출력되는지 구하는 프로그램을 작성하시오.
+입력
+첫째 줄에 테스트 케이스의 개수 T가 주어진다.
+각 테스트 케이스는 한 줄로 이루어져 있고, N이 주어진다. N은 40보다 작거나 같은 자연수 또는 0이다.
+- 입력
+T
+N1
+N2
+...
+NT
+
+- 출력
+r1 r2
+...
+r1 r2
+*/
+
+// ./test T
 func main() {
-	rand.Seed(time.Now().UnixNano())
+	T,N := 0, 0
+	arr := make([]int, 0)
+	cnt := 0
 
-	first := &sync.Mutex{}
-	second := &sync.Mutex{}
+	fmt.Scanln(&T)
 
-	wg.Add(2)
+	for i in range T {
+		fmt.Scanln(&N)
+		arr = append(arr, N)
+	}
 
-	go diningProblem("A", first, second, "포크", "수저")
-	go diningProblem("B", second, first, "수저", "포크")
+	for _, n in range arr {
+		cnt = 0
+		fibonacci(n)
+		fmt.Println(cnt)
+	}
 
-	wg.Wait()
 }
