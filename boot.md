@@ -76,3 +76,4 @@ java -jar jpashop-0.0.1-SNAPSHOT.jar
   - 외부 라이브러리 추가 (spring-boot-data-source-decorator)
   - build.gradle > `implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.5.6'`
   - 운영 환경에서는 성능 저하 가능 (개발환경에서만 권장)
+
