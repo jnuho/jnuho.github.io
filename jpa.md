@@ -1672,22 +1672,27 @@ public class JpaMain {
 		// 사용자 정의 함수 호출 (JPA 2.1)
 		
 		// 기본키값
+    //  count(m.id)
+    jpql = "select count(m) from Member m";
+		//  m.id = ?
+		jpql = "select m from Member m where m = :member";
+		List resultList = em.createQuery(jpql)
+        .setParameter("member", member)
+        .getResultList();
+		
 		// 외래키값
 		Team team = em.find(Team.class, 1L);
+		//  m.team_id = ?
 		jpql = "select m from Member m where m.team = :team";
 		List resultList = em.createQuery(jpql)
 				.setParameter("team", team)
-				.getResultList();
-		jpql = "select m from Member m where m.team_id = :teamId";
-		resultList = em.createQuery(jpql)
-				.setParameter("teamId", 1L)
 				.getResultList();
 	}
 }
 ```
 
 - Named 쿼리 : 정적 쿼리
-  - 동적 쿼리 : `em.createQuery("select ...");`
+  - 동적 쿼리 : 런타임에 jpql에 따라 문자로 넘김 `em.createQuery("select ...");`
   - 정적 쿼리 : 미리 정한 쿼리에 이름을 부여해서 필요할 때 사용.
 - Named 쿼리를 어노테이션에 정의
 
