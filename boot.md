@@ -77,3 +77,5 @@ java -jar jpashop-0.0.1-SNAPSHOT.jar
   - build.gradle > `implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.5.6'`
   - 운영 환경에서는 성능 저하 가능 (개발환경에서만 권장)
 
+- 도메인 모델과 테이블 설계
+- 
