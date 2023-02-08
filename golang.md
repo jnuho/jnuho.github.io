@@ -15,16 +15,8 @@ echo $GOPATH
 # GOPATH 가 아닌 디렉토리에서 실행 /root/TestApp
 # fmt 라이브러리만 사용하므로 정상 실행
 mkdir -p ~/TestApp && cd ~/TestApp
-cat > main.go
-package main
-import (
- "fmt"
-)
-func main() {
- fmt.Println("Running the TestApp")
-}
 
-# 실행 성공!
+# main.go 작성 후 실행 성공!
 go run main.go
 
 cat > main.go
@@ -49,7 +41,10 @@ go run main.go
 
 # go mod init /root/TestApp
 # go.mod 파일 생성
-go mod init github.com/jnuho/jnuho.github.io/hellogo/TestApp
+
+cd hellogo/cookbook
+go mod init github.com/jnuho/jnuho.github.io/hellogo/cookbook
+
 
 # go.mod에 현재 module 정의 외에는 별 내용 없음
 # go build 실행 하여 디펜던시를 다운받아야 함
@@ -63,6 +58,10 @@ go build
 
 # `go mod tidy` fetch all the dependencies that you need for testing in your module.
 go mod tidy
+
+# go mod why -m <module>
+# find out where any of your dependencies are used (consumed)
+go mod why -m golang.org/x/text
 
 # 특정 버전의 패키지 사용
 # 디폴트 : latest
@@ -103,7 +102,7 @@ touch display/format.go
 ```go
 ### USE ABOVE PACKAGES ###
 # mkdir simplego && cd simplego
-# touch main.go
+# cat > main.go
 package main
 
 import "github.com/jnuho/jnuho.github.io/goproject/calculator/operations"
@@ -303,7 +302,7 @@ func main(){
   - 컴퓨터는 2진수로만 표현-> 실수 표현시 오차발생 (e.g. 0.376 != 2^-2 + 2^-3+ ...)
   - 서로 다른 값이 오차에 의해 같다고 나오는 현상 테스트
   - epsilon 값을 정의하여 두 값의 차이가 해당 값보다 작으면 equal처리
--- operationErr2.go
+- operationErr2.go
   - 비트표현시 '지수부+실수부' 중 가장 오른쪽 비트 하나차이 이내이면 같다고 판단
   - 마지막 비트가 1만큼 차이 나는지 확인
     - `func Nextafter(x,y float64) (r float64)`
@@ -5505,6 +5504,4 @@ cp /root/demo /goapp
 # http://{ip}:3000/
 # 서버 
 ```
-
-
 
