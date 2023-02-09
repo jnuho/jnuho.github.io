@@ -6,20 +6,19 @@ import (
 	"os"
 )
 
-func Copy(in *io.ReedSeeker, out io.Writer) error {
-	// write to out and 
+
+// Copies data from in to out directly
+// , writes to stdout using buffer
+func Copy(in io.ReadSeeker, out io.Writer) error {
 	w := io.MultiWriter(out, os.Stdout)
 
-	// standard copy
 	if _, err := io.Copy(w, in); err != nil {
 		return err
 	}
 
-	in.Seek(0, 0)
+	io.Seek(0, 0)
 
-	// standard copy
-	buf := make([]byte, 64)
-	if _, err := io.CopyBuffer(w, in, buf); err != nil {
+	if _, err := io.Copy(w, in, buf); err != nil {
 		return err
 	}
 
