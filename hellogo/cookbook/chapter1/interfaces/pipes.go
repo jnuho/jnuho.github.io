@@ -7,11 +7,6 @@ import (
 )
 
 func PipeExample() error {
-	r, w := io.Pipe()
-
-}
-
-func PipeExample() error {
 	// implements io.Reader and io.Writer
 	// Write to the PipeWriter blocks until it has satisfied one or more Reads from PipeReader
 	// the Data is copied directly from the Write to the corresponding Read
