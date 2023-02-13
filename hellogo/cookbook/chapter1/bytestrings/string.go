@@ -1,28 +1,7 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 package bytestrings
 
 import (
 	"fmt"
-	"io"
-	"os"
 	"strings"
 )
 
@@ -34,5 +13,4 @@ func SearchString() {
 
 	// contains any of a,b,c
 	fmt.Println(strings.ContainsAny(s, "abc"))
-
 }
