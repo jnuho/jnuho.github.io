@@ -48,6 +48,14 @@ func main() {
 }
 ```
 
+
+```
+In Go, close() is a built-in function that is used to close a channel.
+When a channel is closed, it can no longer be written to,
+but it can still be read from until all values that have been written to it have been read.
+Closing a channel is important for signaling to the receiver that no more values will be sent.
+```
+
 3. What is the difference between a slice and an array in Go?
   - array: fixed size
   - slice : dynmically sized. length can change at rumtime
