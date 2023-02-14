@@ -16,9 +16,9 @@ func main() {
 	}
 	fmt.Println("out bytes buffer =", out.String())
 
-	// PipeExample()
 	fmt.Print("stdout on PipeExample = ")
 	if err := interfaces.PipeExample(); err != nil {
 		panic(err)
 	}
 }
+
