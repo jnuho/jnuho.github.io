@@ -9,6 +9,7 @@ import (
 func main() {
 	in :=  bytes.NewReader([]byte ("example"))
 	out := &bytes.Buffer{}
+
 	// Copy()
 	fmt.Print("stdout on Copy = ")
 	if err := interfaces.Copy(in, out); err != nil {
