@@ -1,4 +1,10 @@
 
+- Concurrency vs Parallelism
+	- Concurrent :
+		- 동시성: 서버에서 여러개 클라이언트 요청을 동시에 처리
+		- 서버가 동시에 처리할 수 있는 클라이언트 수를 늘려주지만, 요청하나하나의 속도는 그대로
+	- Parallel : 
+		- 병렬: 멀티스레드 방식으로 하나의 연산을 Parallel 방식으로 처리
 
 
 1. What is Go language and what makes it different from other programming languages?
@@ -8,6 +14,7 @@
     - improved performance
     - better documentation
     - easier refactoring
+	- 스태틱타입 언어로 컴파일 시 데이터타입이 정해져야하며,  type-safety, 성능 등의 이점이 있습니다.
   - concurrency
   - garbage collection
   - standard library
@@ -15,6 +22,7 @@
   - strong typing
 2. Can you explain the Go routine and how it works?
   - A Goroutine is a lightweight thread of execution in Go.
+	- 고루틴은 경량 스레드의 실행(execution)으로 다른 function들과 
   - It is a function that is capable of running concurrently with other functions.
   - Unlike traditional threads, Goroutines are cheaper and more efficient to create and manage,
   - as they are multiplexed onto multiple OS threads.
@@ -48,18 +56,95 @@ func main() {
 }
 ```
 
+- 채널
+	- 초기화
+		- `ch := make(chan int)`
+	- 초기화 시 크기 지정
+		- `ch := make(chan int, 5)`
+	- 고루틴간 1. communication과 2. 동기화를 가능하게 하기 위한 방법으로 채널을 사용
+
+- 1. 채널 커뮤니케이션
+
+```go
+import (
+	"fmt"
+)
+
+func printNumbers(ch chan int) {
+	for i:=0; i<10; i++ {
+		ch <- i
+	}
+}
+
+func main() {
+	ch := make(chan int)
+
+	go printNumbers(ch)
+
+	for n := range(ch) {
+		fmt.Println(n)
+	}
+}
+```
+
+- 2. 채널 동기화
+	- Use channel to wait for a goroutine to finish its work, and then proceeding to the next operations
+	- Wait until the goroutine is finished, then proceed to the next operation
+	- Sending to the channel when the operation is done, blocking until the message is received
+
+```go
+package main
+
+import (
+	"fmt"
+	"time"
+)
+
+func worker(done chan bool) {
+	// Do some work
+	// ... doing work ...
+	fmt.Println("Work Started : ", time.Now())
+	time.Sleep(3000 * time.Millisecond)
+
+	// Signal that the work is done
+	done <- true
+}
+
+func main() {
+	done := make(chan bool)
+
+	// Start the worker in a goroutine
+	go worker(done)
+
+	if <-done {
+		fmt.Println("Work done : ", time.Now())
+	}
+}
+```
+
+- 채널 built-in 함수 `close(채널)`
 
 ```
-In Go, close() is a built-in function that is used to close a channel.
+In Go, close(채널) is a built-in function that is used to close a channel.
 When a channel is closed, it can no longer be written to,
+close(채널)은 해당 채널로의 write이 더이상 안되도록 함
+다만 이미 write 된 데이터를 읽는 작업은 가능
 but it can still be read from until all values that have been written to it have been read.
 Closing a channel is important for signaling to the receiver that no more values will be sent.
+```
+
+- 채널을 동기화에 사용하는 추가 예시
+
+```go
+
+
 ```
 
 3. What is the difference between a slice and an array in Go?
   - array: fixed size
   - slice : dynmically sized. length can change at rumtime
 		- can be created from an array or slice by slicing between indices
+		- 크기가 동적으로 관리 되며, array나 slice로 부터 생성 가능 (index 활용)
 
 4. How do you handle errors in Go? Can you give an example?
   - in Go, errors are represented as values of the built-in error type.
@@ -90,6 +175,7 @@ func main() {
 
 5. How would you implement concurrency in Go?
   - go provides several built-in features for implementing concurrency
+	- built-in
 
 - Goroutines
   - lightweight threads of execution that can be created with the go keyword.

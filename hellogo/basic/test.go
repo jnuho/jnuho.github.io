@@ -2,59 +2,46 @@ package main
 
 import (
 	"fmt"
+	"time"
 )
 
-var arr []int = make([]int, 2)
-
-func fibonacci(n int) int {
-	if n == 0 {
-				arr[0] = arr[0] + 1
-				fmt.Printf("0")
-        return 0
-    } else if n == 1 {
-				arr[1] = arr[1] + 1
-				fmt.Printf("1")
-        return 1
-    } else {
-        return fibonacci(n-1) + fibonacci(n-2)
-    }
+// jobs for performing work
+// results for sending result back to main goroutine
+func worker(id int, jobs chan int, results chan int) {
+	// wait until channels are populated
+	fmt.Printf("Start worker %d \n", id)
+	for j := range jobs {
+		time.Sleep(time.Second)
+		results <- j*2
+	}
+	fmt.Printf("End worker %d \n", id)
 }
 
-/** 1은 2번 출력되고, 0은 1번 출력된다.
-N이 주어졌을 때, fibonacci(N)을 호출했을 때, 0과 1이 각각 몇 번 출력되는지 구하는 프로그램을 작성하시오.
-입력
-첫째 줄에 테스트 케이스의 개수 T가 주어진다.
-각 테스트 케이스는 한 줄로 이루어져 있고, N이 주어진다. N은 40보다 작거나 같은 자연수 또는 0이다.
-- 입력
-T
-N1
-N2
-...
-NT
-
-- 출력
-r1 r2
-...
-r1 r2
-*/
-
-// ./test T
 func main() {
-	T,N := 0, 0
-	arr := make([]int, 0)
-	cnt := 0
+	const numOfJobs = 5
+	jobs := make(chan int, numOfJobs)
+	results := make(chan int, numOfJobs)
 
-	fmt.Scanln(&T)
-
-	for i in range T {
-		fmt.Scanln(&N)
-		arr = append(arr, N)
+	// Start up to 3 workers
+	// with empty channel jobs and results
+	for i:=0; i<3; i++ {
+		go worker(i, jobs, results)
 	}
 
-	for _, n in range arr {
-		cnt = 0
-		fibonacci(n)
-		fmt.Println(cnt)
+	// 5개 
+	for i:=0; i< numOfJobs; i++ {
+		fmt.Printf("Main : put %d value into jobs\n", i)
+		jobs <- i
 	}
 
+	close(jobs)
+
+	// The workers perform the jobs by receiving them from the jobs channel
+	// and sending the results to the results channel.
+	// The use of channels ensures that the jobs are performed in order
+	// and that the main goroutine waits for all the workers to finish before exiting.
+	for i:=0; i< numOfJobs; i++ {
+		a := <- results
+		fmt.Printf("Result:  value from channel : %d\n", a)
+	}
 }
