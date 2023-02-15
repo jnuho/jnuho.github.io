@@ -1,4 +1,5 @@
 
+
 - Concurrency vs Parallelism
 	- Concurrent :
 		- 동시성: 서버에서 여러개 클라이언트 요청을 동시에 처리
@@ -7,27 +8,38 @@
 		- 병렬: 멀티스레드 방식으로 하나의 연산을 Parallel 방식으로 처리
 
 
-1. What is Go language and what makes it different from other programming languages?
-  - statically-typed: data types must be known at compile-time
-    - contrary to dynamically-typed in which types can change at runtime
-    - type safety
-    - improved performance
-    - better documentation
-    - easier refactoring
-	- 스태틱타입 언어로 컴파일 시 데이터타입이 정해져야하며,  type-safety, 성능 등의 이점이 있습니다.
-  - concurrency
-  - garbage collection
-  - standard library
-  - cross platform
-  - strong typing
-2. Can you explain the Go routine and how it works?
-  - A Goroutine is a lightweight thread of execution in Go.
-	- 고루틴은 경량 스레드의 실행(execution)으로 다른 function들과 
-  - It is a function that is capable of running concurrently with other functions.
-  - Unlike traditional threads, Goroutines are cheaper and more efficient to create and manage,
-  - as they are multiplexed onto multiple OS threads.
-  - Goroutines are implemented using a system of channels and select statements,
-  - which allow them to communicate with each other and coordinate their execution.
+- ALB 와 NLB의 차이점
+
+- OSI모델 7계층
+
+- AWS ROLE에 따라 인증 api키
+
+- grpc
+
+
+### 1. What is Go language and what makes it different from other programming languages?
+
+- 스태틱타입 언어로 컴파일 시 데이터타입이 정해져야 하기 때문에, type-safety, 성능 등의 이점이 있음
+  - contrary to dynamically-typed in which types can change at runtime
+  - type safety
+  - improved performance
+  - better documentation
+  - easier refactoring
+- concurrency
+- garbage collection
+- standard library
+- cross platform
+- strong typing
+
+### 2. Can you explain the Go routine and how it works?
+
+- A Goroutine is a lightweight thread of execution in Go.
+- 고루틴은 경량 스레드의 실행(execution)으로 다른 function들과 concurrent하게 실행 될 수 있는 function 입니다
+- It is a function that is capable of running concurrently with other functions.
+- Unlike traditional threads, Goroutines are cheaper and more efficient to create and manage,
+- as they are multiplexed onto multiple OS threads.
+- Goroutines are implemented using a system of channels and select statements,
+- which allow them to communicate with each other and coordinate their execution.
 
 ```go
 package main
@@ -63,7 +75,8 @@ func main() {
 		- `ch := make(chan int, 5)`
 	- 고루틴간 1. communication과 2. 동기화를 가능하게 하기 위한 방법으로 채널을 사용
 
-- 1. 채널 커뮤니케이션
+
+- 1.채널 커뮤니케이션
 
 ```go
 import (
@@ -136,23 +149,23 @@ Closing a channel is important for signaling to the receiver that no more values
 - 채널을 동기화에 사용하는 추가 예시
 
 ```go
-
-
 ```
 
-3. What is the difference between a slice and an array in Go?
-  - array: fixed size
-  - slice : dynmically sized. length can change at rumtime
-		- can be created from an array or slice by slicing between indices
-		- 크기가 동적으로 관리 되며, array나 slice로 부터 생성 가능 (index 활용)
+### 3. What is the difference between a slice and an array in Go?
 
-4. How do you handle errors in Go? Can you give an example?
-  - in Go, errors are represented as values of the built-in error type.
-  - to handle errors, Go provides several techniques, including:
-  * Return values (recommended)
-  * Panic and recover
-    - Go provides a panic function that can be used to halt
-    - the normal flow of execution and jump to a recovery function
+- array: fixed size
+- slice : dynmically sized. length can change at rumtime
+  - can be created from an array or slice by slicing between indices
+  - 크기가 동적으로 관리 되며, array나 slice로 부터 생성 가능 (index 활용)
+
+### 4. How do you handle errors in Go? Can you give an example?
+
+- in Go, errors are represented as values of the built-in error type.
+- to handle errors, Go provides several techniques, including:
+* Return values (recommended)
+* Panic and recover
+  - Go provides a panic function that can be used to halt
+  - the normal flow of execution and jump to a recovery function
 
 ```go
 func divide1(a, b int) (int, error) {
@@ -173,9 +186,10 @@ func main() {
 }
 ```
 
-5. How would you implement concurrency in Go?
-  - go provides several built-in features for implementing concurrency
-	- built-in
+### 5. How would you implement concurrency in Go?
+
+- go provides several built-in features for implementing concurrency
+- built-in
 
 - Goroutines
   - lightweight threads of execution that can be created with the go keyword.
@@ -253,7 +267,7 @@ func main() {
 }
 ```
 
-6. Can you explain the Go memory model and how it manages memory allocation and garbage collection?
+### 6. Can you explain the Go memory model and how it manages memory allocation and garbage collection?
 
 ```
 The Go memory model is a set of rules that dictate how Go programs should behave when accessing shared memory. It defines the behavior of the Go runtime with regards to memory allocation, garbage collection, and concurrency.
@@ -267,7 +281,7 @@ The Go memory model also provides some guarantees with regards to concurrency. F
 Overall, the Go memory model provides a high-level abstraction that allows Go programmers to focus on writing their programs, without having to worry about the low-level details of memory allocation and garbage collection. The Go runtime takes care of these details and provides the necessary guarantees to ensure that Go programs behave correctly and efficiently.
 ```
 
-7. How do you structure your Go code and organize packages?
+### 7. How do you structure your Go code and organize packages?
 
 ```
 Organizing your Go code into packages and following a structure
@@ -305,7 +319,7 @@ By following these guidelines, you can structure your Go code
 in a way that makes it easier to maintain, test, and reuse.
 ```
 
-8. Can you explain the defer keyword in Go and provide an example of its use?
+### 8. Can you explain the defer keyword in Go and provide an example of its use?
 	- execute a function later, after the function that contains the defer statement has completed
 	- even if the surrounding function panics, the deferred function call is executed!
 	- clean up resources, closing files, releasing locks, printing log messages
@@ -325,7 +339,7 @@ func main() {
 }
 ```
 
-9. How do you handle HTTP requests in Go and what packages do you typically use for that?
+### 9. How do you handle HTTP requests in Go and what packages do you typically use for that?
 
 ```
 'net/http' package for handling HTTP requests
@@ -357,7 +371,7 @@ func main() {
 ```
 
 
-10. Can you explain the difference between interface and struct in Go and when to use each?
+### 10. Can you explain the difference between interface and struct in Go and when to use each?
 
 ```
 Struct is a user-defined composite data type
@@ -399,7 +413,7 @@ while interfaces are useful for defining common functionality across different t
 It's common to use both structs and interfaces together to create a well-organized and flexible codebase.
 ```
 
-11. Can you give an example of Go code that demonstrates the use of channels for communication between go routines?
+### 11. Can you give an example of Go code that demonstrates the use of channels for communication between go routines?
 
 
 ```go
@@ -438,7 +452,7 @@ Channels also provide a way to block a goroutine until a value is available,
 which is useful for coordinating concurrent operations.
 ```
 
-12. Can you explain the use of Go testing and give an example of a test case?
+### 12. Can you explain the use of Go testing and give an example of a test case?
 
 
 ```
@@ -481,7 +495,7 @@ go test
 ```
 
 
-13. Can you discuss the benefits of using Go for microservices?
+### 13. Can you discuss the benefits of using Go for microservices?
 
 ```
 Yes, here are some benefits of using Go for microservices:
@@ -507,7 +521,7 @@ Overall, Go's combination of speed, concurrency support, simplicity, ease of dep
 and safety features make it a great choice for building microservices.
 ```
 
-14. How do you handle dependencies in Go and what tools do you use for dependency management?
+### 14. How do you handle dependencies in Go and what tools do you use for dependency management?
 
 ```
 Dependency management is an important aspect of any software development project, including those written in Go. In Go, there are several ways to handle dependencies and several popular tools for dependency management.
@@ -542,7 +556,8 @@ Overall, Go provides several ways to manage dependencies, with Go modules being 
 
 ```
 
-15. Can you provide an example of using reflection in Go?
+### 15. Can you provide an example of using reflection in Go?
+
 - Reflection is a powerful feature in Go that allows you to inspect and manipulate
 - the structure of a value at runtime. Here's a simple example of how to use reflection in Go:
 
@@ -598,3 +613,4 @@ Address: 123 Main St
 ```
 This example demonstrates how reflection can be used to inspect the fields of a struct at runtime, regardless of the struct's type. Reflection can also be used to manipulate objects at runtime, create new instances of types, and much more.
 ```
+
