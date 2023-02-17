@@ -1,8 +1,7 @@
 
 
 - Concurrency vs Parallelism
-	- Concurrent :
-		- 동시성: 서버에서 여러개 클라이언트 요청을 동시에 처리
+	- Concurrent : - 동시성: 서버에서 여러개 클라이언트 요청을 동시에 처리
 		- 서버가 동시에 처리할 수 있는 클라이언트 수를 늘려주지만, 요청하나하나의 속도는 그대로
 	- Parallel : 
 		- 병렬: 멀티스레드 방식으로 하나의 연산을 Parallel 방식으로 처리
@@ -11,10 +10,10 @@
 - OSI모델 7계층
 
 ```
-L1 : 물리(Physical) 계층
-L2 : Data Link 계층
-...
 L7 : 응용(Application) 계층 -> HTTP/FTP 프로토콜 통신
+...
+L2 : Data Link 계층
+L1 : 물리(Physical) 계층
 
 - 낮은 계층 일수록 물리적, 높은 계층 일수록 논리적
 
@@ -178,6 +177,53 @@ Closing a channel is important for signaling to the receiver that no more values
 - 채널을 동기화에 사용하는 추가 예시
 
 ```go
+package main
+
+import (
+	"fmt"
+	"time"
+)
+
+// jobs for performing work
+// results for sending result back to main goroutine
+func worker(id int, jobs chan int, results chan int) {
+	// wait until channels are populated
+	fmt.Printf("Start worker %d \n", id)
+	for j := range jobs {
+		time.Sleep(time.Second)
+		results <- j*2
+	}
+	fmt.Printf("End worker %d \n", id)
+}
+
+func main() {
+	const numOfJobs = 5
+	jobs := make(chan int, numOfJobs)
+	results := make(chan int, numOfJobs)
+
+	// Start up to 3 workers
+	// with empty channel jobs and results
+	for i:=0; i<3; i++ {
+		go worker(i, jobs, results)
+	}
+
+	// 5개
+	for i:=0; i< numOfJobs; i++ {
+		fmt.Printf("Main : put %d value into jobs\n", i)
+		jobs <- i
+	}
+
+	close(jobs)
+
+	// The workers perform the jobs by receiving them from the jobs channel
+	// and sending the results to the results channel.
+	// The use of channels ensures that the jobs are performed in order
+	// and that the main goroutine waits for all the workers to finish before exiting.
+	for i:=0; i< numOfJobs; i++ {
+		a := <- results
+		fmt.Printf("Result:  value from channel : %d\n", a)
+	}
+}
 ```
 
 ### 3. What is the difference between a slice and an array in Go?

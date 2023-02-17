@@ -96,7 +96,6 @@ touch operations/simple.go
 touch display/format.go
 
 ### COMMIT AND PUSH TO REPO ###
-
 ```
 
 ```go
@@ -110,7 +109,6 @@ import "github.com/jnuho/jnuho.github.io/goproject/calculator/operations"
 func main() {
 }
 ```
-
 
 ```sh
 # look through import statements
@@ -134,7 +132,6 @@ cat go.mod
 - 가비지 컬렉터 유무
   - 자동 메모리 해제 처리 하여 메모리 관련 문제 적음
   - CPU를 사용하므로 성능 저하 단점
-
 
 
 - 코드 실행 단계
@@ -634,7 +631,6 @@ func main() {
 
 
 ### 12.배열 array
-
 
 - array copy
 
