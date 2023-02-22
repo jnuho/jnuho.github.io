@@ -86,3 +86,71 @@ for _, v := range names {
 ```
 
 - 함수
+
+- 다른함수에 함수 포인터 전달하기
+
+```go
+func runMathOp(a int, b int, op func(int, int)int) int {
+	return op(a,b)
+}
+
+func add(a int, b int) int {return a+b}
+func sub(a int, b int) int {return a-b}
+func mul(a int, b int) int {return a*b}
+func div(a int, b int) int {return a/b}
+
+func main() {
+	a,b := 9, 6
+	fmt.Println(runMathOp(a,b, add))
+	fmt.Println(runMathOp(a,b, sub))
+	fmt.Println(runMathOp(a,b, mul))
+	fmt.Println(runMathOp(a,b, div))
+}
+
+```
+
+- `defer`
+	- 함수를 반환하기 직전에 어떤 코드를 실행하라는 명령
+
+
+- `generic`
+	- functions and data types that can work with different types of data
+	- type paramters are placeholders for a type that are defined when a generic function or type is used
+
+```go
+func MaxInts(nums[] int) int {
+	max := nums[0]
+	for _, n := range nums {
+		if n > max {
+			max = n
+		}
+	}
+
+	return max
+}
+```
+
+- Example of a gneric function that finds the maximum value in a slice of integers
+	- make it work with any type that implements `Comparable` interface.
+
+```go
+type Comparable interface {
+	type int, int8, int16, int32, int64, uint, uint8, uint16, uint32, uint64, float32, float64, string
+}
+
+func Max[T Comparable](nums []T) {
+	max := nums[0]
+
+	for _, n := range nums {
+		if n> max {
+			max = n
+		}
+	}
+
+	return max
+}
+```
+
+
+
+

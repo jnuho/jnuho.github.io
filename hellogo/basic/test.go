@@ -1,30 +1,40 @@
+
+
+
+
+
+
+
+
+
+
 package main
 
 import (
 	"fmt"
 )
 
-func main() {
-	a := [5]int{1,2,3,4,5}
-	b := [5]int{500,400,300,200,100}
-
-	// a
-	for i,v := range a {
-		fmt.Printf("a[%d] = %d\n", i, v)
-	}
-
-	// b
-	fmt.Println()
-	for i, v := range b {
-		fmt.Printf("b[%d] = %d\n", i, v)
-	}
-
-	b = a
-
-	// a가 복사된 b
-	fmt.Println()
-	for i,v := range b {
-		fmt.Printf("b[%d] = %d\n", i, v)
-	}
+type Comparable interface {
+	LessThan(other interface{}) bool
 }
+
+func Max[T Comparable](nums []T) T {
+	max := nums[0]
+	for _, n := range nums {
+		if n.LessThan(max) {
+		if n > max {
+			max = n
+		}
+	}
+	return max
+}
+
+func main() {
+	nums := []int{1,2,3,4,5}
+	max := Max(nums)
+	fmt.Println(max)
+}
+
+
+
 
