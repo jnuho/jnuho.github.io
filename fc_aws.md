@@ -1,7 +1,23 @@
 
 
+
+
+
+
+
+
+
+- 클라우드 서비스
+	- CSP Vendor: aws, gcp, azure, ...
+	- 서비스모델 IaaS, PaaS, SaaS
+	- SVC 모델 : IaaS, PaaS, SaaS
+
+
+
+
+
 - EC2 & key pair
-  - 퍼블릭키는 EC2 인스턴스에 설치됨 - 개인키는 접속주체 개인 저장
+	- 퍼블릭키는 EC2 인스턴스에 설치됨 - 개인키는 접속주체 개인 저장
 
 ```
 # Permissions 0644 for '*.pem' are too open!
@@ -40,7 +56,6 @@ dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /nores
 
 # 재부팅 후 실행
 wsl
-
 
 # 버전 확인
 wsl -l -v
