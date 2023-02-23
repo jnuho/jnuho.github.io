@@ -36,7 +36,17 @@ aws ec2 describe-regions --profile DEV --query "Regions[].RegionName" --output t
 
 - AWS 서비스 소개
 	- EC2 + ASG
-	- 
+	- Lambda (Serverless, Function as a service)
+	- S3 (스토리지 클래스 based on usage frequency)
+		- Bucket policy
+	- EBS : EC2 에 attach/detach
+	- EFS : NAS와 비슷. 사용한 만큼 과금
+		- Lambda, ECS, Fargate, EC2 리소스에 마운트하여 사용 가능
+
+- 네트워크 서비스
+	- VPC / Cloudfront / Route53
+	- VPC peering
+	- Cloudfront CDN
 
 
 - EC2 & key pair
