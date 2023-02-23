@@ -8,12 +8,35 @@
 
 
 - 클라우드 서비스
-	- CSP Vendor: aws, gcp, azure, ...
+	- CSP Vendor: aws, gcp, azure
 	- 서비스모델 IaaS, PaaS, SaaS
 	- SVC 모델 : IaaS, PaaS, SaaS
 
+- AWS 리전
+	- `지역-지리적위치-순번`
+	- cli로 리전 조회 가능
+
+- AWS cli for available regions
 
 
+
+```sh
+# This command uses the describe-regions command of the ec2 AWS CLI service
+# and specifies the DEV profile using the --profile option.
+# The --query option is used to filter the output and return only the RegionName property of each region.
+# Finally, the --output option is used to format the output as plain text.
+aws ec2 describe-regions --profile DEV --query "Regions[].RegionName" --output text
+```
+
+- Availability Zone (AZ)
+	- Seoul : a,b,c,d 4개 리전
+
+
+- Edge location cache server (LambdaX로 성능개선)
+
+- AWS 서비스 소개
+	- EC2 + ASG
+	- 
 
 
 - EC2 & key pair
