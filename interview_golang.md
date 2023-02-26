@@ -23,22 +23,33 @@ L1 : 물리(Physical) 계층
 
 ```
 ALB와 NLB는 single 또는 multi AZ 상에, EC2, 컨테이너, IP 주소 등을 타겟으로 들어오는 네트워크 트래픽을 분산 시켜주는 역할.
+
 ALB와 NLB의 가장큰 차이는 이들이 작동하는 OSI 모델의 계층 (layer)
 
-- ALB operates at Layer 7 (application layer), which means it can distribute traffic based on content of the request (such as the URL, the HTTP headers, or cookies) in addition to IP address and port. ALB can also route traffic to multiple services based on the content of the request, support WebSocket and HTTP/2 protocols, and provide advanced routing and targeting features to manage complex applications.
+- ALB operates at Layer 7 (application layer), which means it can distribute traffic based on content of the request
+(such as the URL, the HTTP headers, or cookies) in addition to IP address and port.
+ALB can also route traffic to multiple services based on the content of the request,
+support WebSocket and HTTP/2 protocols, and provide advanced routing and targeting features to manage complex applications.
+
 - Layer7 부하분산 지원
 - HTTP, HTTPS 트래픽을 로드밸런싱 하여 내부 인스턴스에 전달
 - 클라이언트가 웹화면 요청하여 HTTP, HTTPS 프로토콜을 사용하여 어플리케이션 레벨에 접근 할 때
 
-- NLB operates at Layer 4 (transport layer), which means it can distribute traffic based on IP protocol data, such as IP addresses and ports. NLB is designed to handle high-volume, low-latency traffic and can handle millions of requests per second with very low latencies. NLB supports static IP addresses and targets that can be in different VPCs, and it can be used to handle TCP, UDP, and TLS traffic.
+- NLB operates at Layer 4 (transport layer), which means it can distribute traffic based on IP protocol data, such as IP addresses and ports.
+NLB is designed to handle high-volume, low-latency traffic
+and can handle millions of requests per second with very low latencies.
+NLB supports static IP addresses and targets that can be in different VPCs,
+and it can be used to handle TCP, UDP, and TLS traffic.
 - TCP/UDP 트래픽을 로드밸런싱 하여 내부 인스턴스에 전달
 - 내부로 들어온 트래픽을 처리하고, 내부 인스턴스로 트래픽을 전달 할 때
 
-In summary, ALB is a more advanced and flexible load balancer that can be used for complex web applications, while NLB is a more basic and powerful load balancer that is suitable for high-volume traffic and is used primarily for TCP-based traffic.
+In summary, ALB is a more advanced and flexible load balancer
+  that can be used for complex web applications,
+while NLB is a more basic and powerful load balancer
+  that is suitable for high-volume traffic and is used primarily for TCP-based traffic.
 
-=> ALB가 좀더 복잡한 웹 어플리케이션에 맞는 좀더 발전되고 유연한 로드밸런서라고 할 수 있습니다.
+=> ALB가 좀더 복잡한 웹 어플리케이션에 맞는 좀더 발전되고 유연한 로드밸런서
 => 반면에 NLB는 대용량 트랙픽과 TCP 기반 트래픽에 더 적합한 기본적이고 강력한 로드밸런서
-
 ```
 
 - AWS ROLE에 따라 인증 api키
