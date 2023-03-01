@@ -8,16 +8,7 @@
 
 
 - OSI모델 7계층
-
-```
-L7 : 응용(Application) 계층 -> HTTP/FTP 프로토콜 통신
-...
-L2 : Data Link 계층
-L1 : 물리(Physical) 계층
-
-- 낮은 계층 일수록 물리적, 높은 계층 일수록 논리적
-
-```
+  - [OSI reference model](network)
 
 - ALB 와 NLB의 차이점
 
@@ -30,16 +21,36 @@ ALB와 NLB의 가장큰 차이는 이들이 작동하는 OSI 모델의 계층 (l
 (such as the URL, the HTTP headers, or cookies) in addition to IP address and port.
 ALB can also route traffic to multiple services based on the content of the request,
 support WebSocket and HTTP/2 protocols, and provide advanced routing and targeting features to manage complex applications.
+It is ideal for applications that rely on HTTP and HTTPS protocols and offers advanced routing capabilities
+like host-based routing, path-based routing, and URL-based routing.
+It also provides features such as SSL termination, which helps offload the compute-intensive SSL encryption
+and decryption process from the application instances, and content-based routing,
+which allows routing based on specific content of the requests.
+
+For example, if you have an application that has different services running on different servers,
+you can use ALB to route incoming requests based on the URL path to the appropriate server.
+If you have an online marketplace that has a search service and a payment service running on separate servers,
+you can use ALB to route requests containing “/search” to the search server
+and requests containing “/payment” to the payment server. 
 
 - Layer7 부하분산 지원
 - HTTP, HTTPS 트래픽을 로드밸런싱 하여 내부 인스턴스에 전달
 - 클라이언트가 웹화면 요청하여 HTTP, HTTPS 프로토콜을 사용하여 어플리케이션 레벨에 접근 할 때
 
-- NLB operates at Layer 4 (transport layer), which means it can distribute traffic based on IP protocol data, such as IP addresses and ports.
-NLB is designed to handle high-volume, low-latency traffic
+- NLB operates at Layer 4 (transport layer), which means it can distribute traffic based on IP protocol data,such as IP addresses and ports.
+NLB is ideal for handling TCP and UDP traffic, and is designed to handle high-volume, low-latency traffic
 and can handle millions of requests per second with very low latencies.
 NLB supports static IP addresses and targets that can be in different VPCs,
 and it can be used to handle TCP, UDP, and TLS traffic.
+
+it offers high throughput and low latency, making it well-suited for handling large amounts of traffic.
+It also supports static IP addresses, which are useful in situations where IP addresses need to remain the same.
+For example, if you have an application that requires TCP or UDP traffic handling,
+such as a gaming or streaming service, you can use NLB to distribute the traffic
+evenly across multiple servers for scalability and high availability.
+If you have a database cluster that requires high throughput and low latency,
+you can use NLB to distribute the traffic across multiple nodes.
+
 - TCP/UDP 트래픽을 로드밸런싱 하여 내부 인스턴스에 전달
 - 내부로 들어온 트래픽을 처리하고, 내부 인스턴스로 트래픽을 전달 할 때
 
@@ -50,9 +61,15 @@ while NLB is a more basic and powerful load balancer
 
 => ALB가 좀더 복잡한 웹 어플리케이션에 맞는 좀더 발전되고 유연한 로드밸런서
 => 반면에 NLB는 대용량 트랙픽과 TCP 기반 트래픽에 더 적합한 기본적이고 강력한 로드밸런서
+
+In summary, ALB is ideal for applications that require advanced routing capabilities,
+such as web applications, APIs, and microservices,
+while NLB is ideal for handling high-throughput TCP and UDP traffic, such as gaming, streaming, and database clusters.
+
 ```
 
 - AWS ROLE에 따라 인증 api키
+  - "provide an example that requires aws golang sdk and authentication api keys based on different aws roles"
 
 - grpc
 
