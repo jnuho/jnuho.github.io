@@ -85,7 +85,34 @@ while NLB is ideal for handling high-throughput TCP and UDP traffic, such as gam
 - garbage collection
 - standard library
 - cross platform
-- strong typing
+- strong t
+
+```
+Concurrency: Go has built-in support for concurrency, which makes it easy to write programs
+that can handle multiple tasks simultaneously. Go's concurrency features are
+based on the concept of goroutines, lightweight threads that can be created and scheduled independently.
+
+Garbage collection: Go uses automatic garbage collection, which helps
+to simplify memory management and reduce the risk of memory leaks.
+
+Strong typing: Go is a strongly typed language, which means that all variables
+must be declared with a specific type.
+This helps to prevent common programming errors and makes the code easier to read and maintain.
+
+Simple syntax: Go has a simple, C-like syntax that is easy to learn and read.
+This makes it a good choice for beginners and for teams with varying levels of programming experience.
+
+Performance: Go is designed to be fast and efficient, with built-in support
+for low-level programming constructs like pointers and memory management.
+
+Cross-platform support: Go can be compiled for a variety of operating systems
+and architectures, including Linux, macOS, Windows, and ARM processors.
+
+Overall, Go is a versatile and powerful language that combines the simplicity
+of a scripting language with the performance and efficiency of a compiled language.
+It's a great choice for building large-scale applications and for developers who value simplicity, speed, and concurrency.
+```
+
 
 ### 2. Can you explain the Go routine and how it works?
 
