@@ -69,9 +69,80 @@ while NLB is ideal for handling high-throughput TCP and UDP traffic, such as gam
 ```
 
 - AWS ROLE에 따라 인증 api키
-  - "provide an example that requires aws golang sdk and authentication api keys based on different aws roles"
+
+```
+Q) provide an example that requires aws golang sdk and authentication api keys based on different aws roles"
+```
+
+## golang http server
+
+```
+Q) what's the best practice for golang to store aws credentials 
+A) When it comes to storing AWS credentials in a Go application,
+the best practice is to use the AWS SDK for Go's built-in credential chain.
+The credential chain allows you to specify multiple ways to provide AWS credentials,
+including environment variables, shared credential files, and IAM roles.
+The SDK will automatically search for and use the first set of valid credentials it finds in the chain.
+
+Here's an example of using the credential chain in a Go application:
+```
+
+
+```go
+package main
+
+import (
+    "fmt"
+
+    "github.com/aws/aws-sdk-go/aws"
+    "github.com/aws/aws-sdk-go/aws/session"
+    "github.com/aws/aws-sdk-go/service/s3"
+)
+
+func main() {
+    // Create a new session using the default configuration
+    sess := session.Must(session.NewSessionWithOptions(session.Options{
+        SharedConfigState: session.SharedConfigEnable,
+    }))
+
+    // Create a new S3 client using the session
+    svc := s3.New(sess)
+
+    // List all buckets in the account
+    result, err := svc.ListBuckets(nil)
+    if err != nil {
+        panic(err)
+    }
+
+    // Print the name of each bucket
+    for _, bucket := range result.Buckets {
+        fmt.Println(*bucket.Name)
+    }
+}
+```
+
+```
+In this example, we create a new session using the session.NewSessionWithOptions function
+and specifying SharedConfigEnable as the SharedConfigState option.
+This tells the SDK to use the default configuration file and environment variables to find AWS credentials.
+
+If you need to use a specific set of credentials or a different configuration file,
+you can specify those options in the session.NewSessionWithOptions function. For example:
+```
+
+- This would create a session with the specified profile ("my-profile") and region ("us-west-2").
+
+```go
+sess := session.Must(session.NewSessionWithOptions(session.Options{
+    Config: aws.Config{
+        Region: aws.String("us-west-2"),
+    },
+    Profile: "my-profile",
+}))
+```
 
 - grpc
+
 
 ### 1. What is Go language and what makes it different from other programming languages?
 
