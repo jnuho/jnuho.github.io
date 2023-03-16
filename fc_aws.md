@@ -97,7 +97,7 @@ wsl -l -v
 https://wslstorestorage.blob.core.windows.net/wslblob/wsl_update_x64.msi
 
 # 버전 업데이트
-# 또는 wsl --set-version Ubuntu-20.04 2
+# 또는 wsl --set-version Ubuntu-22.04 2
 wsl --set-version Ubuntu 2
 
 
@@ -109,7 +109,6 @@ wsl
 # 디폴트 버전 2 설정
 wsl --set-default-version 2
 ```
-
 
 - AWS CLI자격증명 설정 우선순위
   1. CLI명령어 옵션 (실무)
