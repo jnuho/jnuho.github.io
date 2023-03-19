@@ -1,41 +1,11 @@
 
 
 
-## 도커
+- Docker
 
-- docker run
-  - pull > create > start > attach(-it 옵션 사용 시)
-- docker create
-  - pull > create
-
-```shell
-docker -v
-docker images
-docker run 
-
-# 컨테이너 centos 생성 후 시작
-docker create -it --name mycentos centos:7
-docker start mycentos
-
-# 도커 내부로 들어감
-# CTRL + P 누른상태로 Q : 컨테이너 중단없이 외부로 나옴
-# exit 커멘드는 컨테이너를 중단시킴
-docker attach mycentos
-
-# 현재 실행 중인 mycentos 컨테이너의 Id 추출
-docker inspect mycentos | grep Id
-
-# CONTAINER_ID :
-# IMAGE: 생성된 원본 이미지 이름
-# COMMAND : 컨테이너가 시작될 때 실행될 명령어
-#  centos의 경우 /bin/bash 이미 내장되어 있어서 별도 지정없음
+```sh
 # PORTS: 컨테이너가 개방한 포트와, 호스트에 연결한 포트
 #  외부에 노출하지 않을 떄는 항목내용 없음
-# NAMES
-docker ps
-docker run -it ubuntu:14:04 echo hello world!
-docker rename mycentos mynewcentos
-
 docker stop NAME
 docker rm NAME
 
@@ -52,18 +22,16 @@ docker stop $(docker ps -a -q)
 docker rm $(docker ps -a -q)
 ```
 
-```shell
+```sh
 docker start myubuntu
 docker exec -it myubuntu bash
-
 # ehh0: 도커의 NAT IP 할당받은 인터페이스
 # lo: 인터페이스
 ifconfig
 ```
 
-
-- 쿠버네티스 소개
-  - 컨테이너 오케스트레이션 플랫폼으로 컨테이너 어플리케이션 deploy,manage, scaling 프로세스 자동화
+- Kubernetes
+  - 컨테이너 오케스트레이션 플랫폼으로 컨테이너 어플리케이션 deploy, manage, scaling 프로세스 자동화
   - Kubernetes clusters : 리눅스 컨테이너 호스트를 cluster로 그룹화하고 관리
     - on-premise, public/private/hybrid clouds에 적용가능
     - 바른 스케일링이 필요한 cloud-native 어플리케이션에 적합한 플랫폼
@@ -94,7 +62,6 @@ ifconfig
   - Replication 컨트롤러 : 몇개의 동일 pod 카피들이 클러스터에서 실행되어야 하는지 컨트롤
   - 서비스 : Pods로부터 수행할 work definition을 제거 함
   - Kubelet : 해당 서비스는 노드에서 작동하며, 컨테이너 manifest를 읽고, 정의된 컨테이너들이 시작하여 작동할 수 있도록 함
-  - kubectl: 쿠버네티스를 위한 cli 설정제어 툴
 
 - 동작원리
   - 클러스터 : 동작 중인 쿠버네티스 deployment를 클러스터라고 합니다.
@@ -112,3 +79,56 @@ ifconfig
 alt="쿠버네티스 클러스터" width="50%" height="100%">
 </div>
 
+
+- Kubenetes [tutorial](https://youtu.be/X48VuDVv0do)
+- install [microk8s](https://microk8s.io/docs/getting-started)
+
+```sh
+sudo snap install microk8s --classic --channel=1.26
+sudo usermod -a -G microk8s $USER
+sudo chown -f -R $USER ~/.kube
+su - $USER
+microk8s status --wait-ready
+
+# alias
+snap alias microk8s.kubectl k
+```
+
+- Deployment > ReplicaSet > Pod > Container
+	- use kubectl command to manage deployment
+
+```sh
+k get pod
+
+k get services
+
+k create deployment nginx-depl --image=nginx
+k get deployment
+k get pod
+k get replicaset
+
+k edit deployement nginx-depl
+k get pod
+	NAME                          READY   STATUS              RESTARTS   AGE
+	nginx-depl-56cb8b6d7-6z9w6    1/1     Running             0          3m49s
+	nginx-depl-8475696677-c4p24   0/1     ContainerCreating   0          5s
+
+k logs nginx-depl-56cb8b6d7-6z9w6
+
+k exec -it [pod name] -- bin/bash
+k exec -it [pod name] -- bin/bash
+
+k get pod
+	NAME                          READY   STATUS    RESTARTS   AGE
+	nginx-depl-8475696677-c4p24   1/1     Running   0          3m33s
+	mongo-depl-5ccf565747-xtp89   1/1     Running   0          2m10s
+
+k exec -it mongo-depl-5ccf565747-xtp89 -- bin/bash
+k delete deployment mongo-depl
+```
+
+
+- yaml configuration
+
+
+```
