@@ -79,6 +79,7 @@ ifconfig
 alt="쿠버네티스 클러스터" width="50%" height="100%">
 </div>
 
+### Local setup with microk8s or minikube
 
 - Kubenetes [tutorial](https://youtu.be/X48VuDVv0do)
 - install [microk8s](https://microk8s.io/docs/getting-started)
@@ -94,8 +95,7 @@ microk8s status --wait-ready
 snap alias microk8s.kubectl k
 ```
 
-- Deployment > ReplicaSet > Pod > Container
-	- use kubectl command to manage deployment
+### kubectl commands
 
 ```sh
 k get pod
@@ -109,26 +109,323 @@ k get replicaset
 
 k edit deployement nginx-depl
 k get pod
-	NAME                          READY   STATUS              RESTARTS   AGE
-	nginx-depl-56cb8b6d7-6z9w6    1/1     Running             0          3m49s
-	nginx-depl-8475696677-c4p24   0/1     ContainerCreating   0          5s
+  NAME                          READY   STATUS              RESTARTS   AGE
+  nginx-depl-56cb8b6d7-6z9w6    1/1     Running             0          3m49s
+  nginx-depl-8475696677-c4p24   0/1     ContainerCreating   0          5s
 
 k logs nginx-depl-56cb8b6d7-6z9w6
 
-k exec -it [pod name] -- bin/bash
-k exec -it [pod name] -- bin/bash
 
 k get pod
-	NAME                          READY   STATUS    RESTARTS   AGE
-	nginx-depl-8475696677-c4p24   1/1     Running   0          3m33s
-	mongo-depl-5ccf565747-xtp89   1/1     Running   0          2m10s
+  NAME                          READY   STATUS    RESTARTS   AGE
+  nginx-depl-8475696677-c4p24   1/1     Running   0          3m33s
+  mongo-depl-5ccf565747-xtp89   1/1     Running   0          2m10s
 
+k exec -it [pod name] -- bin/bash
 k exec -it mongo-depl-5ccf565747-xtp89 -- bin/bash
 k delete deployment mongo-depl
 ```
 
+### Configuration file
 
-- yaml configuration
+- Layer of Abstraction
+  - `Deployment > ReplicaSet > Pod > Container`
+  - use kubectl command to manage deployment
 
+- Configuration file: yaml
+  1. metadata
+  2. specification
+  3. status (auto-generated)
+    - `etcd` stores cluster data
+
+- Template
+  - has it's own "metadata" and "spec" section
+  - blueprint for a Pod
+  - configuration inside configuration (for pod)
+
+- Labels & Selectors
+  - key-value pair
+  - label(in metadata:) is matched by the selector(in spec:)
+  - service label matches to both deployment and pods
+  - deployment label matches to pod
+
+### Example with nginx deployment and service
+
+- DB -80-> Nginx Service -8080-> Pod
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+  labels:
+    app: nginx
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.16
+        ports:
+        - containerPort: 8080
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-service
+spec:
+  selector:
+    app: nginx
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 8080
+```
+
+
+```sh
+k describe service nginx-service
+k get pod -o wide
+k get deployment nginx-deployment -o yaml > result.yaml
+```
+
+
+### Example of Web application with DB
+
+- Web App: mongo-express
+- DB: mongo
+
+- Overview of K8s Components
+  - Internal Service: for MongoDB
+    - ConfigMap: DB url
+    - Secret: DB User/DB Pwd
+    - both to be referenced in deployment.yaml
+  - External Service: for Mongo Express
+
+### Secret
+
+```yaml
+apiVersion: apps/v1
+kind: Secret
+metadata:
+  name: mongodb-secret
+type: Opaque
+data:
+  mongo-root-username: bXl1c2VybmFtZQ==
+  mongo-root-password: bXlwYXNzd29yZA==
+```
+
+```sh
+# username, password to encrypt base64
+echo -n 'myusername' | base64
+echo -n 'mypassword' | base64
+
+k apply -f mongo-secret.yaml
+k get secret
+```
+
+### MongoDB deployment and Internal service
+
+- reference secret from mongo.yaml and create internal service
+- service configuration
+  - kind: Service
+  - metadata /name: service name
+  - selector: to connect to pod through label
+  - ports.port: service port
+  - ports.targetPort: scontainerPort of deployment
+
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mongodb-deployment
+  labels:
+    app: mongodb
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mongodb
+  template:
+    metadata:
+      labels:
+        app: mongodb
+    spec:
+      containers:
+      - name: mongodb
+        image: mongo
+        ports:
+        - containerPort: 27017
+        env:
+        - name: MONGO_INITDB_ROOT_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: mongodb-secret
+              key: mongo-root-username
+        - name: MONGO_INITDB_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mongodb-secret
+              key: mongo-root-password
+---
+
+apiVersion: apps/v1
+kind: Service
+metadata:
+  name: mongodb-service
+spec:
+  selector:
+    app: mongodb
+  ports:
+    - protocol: TCP
+      port: 27017
+      targetPort: 27017
+```
+
+```sh
+k apply mongo.yaml
+
+k get all | grep mongo
+k get pod --watch
+
+k get pod -o wide
+  NAME                                  READY   STATUS    RESTARTS   AGE   IP           NODE   NOMINATED NODE   READINESS GATES
+  mongodb-deployment-5d966bd9d6-nvtfx   1/1     Running   0          60s   10.1.94.15   9550   <none>           <none>
+```
+
+
+### MongoExpress deployment and External service
+
+- create ConfigMap to store db url before creating deployment yaml
+- dburl, username, password are to be specified in deployment yaml
+
+- ConfigMap: mongo-configmap.yaml
+
+```yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mongodb-configmap
+data:
+  database_url: mongodb-service
+```
+
+- Deployment and service: mongo-express.yaml
+  - external service type: `LoadBalancer`
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mongo-express
+  labels:
+    app: mongo-express
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mongo-express
+  template:
+    metadata:
+      labels:
+        app: mongo-express
+    spec:
+      containers:
+      - name: mongo-express
+        image: mongo-express
+        ports:
+        - containerPort: 8081
+        env:
+        - name: ME_CONFIG_MONGODB_ADMINUSERNAME
+          valueFrom:
+            secretKeyRef:
+              name: mongodb-secret
+              key: mongo-root-username
+        - name: ME_CONFIG_MONGODB_ADMINPASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mongodb-secret
+              key: mongo-root-password
+        - name: ME_CONFIG_MONGODB_SERVER
+          valueFrom:
+            configMapKeyRef:
+              name: mongodb-configmap
+              key: database_url
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongo-express-service
+spec:
+  selector:
+    app: mongo-express
+  type: LoadBalancer
+  ports:
+    - protocol: TCP
+      port: 8081
+      targetPort: 8081
+      # port for external ip address 30000-32767
+      nodePort: 30000
+```
+
+```sh
+k apply -f mongo-express.yaml
+
+# EXTERNAL-IP is for LoadBalancer
+k get service
+
+k get endpoints
+```
+
+### Exposing Service(type: LoadBalancer) thorugh public-ip
+
+- browser http://EXTERNAL_IP:NodePort
+  - -> Mongo Express External Service
+  - -> Mongo Express Pod
+  - -> Mongo DB Internal Service
+  - -> Mongo DB Pod
+
+
+- In microk8s use addons: [how?](https://benbrougher.tech/posts/microk8s-ingress/)
+  - metallb
+  - ingress
+
+
+```sh
+# minikube
+minikube kubectl service mongo-express-service
+
+# microk8s
+microk8s enable metallb
+  192.168.0.50-192.168.0.100
+
+k get svc
+  NAME                    TYPE           CLUSTER-IP       EXTERNAL-IP    PORT(S)          AGE
+  kubernetes              ClusterIP      10.152.183.1     <none>         443/TCP          9h
+  mongodb-service         ClusterIP      10.152.183.44    <none>         27017/TCP        6m39s
+  mongo-express-service   LoadBalancer   10.152.183.106   192.168.0.50   8081:30000/TCP   6m28s
+
+curl http://192.168.0.50:8081
 
 ```
+
+
+### Namespace
+
+- organize resources in namespaces
+- virtual cluster inside a cluster
+
+```
+k get namespace
+```
+
