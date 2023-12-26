@@ -814,4 +814,9 @@ vim /home/foo/.local/share/applications/wine/카카오톡.desktop
 ```
 
 
+- yt-dlp
+  - https://github.com/yt-dlp/yt-dlp#format-selection
 
+```sh
+yt-dlp --merge-output-format mp4 -f "bestvideo+bestaudio[ext=m4a]/best" https://www.youtube.com/live/u6s7WVNuhrw?si=mixUGFw0msShQPkK
+```
