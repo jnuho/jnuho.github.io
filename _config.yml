@@ -19,12 +19,12 @@ defaults:
 description: Stylish Jekyll Theme
 author:
   name: JUN HO LEE
-  email: jnuho@outlook.com
+  email: cactoos555@gmail.com
   github: jnuho
   twitter: 
   pinterest: 
   linkedin: 
-  bio: Interests:<br> Kubernetes | AWS | Golang
+  bio: Interests:<br> Kubernetes | Depp Learning | Golang
   email_md5: dfd301662e74e48b9f250554dd767672
 
 rss_path: feed.xml
