@@ -1,12 +1,4 @@
 
-
-
-
-
-
-
-
-
 - 클라우드 서비스
 	- CSP Vendor: aws, gcp, azure
 	- 서비스모델 IaaS, PaaS, SaaS
@@ -98,7 +90,7 @@ https://wslstorestorage.blob.core.windows.net/wslblob/wsl_update_x64.msi
 
 # 버전 업데이트
 # 또는 wsl --set-version Ubuntu-22.04 2
-wsl --set-version Ubuntu 2
+wsl --set-version Ubuntu-24.04 2
 
 
 # 업데이트된 버전 상태확인
