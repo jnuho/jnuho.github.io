@@ -49,8 +49,8 @@ go mod init github.com/jnuho/jnuho.github.io/hellogo/cookbook
 # go.mod에 현재 module 정의 외에는 별 내용 없음
 # go build 실행 하여 디펜던시를 다운받아야 함
 cat go.mod
-	module github.com/jnuho/jnuho.github.io/hellogo/TestApp
-	go 1.18
+  module github.com/jnuho/jnuho.github.io/hellogo/TestApp
+  go 1.18
 
 # 디펜던시 다운로드. 다른 버전 사용하고자 하면,
 # go.mod 파일 수정 후 go build 재실행
@@ -162,10 +162,10 @@ int16 | 2바이트 부호 있는 정수 | -32768~32767
 int32 | 4바이트 부호 있는 정수 | -214...648~214..647
 int64 | 8바이트 부호 있는 정수 | -922....808 ~ 922..807
 float32 | 4바이트 실수 | IEEE~754 32비트 실수
-float64 | 8바이트 실수 | IEEE~754 64비트 실수
+float64 | 8바이트 실수 | IEEE~754 64비트 실수 (`a:=3.14` will default to float64 type)
 complex64 | 8바이트 복소수(진수,가수) | 진수와 가수 범위는 float32 범위와 같음
 complex128 | 16바이트 복소수(진수,가수) | 진수와 가수 범위는 float64 범위와 같음
-byte | uint8의 별칭 1바이트 데이터 나타낼때 사용 | 0~255 rune | int32별칭 UTF-8로 문자하나 나타낼때 사용 | -214..648~214..647
+byte | uint8의 별칭 1바이트 데이터 나타낼때 사용 | 0~255 rune | int32별칭 UTF-8로 문자하나 나타낼때 사용 | -214..648~214..647, (`myChar := 'a' will default to rune)`
 int |  32비트 컴퓨터에서 int32. 64비트 컴퓨터에서 int64 |
 uint |  32비트 컴퓨터에서 uint32. 64비트 컴퓨터에서 uint64 |
 
@@ -198,24 +198,24 @@ uint |  32비트 컴퓨터에서 uint32. 64비트 컴퓨터에서 uint64 |
 ```go
 package main
 import (
-	"fmt"
-	"reflect"
+  "fmt"
+  "reflect"
 )
 func main() {
   // int
-	fmt.Println(reflect.TypeOf(10))
+  fmt.Println(reflect.TypeOf(10))
 
   // float64
-	fmt.Println(reflect.TypeOf(3.1415))
+  fmt.Println(reflect.TypeOf(3.1415))
 
   // string
-	fmt.Println(reflect.TypeOf("LaLaLalla"))
+  fmt.Println(reflect.TypeOf("LaLaLalla"))
 
   // bool
-	fmt.Println(reflect.TypeOf(true))
+  fmt.Println(reflect.TypeOf(true))
 
   // int32: (rune타입 : 4-byte int32 타입과 별칭)
-	fmt.Println(reflect.TypeOf('A'))
+  fmt.Println(reflect.TypeOf('A'))
 }
 ```
 
@@ -447,54 +447,54 @@ const PI2 float64 = 3.14
 // iota로 간편하게 열거값 사용 하기
 // 1씩증가. 소괄호 벗어나면 다시 초기화 됨
 const (
-	Red   int = iota // 0
-	Blue  int = iota // 1
-	Green int = iota // 2
+  Red   int = iota // 0
+  Blue  int = iota // 1
+  Green int = iota // 2
 )
 
 // const를 소괄호()로 묶고 iota 사용하면
 // 0부터 1씩 차례로 증가하며 값이 초기화 됨
 const (
-	C1 uint = iota + 1 // 1 = 0 + 1
-	C2                 // 2 = 1 + 1
-	C3                 // 3 = 2 + 1
+  C1 uint = iota + 1 // 1 = 0 + 1
+  C2                 // 2 = 1 + 1
+  C3                 // 3 = 2 + 1
 )
 
 const (
-	BitFlag1 uint = iota + 1 // 1 = 1 << 0
-	BitFlag2                 // 2 = 1 << 1
-	BitFlag3                 // 4 = 1 << 2
-	BitFlag4                 // 8 = 1 << 3
+  BitFlag1 uint = iota + 1 // 1 = 1 << 0
+  BitFlag2                 // 2 = 1 << 1
+  BitFlag3                 // 4 = 1 << 2
+  BitFlag4                 // 8 = 1 << 3
 )
 
 func PrintAnimal(animal int) {
-	if animal == Pig {
-		fmt.Println("꿀")
-	} else if animal == Cow {
-		fmt.Println("음메")
-	} else if animal == Chicken {
-		fmt.Println("꼬끼오")
-	}
+  if animal == Pig {
+    fmt.Println("꿀")
+  } else if animal == Cow {
+    fmt.Println("음메")
+  } else if animal == Chicken {
+    fmt.Println("꼬끼오")
+  }
 
 }
 
 func main() {
-	PrintAnimal(Pig)
-	PrintAnimal(Cow)
-	PrintAnimal(Chicken)
+  PrintAnimal(Pig)
+  PrintAnimal(Cow)
+  PrintAnimal(Chicken)
 
-	var a int = PI * 100
-	// var b int = PI2 * 100 // ERROR!
-	fmt.Println(a)
-	// fmt.Println(b)
+  var a int = PI * 100
+  // var b int = PI2 * 100 // ERROR!
+  fmt.Println(a)
+  // fmt.Println(b)
 
-	fmt.Println(C1)
-	fmt.Println(C2)
-	fmt.Println(C3)
+  fmt.Println(C1)
+  fmt.Println(C2)
+  fmt.Println(C3)
 
-	fmt.Println(BitFlag1)
-	fmt.Println(BitFlag2)
-	fmt.Println(BitFlag3)
+  fmt.Println(BitFlag1)
+  fmt.Println(BitFlag2)
+  fmt.Println(BitFlag3)
 }
 ```
 
@@ -561,26 +561,26 @@ func main() {
 ```go
 // label사용은 지양 - 혼동 올 수 있음
 func find45(a int) (int, bool) {
-	for b := 1; b < 10; b++ {
-		if b*a == 45 {
-			return b, true
-		}
-	}
-	return 0, false
+  for b := 1; b < 10; b++ {
+    if b*a == 45 {
+      return b, true
+    }
+  }
+  return 0, false
 }
 
 func main() {
-	a := 1
-	b := 0
-	found := false
+  a := 1
+  b := 0
+  found := false
 
-	for ; a <= 9; a++ {
-		if b, found = find45(a); found {
-			break
-		}
-	}
+  for ; a <= 9; a++ {
+    if b, found = find45(a); found {
+      break
+    }
+  }
 
-	fmt.Printf("%d * %d = %d\n", a, b, a*b)
+  fmt.Printf("%d * %d = %d\n", a, b, a*b)
 }
 ```
 
@@ -591,41 +591,41 @@ func main() {
 package main
 
 import (
-	"bufio"
-	"fmt"
-	"os"
+  "bufio"
+  "fmt"
+  "os"
 )
 
 func main() {
-	stdin := bufio.NewReader(os.Stdin)
+  stdin := bufio.NewReader(os.Stdin)
 
-	for {
-		// 입력 된 값이 변수에 저장되기 전에 버퍼에 저장
-		// 숫자는 number에 저장되고 
-		// 숫자 + 
-		fmt.Print("숫자를 입력하세요: [-1로 종료]")
-		var number int
-		_, err := fmt.Scanln(&number)
+  for {
+    // 입력 된 값이 변수에 저장되기 전에 버퍼에 저장
+    // 숫자는 number에 저장되고 
+    // 숫자 + 
+    fmt.Print("숫자를 입력하세요: [-1로 종료]")
+    var number int
+    _, err := fmt.Scanln(&number)
 
-		if err != nil {
-			fmt.Println("숫자가 아닙니다!")
+    if err != nil {
+      fmt.Println("숫자가 아닙니다!")
 
-			//키보드 버퍼 비움
-			stdin.ReadString('\n')
-			continue
-		}
+      //키보드 버퍼 비움
+      stdin.ReadString('\n')
+      continue
+    }
 
-		fmt.Printf("입력 하신 숫자는 %d 입니다.", number)
+    fmt.Printf("입력 하신 숫자는 %d 입니다.", number)
 
-		if number%2 == 0 {
-			fmt.Printf("입력 하신 숫자는 짝수, %d, 입니다.\n", number)
-		} else if number%2 == 1 {
-			fmt.Printf("입력 하신 숫자는 홀수, %d, 입니다.\n", number)
-		} else if number == -1 {
-			fmt.Printf("for문 종료\n")
-			break
-		}
-	}
+    if number%2 == 0 {
+      fmt.Printf("입력 하신 숫자는 짝수, %d, 입니다.\n", number)
+    } else if number%2 == 1 {
+      fmt.Printf("입력 하신 숫자는 홀수, %d, 입니다.\n", number)
+    } else if number == -1 {
+      fmt.Printf("for문 종료\n")
+      break
+    }
+  }
 }
 ```
 
@@ -638,31 +638,31 @@ func main() {
 package main
 
 import (
-	"fmt"
+  "fmt"
 )
 
 func main() {
-	a := [5]int{1,2,3,4,5}
-	b := [5]int{500,400,300,200,100}
+  a := [5]int{1,2,3,4,5}
+  b := [5]int{500,400,300,200,100}
 
-	// a
-	for i,v := range a {
-		fmt.Printf("a[%d] = %d\n", i, v)
-	}
+  // a
+  for i,v := range a {
+    fmt.Printf("a[%d] = %d\n", i, v)
+  }
 
-	// b
-	fmt.Println()
-	for i, v := range b {
-		fmt.Printf("b[%d] = %d\n", i, v)
-	}
+  // b
+  fmt.Println()
+  for i, v := range b {
+    fmt.Printf("b[%d] = %d\n", i, v)
+  }
 
-	b = a
+  b = a
 
-	// a가 복사된 b
-	fmt.Println()
-	for i,v := range b {
-		fmt.Printf("b[%d] = %d\n", i, v)
-	}
+  // a가 복사된 b
+  fmt.Println()
+  for i,v := range b {
+    fmt.Printf("b[%d] = %d\n", i, v)
+  }
 }
 ```
 
@@ -684,12 +684,12 @@ func main() {
     // 행바뀜없는 inline 일때는 필요 없음 e.g. { {...},{.., 9,10} }
   }
 
-	for _, arr := range a {
-		for _, v := range arr {
-			fmt.Print(v, "")
-		}
-		fmt.Println()
-	}
+  for _, arr := range a {
+    for _, v := range arr {
+      fmt.Print(v, "")
+    }
+    fmt.Println()
+  }
 }
 ```
 
@@ -773,26 +773,26 @@ func main() {
 
 ```go
 func main() {
-	var a int = 10
-	var b int = 20
+  var a int = 10
+  var b int = 20
 
-	var p1 *int = &a
-	var p2 *int = &a
-	var p3 *int = &b
+  var p1 *int = &a
+  var p2 *int = &a
+  var p3 *int = &b
 
-	fmt.Printf("p1 == p2 : %v\n", p1==p2)
-	fmt.Printf("p2 == p3 : %v\n", p2==p3)
+  fmt.Printf("p1 == p2 : %v\n", p1==p2)
+  fmt.Printf("p2 == p3 : %v\n", p2==p3)
 
 
-	// 포인터의 기본값 nil
-	var p *int
-	if p != nil {
-		fmt.Println("포인터 p는 유효한 메모리 공간을 가리킴")
-	} else {
-		fmt.Println("포인터 p == nil 어떤 메모리 공간도 가리키고 있지 않음")
-	}
+  // 포인터의 기본값 nil
+  var p *int
+  if p != nil {
+    fmt.Println("포인터 p는 유효한 메모리 공간을 가리킴")
+  } else {
+    fmt.Println("포인터 p == nil 어떤 메모리 공간도 가리키고 있지 않음")
+  }
 
-	// 포인터는 변수대입 또는 함수 인수전달 시 메모리 공간을 적게 사용하면서 사용 가능
+  // 포인터는 변수대입 또는 함수 인수전달 시 메모리 공간을 적게 사용하면서 사용 가능
 }
 ```
 
@@ -819,8 +819,8 @@ func main() {
   // 인스턴스: 메모리에 할당된 '데이터의 실체'
   // 포인터를 이용하여 인스턴스에 접근
 
-	// 인스턴스는 언제사라지나?
-	// 메모리에 데이터 할당되고 사라지지 않으면 메모리고갈-> 메모리 해제 Gc가 담당
+  // 인스턴스는 언제사라지나?
+  // 메모리에 데이터 할당되고 사라지지 않으면 메모리고갈-> 메모리 해제 Gc가 담당
   // Garbage Collector에 의해 일정 간격으로 메모리에서 쓸모없는 데이터 청소 (인스턴스 등)
   // 생성된 변수 (인스턴스) 메모리는 함수 종료시 사라짐
   // 1.인스턴스는 메모리에 생성된 데이터의 실체
@@ -888,8 +888,8 @@ func main() {
 
 * 함수외부로 공개되는 인스턴스의 경우 함수가 종료 되어도 사리지지 않음
 * Go언어 스택 메모리는 계속 증가되는 동적 메모리 풀.
-*		일정한 크기를 갖는 C/C++언어와 비교해도 메모리 효율성 높고,
-* 	재귀 호출때문에 스택 메모리 고갈문제는 발생 X
+*    일정한 크기를 갖는 C/C++언어와 비교해도 메모리 효율성 높고,
+*   재귀 호출때문에 스택 메모리 고갈문제는 발생 X
 ```
 
 
@@ -898,10 +898,10 @@ func main() {
 ```go
 s1 := "Hello string variable!"
 s2 := `Special \t characters \t\t \n inside backticks are ignored\n
-	backticks also ignores new lines
-	line3
-	line4
-	line5`
+  backticks also ignores new lines
+  line3
+  line4
+  line5`
 
 fmt.Println(s1)
 fmt.Println(s2)
@@ -911,57 +911,57 @@ fmt.Println(s2)
   - `type rune int32`
 
 ```go
-	// 문자 하나를 표현하는데 rune 타입 사용
-	// UTF-8은 1~3바이트
-	// 알파벳 문자열크기 =1, 한글 문자열 크기 = 3
-	var c rune = '한'
+  // 문자 하나를 표현하는데 rune 타입 사용
+  // UTF-8은 1~3바이트
+  // 알파벳 문자열크기 =1, 한글 문자열 크기 = 3
+  var c rune = '한'
 
-	fmt.Printf("%T\n", c) // 타입 출력 : int32
-	fmt.Println(c)				// int32(rune) 형식 값 출력
-	fmt.Printf("%c\n", c) // 문자출력
+  fmt.Printf("%T\n", c) // 타입 출력 : int32
+  fmt.Println(c)        // int32(rune) 형식 값 출력
+  fmt.Printf("%c\n", c) // 문자출력
 
-	// 12 = (1*3) +  (3*3)
-	a := "abc가나다"
-	fmt.Println(len(a))
+  // 12 = (1*3) +  (3*3)
+  a := "abc가나다"
+  fmt.Println(len(a))
 
 
-	// string <-> []rune 타입 변환
-	// 		[]rune(str)
-	// 		string([]rune{...})
-	str := "Hello World!"
-	// []rune{72, 101, 108, 108, 111, 32, 87, 111, 114, 108, 100}
-	runes := []rune(str)
+  // string <-> []rune 타입 변환
+  //     []rune(str)
+  //     string([]rune{...})
+  str := "Hello World!"
+  // []rune{72, 101, 108, 108, 111, 32, 87, 111, 114, 108, 100}
+  runes := []rune(str)
 
-	fmt.Println(str)
-	fmt.Println(runes)
-	fmt.Println(string(runes))
-	fmt.Println(len(runes))
+  fmt.Println(str)
+  fmt.Println(runes)
+  fmt.Println(string(runes))
+  fmt.Println(len(runes))
 
-	for _,v := range runes {
-		fmt.Printf("타입: %T, 값: %d, 문자열: %c\n", v,v,v)
-	}
+  for _,v := range runes {
+    fmt.Printf("타입: %T, 값: %d, 문자열: %c\n", v,v,v)
+  }
 
-	// strng <-> []byte 변환
-	// 모든 문자열은 1바이트 배열로 변환 가능
+  // strng <-> []byte 변환
+  // 모든 문자열은 1바이트 배열로 변환 가능
 ```
 
 - Compare String
 
 ```go
-	s1 := "Hello"
-	s2 := "Hell"
-	s3 := "Hello"
+  s1 := "Hello"
+  s2 := "Hell"
+  s3 := "Hello"
 
-	fmt.Printf("%s == %s, %v\n", s1, s2, s1 == s2)
-	fmt.Printf("%s == %s, %v\n", s1, s3, s1 == s3)
+  fmt.Printf("%s == %s, %v\n", s1, s2, s1 == s2)
+  fmt.Printf("%s == %s, %v\n", s1, s3, s1 == s3)
 
-	str1 := "BBB"
-	str2 := "aaaaAAA"
-	str3 := "BBAD"
-	str4 := "ZZZ"
+  str1 := "BBB"
+  str2 := "aaaaAAA"
+  str3 := "BBAD"
+  str4 := "ZZZ"
 
-	fmt.Printf("%s > %s, %v\n", str1, str2, str1 > str1)
-	fmt.Printf("%s <= %s, %v\n", str3, str4, str3 <= str4)
+  fmt.Printf("%s > %s, %v\n", str1, str2, str1 > str1)
+  fmt.Printf("%s <= %s, %v\n", str3, str4, str3 <= str4)
 ```
 
 
@@ -970,23 +970,23 @@ fmt.Println(s2)
 
 ```go
 import (
-	"fmt"
-	"unsafe"
-	"reflect"
+  "fmt"
+  "unsafe"
+  "reflect"
 )
 
 func main() {
-	str1 := "Hello World"
-	str2 := str1
+  str1 := "Hello World"
+  str2 := str1
 
 
-	// string -> unsafe.Pointer -> *reflect.StringHeader
-	stringHeader1 := (*reflect.StringHeader) (unsafe.Pointer(&str1))
-	stringHeader2 := (*reflect.StringHeader) (unsafe.Pointer(&str2))
-	
-	// 두 값이 같음
-	fmt.Println(stringHeader1)
-	fmt.Println(stringHeader2)
+  // string -> unsafe.Pointer -> *reflect.StringHeader
+  stringHeader1 := (*reflect.StringHeader) (unsafe.Pointer(&str1))
+  stringHeader2 := (*reflect.StringHeader) (unsafe.Pointer(&str2))
+  
+  // 두 값이 같음
+  fmt.Println(stringHeader1)
+  fmt.Println(stringHeader2)
 }
 ```
 
@@ -996,20 +996,20 @@ func main() {
 
 ```go
 func main() {
-	
-	var str string = "Hello World"
-	str= "How are you"
-	// ERROR: string is immutable
-	// str[2] = 'a'
+  
+  var str string = "Hello World"
+  str= "How are you"
+  // ERROR: string is immutable
+  // str[2] = 'a'
 
-	fmt.Println(str)
+  fmt.Println(str)
 
-	var slice []byte = []byte(str)
-	slice[2] = 'a'
-	fmt.Printf("%s\n", slice)
+  var slice []byte = []byte(str)
+  slice[2] = 'a'
+  fmt.Printf("%s\n", slice)
 
-	// str = string(slice)
-	// fmt.Printf("%s\n", str)
+  // str = string(slice)
+  // fmt.Printf("%s\n", str)
 }
 ```
 
@@ -1068,31 +1068,31 @@ go mod tidy
 package main
 
 import (
-	"fmt"
-	"math/rand"
+  "fmt"
+  "math/rand"
 
-	// 겹치는 패키지 이름 별칭으로 묶기
-	"text/template"
-	htemplate "html/template"
+  // 겹치는 패키지 이름 별칭으로 묶기
+  "text/template"
+  htemplate "html/template"
 
-	// 패키지를 사용하지는 않지만 부과효과 떄문에 import 하는 경우
-	"database/sql"
+  // 패키지를 사용하지는 않지만 부과효과 떄문에 import 하는 경우
+  "database/sql"
 
   // 밑줄 _을 이용해서 init() 함수 호출
   // 밑줄 _ 이용하여 unused 에러 방지
-	_ "github.com/mattn/go-sqlite3"
+  _ "github.com/mattn/go-sqlite3"
 )
 
 type Service struct {
-	db *sql.DB
+  db *sql.DB
 }
 
 func main() {
 
-	template.New("foo").Parse(`{{define "T"}}Hello`)
-	htemplate.New("foo").Parse(`{{define "T"}}Hello`)
+  template.New("foo").Parse(`{{define "T"}}Hello`)
+  htemplate.New("foo").Parse(`{{define "T"}}Hello`)
 
-	fmt.Println(rand.Int())
+  fmt.Println(rand.Int())
 }
 ```
 
@@ -1137,7 +1137,7 @@ cat usepkg.go
 package custompkg
 import "fmt"
 func PrintCustom() {
-	fmt.Println("This is custom package!")
+  fmt.Println("This is custom package!")
 }
 ```
 
@@ -1485,16 +1485,16 @@ import "fmt"
 
 func main() {
   slice1 := []int{1,2,3,4,5}
-	slice2 := make([]int, 3, 10) // len:3, cap:10
-	slice3 := make([]int, 10) // len:10, cap:10
+  slice2 := make([]int, 3, 10) // len:3, cap:10
+  slice3 := make([]int, 10) // len:10, cap:10
 
   // 3개만 복사됨
-	cnt1 := copy(slice2, slice1)
+  cnt1 := copy(slice2, slice1)
   // 5개 복사됨
-	cnt2 := copy(slice3, slice1)
+  cnt2 := copy(slice3, slice1)
 
-	fmt.Println("slice2: ", cnt1, slice2)
-	fmt.Println("slice3: ", cnt2, slice3)
+  fmt.Println("slice2: ", cnt1, slice2)
+  fmt.Println("slice3: ", cnt2, slice3)
 
 
   // 같은 cap, len으로 복제하려면:
@@ -1893,7 +1893,7 @@ func main() {
   p := &koreaPost.PostSender{}
 
   // f.Send("fedex parcel")
-	// p.Send("koreaPost parcel")
+  // p.Send("koreaPost parcel")
   SendFedexParcel("fedex parcel", f)
   SendKoreaPostParcel("koreaPost parcel", p)
 }
@@ -2059,12 +2059,12 @@ func main() {
 package main
 
 type Attacker interface {
-	Attack()
+  Attack()
 }
 
 func main() {
-	var att Attacker // 인터페이스 기본값은 nil입니다.
-	att.Attack()     // att가 nil이기 때문에 런타임 에러가 발생합니다.
+  var att Attacker // 인터페이스 기본값은 nil입니다.
+  att.Attack()     // att가 nil이기 때문에 런타임 에러가 발생합니다.
 }
 ```
 
@@ -2448,20 +2448,20 @@ func CaptureLoop() {
   f := make([]func(), 3)
   fmt.Println("CaptureLoop")
 
-	// i 가 복사되는것이 아닌 참조되기 떄문에
+  // i 가 복사되는것이 아닌 참조되기 떄문에
   for i :=0; i< len(f); i++ {
     f[i] = func() {
-			// 캡쳐할 떄 캡쳐하는 순간의 i값(1,2,3)이
-			// 복제 되는 것이 아니라, 변수가 참조로 캡쳐되므로
-			// i가 최종적으로 3이 되었을떄
-			// i를 참조하는 f[0], f[1], f[2]는 모두 i=3를 참조하게 됨
+      // 캡쳐할 떄 캡쳐하는 순간의 i값(1,2,3)이
+      // 복제 되는 것이 아니라, 변수가 참조로 캡쳐되므로
+      // i가 최종적으로 3이 되었을떄
+      // i를 참조하는 f[0], f[1], f[2]는 모두 i=3를 참조하게 됨
       fmt.Println(i)
     }
   }
 
   for i :=0; i< len(f); i++ {
-		f[i]()
-	}
+    f[i]()
+  }
 }
 
 
@@ -2470,27 +2470,27 @@ func CaptureLoop2() {
   f := make([]func(), 3)
   fmt.Println("CaptureLoop2")
 
-	// i 가 복사되는것이 아닌 참조되기 떄문에
+  // i 가 복사되는것이 아닌 참조되기 떄문에
   for i :=0; i< len(f); i++ {
-		v := i
+    v := i
     f[i] = func() {
-			// 캡쳐할 떄 캡쳐하는 순간의 i값(1,2,3)이
-			// 복제 되는 것이 아니라, 변수가 참조로 캡쳐되므로
-			// i가 최종적으로 3이 되었을떄
-			// i를 참조하는 f[0], f[1], f[2]는 모두 i=3를 참조하게 됨
+      // 캡쳐할 떄 캡쳐하는 순간의 i값(1,2,3)이
+      // 복제 되는 것이 아니라, 변수가 참조로 캡쳐되므로
+      // i가 최종적으로 3이 되었을떄
+      // i를 참조하는 f[0], f[1], f[2]는 모두 i=3를 참조하게 됨
       fmt.Println(v)
     }
   }
 
   for i :=0; i< len(f); i++ {
-		f[i]()
-	}
+    f[i]()
+  }
 }
 
 func main() {
-	// 3 3 3
+  // 3 3 3
   CaptureLoop()
-	// 1 2 3
+  // 1 2 3
   CaptureLoop2()
 }
 ```
@@ -2623,38 +2623,38 @@ import (
 //        front = .Front()
 //    .Remove(front)
 type Queue struct {
-	v *list.List
+  v *list.List
 }
 
 func (q *Queue) Push(val interface{}) {
-	q.v.PushBack(val)
+  q.v.PushBack(val)
 }
 
 func (q *Queue) Pop() interface{} {
-	front := q.v.Front()
-	if front != nil {
-		return q.v.Remove(front)
-	}
-	return nil
+  front := q.v.Front()
+  if front != nil {
+    return q.v.Remove(front)
+  }
+  return nil
 }
 
 func NewQueue() *Queue {
-	return &Queue{ list.New()}
+  return &Queue{ list.New()}
 }
 
 func main() {
-	queue := NewQueue()
+  queue := NewQueue()
 
-	for i :=1; i<=4; i++ {
-		queue.Push(i)
-	}
+  for i :=1; i<=4; i++ {
+    queue.Push(i)
+  }
 
-	v := queue.Pop()
-	for v != nil {
-		fmt.Print(v, " ")
-		v = queue.Pop()
-	}
-	fmt.Println()
+  v := queue.Pop()
+  for v != nil {
+    fmt.Print(v, " ")
+    v = queue.Pop()
+  }
+  fmt.Println()
 }
 ```
 
@@ -2858,52 +2858,52 @@ func main() {
 package main
 
 import (
-	"bufio"
-	"fmt"
-	"os"
+  "bufio"
+  "fmt"
+  "os"
 )
 
 const filename string =  "data.txt"
 
 // 파일에서 한줄 읽기
 func ReadFile(filename string) (string, error) {
-	file, err := os.Open(filename)
-	if err != nil {
-		return "", err
-	}
-	defer file.Close()
+  file, err := os.Open(filename)
+  if err != nil {
+    return "", err
+  }
+  defer file.Close()
 
-	rd := bufio.NewReader(file)
-	line, _ := rd.ReadString('\n')
-	return line, nil
+  rd := bufio.NewReader(file)
+  line, _ := rd.ReadString('\n')
+  return line, nil
 }
 
 func WriteFile(filename, line string) error {
-	file, err := os.Create(filename)
-	if err != nil {
-		return err
-	}
-	defer file.Close()
-	_, err = fmt.Fprintln(file, line)
-	return err
+  file, err := os.Create(filename)
+  if err != nil {
+    return err
+  }
+  defer file.Close()
+  _, err = fmt.Fprintln(file, line)
+  return err
 }
 
 func main() {
-	line, err := ReadFile(filename)
-	if err != nil {
-		err = WriteFile(filename, "This is WriteFile")
-		if err !=nil {
-			fmt.Println("파일 생성에 실패했습니다.", err)
-			return
-		}
-		line, err = ReadFile(filename)
-		if err !=nil {
-			fmt.Println("파일 읽기에 실패 했습니다.", err)
-			return
-		}
-	}
+  line, err := ReadFile(filename)
+  if err != nil {
+    err = WriteFile(filename, "This is WriteFile")
+    if err !=nil {
+      fmt.Println("파일 생성에 실패했습니다.", err)
+      return
+    }
+    line, err = ReadFile(filename)
+    if err !=nil {
+      fmt.Println("파일 읽기에 실패 했습니다.", err)
+      return
+    }
+  }
 
-	fmt.Println("파일내용: ", line)
+  fmt.Println("파일내용: ", line)
 }
 ```
 
@@ -3000,7 +3000,7 @@ func As(err error, target interface{}) bool
 // Read reads up to len(p) bytes into p.
 // It returns the number of bytes read (0 <= n <= len(p)) and any error encountered. 
 type Reader interface {
-	Read(p []byte) (n int, err error)
+  Read(p []byte) (n int, err error)
 }
 
 // NewReader returns a new Reader reading from s.
@@ -3030,60 +3030,60 @@ func ScanWords(data []byte, atEOF bool) (advance int, token []byte, err error)
 package main
 
 import (
-	"bufio"
-	"errors"
-	"fmt"
-	"strconv"
-	"strings"
+  "bufio"
+  "errors"
+  "fmt"
+  "strconv"
+  "strings"
 )
 
 func MultipleFromString(str string) (int, error) {
-	scanner := bufio.NewScanner(strings.NewReader(str)) // ❶ 스캐너 생성
-	scanner.Split(bufio.ScanWords)                      // ❷ 한 단어씩 끊어읽기
+  scanner := bufio.NewScanner(strings.NewReader(str)) // ❶ 스캐너 생성
+  scanner.Split(bufio.ScanWords)                      // ❷ 한 단어씩 끊어읽기
 
-	pos := 0
-	a, n, err := readNextInt(scanner)
-	if err != nil {
-		return 0, fmt.Errorf("Failed to readNextInt(), pos:%d err:%w", pos, err) // ➏ 에러 감싸기
-	}
+  pos := 0
+  a, n, err := readNextInt(scanner)
+  if err != nil {
+    return 0, fmt.Errorf("Failed to readNextInt(), pos:%d err:%w", pos, err) // ➏ 에러 감싸기
+  }
 
-	pos += n + 1
-	b, n, err := readNextInt(scanner)
-	if err != nil {
-		return 0, fmt.Errorf("Failed to readNextInt(), pos:%d err:%w", pos, err)
-	}
-	return a * b, nil
+  pos += n + 1
+  b, n, err := readNextInt(scanner)
+  if err != nil {
+    return 0, fmt.Errorf("Failed to readNextInt(), pos:%d err:%w", pos, err)
+  }
+  return a * b, nil
 }
 
 // 다음 단어를 읽어서 숫자로 변환하여 반환합니다.
 // 변환된 숫자, 읽은 글자수, 에러를 반환합니다.
 func readNextInt(scanner *bufio.Scanner) (int, int, error) {
-	if !scanner.Scan() { // ❸ 단어 읽기
-		return 0, 0, fmt.Errorf("Failed to scan")
-	}
-	word := scanner.Text()
-	number, err := strconv.Atoi(word) // ❹ 문자열을 숫자로 변환
-	if err != nil {
-		return 0, 0, fmt.Errorf("Failed to convert word to int, word:%s err:%w", word, err) // ➎ 에러 감싸기
-	}
-	return number, len(word), nil
+  if !scanner.Scan() { // ❸ 단어 읽기
+    return 0, 0, fmt.Errorf("Failed to scan")
+  }
+  word := scanner.Text()
+  number, err := strconv.Atoi(word) // ❹ 문자열을 숫자로 변환
+  if err != nil {
+    return 0, 0, fmt.Errorf("Failed to convert word to int, word:%s err:%w", word, err) // ➎ 에러 감싸기
+  }
+  return number, len(word), nil
 }
 
 func readEq(eq string) {
-	rst, err := MultipleFromString(eq)
-	if err == nil {
-		fmt.Println(rst)
-	} else {
-		fmt.Println(err)
-		var numError *strconv.NumError
-		if errors.As(err, &numError) { // ➐ 감싸진 에러가 NumError인지 확인
-			fmt.Println("NumberError:", numError)
-		}
-	}
+  rst, err := MultipleFromString(eq)
+  if err == nil {
+    fmt.Println(rst)
+  } else {
+    fmt.Println(err)
+    var numError *strconv.NumError
+    if errors.As(err, &numError) { // ➐ 감싸진 에러가 NumError인지 확인
+      fmt.Println("NumberError:", numError)
+    }
+  }
 }
 func main() {
-	readEq("123 3")
-	readEq("123 abc")
+  readEq("123 3")
+  readEq("123 abc")
 }
 ```
 
@@ -3132,32 +3132,32 @@ package main
 import "fmt"
 
 func f() {
-	fmt.Println("f() 함수 시작")
-	defer func() { // ❹ 패닉 복구
-		if r := recover(); r != nil {
-			fmt.Println("panic 복구 -", r)
-		}
-	}()
+  fmt.Println("f() 함수 시작")
+  defer func() { // ❹ 패닉 복구
+    if r := recover(); r != nil {
+      fmt.Println("panic 복구 -", r)
+    }
+  }()
 
-	g() // ❶ g() -> h() 순서로 호출
-	fmt.Println("f() 함수 끝")
+  g() // ❶ g() -> h() 순서로 호출
+  fmt.Println("f() 함수 끝")
 }
 
 func g() {
-	fmt.Printf("9 / 3 = %d\n", h(9, 3))
-	fmt.Printf("9 / 0 = %d\n", h(9, 0)) // ❷ h() 함수 호출 - 패닉
+  fmt.Printf("9 / 3 = %d\n", h(9, 3))
+  fmt.Printf("9 / 0 = %d\n", h(9, 0)) // ❷ h() 함수 호출 - 패닉
 }
 
 func h(a, b int) int {
-	if b == 0 {
-		panic("제수는 0일 수 없습니다.") // ❸ 패닉 발생!!
-	}
-	return a / b
+  if b == 0 {
+    panic("제수는 0일 수 없습니다.") // ❸ 패닉 발생!!
+  }
+  return a / b
 }
 
 func main() {
-	f()
-	fmt.Println("프로그램이 계속 실행됨") // ➎ 프로그램 실행 지속됨
+  f()
+  fmt.Println("프로그램이 계속 실행됨") // ➎ 프로그램 실행 지속됨
 }
 ```
 
@@ -3180,16 +3180,16 @@ if r, ok := recover().(net.Error); ok {
   - CPU는 하나의 스레드 실행가능, 여러개 스레드를 번갈아가면서 수행하여 동시실행 처럼 보임
 
 - 컨텍스트 스위칭 비용
-	- 하나의 CPU가 여러개 thread 전환하면서 수행시 컨텍스트 스위칭 비용 발생
-	- 스레드 전환시 현재 상태 보관해야 함 -> 스레드 컨텍스트를 저장
-	- 스레드 컨텍스트 : 명령 포인터, 스택메모리 등
+  - 하나의 CPU가 여러개 thread 전환하면서 수행시 컨텍스트 스위칭 비용 발생
+  - 스레드 전환시 현재 상태 보관해야 함 -> 스레드 컨텍스트를 저장
+  - 스레드 컨텍스트 : 명령 포인터, 스택메모리 등
   - 컨텍스트 저장 및 복원 시 비용 발생
   - Go언어는 한개의 CPU 코어당 하나의 OS스레드 할당 하므로 컨텍스트 비용 발생 없음
 
 - 고루틴 사용
   - 모든 프로그램은 main()을 고루틴으로 하나 가지고 있음
   - `go 함수호출`로 새로운 고루틴 추가 가능.
-	- 현재 고루틴이 아닌 새로운 고루틴에서 함수가 수행 됨
+  - 현재 고루틴이 아닌 새로운 고루틴에서 함수가 수행 됨
 
 
 ```go
@@ -3229,7 +3229,7 @@ func main() {
 
 - 모든 고루틴 작업 완료할때 까지 대기
   - 항상 고루틴의 종료시간에 맞춰 time.Sleep(종료까지걸리는시간) 호출할 수 없음
-	- 고루틴이 끝날때까지 wait할수 있음: sync.WaitGroup 객체
+  - 고루틴이 끝날때까지 wait할수 있음: sync.WaitGroup 객체
 
 ```go
 // sync.WaitGroup 객체 사용
@@ -3280,14 +3280,14 @@ func main() {
   - 시스템 콜 호출 시 (고루틴으로 시스템콜 호출시; e.g. 네트워크로 데이터 읽을 때 데이터 들어올때 까지 고루틴이 대기상태 됨), 
     - 네트워크 수신 대기상태인 고루틴이 대기목록으로 빠지고, 대기중이던 다른 고루틴이 OS 스레드를 이용하여 실행 됨
     - 코어와 스레드 변경(컨텍스트 스위칭) 없이 고루틴이 옮겨다니기 때문에 효율적
-		- 코어가 스레드 옮겨다니는 컨텍스트 스위칭을 하지 않고, 대신 고루틴이 직접 대기상태 <-> 실행상태 스위칭 옮겨다녀서 효율적
+    - 코어가 스레드 옮겨다니는 컨텍스트 스위칭을 하지 않고, 대신 고루틴이 직접 대기상태 <-> 실행상태 스위칭 옮겨다녀서 효율적
 
 
 - 동시성 프로그래밍 주의점
   - 동일한 메모리 자원에 여러개 고루틴 접근!
-		- e.g. 입금1000, 출금1000 을 10개의 고루틴이 동시 실행 하는 상황
-		- 두개 고루틴이 각각 1000원 입금했는데 2000이 아닌 1000이된상태에서 다시 두번 출금시 < 0 : panic!
-		- 해결책: 한 고루티에서 값을 변경할때 다른 고루틴이 접근하지 못하도록 mutex 활용 (mutual exclusion)
+    - e.g. 입금1000, 출금1000 을 10개의 고루틴이 동시 실행 하는 상황
+    - 두개 고루틴이 각각 1000원 입금했는데 2000이 아닌 1000이된상태에서 다시 두번 출금시 < 0 : panic!
+    - 해결책: 한 고루티에서 값을 변경할때 다른 고루틴이 접근하지 못하도록 mutex 활용 (mutual exclusion)
 
 ```go
 package main
@@ -3317,8 +3317,8 @@ func main() {
   wg.Add(10)
 
   for i:=0; i< 10; i++ {
-		// 하나의 자원에 다수의 고루틴이 접근 함
-		// 뮤텍스를 통해 Lock 걸어 해결
+    // 하나의 자원에 다수의 고루틴이 접근 함
+    // 뮤텍스를 통해 Lock 걸어 해결
     go func() {
       for {
         DepositAndWithdraw(account)
@@ -3381,8 +3381,8 @@ func main() {
 ```
 
 - 뮤텍스의 문제점
-	1. 뮤텍스는 동시성 프로그래밍 성능이점 감소시킴
-	2. 데드락 발생 가능
+  1. 뮤텍스는 동시성 프로그래밍 성능이점 감소시킴
+  2. 데드락 발생 가능
   - 멀티코어 환경에서는 여러 고루틴으로 성능 향상 가능
   - 같은메모리 접근시 꼬일 수 있음
   - 뮤텍스로 고루틴 하나만 접근하도록 하여 꼬이는 문제 해결 가능
@@ -3437,8 +3437,8 @@ func main() {
 
 - 또 다른 자원 관리 기법
   - 영역을 나누는 방법
-		- 각 고루틴은 할당된 작업만 하므로 고루틴(작업자)간 간섭 없음
-		- 고루틴 간 간섭이 없어서 뮤텍스도 필요 없음
+    - 각 고루틴은 할당된 작업만 하므로 고루틴(작업자)간 간섭 없음
+    - 고루틴 간 간섭이 없어서 뮤텍스도 필요 없음
   - 역할을 나누는 방법 : Channel과 함께 설명
 
 ```go
@@ -3490,10 +3490,10 @@ func main() {
 
 - 채널: 고루틴끼리 메시지를 전달 할 수 있는 메시지 큐
   - 메시지큐에 메시지가 쌓이게 되고
-	- 메시지를 읽을 때는 처음온 메시지부터 차례대로 읽음
+  - 메시지를 읽을 때는 처음온 메시지부터 차례대로 읽음
 
 - 채널 인스턴스 생성
-	- 채널을 사용하기 위해서는 먼저 채널 인스턴스를 만들어야 함
+  - 채널을 사용하기 위해서는 먼저 채널 인스턴스를 만들어야 함
 
 ```go
 // 채널타입: chan string
@@ -3544,8 +3544,8 @@ func square(wg *sync.WaitGroup, ch chan int) {
 func main() {
   var wg sync.WaitGroup
 
-	// 크기 0인 채널 생성 : 반드시 다른 고루틴이 채널에서 데이터 꺼내야 정상 종료
-	// 어떤 고루틴도 데이터 빼지 않으면 모든 고루틴이 계속대기 하다가 deadlock 발생
+  // 크기 0인 채널 생성 : 반드시 다른 고루틴이 채널에서 데이터 꺼내야 정상 종료
+  // 어떤 고루틴도 데이터 빼지 않으면 모든 고루틴이 계속대기 하다가 deadlock 발생
   ch := make(chan int)
 
   wg.Add(1)
@@ -3560,7 +3560,7 @@ func main() {
 
 - 채널 크기
   - 기본 채널크기 0
-		- 채널크기0: 채널에 데이터 보관할 곳이 없으므로 데이터 빼갈때까지 대기
+    - 채널크기0: 채널에 데이터 보관할 곳이 없으므로 데이터 빼갈때까지 대기
   - 채널 만들때 버퍼 크기 설정 가능
 
 ```go
@@ -3583,9 +3583,9 @@ func main() {
 ```
 
 - 버퍼 가진 채널
-	- `var chan string messages = make(chan string, 2)`
-	- 버퍼가 다 차면, 버퍼가 없는 크기 0 채널처럼 빈자리 생길때 까지 대기
-	- 데이터를 빼주지 않으면 버퍼없을 때 처럼 고루틴이 멈추게됨
+  - `var chan string messages = make(chan string, 2)`
+  - 버퍼가 다 차면, 버퍼가 없는 크기 0 채널처럼 빈자리 생길때 까지 대기
+  - 데이터를 빼주지 않으면 버퍼없을 때 처럼 고루틴이 멈추게됨
 
 - 채널에서 데이터 대기
 
@@ -3742,20 +3742,20 @@ func main() {
 package main
 
 import (
-	"fmt"
-	"sync"
-	"time"
+  "fmt"
+  "sync"
+  "time"
 )
 
 // 공정순서:
-// 		Body -> Tire -> Color
+//     Body -> Tire -> Color
 // 생산자 소비자 패턴 (Producer Consumer Pattern) 또는 pipeline pattern
 // MakeBody()루틴이 생산자, InstallTire()루틴은 소비자
 // InstallTire()는 PaintCar()루틴에 대해서는 생산자
 type Car struct {
-	Body string
-	Tire string
-	Color string
+  Body string
+  Tire string
+  Color string
 }
 
 var wg sync.WaitGroup
@@ -3764,65 +3764,65 @@ var startTime = time.Now()
 // 1초간격 차체생산하여 tireCh 채널에 데이터 넣음
 // 10초 후 tireCh 채널 닫고 루틴종료
 func MakeBody(tireCh chan *Car) { // 차체생산
-	tick := time.Tick(time.Second)
-	after := time.After(10 * time.Second)
+  tick := time.Tick(time.Second)
+  after := time.After(10 * time.Second)
 
-	for {
-		select {
-		case <- tick:
-			// Make a body
-			car := &Car{}
-			car.Body = "Sports car"
-			tireCh <- car
-		case <-after:
-			close(tireCh)
-			wg.Done()
-			return
-		}
-	}
+  for {
+    select {
+    case <- tick:
+      // Make a body
+      car := &Car{}
+      car.Body = "Sports car"
+      tireCh <- car
+    case <-after:
+      close(tireCh)
+      wg.Done()
+      return
+    }
+  }
 
 }
 
 // tireCh채널에서 데이터 읽어서 바퀴설치하고 paintCh채널에 넣어줌
 // tireCh채널 닫히면 루틴종료하고 paintCh채널 닫아줌
 func InstallTire(tireCh, paintCh chan *Car) { // 바퀴설치
-		for car := range tireCh {
-			// Make a body
-			time.Sleep(time.Second)
-			car.Tire = "Winter tire"
-			paintCh <- car
-		}
-		wg.Done()
-		close(paintCh)
+    for car := range tireCh {
+      // Make a body
+      time.Sleep(time.Second)
+      car.Tire = "Winter tire"
+      paintCh <- car
+    }
+    wg.Done()
+    close(paintCh)
 }
 
 
 // paintCh채널에서 데이터 읽어서 도색을 하고, 완성된 차 출력
 func PaintCar(paintCh chan *Car) { // 도색
-	for car := range paintCh {
-		// Make a body
-		time.Sleep(time.Second)
-		car.Color = "Red"
-		duration := time.Now().Sub(startTime) // 경과 시간 출력
-		fmt.Printf("%.2f Complete Car: %s %s %s\n",duration.Seconds(), car.Body, car.Tire, car.Color)
-	}
+  for car := range paintCh {
+    // Make a body
+    time.Sleep(time.Second)
+    car.Color = "Red"
+    duration := time.Now().Sub(startTime) // 경과 시간 출력
+    fmt.Printf("%.2f Complete Car: %s %s %s\n",duration.Seconds(), car.Body, car.Tire, car.Color)
+  }
 
-	wg.Done()
+  wg.Done()
 }
 
 func main() {
-	tireCh := make(chan *Car)
-	paintCh := make(chan *Car)
+  tireCh := make(chan *Car)
+  paintCh := make(chan *Car)
 
-	fmt.Println("Start the factory")
+  fmt.Println("Start the factory")
 
-	wg.Add(3)
-	go MakeBody(tireCh)
-	go InstallTire(tireCh, paintCh)
-	go PaintCar(paintCh)
+  wg.Add(3)
+  go MakeBody(tireCh)
+  go InstallTire(tireCh, paintCh)
+  go PaintCar(paintCh)
 
-	wg.Wait()
-	fmt.Println("Close the factory")
+  wg.Wait()
+  fmt.Println("Close the factory")
 }
 ```
 
@@ -3839,43 +3839,43 @@ func main() {
 package main
 
 import (
-	"fmt"
-	"sync"
-	"time"
-	"context"
+  "fmt"
+  "sync"
+  "time"
+  "context"
 )
 
 var wg sync.WaitGroup
 
 // 작업이 취소될 때까지 1초마다 메시지 출력하는 고루틴
 func PrintEverySecond(ctx context.Context) {
-	tick := time.Tick(time.Second)
-	for {
-		select {
-		case <-ctx.Done():
-			wg.Done()
-			return
-		case <-tick:
-			fmt.Println("tick")
-		}
-	}
+  tick := time.Tick(time.Second)
+  for {
+    select {
+    case <-ctx.Done():
+      wg.Done()
+      return
+    case <-tick:
+      fmt.Println("tick")
+    }
+  }
 }
 
 func main() {
-	wg.Add(1)
+  wg.Add(1)
 
-	// 취소 가능한 컨텍스트 생성 : 컨텍스트 개체와 취소함수 반환
-	ctx, cancel := context.WithCancel(context.Background())
+  // 취소 가능한 컨텍스트 생성 : 컨텍스트 개체와 취소함수 반환
+  ctx, cancel := context.WithCancel(context.Background())
 
-	go PrintEverySecond(ctx)
-	time.Sleep(5 * time.Second)
+  go PrintEverySecond(ctx)
+  time.Sleep(5 * time.Second)
 
-	// 작업취소
-	// 		컨텍스트의 Done()채널에 시그널을 보내, 작업자가 작업 취소하도록 알림
-	//		<-ctx.Done() 채널
-	cancel()
+  // 작업취소
+  //     컨텍스트의 Done()채널에 시그널을 보내, 작업자가 작업 취소하도록 알림
+  //    <-ctx.Done() 채널
+  cancel()
 
-	wg.Wait()
+  wg.Wait()
 }
 ```
 
@@ -3889,13 +3889,13 @@ func main() {
 
 ```go
 func main() {
-	wg.Add(1)
+  wg.Add(1)
 
-	// 5초 후 컨텍스트의 Done()채널에 시그널을 보내 작업종료 요청
-	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
-	go PrintEverySecond(ctx)
+  // 5초 후 컨텍스트의 Done()채널에 시그널을 보내 작업종료 요청
+  ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
+  go PrintEverySecond(ctx)
 
-	wg.Wait()
+  wg.Wait()
 }
 ```
 
@@ -3908,34 +3908,34 @@ func main() {
 package main
 
 import (
-	"fmt"
-	"sync"
-	"context"
+  "fmt"
+  "sync"
+  "context"
 )
 
 var wg sync.WaitGroup
 
 func square(ctx context.Context) {
-	// 컨텍스트에서 값을 읽기
-	// Value는 빈 인터페이스 타입이므로 (int)로 변환하여 n에 할당
-	if v:= ctx.Value("number"); v != nil {
-		n := v.(int)
-		fmt.Printf("Square:%d\n", n*n)
-	}
+  // 컨텍스트에서 값을 읽기
+  // Value는 빈 인터페이스 타입이므로 (int)로 변환하여 n에 할당
+  if v:= ctx.Value("number"); v != nil {
+    n := v.(int)
+    fmt.Printf("Square:%d\n", n*n)
+  }
 
-	wg.Done()
+  wg.Done()
 }
 
 func main() {
-	wg.Add(1)
+  wg.Add(1)
 
-	// "number"를 키로 값을 9로 설정한 컨텍스트를 만듦
-	// square의 인수로 넘겨서 값을 사용할 수 있도록 함
-	ctx := context.WithValue(context.Background(), "number", 9)
+  // "number"를 키로 값을 9로 설정한 컨텍스트를 만듦
+  // square의 인수로 넘겨서 값을 사용할 수 있도록 함
+  ctx := context.WithValue(context.Background(), "number", 9)
 
-	go square(ctx)
+  go square(ctx)
 
-	wg.Wait()
+  wg.Wait()
 }
 ```
 
@@ -4006,45 +4006,45 @@ type Scanner
 package main
 
 import (
-	"fmt"
-	"os"
-	"path/filepath"
+  "fmt"
+  "os"
+  "path/filepath"
 )
 
 func main() {
-	if len(os.Args) < 3 {
-		fmt.Println("2개 이상의 실행 인수가 필요합니다. ex) ex26.1 word filepath")
-		return
-	}
+  if len(os.Args) < 3 {
+    fmt.Println("2개 이상의 실행 인수가 필요합니다. ex) ex26.1 word filepath")
+    return
+  }
 
-	// 실행인수 가져오기
-	//	찾으려는 단어
-	word := os.Args[1]
-	//	검색할 파일리스트 (슬라이스)
-	files := os.Args[2:]
-	fmt.Println("- 찾으려는 단어: ", word)
-	PrintAllFiles(files)
+  // 실행인수 가져오기
+  //  찾으려는 단어
+  word := os.Args[1]
+  //  검색할 파일리스트 (슬라이스)
+  files := os.Args[2:]
+  fmt.Println("- 찾으려는 단어: ", word)
+  PrintAllFiles(files)
 }
 
 // 파일리스트 및 에러 반환
 func GetFileList(path string) ([]string, error) {
-	return filepath.Glob(path)
+  return filepath.Glob(path)
 }
 
 // 찾은 파일리스트 출력
 func PrintAllFiles(files []string) {
-	fmt.Println("- 찾으려는 파일 리스트")
-	for _, path := range files {
-		filelist, err := GetFileList(path)
-		if err != nil {
-			fmt.Println("파일경로가 잘못되었습니다. err:", err, "path:", path)
-			return
-		}
+  fmt.Println("- 찾으려는 파일 리스트")
+  for _, path := range files {
+    filelist, err := GetFileList(path)
+    if err != nil {
+      fmt.Println("파일경로가 잘못되었습니다. err:", err, "path:", path)
+      return
+    }
 
-		for _, name := range filelist {
-			fmt.Println(name)
-		}
-	}
+    for _, name := range filelist {
+      fmt.Println(name)
+    }
+  }
 }
 ```
 
@@ -4055,29 +4055,29 @@ func PrintAllFiles(files []string) {
 package main
 
 import (
-	"bufio"
-	"fmt"
-	"os"
+  "bufio"
+  "fmt"
+  "os"
 )
 
 func main() {
-	PrintFile("hamlet.txt")
+  PrintFile("hamlet.txt")
 }
 
 // 파일을 읽어서 출력
 func PrintFile(filename string) {
-	file, err := os.Open(filename) // 파일 열기
-	if err != nil {
-		fmt.Println("파일을 찾을 수 없습니다.", filename)
-		return
-	}
+  file, err := os.Open(filename) // 파일 열기
+  if err != nil {
+    fmt.Println("파일을 찾을 수 없습니다.", filename)
+    return
+  }
 
-	defer file.Close() // 함수 종료전 파일 닫기
+  defer file.Close() // 함수 종료전 파일 닫기
 
-	scanner := bufio.NewScanner(file) // 스캐너를 생성해서 한줄 씩 읽기
-	for scanner.Scan() {
-		fmt.Println(scanner.Text())
-	}
+  scanner := bufio.NewScanner(file) // 스캐너를 생성해서 한줄 씩 읽기
+  for scanner.Scan() {
+    fmt.Println(scanner.Text())
+  }
 }
 ```
 
@@ -4097,88 +4097,88 @@ go build
 package main
 
 import (
-	"bufio"
-	"fmt"
-	"os"
-	"path/filepath"
-	"strings"
+  "bufio"
+  "fmt"
+  "os"
+  "path/filepath"
+  "strings"
 )
 
 // 찾은 라인 정보
 type LineInfo struct { // ❶ 찾은 결과 정보
-	lineNo int
-	line   string
+  lineNo int
+  line   string
 }
 
 // 파일 내 라인 정보
 type FindInfo struct {
-	filename string
-	lines    []LineInfo
+  filename string
+  lines    []LineInfo
 }
 
 func main() {
-	if len(os.Args) < 3 {
-		fmt.Println("2개 이상의 실행 인수가 필요합니다. ex) ex26.3 word filepath")
-		return
-	}
+  if len(os.Args) < 3 {
+    fmt.Println("2개 이상의 실행 인수가 필요합니다. ex) ex26.3 word filepath")
+    return
+  }
 
-	word := os.Args[1] // ❷ 찾으려는 단어
-	files := os.Args[2:]
-	findInfos := []FindInfo{}
-	for _, path := range files {
-		// ❸ 파일 찾기
-		findInfos = append(findInfos, FindWordInAllFiles(word, path)...)
-	}
+  word := os.Args[1] // ❷ 찾으려는 단어
+  files := os.Args[2:]
+  findInfos := []FindInfo{}
+  for _, path := range files {
+    // ❸ 파일 찾기
+    findInfos = append(findInfos, FindWordInAllFiles(word, path)...)
+  }
 
-	for _, findInfo := range findInfos {
-		fmt.Println(findInfo.filename)
-		fmt.Println("--------------------------------")
-		for _, lineInfo := range findInfo.lines {
-			fmt.Println("\t", lineInfo.lineNo, "\t", lineInfo.line)
-		}
-		fmt.Println("--------------------------------")
-		fmt.Println()
-	}
+  for _, findInfo := range findInfos {
+    fmt.Println(findInfo.filename)
+    fmt.Println("--------------------------------")
+    for _, lineInfo := range findInfo.lines {
+      fmt.Println("\t", lineInfo.lineNo, "\t", lineInfo.line)
+    }
+    fmt.Println("--------------------------------")
+    fmt.Println()
+  }
 }
 
 func GetFileList(path string) ([]string, error) {
-	return filepath.Glob(path)
+  return filepath.Glob(path)
 }
 
 func FindWordInAllFiles(word, path string) []FindInfo {
-	findInfos := []FindInfo{}
+  findInfos := []FindInfo{}
 
-	filelist, err := GetFileList(path) // ❶ 파일 리스트 가져오기
-	if err != nil {
-		fmt.Println("파일 경로가 잘못되었습니다. err:", err, "path:", path)
-		return findInfos
-	}
+  filelist, err := GetFileList(path) // ❶ 파일 리스트 가져오기
+  if err != nil {
+    fmt.Println("파일 경로가 잘못되었습니다. err:", err, "path:", path)
+    return findInfos
+  }
 
-	for _, filename := range filelist { // ❷ 각 파일별로 검색
-		findInfos = append(findInfos, FindWordInFile(word, filename))
-	}
-	return findInfos
+  for _, filename := range filelist { // ❷ 각 파일별로 검색
+    findInfos = append(findInfos, FindWordInFile(word, filename))
+  }
+  return findInfos
 }
 
 func FindWordInFile(word, filename string) FindInfo {
-	findInfo := FindInfo{filename, []LineInfo{}}
-	file, err := os.Open(filename)
-	if err != nil {
-		fmt.Println("파일을 찾을 수 없습니다. ", filename)
-		return findInfo
-	}
-	defer file.Close()
+  findInfo := FindInfo{filename, []LineInfo{}}
+  file, err := os.Open(filename)
+  if err != nil {
+    fmt.Println("파일을 찾을 수 없습니다. ", filename)
+    return findInfo
+  }
+  defer file.Close()
 
-	lineNo := 1
-	scanner := bufio.NewScanner(file) // ❸ 스캐너를 만듭니다.
-	for scanner.Scan() {
-		line := scanner.Text()
-		if strings.Contains(line, word) { // ❹ 한 줄씩 읽으면 단어 포함 여부 검색
-			findInfo.lines = append(findInfo.lines, LineInfo{lineNo, line})
-		}
-		lineNo++
-	}
-	return findInfo
+  lineNo := 1
+  scanner := bufio.NewScanner(file) // ❸ 스캐너를 만듭니다.
+  for scanner.Scan() {
+    line := scanner.Text()
+    if strings.Contains(line, word) { // ❹ 한 줄씩 읽으면 단어 포함 여부 검색
+      findInfo.lines = append(findInfo.lines, LineInfo{lineNo, line})
+    }
+    lineNo++
+  }
+  return findInfo
 }
 ```
 
@@ -4190,21 +4190,21 @@ func FindWordInFile(word, filename string) FindInfo {
 package main
 
 import (
-	"fmt"
-	"os"
-	"path/filepath"
-	"bufio"
-	"strings"
+  "fmt"
+  "os"
+  "path/filepath"
+  "bufio"
+  "strings"
 )
 
 type LineInfo struct {
-	lineNo int
-	line string
+  lineNo int
+  line string
 }
 
 type FindInfo struct {
-	filename string
-	lines []LineInfo
+  filename string
+  lines []LineInfo
 }
 
 /**
@@ -4218,86 +4218,86 @@ go build
 
 
 func GetFileList(path string) ([]string, error) {
-	return filepath.Glob(path)
+  return filepath.Glob(path)
 }
 
 func FindWordInAllFiles(word, path string) []FindInfo {
-	findInfos := []FindInfo{}
+  findInfos := []FindInfo{}
 
-	filelist, err := GetFileList(path)
-	if err != nil {
-		fmt.Println("파일경로가 잘못되었습니다. err:", err, "path:", path)
-		return findInfos
-	}
+  filelist, err := GetFileList(path)
+  if err != nil {
+    fmt.Println("파일경로가 잘못되었습니다. err:", err, "path:", path)
+    return findInfos
+  }
 
-	ch := make(chan FindInfo)
-	cnt := len(filelist)
-	recvCnt := 0
+  ch := make(chan FindInfo)
+  cnt := len(filelist)
+  recvCnt := 0
 
-	for _,filename := range filelist {
-		go FindWordInFile(word, filename, ch)
-	}
+  for _,filename := range filelist {
+    go FindWordInFile(word, filename, ch)
+  }
 
-	for findInfo := range ch {
-		findInfos = append(findInfos, findInfo)
-		recvCnt++
-		if recvCnt == cnt {
-			// all received
-			break
-		}
-	}
-	return findInfos
+  for findInfo := range ch {
+    findInfos = append(findInfos, findInfo)
+    recvCnt++
+    if recvCnt == cnt {
+      // all received
+      break
+    }
+  }
+  return findInfos
 }
 
 func FindWordInFile(word, filename string, ch chan FindInfo) {
-	findInfo := FindInfo{filename, []LineInfo{}}
+  findInfo := FindInfo{filename, []LineInfo{}}
 
-	file, err := os.Open(filename)
-	if err != nil {
-		fmt.Println("파일을 찾을 수 없습니다. ", filename)
-		ch <- findInfo
-		return
-	}
-	defer file.Close()
+  file, err := os.Open(filename)
+  if err != nil {
+    fmt.Println("파일을 찾을 수 없습니다. ", filename)
+    ch <- findInfo
+    return
+  }
+  defer file.Close()
 
-	scanner := bufio.NewScanner(file)
+  scanner := bufio.NewScanner(file)
 
-	lineNo := 1
-	for scanner.Scan() {
+  lineNo := 1
+  for scanner.Scan() {
 
-		line := scanner.Text()
-		if strings.Contains(line, word) {
-			findInfo.lines = append(findInfo.lines, LineInfo{lineNo, line})
-		}
-		lineNo++
-	}
+    line := scanner.Text()
+    if strings.Contains(line, word) {
+      findInfo.lines = append(findInfo.lines, LineInfo{lineNo, line})
+    }
+    lineNo++
+  }
 
-	ch <- findInfo
+  ch <- findInfo
 }
 
 
 func main() {
-	if len(os.Args) < 3 {
-		fmt.Println("2개 이상의 실행 인수가 필요합니다. ex) ex26.1 word filepath")
-		return
-	}
+  if len(os.Args) < 3 {
+    fmt.Println("2개 이상의 실행 인수가 필요합니다. ex) ex26.1 word filepath")
+    return
+  }
 
-	findInfos := []FindInfo{}
-	word := os.Args[1]
-	files := os.Args[2:]
+  findInfos := []FindInfo{}
+  word := os.Args[1]
+  files := os.Args[2:]
 
-	for _, path := range files {
-		findInfos = append(findInfos, FindWordInAllFiles(word, path)...)
-	}
+  for _, path := range files {
+    findInfos = append(findInfos, FindWordInAllFiles(word, path)...)
+  }
 
-	for _, findInfo := range findInfos {
-		fmt.Println(findInfo.filename)
-		fmt.Println("=====")
-		for _, lineInfo := range findInfo.lines {
-			fmt.Println(lineInfo.lineNo, "\t", lineInfo.line)
-		}
-		fmt.Println("=====")
-	}
+  for _, findInfo := range findInfos {
+    fmt.Println(findInfo.filename)
+    fmt.Println("=====")
+    for _, lineInfo := range findInfo.lines {
+      fmt.Println(lineInfo.lineNo, "\t", lineInfo.line)
+    }
+    fmt.Println("=====")
+  }
 }
 ```
 
@@ -4345,11 +4345,11 @@ package main
 import "fmt"
 
 func square(x int) int {
-	return x*x
+  return x*x
 }
 
 func main() {
-	fmt.Printf("9 * 9 = %d\n", square(9))
+  fmt.Printf("9 * 9 = %d\n", square(9))
 }
 ```
 
@@ -4372,35 +4372,35 @@ import "github.com/stretchr/testify/assert"
 package main
 
 import (
-	"testing"
-	"github.com/stretchr/testify/assert"
+  "testing"
+  "github.com/stretchr/testify/assert"
 )
 
 func TestSquare1(t *testing.T) {
-	rst := square(9)
-	if rst != 81 {
-		t.Errorf("square(9) should return 81, but returned %d\n", rst)
-	}
+  rst := square(9)
+  if rst != 81 {
+    t.Errorf("square(9) should return 81, but returned %d\n", rst)
+  }
 }
 
 func TestSquare2(t *testing.T) {
-	rst := square(3)
-	if rst != 9 {
-		t.Errorf("square(3) should return 9, but returned %d\n", rst)
-	}
+  rst := square(3)
+  if rst != 9 {
+    t.Errorf("square(3) should return 9, but returned %d\n", rst)
+  }
 }
 
 func TestSquare3(t *testing.T) {
-	// func New(t TestingT) *Assertions
-	assert := assert.New(t)
+  // func New(t TestingT) *Assertions
+  assert := assert.New(t)
 
-	// 테스트 함수 호출
-	// func (a *Assertions)Equal(expected, actual interface{}, msgAndArgs ...interface{}) bool
-	assert.Equal(81, square(9),"9^2 = 81 결과가 나와야 함")
-	assert.Equal(9, square(3),"3^2 = 9 결과가 나와야 함")
+  // 테스트 함수 호출
+  // func (a *Assertions)Equal(expected, actual interface{}, msgAndArgs ...interface{}) bool
+  assert.Equal(81, square(9),"9^2 = 81 결과가 나와야 함")
+  assert.Equal(9, square(3),"3^2 = 9 결과가 나와야 함")
 
-	// 또는 assert.New(t) 사용하지 않고
-	// assert.Equal(t, 49, square(7),"7^2 = 49 결과가 나와야 함")
+  // 또는 assert.New(t) 사용하지 않고
+  // assert.Equal(t, 49, square(7),"7^2 = 49 결과가 나와야 함")
 }
 ```
 
@@ -4444,36 +4444,36 @@ package main
 import "fmt"
 
 func fibonacci1(n int) int {
-	if n < 0 {
-		return 0
-	}
-	if n < 2 {
-		return n
-	}
-	return fibonacci1(n-1) + fibonacci1(n-2) // ❶ 재귀 호출
+  if n < 0 {
+    return 0
+  }
+  if n < 2 {
+    return n
+  }
+  return fibonacci1(n-1) + fibonacci1(n-2) // ❶ 재귀 호출
 }
 
 func fibonacci2(n int) int {
-	if n < 0 {
-		return 0
-	}
-	if n < 2 {
-		return n
-	}
-	one := 1
-	two := 0
-	rst := 0
-	for i := 2; i <= n; i++ { // ❷ 반복문
-		rst = one + two
-		two = one
-		one = rst
-	}
-	return rst
+  if n < 0 {
+    return 0
+  }
+  if n < 2 {
+    return n
+  }
+  one := 1
+  two := 0
+  rst := 0
+  for i := 2; i <= n; i++ { // ❷ 반복문
+    rst = one + two
+    two = one
+    one = rst
+  }
+  return rst
 }
 
 func main() {
-	fmt.Println(fibonacci1(7))
-	fmt.Println(fibonacci2(7))
+  fmt.Println(fibonacci1(7))
+  fmt.Println(fibonacci2(7))
 }
 ```
 
@@ -4482,41 +4482,41 @@ func main() {
 package main
 
 import (
-	"testing"
-	"github.com/stretchr/testify/assert"
+  "testing"
+  "github.com/stretchr/testify/assert"
 )
 
 
 func TestFibonacci1(t *testing.T) {
-	assert := assert.New(t)
-	assert.Equal(0, fibonacci1(-1), "fibonacci1(-1) should be 0")
-	assert.Equal(0, fibonacci1(0), "fibonacci1(0) should be 0")
-	assert.Equal(1, fibonacci1(1), "fibonacci1(1) should be 1")
-	assert.Equal(2, fibonacci1(3), "fibonacci1(2) should be 2")
-	assert.Equal(233, fibonacci1(13), "fibonacci1(13) should be 233")
+  assert := assert.New(t)
+  assert.Equal(0, fibonacci1(-1), "fibonacci1(-1) should be 0")
+  assert.Equal(0, fibonacci1(0), "fibonacci1(0) should be 0")
+  assert.Equal(1, fibonacci1(1), "fibonacci1(1) should be 1")
+  assert.Equal(2, fibonacci1(3), "fibonacci1(2) should be 2")
+  assert.Equal(233, fibonacci1(13), "fibonacci1(13) should be 233")
 }
 
 func TestFibonacci2(t *testing.T) {
-	assert := assert.New(t)
-	assert.Equal(0, fibonacci2(-1), "fibonacci1(-1) should be 0")
-	assert.Equal(0, fibonacci2(0), "fibonacci1(0) should be 0")
-	assert.Equal(1, fibonacci2(1), "fibonacci1(1) should be 1")
-	assert.Equal(2, fibonacci2(3), "fibonacci1(2) should be 2")
-	assert.Equal(233, fibonacci2(13), "fibonacci1(13) should be 233")
+  assert := assert.New(t)
+  assert.Equal(0, fibonacci2(-1), "fibonacci1(-1) should be 0")
+  assert.Equal(0, fibonacci2(0), "fibonacci1(0) should be 0")
+  assert.Equal(1, fibonacci2(1), "fibonacci1(1) should be 1")
+  assert.Equal(2, fibonacci2(3), "fibonacci1(2) should be 2")
+  assert.Equal(233, fibonacci2(13), "fibonacci1(13) should be 233")
 }
 
 func BenchmarkFibonacci1(b *testing.B) {
-	// b.N만큼 반복
-	for i := 0; i < b.N; i++ {
-		fibonacci1(20)
-	}
+  // b.N만큼 반복
+  for i := 0; i < b.N; i++ {
+    fibonacci1(20)
+  }
 }
 
 func BenchmarkFibonacci2(b *testing.B) {
-	// b.N만큼 반복
-	for i := 0; i < b.N; i++ {
-		fibonacci2(20)
-	}
+  // b.N만큼 반복
+  for i := 0; i < b.N; i++ {
+    fibonacci2(20)
+  }
 }
 ```
 
@@ -4618,27 +4618,27 @@ func main() {
 package main
 
 import (
-	"fmt"
-	"net/http"
-	"strconv"
+  "fmt"
+  "net/http"
+  "strconv"
 )
 
 func barHandler(w http.ResponseWriter, r *http.Request) {
-	values := r.URL.Query() // 쿼리인수 가져오기
-	name := values.Get("name") // 특정 키 값이 있는지 확인
-	if name == "" {
-		name = "World"
-	}
+  values := r.URL.Query() // 쿼리인수 가져오기
+  name := values.Get("name") // 특정 키 값이 있는지 확인
+  if name == "" {
+    name = "World"
+  }
 
-	id, _ := strconv.Atoi(values.Get("id")) // id값을 가져와서 int형 타입 변환
-	fmt.Fprintf(w, "Hello %s! id: %d", name, id)
+  id, _ := strconv.Atoi(values.Get("id")) // id값을 가져와서 int형 타입 변환
+  fmt.Fprintf(w, "Hello %s! id: %d", name, id)
 }
 
 
 // http://localhost:3000/bar?name=Lalalala&id=123
 func main() {
-	http.HandleFunc("/bar", barHandler)
-	http.ListenAndServe(":3000", nil)
+  http.HandleFunc("/bar", barHandler)
+  http.ListenAndServe(":3000", nil)
 }
 ```
 
@@ -4652,20 +4652,20 @@ func main() {
 ```go
 package main
 import (
-	"fmt"
-	"net/http"
+  "fmt"
+  "net/http"
 )
 
 func main() {
-	mux := http.NewServeMux()
-	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request){
-			fmt.Fprint(w, "Hello World")
-	})
-	mux.HandleFunc("/bar", func(w http.ResponseWriter, r *http.Request){
-			fmt.Fprint(w, "Hello Bar")
-	})
+  mux := http.NewServeMux()
+  mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request){
+      fmt.Fprint(w, "Hello World")
+  })
+  mux.HandleFunc("/bar", func(w http.ResponseWriter, r *http.Request){
+      fmt.Fprint(w, "Hello Bar")
+  })
 
-	http.ListenAndServe(":3000", mux)
+  http.ListenAndServe(":3000", mux)
 }
 ```
 
@@ -4692,8 +4692,8 @@ import "net/http"
 
 // http://localhost:3000/gopher.jpg
 func main() {
-	http.Handle("/", http.FileServer(http.Dir("static")))
-	http.ListenAndServe(":3000", nil)
+  http.Handle("/", http.FileServer(http.Dir("static")))
+  http.ListenAndServe(":3000", nil)
 }
 ```
 
@@ -4706,12 +4706,12 @@ import "net/http"
 
 func main() {
   // http://localhost:3000/gopher.jpg
-	// http.Handle("/", http.FileServer(http.Dir("static")))
+  // http.Handle("/", http.FileServer(http.Dir("static")))
 
   // http.StripPrefix로 URL에서 /static/을 제거 해줌
   // http://localhost:3000/static/gopher.jpg 출력
-	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
-	http.ListenAndServe(":3000", nil)
+  http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
+  http.ListenAndServe(":3000", nil)
 }
 ```
 
@@ -4733,23 +4733,23 @@ func main() {
 package main
 
 import (
-	"fmt"
-	"net/http"
+  "fmt"
+  "net/http"
 )
 
 func MakeWebHandler() http.Handler {
-	mux := http.NewServeMux()
-	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request){
-			fmt.Fprint(w, "Hello World")
-	})
-	mux.HandleFunc("/bar", func(w http.ResponseWriter, r *http.Request){
-			fmt.Fprint(w, "Hello Bar")
-	})
-	return mux
+  mux := http.NewServeMux()
+  mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request){
+      fmt.Fprint(w, "Hello World")
+  })
+  mux.HandleFunc("/bar", func(w http.ResponseWriter, r *http.Request){
+      fmt.Fprint(w, "Hello Bar")
+  })
+  return mux
 }
 
 func main() {
-	http.ListenAndServe(":3000", MakeWebHandler())
+  http.ListenAndServe(":3000", MakeWebHandler())
 }
 ```
 
@@ -4758,40 +4758,40 @@ func main() {
 package main
 
 import (
-	"io"
-	"net/http"
-	"net/http/httptest"
-	"testing"
-	"github.com/stretchr/testify/assert"
+  "io"
+  "net/http"
+  "net/http/httptest"
+  "testing"
+  "github.com/stretchr/testify/assert"
 )
 
 
 func TestIndexHandler(t *testing.T) {
-	assert := assert.New(t)
+  assert := assert.New(t)
 
-	res := httptest.NewRecorder()
-	req := httptest.NewRequest("GET", "/", nil) // '/' 경로 테스트
+  res := httptest.NewRecorder()
+  req := httptest.NewRequest("GET", "/", nil) // '/' 경로 테스트
 
-	mux := MakeWebHandler()
-	mux.ServeHTTP(res, req)
+  mux := MakeWebHandler()
+  mux.ServeHTTP(res, req)
 
-	assert.Equal(http.StatusOK, res.Code) // Code 확인
-	data, _ := io.ReadAll(res.Body)		// 데이터를 읽어서 확인
-	assert.Equal("Hello World", string(data))
+  assert.Equal(http.StatusOK, res.Code) // Code 확인
+  data, _ := io.ReadAll(res.Body)    // 데이터를 읽어서 확인
+  assert.Equal("Hello World", string(data))
 }
 
 func TestBarHandler(t *testing.T) {
-	assert := assert.New(t)
+  assert := assert.New(t)
 
-	res := httptest.NewRecorder()
-	req := httptest.NewRequest("GET", "/bar", nil) // '/bar' 경로 테스트
+  res := httptest.NewRecorder()
+  req := httptest.NewRequest("GET", "/bar", nil) // '/bar' 경로 테스트
 
-	mux := MakeWebHandler()
-	mux.ServeHTTP(res, req)
+  mux := MakeWebHandler()
+  mux.ServeHTTP(res, req)
 
-	assert.Equal(http.StatusOK,res.Code)
-	data, _ := io.ReadAll(res.Body)
-	assert.Equal("Hello Bar", string(data))
+  assert.Equal(http.StatusOK,res.Code)
+  data, _ := io.ReadAll(res.Body)
+  assert.Equal("Hello Bar", string(data))
 }
 ```
 
@@ -4811,36 +4811,36 @@ func TestBarHandler(t *testing.T) {
 package main
 
 import (
-	"fmt"
-	"net/http"
-	"encoding/json"
+  "fmt"
+  "net/http"
+  "encoding/json"
 )
 
 type Student struct {
-	Name string
-	Age int
-	Score int
+  Name string
+  Age int
+  Score int
 }
 
 func StudentHandler(w http.ResponseWriter, r *http.Request) {
-	student := Student{"Abc", 18, 87}
-	data, _ := json.Marshal(student)
-	w.Header().Add("content-type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	fmt.Fprint(w, string(data))
+  student := Student{"Abc", 18, 87}
+  data, _ := json.Marshal(student)
+  w.Header().Add("content-type", "application/json")
+  w.WriteHeader(http.StatusOK)
+  fmt.Fprint(w, string(data))
 }
 
 func MakeWebHandler() http.Handler {
-	mux := http.NewServeMux()
-	mux.HandleFunc("/student", StudentHandler)
-	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request){
-			fmt.Fprint(w, "Hello World")
-	})
-	return mux
+  mux := http.NewServeMux()
+  mux.HandleFunc("/student", StudentHandler)
+  mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request){
+      fmt.Fprint(w, "Hello World")
+  })
+  return mux
 }
 
 func main() {
-	http.ListenAndServe(":3000", MakeWebHandler())
+  http.ListenAndServe(":3000", MakeWebHandler())
 }
 ```
 
@@ -4849,46 +4849,46 @@ func main() {
 package main
 
 import (
-	"io"
-	"net/http/httptest"
-	"net/http"
-	"testing"
-	"encoding/json"
-	"github.com/stretchr/testify/assert"
+  "io"
+  "net/http/httptest"
+  "net/http"
+  "testing"
+  "encoding/json"
+  "github.com/stretchr/testify/assert"
 )
 
 func TestIndexHandler(t *testing.T) {
-	assert := assert.New(t)
+  assert := assert.New(t)
 
-	res := httptest.NewRecorder()
-	req := httptest.NewRequest("GET", "/", nil) // '/' 경로 테스트
+  res := httptest.NewRecorder()
+  req := httptest.NewRequest("GET", "/", nil) // '/' 경로 테스트
 
-	mux := MakeWebHandler()
-	mux.ServeHTTP(res, req)
+  mux := MakeWebHandler()
+  mux.ServeHTTP(res, req)
 
-	assert.Equal(http.StatusOK, res.Code)
-	data, _ := io.ReadAll(res.Body)
-	assert.Equal("Hello World", string(data))
+  assert.Equal(http.StatusOK, res.Code)
+  data, _ := io.ReadAll(res.Body)
+  assert.Equal("Hello World", string(data))
 }
 
 func TestJsonHandler(t *testing.T) {
-	assert := assert.New(t)
+  assert := assert.New(t)
 
-	res := httptest.NewRecorder()
-	req := httptest.NewRequest("GET", "/student", nil) // '/student' 경로 테스트
+  res := httptest.NewRecorder()
+  req := httptest.NewRequest("GET", "/student", nil) // '/student' 경로 테스트
 
-	mux := MakeWebHandler()
-	mux.ServeHTTP(res, req)
+  mux := MakeWebHandler()
+  mux.ServeHTTP(res, req)
 
-	assert.Equal(http.StatusOK, res.Code)
-	student := &Student{}
+  assert.Equal(http.StatusOK, res.Code)
+  student := &Student{}
 
-	// res.Body 파싱 -> Student 타입
-	err := json.NewDecoder(res.Body).Decode(student)
-	assert.Nil(err) // 결과 확인
-	assert.Equal("Abc", student.Name)
-	assert.Equal(18, student.Age)
-	assert.Equal(87, student.Score)
+  // res.Body 파싱 -> Student 타입
+  err := json.NewDecoder(res.Body).Decode(student)
+  assert.Nil(err) // 결과 확인
+  assert.Equal("Abc", student.Name)
+  assert.Equal(18, student.Age)
+  assert.Equal(87, student.Score)
 }
 ```
 
@@ -4920,20 +4920,20 @@ openssl x509 -req -days 365 -in localhost.csr -signkey localhost.key -out localh
 ```go
 package main
 import (
-	"fmt"
-	"log"
-	"net/http"
+  "fmt"
+  "log"
+  "net/http"
 )
 
 func main() {
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-			fmt.Fprint(w, "Hello World")
-	})
+  http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+      fmt.Fprint(w, "Hello World")
+  })
 
-	err := http.ListenAndServeTLS( ":3000", "localhost.crt", "localhost.key", nil)
-	if err != nil {
-		log.Fatal(err)
-	}
+  err := http.ListenAndServeTLS( ":3000", "localhost.crt", "localhost.key", nil)
+  if err != nil {
+    log.Fatal(err)
+  }
 }
 ```
 
@@ -4978,116 +4978,116 @@ go get -u github.com/gorilla/mux
 package main
 
 import (
-	"encoding/json"
-	"net/http"
-	"sort"
-	"strconv"
+  "encoding/json"
+  "net/http"
+  "sort"
+  "strconv"
 
-	"github.com/gorilla/mux"
+  "github.com/gorilla/mux"
 )
 
 type Student struct {
-	Id int
-	Name string
-	Age int
-	Score int
+  Id int
+  Name string
+  Age int
+  Score int
 }
 
 /**
-	Student 리스트를 Id 기준정렬하기 위한, Id 정렬 인터페이스 정의
+  Student 리스트를 Id 기준정렬하기 위한, Id 정렬 인터페이스 정의
 */
 type Students []Student
 
 func (s Students) Len() int {
-	return len(s)
+  return len(s)
 }
 
 func (s Students) Swap(i, j int) {
-	s[i], s[j] = s[j], s[i]
+  s[i], s[j] = s[j], s[i]
 }
 
 func (s Students) Less(i, j int) bool {
-	return s[i].Id < s[j].Id
+  return s[i].Id < s[j].Id
 }
 
 var students map[int]Student
 var lastId int
 
 func GetStudentListHandler(w http.ResponseWriter, r *http.Request) {
-	list := make(Students, 0) // 학생 목록을 Id로 정렬
-	for _, student := range students {
-		list = append(list, student)
-	}
-	sort.Sort(list)
+  list := make(Students, 0) // 학생 목록을 Id로 정렬
+  for _, student := range students {
+    list = append(list, student)
+  }
+  sort.Sort(list)
 
-	w.WriteHeader(http.StatusOK)
-	w.Header().Set("Content-Type", "application/json")
+  w.WriteHeader(http.StatusOK)
+  w.Header().Set("Content-Type", "application/json")
 
-	json.NewEncoder(w).Encode(list) // JSON 포맷으로 변경
+  json.NewEncoder(w).Encode(list) // JSON 포맷으로 변경
 }
 
 func GetStudentHandler(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	id, _ := strconv.Atoi(vars["id"])
-	student, ok := students[id]
+  vars := mux.Vars(r)
+  id, _ := strconv.Atoi(vars["id"])
+  student, ok := students[id]
 
-	if !ok {
-		w.WriteHeader(http.StatusNotFound)
-		return
-	}
-	w.WriteHeader(http.StatusOK)
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(student)
+  if !ok {
+    w.WriteHeader(http.StatusNotFound)
+    return
+  }
+  w.WriteHeader(http.StatusOK)
+  w.Header().Set("Content-Type", "application/json")
+  json.NewEncoder(w).Encode(student)
 }
 
 func PostStudentHandler(w http.ResponseWriter, r *http.Request) {
-	var student Student
-	err := json.NewDecoder(r.Body).Decode(&student) // JSON 데이터 변환
-	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		return
-	}
+  var student Student
+  err := json.NewDecoder(r.Body).Decode(&student) // JSON 데이터 변환
+  if err != nil {
+    w.WriteHeader(http.StatusBadRequest)
+    return
+  }
 
-	lastId++	// id를 증가시킨 후 앱에 등록
-	student.Id = lastId
+  lastId++  // id를 증가시킨 후 앱에 등록
+  student.Id = lastId
 
-	students[lastId] = student
-	w.WriteHeader(http.StatusCreated)
+  students[lastId] = student
+  w.WriteHeader(http.StatusCreated)
 }
 
 func DeleteStudentHandler(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	id, _ := strconv.Atoi(vars["id"])
-	_, ok := students[id]
-	if !ok {
-		w.WriteHeader(http.StatusNotFound) // id 해당 학생 없으면 에러
-		return
-	}
-	delete(students, id)
-	w.WriteHeader(http.StatusOK) // 삭제 성공 시, StatusOK 반환
+  vars := mux.Vars(r)
+  id, _ := strconv.Atoi(vars["id"])
+  _, ok := students[id]
+  if !ok {
+    w.WriteHeader(http.StatusNotFound) // id 해당 학생 없으면 에러
+    return
+  }
+  delete(students, id)
+  w.WriteHeader(http.StatusOK) // 삭제 성공 시, StatusOK 반환
 }
 
 func MakeWebHandler() http.Handler {
-	mux := mux.NewRouter() // gorilla/mux 생성
+  mux := mux.NewRouter() // gorilla/mux 생성
 
-	/** 새로운 핸들러 등록 */
-	mux.HandleFunc("/students", GetStudentListHandler).Methods("GET") // 학생 리스트 조회
-	mux.HandleFunc("/student/{id:[0-9]+}", GetStudentHandler).Methods("GET") // 학생 한명 조회
-	mux.HandleFunc("/students", PostStudentHandler).Methods("POST") // 학생 등록
-	mux.HandleFunc("/student/{id:[0-9]+}", DeleteStudentHandler).Methods("DELETE") // 학생 삭제
+  /** 새로운 핸들러 등록 */
+  mux.HandleFunc("/students", GetStudentListHandler).Methods("GET") // 학생 리스트 조회
+  mux.HandleFunc("/student/{id:[0-9]+}", GetStudentHandler).Methods("GET") // 학생 한명 조회
+  mux.HandleFunc("/students", PostStudentHandler).Methods("POST") // 학생 등록
+  mux.HandleFunc("/student/{id:[0-9]+}", DeleteStudentHandler).Methods("DELETE") // 학생 삭제
 
-	students = make(map[int]Student)
-	students[1] = Student{1, "zzz", 10, 77}
-	students[2] = Student{2, "aaa", 20, 88}
-	students[3] = Student{3, "ccc", 30, 99}
-	students[4] = Student{4, "bbb", 40, 50}
-	lastId = 4
+  students = make(map[int]Student)
+  students[1] = Student{1, "zzz", 10, 77}
+  students[2] = Student{2, "aaa", 20, 88}
+  students[3] = Student{3, "ccc", 30, 99}
+  students[4] = Student{4, "bbb", 40, 50}
+  lastId = 4
 
-	return mux
+  return mux
 }
 
 func main() {
-	http.ListenAndServe(":3000", MakeWebHandler())
+  http.ListenAndServe(":3000", MakeWebHandler())
 }
 ```
 
@@ -5096,102 +5096,102 @@ func main() {
 package main
 
 import (
-	"encoding/json"
-	"net/http"
-	"net/http/httptest"
-	"testing"
-	"strings"
+  "encoding/json"
+  "net/http"
+  "net/http/httptest"
+  "testing"
+  "strings"
 
-	"github.com/stretchr/testify/assert"
+  "github.com/stretchr/testify/assert"
 )
 
 func TestJsonHandler(t *testing.T) {
-	assert := assert.New(t)
+  assert := assert.New(t)
 
-	res := httptest.NewRecorder()
-	req := httptest.NewRequest("GET", "/students", nil) // '/students' 경로 테스트
+  res := httptest.NewRecorder()
+  req := httptest.NewRequest("GET", "/students", nil) // '/students' 경로 테스트
 
-	mux := MakeWebHandler()
-	mux.ServeHTTP(res, req)
+  mux := MakeWebHandler()
+  mux.ServeHTTP(res, req)
 
-	assert.Equal(http.StatusOK, res.Code)
-	var list []Student
-	err := json.NewDecoder(res.Body).Decode(&list)
-	assert.Nil(err)
-	assert.Equal(4, len(list))
-	assert.Equal("zzz", list[0].Name)
-	assert.Equal("aaa", list[1].Name)
+  assert.Equal(http.StatusOK, res.Code)
+  var list []Student
+  err := json.NewDecoder(res.Body).Decode(&list)
+  assert.Nil(err)
+  assert.Equal(4, len(list))
+  assert.Equal("zzz", list[0].Name)
+  assert.Equal("aaa", list[1].Name)
 }
 
 func TestJsonHandler2(t *testing.T) { 
-	assert := assert.New(t)
+  assert := assert.New(t)
 
-	var student Student
-	mux := MakeWebHandler()
-	res := httptest.NewRecorder()
-	req := httptest.NewRequest("GET", "/student/1", nil) // id=1 학생 조회
+  var student Student
+  mux := MakeWebHandler()
+  res := httptest.NewRecorder()
+  req := httptest.NewRequest("GET", "/student/1", nil) // id=1 학생 조회
 
-	mux.ServeHTTP(res, req)
-	assert.Equal(http.StatusOK, res.Code)
-	err := json.NewDecoder(res.Body).Decode(&student)
-	assert.Nil(err)
-	assert.Equal("zzz", student.Name)
+  mux.ServeHTTP(res, req)
+  assert.Equal(http.StatusOK, res.Code)
+  err := json.NewDecoder(res.Body).Decode(&student)
+  assert.Nil(err)
+  assert.Equal("zzz", student.Name)
 
 
-	res = httptest.NewRecorder()
-	req = httptest.NewRequest("GET", "/student/2", nil) // id=2 학생 조회
-	mux.ServeHTTP(res, req)
-	assert.Equal(http.StatusOK, res.Code)
-	err = json.NewDecoder(res.Body).Decode(&student)
-	assert.Nil(err)
-	assert.Equal("aaa", student.Name)
+  res = httptest.NewRecorder()
+  req = httptest.NewRequest("GET", "/student/2", nil) // id=2 학생 조회
+  mux.ServeHTTP(res, req)
+  assert.Equal(http.StatusOK, res.Code)
+  err = json.NewDecoder(res.Body).Decode(&student)
+  assert.Nil(err)
+  assert.Equal("aaa", student.Name)
 }
 
 func TestJsonHandler3(t *testing.T) { 
-	assert := assert.New(t)
+  assert := assert.New(t)
 
-	var student Student
-	mux := MakeWebHandler()
-	res := httptest.NewRecorder()
-	req := httptest.NewRequest("POST", "/students",
-		// 새로운 학생 데이터 등록
-		strings.NewReader(`{"Id":0, "Name": "nnnn", "Age": 15, "Score": 78}`),
-	)
+  var student Student
+  mux := MakeWebHandler()
+  res := httptest.NewRecorder()
+  req := httptest.NewRequest("POST", "/students",
+    // 새로운 학생 데이터 등록
+    strings.NewReader(`{"Id":0, "Name": "nnnn", "Age": 15, "Score": 78}`),
+  )
 
-	mux.ServeHTTP(res, req)
-	assert.Equal(http.StatusCreated, res.Code)
+  mux.ServeHTTP(res, req)
+  assert.Equal(http.StatusCreated, res.Code)
 
-	res = httptest.NewRecorder()
-	req = httptest.NewRequest("GET", "/student/5", nil)
-	// 추가된 학생 데이터
-	mux.ServeHTTP(res, req)
-	assert.Equal(http.StatusOK, res.Code)
-	err := json.NewDecoder(res.Body).Decode(&student)
-	assert.Nil(err)
-	assert.Equal("nnnn", student.Name)
+  res = httptest.NewRecorder()
+  req = httptest.NewRequest("GET", "/student/5", nil)
+  // 추가된 학생 데이터
+  mux.ServeHTTP(res, req)
+  assert.Equal(http.StatusOK, res.Code)
+  err := json.NewDecoder(res.Body).Decode(&student)
+  assert.Nil(err)
+  assert.Equal("nnnn", student.Name)
 }
 
 func TestJsonHandler4(t *testing.T) { 
-	assert := assert.New(t)
+  assert := assert.New(t)
 
-	mux := MakeWebHandler()
-	res := httptest.NewRecorder()
-	req := httptest.NewRequest("DELETE", "/student/1", nil)
+  mux := MakeWebHandler()
+  res := httptest.NewRecorder()
+  req := httptest.NewRequest("DELETE", "/student/1", nil)
 
-	// DELETE 요청
-	mux.ServeHTTP(res, req)
-	assert.Equal(http.StatusOK, res.Code)
+  // DELETE 요청
+  mux.ServeHTTP(res, req)
+  assert.Equal(http.StatusOK, res.Code)
 
-	res = httptest.NewRecorder()
-	req = httptest.NewRequest("GET", "/students", nil)
-	mux.ServeHTTP(res, req)
+  res = httptest.NewRecorder()
+  req = httptest.NewRequest("GET", "/students", nil)
+  mux.ServeHTTP(res, req)
 
-	assert.Equal(http.StatusOK, res.Code)
-	var list []Student
-	err := json.NewDecoder(res.Body).Decode(&list)
-	assert.Nil(err)
-	assert.Equal(3, len(list))
-	assert.Equal("aaa", list[0].Name)
+  assert.Equal(http.StatusOK, res.Code)
+  var list []Student
+  err := json.NewDecoder(res.Body).Decode(&list)
+  assert.Nil(err)
+  assert.Equal(3, len(list))
+  assert.Equal("aaa", list[0].Name)
 }
 ```
 
@@ -5260,15 +5260,15 @@ go build
 package main
 
 import (
-	"encoding/json"
-	"log"
-	"net/http"
-	"sort"
-	"strconv"
+  "encoding/json"
+  "log"
+  "net/http"
+  "sort"
+  "strconv"
 
-	"github.com/gorilla/mux"
-	"github.com/unrolled/render"
-	"github.com/urfave/negroni"
+  "github.com/gorilla/mux"
+  "github.com/unrolled/render"
+  "github.com/urfave/negroni"
 )
 
 
@@ -5276,9 +5276,9 @@ var rd *render.Render
 
 // 할일 정보 담는 Todo 구조체
 type Todo struct {
-	ID int `json:"id,omitempty"`		// JSON 포맷으로 변환 옵션
-	Name string `json:"name"`
-	Completed bool `json:"completed,omitempty"`
+  ID int `json:"id,omitempty"`    // JSON 포맷으로 변환 옵션
+  Name string `json:"name"`
+  Completed bool `json:"completed,omitempty"`
 }
 
 var todoMap map[int]Todo
@@ -5287,103 +5287,103 @@ var lastID int = 0
 type Todos []Todo
 
 func (t Todos) Len() int {
-	return len(t)
+  return len(t)
 }
 
 func (t Todos) Swap(i, j int) {
-	t[i], t[j] = t[j], t[i]
+  t[i], t[j] = t[j], t[i]
 }
 
 func (t Todos) Less(i, j int) bool {
-	return t[i].ID < t[j].ID
+  return t[i].ID < t[j].ID
 }
 
 func GetTodoListHandler(w http.ResponseWriter, r *http.Request) {
-	list := make(Todos, 0)
-	for _, todo := range todoMap {
-		list = append(list, todo)
-	}
-	sort.Sort(list)	// ID 기준 정렬
-	rd.JSON(w, http.StatusOK, list)	// JSON 포맷으로 반환
+  list := make(Todos, 0)
+  for _, todo := range todoMap {
+    list = append(list, todo)
+  }
+  sort.Sort(list)  // ID 기준 정렬
+  rd.JSON(w, http.StatusOK, list)  // JSON 포맷으로 반환
 
-	// w.WriteHeader(http.StatusOK)
-	// w.Header().Set("Content-Type", "application/json")
-	// json.NewEncoder(w).Encode(list) // JSON 포맷으로 변경
+  // w.WriteHeader(http.StatusOK)
+  // w.Header().Set("Content-Type", "application/json")
+  // json.NewEncoder(w).Encode(list) // JSON 포맷으로 변경
 }
 
 func PostTodoHandler(w http.ResponseWriter, r *http.Request) {
-	var todo Todo
-	err := json.NewDecoder(r.Body).Decode(&todo)
-	if err != nil {
-		log.Fatal(err)
-		w.WriteHeader(http.StatusBadRequest)
-		return
-	}
-	lastID++
-	todo.ID = lastID
-	todoMap[lastID] = todo
-	rd.JSON(w, http.StatusCreated, todo)
+  var todo Todo
+  err := json.NewDecoder(r.Body).Decode(&todo)
+  if err != nil {
+    log.Fatal(err)
+    w.WriteHeader(http.StatusBadRequest)
+    return
+  }
+  lastID++
+  todo.ID = lastID
+  todoMap[lastID] = todo
+  rd.JSON(w, http.StatusCreated, todo)
 }
 
 type Success struct {
-	Success bool `json:"Success"`
+  Success bool `json:"Success"`
 }
 
 func RemoveTodoHandler(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	id, _ := strconv.Atoi(vars["id"])
-	if _, ok := todoMap[id]; ok {
-		delete(todoMap, id)
-		rd.JSON(w, http.StatusOK, Success{true})
-	} else {
-		rd.JSON(w, http.StatusNotFound, Success{false})
-	}
+  vars := mux.Vars(r)
+  id, _ := strconv.Atoi(vars["id"])
+  if _, ok := todoMap[id]; ok {
+    delete(todoMap, id)
+    rd.JSON(w, http.StatusOK, Success{true})
+  } else {
+    rd.JSON(w, http.StatusNotFound, Success{false})
+  }
 }
 
 func UpdateTodoHandler(w http.ResponseWriter, r *http.Request) {
-	var newTodo Todo
-	err := json.NewDecoder(r.Body).Decode(&newTodo)
-	if err != nil {
-		log.Fatal(err)
-		w.WriteHeader(http.StatusBadRequest)
-		return
-	}
+  var newTodo Todo
+  err := json.NewDecoder(r.Body).Decode(&newTodo)
+  if err != nil {
+    log.Fatal(err)
+    w.WriteHeader(http.StatusBadRequest)
+    return
+  }
 
-	vars := mux.Vars(r)
-	id, _ := strconv.Atoi(vars["id"])
-	if todo, ok := todoMap[id]; ok {
-		todo.Name = newTodo.Name
-		todo.Completed = newTodo.Completed
-		rd.JSON(w, http.StatusOK, Success{true})
-	} else {
-		rd.JSON(w, http.StatusBadRequest, Success{false})
-	}
+  vars := mux.Vars(r)
+  id, _ := strconv.Atoi(vars["id"])
+  if todo, ok := todoMap[id]; ok {
+    todo.Name = newTodo.Name
+    todo.Completed = newTodo.Completed
+    rd.JSON(w, http.StatusOK, Success{true})
+  } else {
+    rd.JSON(w, http.StatusBadRequest, Success{false})
+  }
 }
 
 func MakeWebHandler() http.Handler {
-	todoMap = make(map[int]Todo)
+  todoMap = make(map[int]Todo)
 
-	mux := mux.NewRouter() // gorilla/mux 객체 생성
+  mux := mux.NewRouter() // gorilla/mux 객체 생성
 
-	mux.Handle("/", http.FileServer(http.Dir("public")))
-	mux.HandleFunc("/todos", GetTodoListHandler).Methods("GET")
-	mux.HandleFunc("/todos", PostTodoHandler).Methods("POST")
-	mux.HandleFunc("/todos/{id:[0-9]+}", RemoveTodoHandler).Methods("DELETE")
-	mux.HandleFunc("/todos/{id:[0-9]+}", UpdateTodoHandler).Methods("PUT")
-	return mux
+  mux.Handle("/", http.FileServer(http.Dir("public")))
+  mux.HandleFunc("/todos", GetTodoListHandler).Methods("GET")
+  mux.HandleFunc("/todos", PostTodoHandler).Methods("POST")
+  mux.HandleFunc("/todos/{id:[0-9]+}", RemoveTodoHandler).Methods("DELETE")
+  mux.HandleFunc("/todos/{id:[0-9]+}", UpdateTodoHandler).Methods("PUT")
+  return mux
 }
 
 func main() {
-	rd = render.New()
-	m := MakeWebHandler()
-	n := negroni.Classic()
-	n.UseHandler(m)
+  rd = render.New()
+  m := MakeWebHandler()
+  n := negroni.Classic()
+  n.UseHandler(m)
 
-	log.Println("Started App")
-	err := http.ListenAndServe(":3000", n)
-	if err != nil {
-		panic(err)
-	}
+  log.Println("Started App")
+  err := http.ListenAndServe(":3000", n)
+  if err != nil {
+    panic(err)
+  }
 }
 ```
 
@@ -5439,18 +5439,18 @@ heroku create
 
 ```go
 func main() {
-	rd = render.New()
-	m := MakeWebHandler()
-	n := negroni.Classic()
-	n.UseHandler(m)
+  rd = render.New()
+  m := MakeWebHandler()
+  n := negroni.Classic()
+  n.UseHandler(m)
 
-	log.Println("Started App")
+  log.Println("Started App")
   port := os.Getenv("PORT") // 헤로쿠서버에서 환경변수 PORT 가져오기
-	// err := http.ListenAndServe(":3000", n)
-	err := http.ListenAndServe(":" + port, n) // port를 이용해서 웹 서버 실행
-	if err != nil {
-		panic(err)
-	}
+  // err := http.ListenAndServe(":3000", n)
+  err := http.ListenAndServe(":" + port, n) // port를 이용해서 웹 서버 실행
+  if err != nil {
+    panic(err)
+  }
 }
 ```
 

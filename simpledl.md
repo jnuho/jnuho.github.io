@@ -1,5 +1,3 @@
-# Simple Kubernetes app
-
 
 ### Image recognizer app
 
