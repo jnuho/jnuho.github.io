@@ -77,7 +77,6 @@ go get github.com/bwmarrin/discordgo@latest
 go build
 ```
 
-
 - Vscode > Extension > Go
 
 ```sh
@@ -575,12 +574,37 @@ func main() {
   found := false
 
   for ; a <= 9; a++ {
+    // Like for, the if statement can start with a short statement to execute before the condition.
     if b, found = find45(a); found {
       break
     }
   }
 
   fmt.Printf("%d * %d = %d\n", a, b, a*b)
+}
+```
+
+```go
+package main
+
+import (
+  "fmt"
+  "math"
+)
+
+func pow(x, n, lim float64) float64 {
+  // Like for, the if statement can start with a short statement to execute before the condition.
+  if v := math.Pow(x, n); v < lim {
+    return v
+  }
+  return lim
+}
+
+func main() {
+  fmt.Println(
+    pow(3, 2, 10),
+    pow(3, 3, 20),
+  )
 }
 ```
 
@@ -700,6 +724,8 @@ func main() {
   - 64비트 컴퓨터의 경우 8바이트 단위로 정렬 되어 있는게 효율적
   - int32, float64필드가 있는 구조체의 경우 12바이트(4+8) 가 아닌 16바이트(8+8) 할당
   - 순서를 float64, int32로 하면 12바이트(8+4)
+  - 불필요한 메모리 낭비를 줄이려면 작은 크기 필드값을 앞에 배치
+  - 패딩: 메모리 정렬을 위해서 필드간 간격을 띄움
 
 ```go
 package main
@@ -809,6 +835,15 @@ type Data struct {
   data [200]int
 }
 
+// 호출할때마다 Data 구조체 크기만큼의 메모리 복사되고 그 값을 변경함
+// 전달받은 변수의 값은 변경 안됨.
+// 메모리를 매번 복사하기 때문에 많이 호출 시 성능저하
+func ChangeDataNotWorking(arg Data) {
+  // 매개'변수' arg 데이터 변경 안됨...
+  arg.value = 999
+  arg.data[100] = 999
+}
+
 func ChangeData(arg *Data) {
   // 매개'변수' arg 데이터 변경
   arg.value = 999
@@ -848,6 +883,9 @@ func main() {
   var p2 *Data = p1
   var p3 *Data = p1
 
+  // initial value
+  fmt.Println(*p1)
+
   fmt.Printf("주솟값1 = %p\n", p1)
   fmt.Printf("주솟값2 = %p\n", p2)
   fmt.Printf("주솟값3 = %p\n", p3)
@@ -864,6 +902,10 @@ func main() {
   p5 := new(Data)
   ChangeData(p5)
 
+  // var p6 Data
+  p6 := Data{}
+  ChangeData(&p6)
+
   fmt.Printf("주솟값4 = %p\n", p4)
   fmt.Printf("p4.value = %d\n", p4.value)
   fmt.Printf("p4.value = %d\n", p4.value)
@@ -871,22 +913,51 @@ func main() {
   fmt.Printf("주솟값5 = %p\n", p5)
   fmt.Printf("p5.value = %d\n", p5.value)
   fmt.Printf("p5.value = %d\n", p5.value)
+
+  fmt.Printf("주솟값6 = %p\n", &p6)
+  fmt.Printf("p6.value = %d\n", p6.value)
+  fmt.Printf("p6.value = %d\n", p6.value)
 }
 ```
 
 
 - 스택 메모리 : 힙메모리 영역보다 훨씬 효율적이지만, 함수 내부에서만 사용 가능
-- 힙 메모리 : 함수외부로 공개되는 메모리 공간 할당 시
+- 힙 메모리 : 함수외부로 공개되는 메모리 공간 할당 시, 힙 메모리 영역에서 할당
+
+```go
+package main
+
+import "fmt"
+
+type User struct{
+  Name string
+  Age int
+}
+
+func NewUser(name string, age int) *User{
+  var u = User{name, age}
+  return &u
+}
+
+func main() {
+  userPointer := NewUser("AAA", 23)
+  fmt.Println(userPointer)
+  fmt.Printf("userPointer: %v has an address: %p\n", userPointer, userPointer)
+}
+```
 
 ```
 * C/C++에서는 malloc() 호출하여 힙메모리 공간 할당
 * java에서는 클래스타입을 힙에, 기본타입을 스택에 할당
-* Go언어는 탈출검사(escape analysis)로 어느 메모리에 할당 할 지 결정
-  예를들어 퍼블릭 함수가 내부에서 생성된 객체를 return하면
-  탈출검사에서 확인되기 때문에 함수가 종료 되어도 메모리에서 사라지지 않음
+* Go언어는 탈출검사(escape analysis)로 인스턴스(instance)를 스택메모리 또는 힙메모리 중 어느 메모리에 할당 할 지 결정
+* 함수외부로 공개되는 인스턴스의 경우 함수가 종료 되어도 사리지지 않음
+  Suppose, we define a public method that returns 내부에서 생성된 객체
+  원래, 함수 내부에서 선언된 변수는 함수가 종료되면 사라집니다.
+  Go.언어에서는 탈출검사에서 u 변수의 인스턴스가 함수 외부로 공개되는 것을 분석해내서,
+  u를 스택 메모리가 아닌 힙메모리에서 할당하게됨. 함수가 종료 되어도 메모리에서 사라지지 않음
   (GC가 해당 객체를 분별 할 수 있음)
 
-* 함수외부로 공개되는 인스턴스의 경우 함수가 종료 되어도 사리지지 않음
+
 * Go언어 스택 메모리는 계속 증가되는 동적 메모리 풀.
 *    일정한 크기를 갖는 C/C++언어와 비교해도 메모리 효율성 높고,
 *   재귀 호출때문에 스택 메모리 고갈문제는 발생 X
@@ -940,6 +1011,19 @@ fmt.Println(s2)
   for _,v := range runes {
     fmt.Printf("타입: %T, 값: %d, 문자열: %c\n", v,v,v)
   }
+
+  d := []byte(c)
+  e := []rune(c)
+  // [65 66 67 235 172 184 236 158 144 236 151 180]
+  fmt.Println(d)
+  // [65 66 67 47928 51088 50676]
+  fmt.Println(e)
+
+  // []byte and []rune are immutable, contrary to string
+  d[5] = 23
+  fmt.Println(string(d))
+  e[3] = 244
+  fmt.Println(string(e))
 
   // strng <-> []byte 변환
   // 모든 문자열은 1바이트 배열로 변환 가능
@@ -1016,14 +1100,6 @@ func main() {
 ### 16.패키지
 
 - go build 로 실행 파일 만들때 go mod 필요
-
-```go
-var c rune = '한'
-
-fmt.Printf("%T\n", c) // char타입 출력
-fmt.Println(c)
-fmt.Printf("%c\n", c) // 문자출력
-```
 
 ```sh
 go mod init [패키지명]
@@ -1102,42 +1178,40 @@ func main() {
 cd 16-package/usepkg
 go mod init 16-package/usepkg
 mkdir custompkg
-cat custompkg/custompkg.go
-  package custompkg
-
-  import "fmt"
-
-  func PrintCustom() {
-    fmt.Println("This is custom package!")
-  }
-
-cat usepkg.go
-  package main
-
-  import (
-    "fmt"
-    "16-package/usepkg/custompkg" // 모듈 내 패키지
-    "github.com/guptarohit/asciigraph" // 외부 저장소 패키지
-    "github.com/tuckersGo/musthaveGo/16-package/expkg"
-  )
-
-  func main() {
-    custompkg.PrintCustom()
-    expkg.PrintSample()
-
-    data := []float64{3,4,5,6,9,7,5,8,5,10,2,7,2,5,6}
-    graph := asciigraph.Plot(data)
-    fmt.Println(graph)
-  }
 ```
 
-- custompkg.go
+- `16-package/usepkg/custompkg/custompkg.go`
 
 ```go
 package custompkg
+
 import "fmt"
+
 func PrintCustom() {
   fmt.Println("This is custom package!")
+}
+```
+
+
+- `16-package/usepkg/usepkg.go`
+
+```go
+package main
+
+import (
+  "fmt"
+  "16-package/usepkg/custompkg" // 모듈 내 패키지
+  "github.com/guptarohit/asciigraph" // 외부 저장소 패키지
+  "github.com/tuckersGo/musthaveGo/16-package/expkg"
+)
+
+func main() {
+  custompkg.PrintCustom()
+  expkg.PrintSample()
+
+  data := []float64{3,4,5,6,9,7,5,8,5,10,2,7,2,5,6}
+  graph := asciigraph.Plot(data)
+  fmt.Println(graph)
 }
 ```
 
@@ -1153,46 +1227,48 @@ cat publicpkg.go
 
   const (
     PI = 3.1415
-    pi = 3.1415
+    pi = 3.1415 // 외부에 공개되지 않음
   )
 
-  var ScreenSize int = 1080
-  var screenHeight int
+  var ScreenSize int = 1080 
+  var screenHeight int // 외부에 공개되지 않음
 
   func PublicFunc() {
-    const MyConst = 100
+    const MyConst = 100 // 외부에 공개되지 않음 (대분자 변수라해도, 함수 내부에서 선언되었기 때문에 외부에 공개되지 않음)
     fmt.Println("This is a public function", MyConst)
   }
 
-  func privateFunc() {
+  func privateFunc() { // 외부에 공개되지 않음
     fmt.Println("This is a private function")
   }
 
   type MyInt int
-  type myString string
+  type myString string // 외부에 공개되지 않음
 
   type MyStruct struct {
     Age int
-    name string
+    name string // 외부에 공개되지 않음
   }
 
   func (m MyStruct) PublicMethod() {
     fmt.Println("This is a public method")
   }
 
-  func (m MyStruct) privateMethod() {
+  func (m MyStruct) privateMethod() { // 외부에 공개되지 않음
     fmt.Println("This is a private method")
   }
 
-  type myPrivateStruct struct {
+  type myPrivateStruct struct { // 외부에 공개되지 않음
     Age int
     name string
   }
 
-  func (m myPrivateStruct) PrivateMethod() {
+  func (m myPrivateStruct) PrivateMethod() { // 외부에 공개되지 않음
     fmt.Println("This is a private method")
   }
+```
 
+```sh
 cat 16-package/ex16.2
 cat ex16.2.go
   package main
@@ -1222,7 +1298,59 @@ cat ex16.2.go
 ```go
 ```
 
+### 17. 랜덤숫자 맞추기 게임
 
+```go
+package main
+
+import (
+	"bufio"
+	"fmt"
+	"math/rand"
+	"os"
+	"time"
+)
+
+func print(o ...interface{}) {
+	fmt.Println(o...)
+}
+
+func InputIntValue(stdin *bufio.Reader) (int, error) {
+	var n int
+	fmt.Printf("Guess number (1~100): ")
+	_, err := fmt.Scanln(&n)
+	if err != nil {
+		stdin.ReadString('\n')
+	}
+	return n, err
+}
+
+func main() {
+	// Seed random
+	rand.New(rand.NewSource(time.Now().UnixNano()))
+
+	stdin := bufio.NewReader(os.Stdin)
+	guess := rand.Intn(100) + 1
+	cnt := 1
+
+	for {
+		n, err := InputIntValue(stdin)
+		if err != nil {
+			fmt.Println("Only numbers are allowed")
+		} else {
+			if n == guess {
+				fmt.Printf("\nYou're correct! %d was guessed in %d attempts!\n", guess, cnt)
+				break
+			} else if n < guess {
+				fmt.Printf("it is bigger than %d\n", n)
+			} else if n > guess {
+				fmt.Printf("it is smaller than %d\n", n)
+			}
+			cnt++
+		}
+	}
+}
+```
 
 ### 18.슬라이스
 
@@ -1247,8 +1375,31 @@ for i,v := range slice1 {
 - 슬라이스 동작원리
   - func(arr [5]int) 배열 파라미터로 넘기면 전체 배열 COPY : array 요소들 변경 적용 X
   - func(slice []int) 슬라이스 파라미터 포인터까지 복제되므로: array 요소들 변경 적용 됨
+    - **reallocation is expensive in terms of time and memory**
+
+- Length: The length of a slice is the number of elements it currently contains. You can get the length of a slice using the built-in len() function.
+
+- Capacity: The capacity of a slice represents the maximum number of elements it can hold without allocating additional memory. You can get the capacity of a slice using the built-in cap() function. Initially, a slice’s capacity is equal to its length, but it can grow as needed. For example:
+
+- Performance
+
+Understanding the difference between length and capacity is crucial for performance optimization. When appending elements to a slice, Go may need to allocate a new underlying array if the capacity is exceeded. This reallocation can be expensive in terms of time and memory.
+
+- Avoiding Reallocation
+
+If you know the expected size of your data, you can preallocate a slice with sufficient capacity to avoid frequent reallocations during appends. This can significantly improve performance. For example:
 
 ```go
+// Preallocate a slice with capacity 100
+myData := make([]int, 0, 100)
+
+// Append elements to myData
+// ...
+// No reallocation needed as long as len(myData) < 100
+```
+
+```go
+
 type SliceHeader struct {
   Data uintptr  // 실제 배열을 가리키는 포인터
   Len int       // 요소개수
@@ -1266,16 +1417,22 @@ import "fmt"
 func main() {
   slice1 := make([]int, 3, 5)
   slice2 := append(slice1, 4, 5)
+	slice3 := append(slice2, 6)
 
   // len() cap()
+  // slice1:  [0 0 0] 3 5
   fmt.Println("slice1: ", slice1, len(slice1), cap(slice1))
+  // slice2:  [0 0 0 4 5] 5 5
   fmt.Println("slice2: ", slice2, len(slice2), cap(slice2))
+  // slice3:  [0 0 0 4 5 6] 6 10
+	fmt.Println("slice3: ", slice3, len(slice3), cap(slice3))
 
   // 문제1: slice1변경 시 둘다 바뀜
   slice1[1] = 100
   fmt.Println("After slice1[1]=100")
   fmt.Println("slice1: ", slice1, len(slice1), cap(slice1))
   fmt.Println("slice2: ", slice2, len(slice2), cap(slice2))
+  fmt.Println("slice3: ", slice3, len(slice3), cap(slice3))
 
   // 문제2: slice1 append()하면 1,2 둘다 바뀌는데,
   // len에 따라 append 위치가 다름
