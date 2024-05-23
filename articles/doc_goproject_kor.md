@@ -40,7 +40,7 @@ Frontend : Javascript, HTML, CSS
 ❚ 테스트
 - Cloud접속 -> Vpn > http://{ip_addr}:port
 
-![go sdk app](./assets/images/goproject_kor.png)
+![go sdk app](../assets/images/goproject_kor.png)
 
 
 ❚ Aws Profile 관리

@@ -448,7 +448,7 @@ print(graph)
     - 인접 행렬
     - 인접 리스트
 
-![graph](./assets/images/graph.png)
+![graph](../assets/images/graph.png)
 
 
 ```python

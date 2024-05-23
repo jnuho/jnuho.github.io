@@ -21,9 +21,9 @@ COMMIT
   - LKM rootkit (malware)관련 파일확인 ```/var/tmp/.../diamorphine```, ```/var/tmp/.alsp```
   - 아웃바운드 트래픽 발생
 
-![1](./assets/images/hacked1.jpg)
-![2](./assets/images/hacked2.jpg)
-![3](./assets/images/hacked3.jpg)
+![1](../assets/images/hacked1.jpg)
+![2](../assets/images/hacked2.jpg)
+![3](../assets/images/hacked3.jpg)
 
 - 처리
   - 해당 프로세스 kill 및 /var/tmp/.system 디렉토리 삭제

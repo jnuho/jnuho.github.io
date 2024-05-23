@@ -7,7 +7,7 @@ junho-rowem 2021-08-19
     - VPC: EC2와 같은 VPC 선택
     - [서브넷그룹](https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/SubnetGroups.html): 프라이빗 서브넷 선택 
 
-![diagram](./assets/images/aws_architecture.jpg)
+![diagram](../assets/images/aws_architecture.jpg)
 
 - 인프라 구축 테스트
   1. [VPC](#vpc)

@@ -554,7 +554,7 @@ public class JpaMain {
   - 양방향 연관관계는 개발상 편의로 필요할 때만 추가
   - 단방향 활용만으로 대부분 구현 가능 @ManyToOne @JoinColumn(name="???")
 
-![jpashop](./assets/images/jpashop.png)
+![jpashop](../assets/images/jpashop.png)
 
 - 다대일 N:1 @ManyToOne
   - DB는 N인 테이블에 FK 있음

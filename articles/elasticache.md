@@ -10,7 +10,7 @@
 
 <!-- ![elasticache_and_ec2](https://docs.aws.amazon.com/AmazonElastiCache/latest/mem-ug/images/ElastiCache-inVPC-AccessedByEC2-SameVPC.png) -->
 
-![diagram](./assets/images/aws_architecture.jpg)
+![diagram](../assets/images/aws_architecture.jpg)
 
 - 인프라 구축 테스트
   1. [VPC](#vpc)

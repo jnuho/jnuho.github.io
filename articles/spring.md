@@ -980,6 +980,6 @@ DataSource dataSource;
 																			DAO -> Mybatis/Mapper
 																			DAO -> DB
 
-![image info](./assets/images/was.png)
+![image info](../assets/images/was.png)
 
 <br>

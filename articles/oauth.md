@@ -48,7 +48,7 @@ Resource Server	| 사용자의 개인정보를 가지고있는 애플리케이�
 Authorization Server	| 권한을 부여(인증에 사용할 아이템을 제공주는)해주는 서버다. 사용자는 이 서버로 ID, PW를 넘겨 Authorization Code를 발급 받을 수 있다. Client는 이 서버로 Authorization Code을 넘겨 Access Token을 받급 받을 수 있다.
 
 
-![PAYCO OAUTH](./assets/images/payco_oauth.jpg)
+![PAYCO OAUTH](../assets/images/payco_oauth.jpg)
 - 출처: PAYCO 개발자센터
   - 사용자: Resource Owner
   - 서비스: Client
