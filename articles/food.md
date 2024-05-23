@@ -20,7 +20,7 @@ Skills :
 
 Screenshot
 
-  ![foodemo](/assets/images/fooddemo.gif){:height="50%" width="50%"}
+  ![foodemo]("../assets/images/fooddemo.gif){:height="50%" width="50%"}
 
 
 Ⅲ Java Concept used

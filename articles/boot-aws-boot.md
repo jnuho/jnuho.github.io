@@ -12,7 +12,7 @@
 
 
 <div>
-<img src="./assets/images/spring_web_layer.png"
+<img src="../assets/images/spring_web_layer.png"
 height="45%" width="45%" alt="Figure2.11"><br>
 </div>
 

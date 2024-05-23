@@ -5,11 +5,11 @@
 I created a web app using basic [deep learning](https://en.wikipedia.org/wiki/Deep_learning) algoirithm for a backend service, and [kubernetes](https://kubernetes.io/) for [microservices](https://en.wikipedia.org/wiki/Microservices) architecture. My goal is to make it perform binary classification on cat vs. non-cat images from a given image url.
 
 
-| <img src="./assets/images/microk8s-result.gif" alt="pods" width="550"> |
+| <img src="../assets/images/microk8s-result.gif" alt="pods" width="550"> |
 |:--:| 
 | *web application* |
 
-|<img src="./assets/images/microk8s-pods.png" alt="pods" width="600"> |
+|<img src="../assets/images/microk8s-pods.png" alt="pods" width="600"> |
 |:--:| 
 | *Kubernetes resources* |
 
@@ -37,7 +37,7 @@ My simple application is a basic deep learning image recognizers, one of which w
 I had to construct a virtualbox environment in which my kubernetes cluster and application will be deployed. In the furture I will be trying out Cloud (GCP, AWS) implemntation. 🔥
 
 
-|<img src="./assets/images/virtualbox_NAT.drawio.png" alt="pods" width="500">|
+|<img src="../assets/images/virtualbox_NAT.drawio.png" alt="pods" width="500">|
 |:--:| 
 | *NAT network* |
 
@@ -139,8 +139,8 @@ uvicorn main:app --port 3002
 
 The basic operations for forward and backward propagations in deep learning algorithm are as follows:
 
-<img src="./assets/images/forward.png" alt="add-node" width="500">
-<img src="./assets/images/backward.png" alt="3-node" width="500">
+<img src="../assets/images/forward.png" alt="add-node" width="500">
+<img src="../assets/images/backward.png" alt="3-node" width="500">
 
 <!--
 - Forward propagation for layer $l$: $a^{[l-1]}\rightarrow a^{[l]}, z^{[l]}, w^{[l]}, b^{[l]}$
@@ -777,11 +777,11 @@ vim /var/snap/microk8s/current/var/kubernetes/backend/cluster.yaml
   Role: 0
 ```
 
-|<img src="./assets/images/microk8s-add-node.png" alt="add-node" width="700">|
+|<img src="../assets/images/microk8s-add-node.png" alt="add-node" width="700">|
 |:--:| 
 | *Add node to form 3-master-node microk8s cluster* |
 
-|<img src="./assets/images/microk8s-3-node.png" alt="3-node" width="350">|
+|<img src="../assets/images/microk8s-3-node.png" alt="3-node" width="350">|
 |:--:| 
 | *result of a cluster* |
 
@@ -796,7 +796,7 @@ vim /var/snap/microk8s/current/var/kubernetes/backend/cluster.yaml
     - in result, two pods have different images: one from local repository, another from public docker repository.
 
 
-|<img src="./assets/images/microk8s-cause.png" alt="pods" width="700">|
+|<img src="../assets/images/microk8s-cause.png" alt="pods" width="700">|
 |:--:| 
 | *pod resources* |
 
