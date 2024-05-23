@@ -3,7 +3,7 @@
 - [aws sdk for go](https://aws.amazon.com/sdk-for-go/)
 
 <div>
-<img src="assets/images/goproject.gif" height="60%" width="60%" alt="go sdk app">
+<img src="../assets/images/goproject.gif" height="60%" width="60%" alt="go sdk app">
 </div>
 
 ❚ Skills
