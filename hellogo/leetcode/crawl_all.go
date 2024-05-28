@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"strings"
-	"strconv"
 	"sort"
+	"strconv"
+	"strings"
 
 	"github.com/gocolly/colly/v2"
 )
@@ -34,13 +34,13 @@ func main() {
 	c.OnHTML("div.truncate a", func(e *colly.HTMLElement) {
 
 		pos := strings.Index(e.Text, ".")
-		idx,_ := strconv.Atoi(e.Text[:pos])
+		idx, _ := strconv.Atoi(e.Text[:pos])
 
 		problems[idx] = "https://leetcode.com" + e.Attr("href")
 
 		//problems[idx] = "https://leetcode.com" + e.Attr("href")
 		//result = "/**\n" + url + "\n\n" + result + "\n*/\n"
-		
+
 		//result += "package main\n\n"
 		//result += "import (\n"
 		//result += "	\"fmt\"\n"
@@ -49,7 +49,6 @@ func main() {
 		//result += "	\n"
 		//result += "}"
 	})
-
 
 	// Start scraping
 	c.Visit(url)
@@ -62,8 +61,7 @@ func main() {
 	}
 	sort.Ints(keys)
 
-
-	for _,i := range keys {
+	for _, i := range keys {
 		//fmt.Println(i, problems[i])
 		//fmt.Printf("%d-%s\n", i, problems[i])
 		fmt.Printf("%d %s\n", i, problems[i])
@@ -75,9 +73,9 @@ func main() {
 // problem: 문제번호
 // desc: 문제설명
 func writeToFile(problem, desc string) {
-	// If the 
+	// If the
 	fname := "problems/" + problem + ".go"
-	f, err := os.OpenFile(fname, os.O_APPEND | os.O_CREATE | os.O_WRONLY, 0644)
+	f, err := os.OpenFile(fname, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
 		log.Fatal(err)
 	}

@@ -9,7 +9,7 @@ func binarySearch(needle int, haystack []int) bool {
 	high := len(haystack) - 1
 
 	for low <= high {
-		median := (low+high) / 2
+		median := (low + high) / 2
 
 		if haystack[median] < needle {
 			low = median + 1
@@ -26,6 +26,6 @@ func binarySearch(needle int, haystack []int) bool {
 }
 
 func main() {
-	items := []int {1,2,9,20,31,45,63,70,100}
+	items := []int{1, 2, 9, 20, 31, 45, 63, 70, 100}
 	fmt.Println(binarySearch(63, items))
 }

@@ -5725,3 +5725,67 @@ sess := session.Must(session.NewSessionWithOptions(session.Options{
     Profile: "my-profile",
 }))
 ```
+
+
+### Stack vs. Heap
+
+- https://medium.com/@denniswon/a-practical-guide-to-memory-allocation-in-go-3e7aca6b449a
+  - Variables whose addresses are taken become candidates for allocation on the heap.
+  - Memory allocation in Go follows escape analysis, where variables local to a function are typically allocated on the stack. However, if the compiler cannot prove that a variable is not referenced after the function returns, it allocates the variable on the heap to avoid dangling pointer errors.
+
+- Variables in Go can be allocated either on the stack or the heap:
+  - Stack: Local variables (like function arguments or temporary values) are usually allocated on the stack. This memory is fast to allocate and deallocate.
+  - Heap: Dynamic memory (like slices, maps, and large data structures) is allocated on the heap. This memory is managed by the garbage collector and is slower to allocate and deallocate.
+
+- Both stdout and stderr use memory from the stack or heap, depending on how they are accessed.
+
+
+
+
+### Userspace vs. Kernal space
+
+https://stackoverflow.com/questions/1739799/doesnt-the-fact-that-go-and-java-use-user-space-thread-mean-that-you-cant-real
+
+In Go, the term **userspace** refers to the part of a program that runs in user mode, as opposed to kernel mode.
+
+1. **Kernel Mode vs. User Mode**:
+   - When a computer runs an operating system, it operates in two primary modes:
+     - **Kernel Mode**: In this mode, the operating system's kernel (core) has direct access to hardware resources (CPU, memory, devices). It can execute privileged instructions and manage system resources.
+     - **User Mode**: In this mode, regular application code (user programs) runs. User-mode processes don't have direct access to hardware; they rely on the kernel for system calls (e.g., file I/O, networking, process management).
+
+2. **Userspace in Go**:
+   - In the context of Go programming, **userspace** specifically refers to the part of your Go program that runs in user mode.
+   - When you write Go code, most of it runs in userspace. This includes your application logic, data processing, and interactions with libraries.
+   - Userspace code interacts with the Go runtime, which manages memory, goroutines, garbage collection, and other runtime features.
+
+3. **Examples**:
+   - When you create a Go program that reads a file, processes data, and sends an HTTP request, all those actions happen in userspace.
+   - However, if your Go program needs to perform low-level tasks (e.g., interacting directly with hardware, managing memory pages), it might need to make system calls to the kernel (enter kernel mode).
+
+4. **WireGuard-Go Example**:
+   - An interesting example related to userspace is **WireGuard-Go**.
+   - WireGuard is a modern VPN protocol, and WireGuard-Go is an implementation of WireGuard in Go.
+   - When you run WireGuard-Go, it creates a virtual network interface (like `wg0`) entirely in userspace.
+   - Instead of relying on a kernel module (which is faster but requires administrative privileges), WireGuard-Go manages the VPN interface purely in userspace.
+   - You can use it by running:
+     ```
+     $ wireguard-go wg0
+     ```
+     This command creates the interface and forks into the background.
+
+5. **Pros and Cons of Userspace**:
+   - **Advantages**:
+     - Portability: Userspace code is more portable across different platforms (Linux, macOS, Windows, etc.).
+     - Flexibility: Userspace programs can be written in any language (including Go) without requiring kernel-specific code.
+   - **Disadvantages**:
+     - Performance: Userspace operations are generally slower than kernel-mode operations due to the overhead of system calls.
+     - Privileges: Some tasks (e.g., managing network interfaces) require kernel-level access, which userspace programs lack.
+
+In summary, userspace in Go refers to the part of your program that runs outside the kernel, handling application logic and interactions with libraries. WireGuard-Go is an excellent example of userspace networking! 🚀¹⁵
+
+(1) WireGuard/wireguard-go - GitHub. https://github.com/WireGuard/wireguard-go.
+(2) GitHub - google/netstack: IPv4 and IPv6 userland network stack. https://github.com/google/netstack.
+(3) examples module - github.com/cilium/ebpf/examples - Go Packages. https://pkg.go.dev/github.com/cilium/ebpf/examples.
+(4) Golang 1.18 workspaces 尝鲜 - 掘金. https://juejin.cn/post/7087207256126652429.
+(5) Get familiar with workspaces - The Go Programming Language. https://go.dev/blog/get-familiar-with-workspaces.
+(6) undefined. https://git.zx2c4.com/wireguard-go.
