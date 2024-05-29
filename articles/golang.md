@@ -1415,6 +1415,7 @@ myData := make([]int, 0, 100)
    - This strategy balances memory usage and reallocation frequency.
 
 3. **Example**:
+
 ```go
 package main
 
