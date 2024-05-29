@@ -1398,8 +1398,59 @@ myData := make([]int, 0, 100)
 // No reallocation needed as long as len(myData) < 100
 ```
 
-```go
+- Example of a slice with `len=cap=0` and appending
+  - When you create a slice without specifying an initial capacity (e.g., `[]int{}`),
+  - Go initializes it with a default capacity of 0. However, as you append elements to the slice, Go dynamically manages its capacity.
 
+1. **Dynamic Capacity Growth**:
+   - When you append elements to a slice, Go automatically increases its capacity as needed.
+   - Initially, the slice has a capacity of 0 (no underlying array).
+   - As you append elements, Go allocates a new underlying array with a larger capacity
+    - (usually double the current capacity).
+   - The existing elements are copied to the new array, and the slice now points to the new array.
+
+2. **Capacity Doubling and Beyond**:
+   - Initially, the capacity doubles each time it exceeds the current capacity.
+   - However, after a certain point (usually when the capacity reaches 1024 elements), Go switches to increasing the capacity by 25% instead of doubling.
+   - This strategy balances memory usage and reallocation frequency.
+
+3. **Example**:
+```go
+package main
+
+import "fmt"
+
+/**
+Length: 1, Capacity: 1
+Length: 2, Capacity: 2
+Length: 3, Capacity: 4
+Length: 4, Capacity: 4
+Length: 5, Capacity: 8
+Length: 6, Capacity: 8
+Length: 7, Capacity: 8
+Length: 8, Capacity: 8
+Length: 9, Capacity: 16
+Length: 10, Capacity: 16
+*/
+func main() {
+    var s []int // Create an empty slice (capacity 0)
+    for i := 0; i < 10; i++ {
+        s = append(s, i)
+        fmt.Printf("Length: %d, Capacity: %d\n", len(s), cap(s))
+    }
+}
+```
+In this example, observe how the capacity grows dynamically as elements are appended to the slice.
+
+4. **Efficient Programming Tips**:
+   - If you know the expected maximum size of your slice, consider preallocating capacity using `make` (e.g., `make([]int, 0, 100)`).
+   - Avoid unnecessary reallocations by setting an initial capacity that accommodates your use case.
+   - Be mindful of shared underlying arrays when creating multiple slices from the same array.
+
+Go's dynamic capacity management ensures efficient memory usage while allowing you to work with slices without worrying about manual reallocation.
+
+
+```go
 type SliceHeader struct {
   Data uintptr  // 실제 배열을 가리키는 포인터
   Len int       // 요소개수
