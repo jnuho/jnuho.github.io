@@ -1,5 +1,5 @@
 
-### Learn Golang
+## Learn Golang
 
 - [go module](https://medium.com/@fonseka.live/getting-started-with-go-modules-b3dac652066d)
 
@@ -1311,7 +1311,7 @@ import (
 	"time"
 )
 
-func print(o ...interface{}) {
+func Print(o ...interface{}) {
 	fmt.Println(o...)
 }
 
@@ -1325,6 +1325,15 @@ func InputIntValue(stdin *bufio.Reader) (int, error) {
 	return n, err
 }
 
+// Scanln reads a small piece of input (like a number or a word) until the first Enter key press (newline).
+// stdin.ReadString reads the entire line of input (including spaces) until the Enter key press (newline).
+// Remember, buffered streams help manage data flow,
+// and Scanln and ReadString are like different ways of listening to your friend’s answers
+// —either short and quick or long and detailed!
+// => stdin is more explicit about handling buffering
+
+// Both methods involve buffering, but Scanln abstracts it away for you.
+// ReadString gives you more control over the buffering process.
 func main() {
 	// Seed random
 	rand.New(rand.NewSource(time.Now().UnixNano()))
@@ -1936,6 +1945,8 @@ func main() {
 
 
 - 객체지향: 절차중심 -> 관계중심
+  - Student 는 단순히 이름,나이정보를 가지고 있는 데이터가 아니라,
+  - 과목을 등록하고, 리포트를 보내는 기능이 추가된 객체(Object)가 됨.
 
 ```go
 type Student struct {
@@ -2003,12 +2014,17 @@ func main() {
 
 ### 20.인터페이스
 
+- 인터페이스 중괄호 블록안에 메서드 집합 정의시 유의사항:
+
 1. 메소드는 반드시 메소드명이 있어야 함
 2. 매개변수와 반환이 다르더라도 이름이 같은 메소드 있을 수 없음
 3. 인터페이스에서는 메소드 구현 포함 X
 
 - 추상화
   - 내부동작을 감춰서 서비스를 제공하는 쪽과 사용하는 쪽 모두에게 자율르 주는 방식
+  - 구체화된 객체가 아닌 인터페이스만 가지고 메서드 호출 가능.
+  - 코드 수정없이 필요에 따라 구체화된 객체를 바꿔서 사용할 수 있음.
+  - 프로그램의 변경요청에 유연하게 대처 가능.
 - 덕테이핑 - 서비스 사용자 중심 코딩
   - 구조체 타입이 인터페이스를 구현한다는걸 명시할 필요 없음
 
@@ -2016,31 +2032,45 @@ func main() {
 2. 빈 인터페이스
 3. 인터페이스 기본값
 
+- Interface as parameter
+
+// NOTE
+// In Go, interfaces are already reference types.
+// When you pass an interface as an argument, you’re effectively passing a reference\
+// to the underlying concrete type that implements the interface.
+// Even if you pass an interface by value (without a pointer),
+// it behaves like a reference because it points to the actual implementation.
+// func SendBook(parcel string, sender Sender) {}
+
 
 ```go
 package main
+
 import "fmt"
 
 type Stringer interface {
-  String() string
+	String() string
 }
 
 type Student struct {
-  Name string
-  Age int
+	Name string
+	Age  int
 }
 
-
 func (s *Student) String() string {
-  return fmt.Sprintf("안녕, 나는 %d살, %s라고 해\n", s.Age, s.Name)
+	return fmt.Sprintf("안녕, 나는 %d살, %s라고 해", s.Age, s.Name)
 }
 
 func main() {
-  // s := &Student{"Jake", 9}
-  s := Student{"Jake", 9}
+	student := &Student{"Jake", 9}
+  // 인터페이스를 이용하면 메서드 구현을 포함한 구체적인 객체(concrete object)가 아닌,
+  // 추상화된 객체(e.g. stringer 변수)로 상호작용 할 수 있습니다.
+  // Student타입 객체는 String()메서드를 포함하기 때문에,
+  // stringer에 student를 대입 할 수 있다. (abstract away)
+	var stringer Stringer // 인터페이스의 기본값은 nil (e.g. stringer == nil)
+  stringer = student
 
-  res := s.String()
-  fmt.Println(res)
+	fmt.Printf("%s\n", stringer.String())
 }
 ```
 
@@ -2106,7 +2136,6 @@ func main() {
   SendFedexParcel("fedex parcel", f)
   SendKoreaPostParcel("koreaPost parcel", p)
 }
-
 ```
 
 - 인터페이스 사용
@@ -2125,6 +2154,11 @@ type Sender interface {
   Send(parcel string)
 }
 
+// In Go, interfaces are already reference types.
+// When you pass an interface as an argument, you’re effectively passing a reference\
+// to the underlying concrete type that implements the interface.
+// Even if you pass an interface by value (without a pointer),
+// it behaves like a reference because it points to the actual implementation.
 func SendBook(parcel string, sender Sender) {
   sender.Send(parcel)
 }
@@ -2152,10 +2186,12 @@ func main() {
 
 ```go
 // A회사: B,C회사의 제품 성능 비교하고자 함
-//   A회사가 직접 Database 인터페이스 정의하여
-//   TotalTime 함수 사용하도록 구현
+//    A회사가 직접 Database 인터페이스 정의하여
+//    TotalTime 함수 사용하도록 구현
 // 구조체 BDatabase, CDatabase가 달라서
 // 한 함수의 인수로 쓸수 없기때문에, Database 인터페이스 정의
+//    Database 인터페이스를 매개변수로 사용 (reference to address)
+//    (In Go, interfaces are already reference types!)
 func TotalTime(db Database) int {
   db.Get()
   db.Set()
@@ -2276,7 +2312,6 @@ func main() {
   att.Attack()     // att가 nil이기 때문에 런타임 에러가 발생합니다.
 }
 ```
-
 
 
 - 인터페이스 변환 하기
@@ -2514,6 +2549,37 @@ func main() {
 
 
 - `defer` 지연 실행
+  - 함수가 종료되기 직전에 실행해야하는 코드에 사용
+    - 파일이나 소캣 핸들 처럼 OS 내부 자원을 사용하는 경우
+    - 내부 자원 이기 떄문에, 반드시 쓰고나서 OS에 되돌려 줘야함.
+    - 내부 자원/메모리 고갈을 막기 위함.
+
+```go
+package main
+
+import (
+	"fmt"
+	"os"
+)
+
+// 1->2->3->4
+// 파일에 Hello World를 씁니다.
+// 파일을 닫았습니다.
+// 반드시 호출됩니다.
+func main() {
+	f, err := os.Create("test.txt") // 파일 생성
+	if err != nil {
+		fmt.Println("Failed to create a file")
+		return
+	}
+	defer fmt.Println("반드시 호출됩니다.") // 4
+	defer f.Close() // 3
+	defer fmt.Println("파일을 닫았습니다.") // 2
+
+	fmt.Println("파일에 Hello World를 씁니다.") //1
+	fmt.Fprintln(f, "Hello, World!") // 파일에 텍스트를 씁니다.
+}
+```
 
 - 함수타입 변수
   - 함수 시작지점을 가리키는 프로그램 카운터 있음 e.g. 1번라인, 2번라인...
@@ -2522,40 +2588,8 @@ func main() {
   - 함수 alias 지정가능
     - `type opFunc func (int, int) int`
     - `type CollectorOption func(*Collector)`
-  - 함수리터럴 (익명함수, lambda)
+  - 함수리터럴 (lambda; 익명함수)
     - 함수리터럴 외부변수를 자동으로 리터럴 함수 내부상태로 가져와 저장 ('capture') : 값복사가 아닌 참조형태로 가져옴
-
-```go
-package main
-import (
-  "fmt"
-  "os"
-)
-
-func main() {
-  f,err := os.Create("test.txt")
-  if err != nil {
-    fmt.Println("Failed to Create a file")
-    return
-  }
-
-  defer fmt.Println("반드시 호출됩니다.") //4
-  defer f.Close() //3
-  defer fmt.Println("파일을 닫았습니다.") //2
-
-
-  fmt.Println("파일에 Hello World를 씁니다.") // 1
-  fmt.Fprintln(f, "Hello World!")
-}
-
-
-// 1->2->3->4
-// 파일에 Hello World를 씁니다.
-// 파일을 닫았습니다.
-// 반드시 호출됩니다.
-```
-
-- 함수 타입 변수
 
 ```go
 package main
@@ -2593,7 +2627,7 @@ func main() {
 ```
 
 - 함수 리터럴
-  - 다른 언어 에서는 lambda(익명 함수)
+  - 다른 언어 에서는 lambda; 익명 함수
 
 ```go
 package main
@@ -2749,7 +2783,19 @@ type Element struct {
 }
 ```
 
-- 리스트 라이브러리
+- golang standard library `container`
+- https://pkg.go.dev/container
+  - `container/heap`
+  - `container/list`
+  - `container/ring`
+
+- Slices (golang's idiomatic datatype) vs. `container/list` standard library
+  - Slices are generally more efficient due to their contiguous memory layout and dynamic resizing strategy.
+  - (Doubly) Linked lists (from container/list) have additional overhead due to memory allocation and pointer traversal.
+  - Use slices for most scenarios unless you specifically need a doubly-linked list.
+
+1. 리스트 `container/list`
+  - 스탠다드 라이브러리
 
 ```go
 // Element
@@ -2816,6 +2862,7 @@ func main() {
     - 배열시작주소 + (인덱스*타입크기)
 
 - 큐
+  - Not a standard library: use `container/list` to custom implement
   - First In First Out
 
 ```go
@@ -2826,7 +2873,7 @@ import (
   "container/list"
 )
 
-// list.List : 링크드리스트
+// list.List : Doubly Linked List!
 //    .PushBack(n)
 //    .Front()
 //        front = .Front()
@@ -2868,6 +2915,7 @@ func main() {
 ```
 
 - 스택
+  - Not a standard library: use `container/list` to custom implement
   - First In Last Out
 
 ```go
@@ -2912,7 +2960,8 @@ func main() {
 }
 ```
 
-- 링
+2. 링 `container/ring`
+  - 스탠다드 라이브러리
 
 ```go
 func New(n int) *Ring
@@ -3011,10 +3060,22 @@ func main() {
   - 접근 : O(1) vs. O(N) vs. O(1) 키로 접근
     - 배열시작주소 + (인덱스*타입크기)
 
-- 맵의 원리 - 해시함수
+- 맵이 추가,삭제,읽기에서 속도가 빠른이유: 해쉬함수
+
+`|배열, 슬라이스| 리스트| 맵
+--|--|--|--
+추가| O(N) | O(1) | O(1)
+삭제| O(N) | O(1) | O(1)
+읽기| O(1)-인덱스로 접근 | O(N)-인덱스로 접근 | O(1)-키로 접근
+
+
+- 맵의 원리 - 해시함수는 다음 3가지 특징을 만족 해야한다
   1. 같은 입력 -> 같은 결과
-  2. 다른 입력 -> 다른 결과
-  3. 입력값의 범위는 무한대, 결과는 특정 범위
+  2. 다른 입력 -> (되도록) 다른 결과 (`in general` different result)
+  3. 입력값의 범위는 무한대, 결과는 특정 범위를 갖는다.
+    - e.g. `f(x) = sign(x)`: 삼각함수는 계산이 복잡해서, 주로 Mod를 씀
+    - e.g. `f(x) = Mod(x, 10)` does `x % 10` operation
+      - 나머지 연산은 계산이 빠르고, 결과값의 범위와 간격 조절 쉬움
     - 배열로 구현시 같은 해시값(인덱스)에 1개의 값만 맵핑
     - m[hash(23)] m[hash(33)] 해시충돌
       - 이 문제는 배열안에 리스트 저장하여 해결가능
@@ -3022,21 +3083,8 @@ func main() {
 
 
 - 해시로 맵 만들기
-
-```go
-const M = 10
-
-func hash(d int) int {
-  return d % M
-}
-
-func main() {
-  var m [M]int
-  
-  m[hash(23)] = 10
-}
-```
-
+  - 해시충돌은 인덱스마다 리스트에 충돌되는 값들 전부 저장하여 해결한다
+  - 해시 함수는 암호화, 비트코인 등에서 광범위하게 쓰임
 
 ```go
 package main
@@ -3044,6 +3092,7 @@ import "fmt"
 
 const M = 10
 
+// returns in range of 0,1,...9
 func hash(d int) int {
   return d % M
 }
@@ -3053,7 +3102,13 @@ func main() {
   m[hash(23)] = 10
   m[hash(33)] = 10 // 덮어 씌워짐 (해시충돌)
   m[hash(259)] = 50
+
+  // Prints:
+  // m[hash(23)] = 10
+  // m[hash(33)] = 10
+  // m[hash(259)] = 50
   fmt.Printf("m[hash(23)] = %d\n", m[hash(23)])
+  fmt.Printf("m[hash(33)] = %d\n", m[hash(33)])
   fmt.Printf("m[hash(259)] = %d\n", m[hash(259)])
 }
 ```
@@ -3393,13 +3448,18 @@ if r, ok := recover().(net.Error); ok {
   - 스레드 전환시 현재 상태 보관해야 함 -> 스레드 컨텍스트를 저장
   - 스레드 컨텍스트 : 명령 포인터, 스택메모리 등
   - 컨텍스트 저장 및 복원 시 비용 발생
-  - Go언어는 한개의 CPU 코어당 하나의 OS스레드 할당 하므로 컨텍스트 비용 발생 없음
+  - CPU 코어마다 OS스레드를 하나만 할당해서 사용하기 때문에, **Go언어**는 컨텍스트 스위칭 비용 발생 없음!
 
 - 고루틴 사용
   - 모든 프로그램은 main()을 고루틴으로 하나 가지고 있음
   - `go 함수호출`로 새로운 고루틴 추가 가능.
   - 현재 고루틴이 아닌 새로운 고루틴에서 함수가 수행 됨
 
+- main 고루틴외에 PrintHangul, PrintNumber 고루틴 2개 추가생성
+  - 3개 고루틴이 동시에 실행됨(CPU 3코어이상)
+  - 1-코어 CPU에서는 동시에 실행되는 것 처럼 보임
+  - main 고루틴은 종료하면 모든 고루틴이 즉시 종료되고, 프로그램이 종료됨
+    - main 고루틴에서 3초간 기다려서 나머지 2개 고루틴도 실행되는 동안 wait함
 
 ```go
 package main
@@ -3423,7 +3483,6 @@ func PrintNumbers(){
   }
 }
 
-
 func main() {
   // PrintHangul, PrintNumbers가 동시에 실행
   go PrintHangul()
@@ -3436,16 +3495,23 @@ func main() {
 }
 ```
 
-- 모든 고루틴 작업 완료할때 까지 대기
+- 서브 고루틴이 종료될 때까지 기다리기
   - 항상 고루틴의 종료시간에 맞춰 time.Sleep(종료까지걸리는시간) 호출할 수 없음
   - 고루틴이 끝날때까지 wait할수 있음: sync.WaitGroup 객체
+
+- A `WaitGroup` is a synchronization primitive in Go that allows you
+  - to wait for a collection of goroutines to finish executing.
+  - It keeps track of the number of goroutines that are currently active.
+    - `Add(n int)` increases the internal counter by n, indicating that n goroutines will be added to the group.
+    - `Done()` decreases the counter by 1 when a goroutine completes its work.
+    - `Wait()` blocks until the counter becomes zero (i.e., all goroutines have finished).
 
 ```go
 // sync.WaitGroup 객체 사용
 var wg sync.WaitGroup
 
 // Add()로 완료해야 하는 작업개수 설정하고, 각 작업이 완료 될때마다 Done() 호출하여
-// 남은 작업개수를 하나씩 중여줌. Wait()은 전체 작업이 모두 완료될때까지 대기하기 됨
+// 남은 작업개수를 하나씩 줄여줌. Wait()은 전체 작업이 모두 완료될때까지 대기하게 됨
 wg.Add(3)   // 작업개수 설정
 wg.Done()   // 작업이 완료될 때마다 호출
 wg.Wait()   // 모든 작업이 완료될 때까지 대기
@@ -3468,10 +3534,12 @@ func SumAtoB(a, b int) {
     sum += i
   }
   fmt.Printf("%d부터 %d까지 합계는 %d입니다.\n", a,b,sum)
+
   wg.Done() // wg의 남은 작업개수를 1씩 감소시킴
 }
 
 func main() {
+  // Set the total work count: 10 goroutines will be created, increasing CPU utilization
   wg.Add(10) // 총 작업개수 설정: 10개의 고루틴 생성하여 CPU 점유율 증가
 
   for i:=0; i<10; i++ {
@@ -3483,20 +3551,42 @@ func main() {
 }
 ```
 
+- 고루틴은 명령을 수행하는 단일 흐름으로, OS 스레드를 이용하는 경량 스레드
+
 - 고루틴의 동작방법 (2-Core 컴퓨터 가정)
-  - 고루틴은 명령을 수행하는 단일 흐름으로, OS 스레드를 이용하는 경량 스레드
-  - 2코어 시스템, 고루틴 3개일때 작업끝날때 까지 대기 후 끝난 1코어에 고루틴_3 배정됨
-  - 시스템 콜 호출 시 (고루틴으로 시스템콜 호출시; e.g. 네트워크로 데이터 읽을 때 데이터 들어올때 까지 고루틴이 대기상태 됨), 
-    - 네트워크 수신 대기상태인 고루틴이 대기목록으로 빠지고, 대기중이던 다른 고루틴이 OS 스레드를 이용하여 실행 됨
-    - 코어와 스레드 변경(컨텍스트 스위칭) 없이 고루틴이 옮겨다니기 때문에 효율적
-    - 코어가 스레드 옮겨다니는 컨텍스트 스위칭을 하지 않고, 대신 고루틴이 직접 대기상태 <-> 실행상태 스위칭 옮겨다녀서 효율적
+  - Goroutine 1개 일때:
+    - `Core1-OsThread1-GoRoutine1`
+  - Goroutine 2개 일때:
+    - `Core1-OsThread1-GoRoutine1`
+    - `Core2-OsThread2-GoRoutine2`
+  - Goroutine 3개 일때
+    - `Core1-OsThread1-GoRoutine1`
+    - `Core2-OsThread2-GoRoutine2`
+    - 작업끝날때 까지 대기 후 끝난 2코어에 '고루틴_3' 배정됨
+    - `Core1-OsThread1-GoRoutine1`
+    - `Core2-OsThread2-GoRoutine3`
+  - GoRoutine3가 시스템콜 호출 후 네트워크 대기상태 일때:
+    - GoRoutine3가 대기목록으로 빠지고, GoRoutin4가 스레드2를 이용하여 실행됨
+    - `Core1-OsThread1-GoRoutine1`
+    - `Core2-OsThread2-GoRoutine4`
+    - 컨텍스트 스위칭은 CPU가 Thread를 변경할 때 발생하는데, 코어와 스레드는 변경되지않고, 오로지 고루틴만 옮겨 다니기 때문에,
+    - **고루틴을 사용하면, 컨텍스트 스위칭 비용이 발생하지않는다!**
+
+
+- 시스템 콜 호출 시 (운영체제가 지원하는 서비스를 호출)
+  - (고루틴으로 시스템콜 호출시; e.g. 네트워크로 데이터 읽을 때 데이터 들어올때 까지 고루틴이 대기상태 됨), 
+  - 네트워크 수신 대기상태인 고루틴이 대기목록으로 빠지고, 대기중이던 다른 고루틴이 OS 스레드를 이용하여 실행 됨
+  - 코어와 스레드 변경(컨텍스트 스위칭) 없이 고루틴이 옮겨다니기 때문에 효율적
+  - 코어가 스레드 옮겨다니는 컨텍스트 스위칭을 하지 않고, 대신 고루틴이 직접 대기상태 <-> 실행상태 스위칭 옮겨다녀서 효율적
 
 
 - 동시성 프로그래밍 주의점
-  - 동일한 메모리 자원에 여러개 고루틴 접근!
+  - 문제점: `하나의/동일한 메모리 자원`에 `여러개 고루틴` 접근!
     - e.g. 입금1000, 출금1000 을 10개의 고루틴이 동시 실행 하는 상황
     - 두개 고루틴이 각각 1000원 입금했는데 2000이 아닌 1000이된상태에서 다시 두번 출금시 < 0 : panic!
-    - 해결책: 한 고루티에서 값을 변경할때 다른 고루틴이 접근하지 못하도록 mutex 활용 (mutual exclusion)
+  - 해결책: 한 고루틴에서 값을 변경할때 다른 고루틴이 접근하지 못하도록 `mutex` 활용
+    - `mutual exclusion`
+
 
 ```go
 package main
@@ -3541,6 +3631,16 @@ func main() {
 ```
 
 - 뮤텍스를 이용한 동시성 문제 해결
+  - 한 고루틴에서 값을 변경할때 다른 고루틴이 접근하지 못하도록 `mutex` 활용: `mutual exclusion`
+  - `mutex.Lock()`으로 mutex 획득 `mutext.Unlock()`으로 mutex 반납
+  - 다른 고루틴이 이미 뮤텍스를 획득했다면 해당 고루틴이 뮤텍스를 놓을 때(`mutex.Unlock()`) 까지 기다림
+  - 하지만 오직 하나의 고루틴만 공유 자원에 접근하기 때문에 동시성 프로그램 성능 향상 의미가 없어짐..
+  - 또한 `Deadlock` 발생 가능!
+
+- A mutex (short for “mutual exclusion”) is a synchronization primitive used
+- to protect shared resources in concurrent programs. It ensures that
+- only one goroutine can access a critical section of code (a shared resource) at any given time.
+- Mutexes prevent race conditions by allowing exclusive access to data.
 
 ```go
 package main
@@ -3558,7 +3658,11 @@ type Account struct {
 }
 
 func DepositAndWithdraw(account *Account) {
+  // 뮤텍스 획득!
   mutex.Lock()
+
+  // 한번 획득한 뮤텍스는 반드시 Unlock() 호출하여 반납
+  // `defer`: 함수 종료 전에 뮤텍스 Unlock() 메서드 호출
   defer mutex.Unlock()
 
   if account.Balance < 0 {
@@ -3591,13 +3695,23 @@ func main() {
 
 - 뮤텍스의 문제점
   1. 뮤텍스는 동시성 프로그래밍 성능이점 감소시킴
-  2. 데드락 발생 가능
+  2. `데드락` 발생 가능
+  - e.g. 식탁에 A와 B가 각각 수저1, 포크1 집고있음.
+  - A,B가 포크1, 수저1 집으려 할때, A,B 누구하나 양보하지 않아, 밥을 먹을 수 없음: 두개 mutex 각각 차지
+  - `어떤 고루틴도 원하는 만큼 뮤텍스를 확보하지 못해서 무한히 대기하는 경우`; 데드락
   - 멀티코어 환경에서는 여러 고루틴으로 성능 향상 가능
   - 같은메모리 접근시 꼬일 수 있음
   - 뮤텍스로 고루틴 하나만 접근하도록 하여 꼬이는 문제 해결 가능
   - 하지만, 뮤텍스를 잘못 사용하면 성능향상 없이 데드락 발생가능
     - 뮤텍스 사용시 좁은 범위에서 사용하여 데드락 발생 방지
     - 또는 둘다 수저-> 포크 순서로 뮤텍스 락 사용하면 해결 가능
+
+- Deadlock in goroutines (not in using mutex): different scenario than above `mutex` deadlock
+  - A deadlock occurs when a group of goroutines are waiting for each other, and none of them can proceed.
+  - Essentially, they’re stuck in a circular dependency, unable to make progress.
+
+- `Deadlock` 예시
+
 
 ```go
 package main
@@ -3610,10 +3724,10 @@ import (
 
 var wg sync.WaitGroup
 
-func diningProblem(name string, first, second *sync.Mutex,, firstName, secondName string) {
+func diningProblem(name string, first, second *sync.Mutex, firstName, secondName string) {
 
   for i:= 0; i<100; i++ {
-    fmt.Printf("%s 밥을 먹으로 합니다.\n", name)
+    fmt.Printf("%s 밥을 먹으려 합니다.\n", name)
     first.Lock()
     fmt.Printf("%s %s 획득\n", name, fisrtName)
     second.Lock()
@@ -3641,14 +3755,25 @@ func main() {
 
   wg.Wait()
 }
-
 ```
 
+- 멀티코어 컴퓨터에서는 여러 고루틴을 사용하여 성능 향상
+- 하지만 같은 메모리를 여러 고루틴이 접근하면 프로그램이 꼬일 수 있음
+- 뮤텍스를 이용하면 동시에 고루틴 하나만 접근하도록 저장해 꼬이는 문제를 막을 수 있다.
+- 그러나 뮤텍스를 잘못 사용하면 성능 향상도 못하고 데드락이라는 심각한 문제가 생길 수 있다.
+
+
 - 또 다른 자원 관리 기법
-  - 영역을 나누는 방법
-    - 각 고루틴은 할당된 작업만 하므로 고루틴(작업자)간 간섭 없음
-    - 고루틴 간 간섭이 없어서 뮤텍스도 필요 없음
-  - 역할을 나누는 방법 : Channel과 함께 설명
+- 각 고루틴이 서로 다른 자원에 접근하게 만드는 두가지 방법
+- mutex없이 동시성 프로그래밍 가능
+
+- 영역을 나누는 방법
+  - 각 고루틴은 할당된 작업만 하므로 고루틴(작업자)간 간섭 없음
+  - 고루틴 간 간섭이 없어서 뮤텍스도 필요 없음
+- 역할을 나누는 방법 : Channel과 함께 설명
+
+
+- 각 고루틴은 할당된 작업만 하므로 고루틴간 간섭이 발생하지 않아서, Mutex가 필요없음
 
 ```go
 package main
@@ -3691,11 +3816,10 @@ func main() {
   }
   wg.Wait()
 }
-
 ```
 
-### 25.채널과 컨텍스트
 
+### 25.채널과 컨텍스트
 
 - 채널: 고루틴끼리 메시지를 전달 할 수 있는 메시지 큐
   - 메시지큐에 메시지가 쌓이게 되고
@@ -3703,6 +3827,11 @@ func main() {
 
 - 채널 인스턴스 생성
   - 채널을 사용하기 위해서는 먼저 채널 인스턴스를 만들어야 함
+
+
+- Channels are reference types, meaning they are already a reference to the underlying data structure.
+  - `square(ch chan int) {}`
+  - no need to declare channel parameters as pointers since channel is already a reference type
 
 ```go
 // 채널타입: chan string
@@ -3712,14 +3841,14 @@ var messages chan string = make(chan string)
 ```
 
 
-- 채널에 데이터 넣기
+1. 채널에 데이터 넣기
 
 ```go
 var messages chan string = make(chan string)
 messages <- "This is a message"
 ```
 
-- 채널에서 데이터 빼기
+2. 채널에서 데이터 빼기
 
 ```go
 // 채널에서 빼낸 데이터를 담을 변수
@@ -3743,8 +3872,8 @@ func square(wg *sync.WaitGroup, ch chan int) {
   time.Sleep(time.Second)
   fmt.Printf("Square: %d\n", n*n)
 
-  wg.Done()
-}
+  wg.Done()  }
+
 
 // main 고루틴과 square 고루틴이 동시 실행
 // main 루틴에서 채널에 9를 넣어줄때까지 square루틴은 대기상태
@@ -3759,6 +3888,7 @@ func main() {
 
   wg.Add(1)
   go square(&wg, ch)
+  // 데이터 넣는다.
   ch <- 9
 
   // square내에서 main루틴에서 넣어준 채널 데이터 빼고 wg.Done() 완료 될떄까지 대기
@@ -3797,6 +3927,7 @@ func main() {
   - 데이터를 빼주지 않으면 버퍼없을 때 처럼 고루틴이 멈추게됨
 
 - 채널에서 데이터 대기
+  - 고루틴에서 데이터를 계속 기다리면서 데이터가 들어오면 작업을 수행
 
 ```go
 package main
@@ -3808,16 +3939,17 @@ import (
 )
 
 func square(wg *sync.WaitGroup, ch chan int) {
-  // 채널에 데이터가 들어 올때까지 계속 기다림
-  // square() 호출 밖에서 close(채널)로 채널이 닫히면
+  // 채널에 데이터가 들어 올때까지 '계속' 기다림
+  // 데드락 방지: square() 호출 밖에서 close(채널)로 채널이 닫히면
   // for문을 종료하여 프로그램 정상 종료하도록 함
   for n := range ch {
     fmt.Printf("Square: %d\n", n*n)
     time.Sleep(time.Second)
   }
 
-  // 실행되지 않음 :
-  // 위에 for문에서 계속 채널로 들어오는 데이터 기다림
+  // 위에 for문에서 계속 채널로 들어오는 데이터 기다리는 동안은, 실행되지 않음
+  // 데이터를 채널 ch에 모두 넣은 다음에 close(ch)로 채널을 닫으면
+  // for eange에서 데이터를 처리하고나서 채널이 닫힌 상태라면 for문 종료함 -> wg.Done() 실행됨!
   wg.Done()
 }
 
@@ -3838,7 +3970,7 @@ func main() {
   // square() 내에서 wg.Done()이 실행 되지 않고 deadlock발생
   // 하지만 채널을 닫아서 데드락 방지 가능
   // 채널에서 데이터를 모두 빼낸 상태이고, 채널이 닫혔으면
-  // for range 문을 빠져나가게 됨
+  // for range 문을 빠져나가게 됨 -> wg.Done()이 실행됨!!
   close(ch)
 
   wg.Wait()
