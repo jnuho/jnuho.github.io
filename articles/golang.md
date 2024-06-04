@@ -1,7 +1,7 @@
 
 ## Learn Golang
 
-- [go module](https://medium.com/@fonseka.live/getting-started-with-go-modules-b3dac652066d)
+- [go channel pattern](#worker-pool-pattern)
 
 ```sh
 # fmt 라이브러리만 사용할때는 go run 파일명.go 실행 가능
@@ -4223,7 +4223,7 @@ func main() {
   - A buffered channel in the producer
   - Delaying the consumer goroutine by adding a time.Sleep()
 
-- `Worker Pool Pattern`
+### Worker Pool Pattern
 
 ```go
 package main
