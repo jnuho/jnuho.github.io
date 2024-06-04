@@ -3551,6 +3551,93 @@ func main() {
 }
 ```
 
+- synchronization primitives in go
+  - https://medium.com/better-programming/using-synchronization-primitives-in-go-mutex-waitgroup-once-2e50359cb0a7
+
+- `wait-group.example.go`
+
+```go
+package main
+
+import (
+	"fmt"
+	"os"
+	"sync"
+)
+
+func main() {
+	homeDir, err := os.UserHomeDir()
+	if err != nil {
+		panic(err)
+	}
+	filesInHomeDir, err := os.ReadDir(homeDir)
+	if err != nil {
+		panic(err)
+	}
+
+	var wg sync.WaitGroup
+	wg.Add(len(filesInHomeDir))
+
+	fmt.Println("Printing files in", homeDir)
+
+	for _, file := range filesInHomeDir {
+    // wg.Add(1) // this also works instead of `wg.Add(len(filesInHomeDir))`
+		// anon function with parameter type `os.DisEntry`
+		// The `(file)` at the end of the expression immediately invokes
+		// the anonymous function with the value of the file variable.
+		go func(f os.DirEntry) {
+			defer wg.Done()
+			fmt.Println(f.Name())
+		}(file)
+	}
+
+	wg.Wait()
+	fmt.Println("finished....")
+}
+```
+
+- `once-example.go`
+  - Say you’re building a REST API using the Go net/http package and you want a piece of code to be executed
+  - only when the HTTP handler is called (e.g. a get a DB connection).
+  - You can wrap that code with once.Do and rest assured that
+  - it will be only run when the handler is invoked for the first time.
+
+```go
+package main
+
+import (
+	"fmt"
+	"log"
+	"net/http"
+	"sync"
+	"time"
+)
+
+var once sync.Once
+
+func main() {
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Println("http handler start")
+		once.Do(oneTimeOp)
+		fmt.Println("http handler end")
+		w.Write([]byte("done!"))
+	})
+
+	log.Fatal(http.ListenAndServe(":8080", nil))
+}
+
+func oneTimeOp() {
+	fmt.Println("one time op start")
+	time.Sleep(3 * time.Second)
+	fmt.Println("one time op end")
+}
+
+```
+
+
+
+
+
 - 고루틴은 명령을 수행하는 단일 흐름으로, OS 스레드를 이용하는 경량 스레드
 
 - 고루틴의 동작방법 (2-Core 컴퓨터 가정)
@@ -3584,9 +3671,15 @@ func main() {
   - 문제점: `하나의/동일한 메모리 자원`에 `여러개 고루틴` 접근!
     - e.g. 입금1000, 출금1000 을 10개의 고루틴이 동시 실행 하는 상황
     - 두개 고루틴이 각각 1000원 입금했는데 2000이 아닌 1000이된상태에서 다시 두번 출금시 < 0 : panic!
+    - `race condition`
   - 해결책: 한 고루틴에서 값을 변경할때 다른 고루틴이 접근하지 못하도록 `mutex` 활용
     - `mutual exclusion`
 
+- A `race condition` occurs when two or more threads access shared data and attempt to modify it simultaneously. 
+  - To prevent race conditions, you typically use locks or synchronization mechanisms.
+  - A lock ensures that only one thread can access the shared data at a time.
+
+- Example of `race condition`
 
 ```go
 package main
@@ -3856,6 +3949,9 @@ messages <- "This is a message"
 var msg string = <- messages
 ```
 
+1. 생성한 goroutine에서 채널에 데이터 빼기 (consumer)
+  - main goroutine에서 데이터 넣기 (provider)
+
 ```go
 package main
 import (
@@ -3887,7 +3983,10 @@ func main() {
   ch := make(chan int)
 
   wg.Add(1)
+
+  // 데이터를 빼서 처리
   go square(&wg, ch)
+
   // 데이터 넣는다.
   ch <- 9
 
@@ -3895,6 +3994,292 @@ func main() {
   wg.Wait()
 }
 ```
+
+2. 생성한 goroutine에서 채널에 데이터 넣기 (provider)
+  - main goroutine에서 데이터 뺴기 (consumer)
+
+```go
+package main
+
+import (
+	"fmt"
+	"sync"
+)
+
+func computeAndSendResult(wg *sync.WaitGroup, ch chan<- int) {
+	defer wg.Done()
+	// Perform some computation
+	result := 42
+
+	// Send the result through the channel
+	ch <- result
+}
+
+func main() {
+	var wg sync.WaitGroup
+
+	wg.Add(1)
+	resultCh := make(chan int)
+
+  // produce
+	go computeAndSendResult(&wg, resultCh)
+
+  // consume
+	// Receive the result from the channel
+	result := <-resultCh
+	fmt.Println("Received result:", result)
+
+	wg.Wait()
+
+}
+```
+
+- go channel with `range` and `close()`
+  - https://medium.com/better-programming/manging-go-channels-with-range-and-close-98f93f6e8c0c
+
+```go
+package main
+
+import (
+	"fmt"
+	"os"
+	"os/signal"
+	"syscall"
+	"time"
+)
+
+func produce(c chan<- int) {
+	for i := 0; i < 5; i++ {
+		c <- i
+		fmt.Printf("producer put i=%d\n", i)
+	}
+	// Without closing channel, the consumer will wait indefinitely for channel
+	close(c)
+	fmt.Println("producer finished.\n")
+}
+
+func consume(c <-chan int) {
+	fmt.Println("consumer sleeps for 5 seconds...")
+	time.Sleep(5 * time.Second)
+	fmt.Println("consumer started")
+	for i := range c {
+		fmt.Printf("consumer gets i = %d\n", i)
+	}
+	fmt.Println("consumer finished. press ctrl+c to exit")
+}
+
+func main() {
+	// Both producer and consumer goroutine do not have to coexist
+	// i.e. even if the producer goroutine finishes (and closes the channel),
+	// the consumer goroutine range loop will receive all the values.
+	c := make(chan int, 5)
+
+	// producer
+	go produce(c)
+
+	// consumer
+	go consume(c)
+
+	e := make(chan os.Signal)
+	// `signal.Notify` registers a channel `e` to receive specific signals
+	// -> list of signals to capture i.e. `syscall.SIGINT`(Ctrl+c), `syscall.SIGTERM`(termination), etc...
+	signal.Notify(e, syscall.SIGINT, syscall.SIGTERM)
+	// blocks the main goroutine until one of these signals is received.
+	<-e
+}
+```
+
+- Modify above so that it works without using `signal.Notify`
+  - 1. use `done` channel of type struct{}
+  - 2. use `sync.WaitGroup`
+
+
+1. use `done` channel of type struct{}
+
+```go
+package main
+
+import (
+	"fmt"
+	"time"
+)
+
+func produce(c chan<- int, done chan<- struct{}) {
+	for i := 0; i < 5; i++ {
+		c <- i
+		fmt.Printf("producer put i=%d\n", i)
+	}
+	// Without closing channel, the consumer will wait indefinitely for channel
+	close(c)
+	fmt.Println("producer finished.\n")
+	done <- struct{}{}
+}
+
+func consume(c <-chan int, done chan<- struct{}) {
+	fmt.Println("consumer sleeps for 5 seconds...")
+	time.Sleep(5 * time.Second)
+	fmt.Println("consumer started")
+	for i := range c {
+		fmt.Printf("consumer gets i = %d\n", i)
+	}
+	// fmt.Println("consumer finished. press ctrl+c to exit")
+	fmt.Println("consumer finished.")
+	done <- struct{}{}
+}
+
+func main() {
+	// Both producer and consumer goroutine do not have to coexist
+	// i.e. even if the producer goroutine finishes (and closes the channel),
+	// the consumer goroutine range loop will receive all the values.
+	done := make(chan struct{})
+	c := make(chan int, 5)
+
+	// producer
+	go produce(c, done)
+
+	// consumer
+	go consume(c, done)
+
+	// in other cases use sync.WaitGroup to make main goroutine wait
+	// e := make(chan os.Signal)
+	// // `signal.Notify` registers a channel `e` to receive specific signals
+	// // -> list of signals to capture i.e. `syscall.SIGINT`(Ctrl+c), `syscall.SIGTERM`(termination), etc...
+	// signal.Notify(e, syscall.SIGINT, syscall.SIGTERM)
+	// // blocks the main goroutine until one of these signals is received.
+	// <-e
+	<-done
+	<-done
+}
+```
+
+2. use `sync.WaitGroup`
+
+```go
+package main
+
+import (
+	"fmt"
+	"sync"
+	"time"
+)
+
+func produce(c chan<- int, wg *sync.WaitGroup) {
+	defer wg.Done()
+
+	for i := 0; i < 5; i++ {
+		c <- i
+		fmt.Printf("producer put i=%d\n", i)
+	}
+	// Without closing channel, the consumer will wait indefinitely for channel
+	close(c)
+	fmt.Println("producer finished.\n")
+}
+
+func consume(c <-chan int, wg *sync.WaitGroup) {
+	defer wg.Done()
+
+	fmt.Println("consumer sleeps for 5 seconds...")
+	time.Sleep(5 * time.Second)
+	fmt.Println("consumer started")
+	for i := range c {
+		fmt.Printf("consumer gets i = %d\n", i)
+	}
+	// fmt.Println("consumer finished. press ctrl+c to exit")
+	fmt.Println("consumer finished.")
+}
+
+func main() {
+	var wg sync.WaitGroup
+
+	// Both producer and consumer goroutine do not have to coexist
+	// i.e. even if the producer goroutine finishes (and closes the channel),
+	// the consumer goroutine range loop will receive all the values.
+	c := make(chan int, 5)
+
+	wg.Add(2)
+
+	// producer
+	go produce(c, &wg)
+
+	// consumer
+	go consume(c, &wg)
+
+	// in other cases use sync.WaitGroup to make main goroutine wait
+	// e := make(chan os.Signal)
+	// // `signal.Notify` registers a channel `e` to receive specific signals
+	// // -> list of signals to capture i.e. `syscall.SIGINT`(Ctrl+c), `syscall.SIGTERM`(termination), etc...
+	// signal.Notify(e, syscall.SIGINT, syscall.SIGTERM)
+	// // blocks the main goroutine until one of these signals is received.
+	// <-e
+	wg.Wait()
+}
+```
+
+- Both producer and consumer goroutine do not have to coexist
+  - i.e. even if the producer goroutine finishes (and closes the channel),
+	- the consumer goroutine range loop will receive all the values.
+
+- We can simulate this scenario by using a combination of:
+  - A buffered channel in the producer
+  - Delaying the consumer goroutine by adding a time.Sleep()
+
+- `Worker Pool Pattern`
+
+```go
+package main
+
+import (
+	"fmt"
+	"sync"
+)
+
+func worker(id int, jobs <-chan int, results chan<- int) {
+	// Process jobs from the jobs channel until it is closed
+	for job := range jobs {
+		fmt.Printf("Worker %d processing job %d\n", id, job)
+		results <- job * 2 // Send the result of the job to the results channel
+	}
+}
+
+func main() {
+	numWorkers := 3
+	numJobs := 10
+
+	jobs := make(chan int, numJobs)
+	results := make(chan int, numJobs)
+
+	// Start workers
+	var wg sync.WaitGroup
+	for i := 1; i <= numWorkers; i++ {
+		wg.Add(1)
+		go func(workerID int) {
+			defer wg.Done()
+			worker(workerID, jobs, results)
+		}(i)
+	}
+
+	// Add jobs to the jobs channel
+	for i := 1; i <= numJobs; i++ {
+		jobs <- i
+	}
+	close(jobs)
+
+	// Wait for all workers to finish and close the results channel
+	// when the counter reaches zero, wg.Wait() unblocks
+	// the counter reaches zero when `worker` finishes putting values from `jobs` to `results`
+	// since all is sent to `results` channel, let's close results channle here
+	go func() {
+		wg.Wait()
+		close(results)
+	}()
+
+	// Process results from the results channel
+	for result := range results {
+		fmt.Printf("Result: %d\n", result)
+	}
+}
+```
+
 
 
 - 채널 크기
@@ -3913,7 +4298,7 @@ func main() {
   ch := make(chan int)
   // **DEADLOCK 채널에 데이터 넣기만 하고 뺴지 않을때
   // 채널에 데이터 넣을떄 기본사이즈 0이기 때문에
-  // 보관할 수 없으므로 채널에서 데이터 빼는 코드가 있어야 진행가능!
+  // 보관할 수 없으므로 채널에서 데이터 빼는 코드가 있어야 진행가능!: goroutine 1개 생성해서 해당 func()에서 <-ch 해줘야함
   // 데드락 발생! 택배 보관장소 없으면 문앞에서 기다려야 함
   // 데이터 보관할 수 있는 메모리영역: 버퍼
   ch <- 9
@@ -3925,6 +4310,8 @@ func main() {
   - `var chan string messages = make(chan string, 2)`
   - 버퍼가 다 차면, 버퍼가 없는 크기 0 채널처럼 빈자리 생길때 까지 대기
   - 데이터를 빼주지 않으면 버퍼없을 때 처럼 고루틴이 멈추게됨
+
+
 
 - 채널에서 데이터 대기
   - 고루틴에서 데이터를 계속 기다리면서 데이터가 들어오면 작업을 수행
@@ -3978,6 +4365,9 @@ func main() {
 ```
 
 - SELECT 문
+  - 여러 채널을 동시에 기다릴 수 있음.
+  - 어떤 채널이라도 하나의 채널에서 데이터를 읽어오면 해당 구문을 실행하고 select문이 종료됨.
+  - 하나의 case만 처리되면 종료되기 때문에, 반복해서 데이터를 처리하고 싶다면 for문과 함께 사용 해야함
   - 채널에 데이터가 들어오길 기다리는 대신, 다른작업 수행하거나, 여러채널 동시대기
   - 여러개 채널을 동시에 기다림. 하나의 케이스만 처리되면 종료됨
   - 반복된 데이터 처리를 하려면 for문도 같이 사용
@@ -3994,11 +4384,14 @@ import (
 
 func square(wg *sync.WaitGroup, ch chan int, quit chan bool) {
   for {
+    // ch와 quit 양쪽을 모두기다림
+    //    ch채널의 데이터를 모두 읽으면,
+    //    quit 채널데이터를 읽고, square() 함수가 종료됨
     select {
-    case n := <-ch:
+    case n := <-ch: // ch 채널에서 데이터를 빼낼 수 있을 때 실행
       fmt.Printf("Squared: %d\n", n*n)
       time.Sleep(time.Second)
-    case <- quit:
+    case <- quit: // quit 채널에서 데이터를 빼낼 수 있을 때 실행
       wg.Done()
       return
     }
