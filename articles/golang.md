@@ -1,7 +1,7 @@
 
 ## Learn Golang
 
-- [go channel pattern](#worker-pool-pattern)
+- [worker pool pattern](#worker-pool-pattern)
 
 ```sh
 # fmt 라이브러리만 사용할때는 go run 파일명.go 실행 가능
@@ -4225,6 +4225,14 @@ func main() {
 
 ### Worker Pool Pattern
 
+- https://go.dev/blog/pipelines
+
+- The worker pool pattern involves creating a group of worker goroutines to process tasks concurrently,
+- limiting the number of simultaneous operations. This pattern is valuable when you have a large number of tasks to execute.
+- Some examples of using the Worker Pool Pattern in Real-world Applications
+  - Handling incoming HTTP requests in a web server.
+  - Processing images concurrently.
+
 ```go
 package main
 
@@ -4252,9 +4260,9 @@ func main() {
 	var wg sync.WaitGroup
 	for i := 1; i <= numWorkers; i++ {
 		wg.Add(1)
-		go func(workerID int) {
+		go func(workerId int) {
 			defer wg.Done()
-			worker(workerID, jobs, results)
+			worker(workerId, jobs, results)
 		}(i)
 	}
 
@@ -4262,6 +4270,7 @@ func main() {
 	for i := 1; i <= numJobs; i++ {
 		jobs <- i
 	}
+  // close channel since all values sent to jobs channel
 	close(jobs)
 
 	// Wait for all workers to finish and close the results channel
@@ -4270,6 +4279,10 @@ func main() {
 	// since all is sent to `results` channel, let's close results channle here
 	go func() {
 		wg.Wait()
+    // close channel since all values sent to results channel
+    // because the fact that wg.Wait() is called when all wg.Done() is executed implies
+    // that `worker(workerID, jobs, results)` function's `results <- job * 2` operation is complete
+    // since all values sent to the `results` channel we can close `results` channel here!
 		close(results)
 	}()
 
@@ -4279,7 +4292,6 @@ func main() {
 	}
 }
 ```
-
 
 
 - 채널 크기
