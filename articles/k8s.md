@@ -1,105 +1,85 @@
 
-### Kubernetes Concept
+### Kubernetes Core Concept
 
-- [Techworld with Nana](https://www.youtube.com/watch?v=X48VuDVv0do&t=1594s&ab_channel=TechWorldwithNana)
+While I've been using `kubectl` commands to manage services in a cluster; creating ingress, service, pod components, etc, I've been lacking deeper knowledge of what they are, how they are interconnected and how clients access the cluster via endpoints. So I tried to understand the concept of each component.
 
-- Kubernetes Component
-  - Control plane
-    - kube-apiserver
-    - kube-scheduler
-    - kube-controller-manager
-    - cloud-controller-manager
-    - etcd
-  - Worker Nodes
-    - kubelet
-    - kube-proxy
-    - Container runtime
-
-- Pod
-  - abstraction over container
-  - usually 1 application(container) per pod
-  - each pod gets its own ip address
-  - ephermeral; new ip for each re-creation
-
-- Service
-  - permanent ip address
-  - Service provide stable IP address. Each pod has its own ip address, but are ephemeral.
-  - Load balancing
-  - loose coupling
-  - within & outside cluster
-  - pods communite with each other using services
-
-- ClusterIP services
-  - default type
-  - microservice app deployed
-
-- Ingress
-  - https://my-app.com -> forward to service
+- <a href="https://kubernetes.io/docs/concepts/overview/components/" target="_blank">Kubernetes doc</a>
+- <a href="https://youtu.be/s_o8dwzRlu4?si=cz3-XlNOq91CUyz8&t=104">Kubernetes by Nana-1hr</a>
+- <a href="https://www.youtube.com/watch?v=X48VuDVv0do&t=1594s&ab_channel=TechWorldwithNana" target="_blank">Kuberentes by Nana-3hr</a>
+- <a href="https://medium.com/devops-mojo/kubernetes-objects-resources-overview-introduction-understanding-kubernetes-objects-24d7b47bb018" target="_blank">Kubernetes — Objects</a>
 
 
-- ConfigMap
-  - external configuration of your application
-  - `DB_URL = monngo-db`
+|<img src="https://kubernetes.io/images/docs/components-of-kubernetes.svg" alt="add-node" width="820">|
+|:--:| 
+| *components-of-kubernetes* |
 
-- Secret
-  - `DB_USER = mongo-user`
-  - `DB_PW = mongo-pw`
-
-- Volume (external hdd)
-  - on Local
-  - on Remote, outside of the cluster
-  - k8s does not manage data persistence
-
-
-What if pod dies => Use multi-node and pod replicas(deployment as abstraction for pods)
-, use service as a load balancer.
-
-- Deployemnt for stateless apps
-- StatefulSet for stateFul apps or databases
-  - DB can't be replicated via deployment.
-  - Avoid data inconsistencies
-  - => StatefulSet for STATEFUL apps. e.g. mysql, mongodb, elastic search
-  - But deploying StatefulSet is not easy
-  - NOTE DB are often hosted outside of k8s cluster
-
-
-- Worker node has multiple pods on it and 3 processes must be installed on every Node
-  - Container runtime (e.g. containerd)
-  - kublet: schedules pods and containers
+- Master node
+  - runs the control plane components, monitor and manage overall state of the cluster and resources
+  - schedule and start pods
+  - 4 processes run on every master node:
+  - `kube-apiserver`
+    - exposes the Kubernetes API and provides the front end to the Control Plane.
+    - a single entrypoint (cluster gateway) for interacting with the k8s control plane
+    - handles api requests, authentication, and authorization
+    - acts as a gatekeeper for authentication
+      - request → api server → validates request → other processes → pod creation
+    - UI (dashboard), API(script,sdk), CLI (kubectl)
+  - `kube-scheduler`
+    - schedule new pod → api server → scheduler
+    - → intelligently decide which node to put the new Pods based on resource percentage of nodes being used
+    - scans for newly created pods and assigns them nodes based on a variety of factors
+      - including resource requirements, hardware/software constraints and data locality.
+    - distribute workloads across worker nodes
+  - `kube-controller-manager`
+    - ensures the cluster remains in the desired state
+    - run controllers which run loops to ensure the configuration matches actual state of the running cluster.
+    - these controllers are as follows:
+      - Node controller — Checks and ensures nodes are up and running
+      - Job Controller — Manages one-off tasks
+      - Endpoints Controller — Populates endpoints and joins services and pods.
+      - Service Account and Token Controller — Creation of accounts and API Access tokens.
+    - detect cluster state changes(pods state)
+    - Controller Manager(detect pod state) → Scheduler → Kublet(on worker node)
+  - `cloud-controller-manager`
+  - `etcd`
+    - consistent and highly-available key-value store that maintains cluster state and ensures data consistency
+    - cluster brain!
+    - key-value data store of cluster state
+    - cluster changes get stored in the key value store!
+    - Is the cluster healthy? What resources are available? Did the cluster state change?
+    - NO application data is stored in etcd!
+    - can be replicated
+    - Multiple master nodes for secure storage
+      - api server is load balanced
+      - distributed storage across all the master nodes
+- Worker node
+  - host multiple pods which are the components of the application workload
+  - the following 3 processes must be installed on every node:
+  - `kubelet`
+    - schedules pods and containers
     - interacts with both the container and node
     - starts the pod with a container inside
-  - kube proxy:
+    - agent running on each node
+    - watches for changes in pod spec and takes action
+    - ensures the pods running on the node are running and are healthy.
+  - `kube-proxy`
     - forwards requests to services to pods
     - intelligent and performant forwarding logic that distributes request to pods with low network overhead
       - it can forward pod request for a service into the pod in the same node instead of forwarding to pods in other nodes, therefore lowers possible network overhead.
+    - a daemon on each node that allows network rules such as load balancing and routing
+    - enables communication between pods and external clients
+    - Proxy network running on the node that manage the network rules
+    - and communication across pods from networks inside or outside of the cluster.
+  - `Container runtime`
+    - responsible for pulling images, creating containers
+    - e.g. containerd
 
-- Master node, master processes
-  - schedule pod
-  - monitor resources
-  - re-schedule/re-start pod
-  - join a new Node
-  - 4 process run on every Master node
-    - Api server
-      - cluster gateway
-      - acts as a gatekeeper for authentication
-        - request -> api server -> validates request -> other processes -> pod creation
-        - 1 entrypoint in to the cluster
-    - Scheduler
-      - schedule new pod -> api server -> scheduler
-      - -> where to put the pod(intelligently decide based on resource percentage of nodes being used)
-    - Controller manager
-      - detect cluster state changes(pods state)
-      - Controller Manager(detect pod state) -> Scheduler -> Kublet(on worker node)
-    - etcd
-      - cluster brain!
-      - key-value data store of cluster state
-      - cluster changes get stored in the key value store!
-      - Is the cluster healthy? What resources are available? Did the cluster state change?
-      - NO application data is stored in etcd!
-      - can be replicated
-      - Multiple master nodes for secure storage
-        - api server is load balanced
-        - distributed storage across all the master nodes
+- https://kubernetes.io/docs/concepts/architecture/
+
+|<img src="https://kubernetes.io/images/docs/kubernetes-cluster-architecture.svg" alt="add-node" width="820">|
+|:--:| 
+| *kubernetes-cluster-architecture* |
+
 
 - Example of Cluster Set-up
   - 2 Master nodes, 3 Worker nodes
@@ -107,178 +87,78 @@ What if pod dies => Use multi-node and pod replicas(deployment as abstraction fo
   - Worker node : more resources for running applications
   - can add more Master or Worker nodes
 
+- Pod
+  - "Pods are the smallest deployable units of computing that you can create and manage in Kubernetes."
+  - abstraction over container
+  - usually 1 application(container) per pod
+  - each pod gets its own ip address
+  - ephermeral; new (unique) ip for each re-creation
 
-- Minikube
-  - master and worker process run on a single node
-  - usually via virtual box or other hypervisor
-  - for testing purposes
+- Service
+  - <a href="https://youtu.be/s_o8dwzRlu4?si=JA5oLELcsrNUdCYn&t=739" target="_blank">Service & Ingress</a>
+  - Service provide stable(permanent) IP address. Each pod has its own ip address, but are ephemeral.
+  - Load balancing
+  - loose coupling
+  - within & outside cluster
+  - pods communite with each other using services
+  - external service
+    - http://node-ip:port
+  - internal service
+    - http://db-service-ip:port
 
-- deployment
-  - blueprint for creating pods
-  - most basic configuration for deployemnt (name and image to use)
-  - rest defaults
-
-- replicaset
-  - another abstraction of layer
-  - manages the replicas of a pod
-
-```sh
-k create deployment nginx-depl --image=nginx:alpine
-k get replicaset
-```
-
-
-- Layers of Abstraction
-  - Deployment : manages a replicaset
-  - ReplicaSet : manages replicas of pods
-  - Pod : is an abstraction of containers
-  - Container
-
-```sh
-# edit deployement, but not pod directly
-k edit deployment nginx-depl
-```
-
-
-- YAML configuration file
-  - Attributes of `spec` are specific to the `kind`
-  - each configuration file has 3 parts
-    - metadata
-    - specification
-    - status: automatically generated by k8s (desired ==? actual) self-healing feature
-      - k8s gets this status from `etcd`!
-  - Store the YAML config file with your code (git repository)
-  - `template` also has its own `metadata` and `spec`: applies to Pod
-    - blueprint for a Pod
-
-
-- Connecting the component
-  - labels & selectors
-  - `metadata` contains labels, `spec` contains selectors
-    - metadata define key-value pair for label which is matched by the spec selector for pod
-    - pod gets the label through the spec.template blueprint
-    - pod belongs to deployment by label
-    - deployment labels are connected to service's spec.selector
-    - service's spec.selector uses deployment's metadata labels to make connection to deployement(pods)
-  - service expose port (accessible) -> forward to service targetPort -> deployment's containerPort
-
-```yaml
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: fe-nginx-deployment
-  # NOTE label for deployment which is used by service to make connection to deployement(pods)
-  labels:
-    app: fe-nginx
-spec:
-  replicas: 2
-  selector:
-    # NOTE allows `Deployment` to find and manage Pods with this matching label
-    matchLabels:
-      app: fe-nginx
-  template:
-    metadata:
-      # NOTE sets the labels for the `Pods` created by the Deployment.
-      labels:
-        app: fe-nginx
-    spec:
-      containers:
-      - name: fe-nginx
-        image: jnuho/fe-nginx:latest
-        imagePullPolicy: IfNotPresent
-        ports:
-        - containerPort: 80
-      #imagePullSecrets:
-      #- name: regcred
-```
-
-
-```sh
-k describe svc serivceName
-  Endpoints: podip:targetPort
-  : this Endpoint ip matches pod ip
-
-k get pod podName -o wide
-k get deploy nginx-depl -o yaml
-  check the status is automatically generated by k8s
-  retrieve result of status from etcd
-```
-
-- Complete Application setup with Kubernetes components
-  - mongodb(internal service; no external requests), mongo-express(Web-app)
-  - mongo express get url,id, pw from configmap and secret to connect to mongodb
-  - mongo express accessible from browser: NodeIp:PortOfExternalService
-  - 2 Deployment / Pod
-  - 2 Service
-  - 1 ConfigMap
-  - 1 Secret
-  - Browser -> mongo express external service -> mongoexpress pod -> mongodb internal service -> mongodb pod
-
-
-- Namespace
-  - kube-system: system processes, master and kubectl processes
-  - kube-public: publicly accessible data, configmap, that contains cluster information `k cluster-info`
-  - kube-node-lease: heartbeats of node, determines the availability of a node
-  - default: resources you create
-
-```sh
-kubectl create namespace myNameSpace
-```
-
-- Group applications into namespaces
-  - e.g. database/ logging / monitoring/ nginx-ingress/elastic stack
-  - no need to create namespaces for smaller projects with about 10 users
-  - create namespaces if there are many teams, same application(same name)
-  - staging/development namespace resources use same resource in certain namespaces
-  - blue/green deployment using namespaces (Production green/blue)
-  - access and resource limits on nameaspaces
-
-
-- Each NS must define own ConfigMap/Secret
-  - suppose projectA, projectB namespaces
-  - both namespace must have ConfigMap with exact same content
-
-```yaml
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: mysql-configmap
-data:
-  db_url: mysql-service.database
-```
-
-- Components, which can't be created within a namespace
-  - persistent volume
-  - node
-
-```sh
-k api-resources --namespaced=false
-k api-resources --namespaced=true
-```
-
-
-- You can change the active namespace with kubens
-  - without a need to `k get pod -n myNameSpace`
-
-```sh
-brew install kubectx
-kubens
-kubens my-namespace
-  Active namespace is "my-namespace"
-```
-
+- ClusterIP services
+  - default type
+  - microservice app deployed
 
 - Ingress
-  - Use External Service: http://my-node-ip:svcNodePort
-    - service.spec.type=LoadBalancer, nodePort=30510
-    - http://localhost:30510/
+  - https://www.youtube.com/watch?v=NPFbYpb0I7w&ab_channel=IBMTechnology
+  - https://youtu.be/80Ew_fsV4rM?si=xAS60zSQzhhAEcnb
+  - https://youtu.be/X48VuDVv0do?si=K1BDcMdSDNyIK1Ck&t=7312
+  - https://www.youtube.com/watch?v=y5-u4jtflic&ab_channel=TTABAE-LEARN
+  - <a href="https://youtu.be/s_o8dwzRlu4?si=JA5oLELcsrNUdCYn&t=739" target="_blank">Service & Ingress</a>
+  - `https://my-app.com` (ingress can configure secure https protocal with domain name) → forwards traffic into `internal` service
+  - [ingress by traefik.io](https://traefik.io/glossary/kubernetes-ingress-and-ingress-controller-101/#:~:text=A%20Kubernetes%20ingress%20controller%20follows,state%20requested%20by%20the%20user)
+  - [gke ingress](https://thenewstack.io/deploy-a-multicluster-ingress-on-google-kubernetes-engine/?ref=traefik.io)
+  - [load balancer and ingress duo](https://medium.com/@rehmanabdul166/explaining-load-balancers-and-ingress-controller-a-powerful-duo-bca7add558ab)
+  - [load balancer vs. ingress](https://medium.com/@thekubeguy/load-balancer-vs-ingress-why-do-we-need-both-for-same-work-3ae2b9afdd5a)
+
+- Let's walk through the flow of traffic in a Kubernetes environment with:
+  - Ingress
+  - Ingress Controller
+  - external Load Balancer (such as an Application Load Balancer, ALB):
+
+1. **Ingress Creation**:
+   - You start by creating an Ingress resource in your Kubernetes cluster.
+   - The Ingress defines routing rules based on HTTP hostnames and URL paths.
+
+2. **External Load Balancer (ELB) Creation**:
+   - When you create an Ingress, the cloud environment (e.g., AWS) automatically provisions an external Load Balancer (e.g., ALB).
+   - The ELB acts as the entry point for external traffic.
+
+3. **Traffic Flow**:
+   - Here's how the traffic flows:
+     - **External Client**: Sends a request to the ALB (Load Balancer).
+     - **ALB**: Receives the request and forwards it to the Ingress Controller.
+     - **Ingress Controller**: Based on the Ingress rules, the controller routes the request to the appropriate Kubernetes Service.
+     - **Service**: The Service forwards the request to the corresponding Pod(s).
+
+So, the complete flow is: **ALB → Ingress Controller → Ingress → Service → Pod**.
+
+Ingress allows fine-grained routing, and the Ingress Controller ensures that the load balancer routes requests correctly. If you need more complex routing based on HTTP criteria, Ingress is a powerful tool! 🚀
+
+
+1. Use External Service: http://my-node-ip:svcNodePort → Pod
+  - service.spec.type=LoadBalancer, nodePort=30510
+  - http://localhost:30510/
     - in VirtualBox port-forward 30510
-  - Use Ingress + Internal service: https://my-app.com
-  - Ingress Controller Pod -> Ingress (routing rule) -> Service -> Pod
+2. Use `Ingress` + Internal service: https://my-app.com
+  - Ingress Controller Pod → Ingress (routing rule) → Service → Pod
   - using ingress, you can configure https connection
 
 
-- External Service (without Ingress)
+### Ingress Explained
+
+1. External Service (without Ingress)
 
 ```yaml
 apiVersion: v1
@@ -297,7 +177,8 @@ spec:
       nodePort: 30510
 ```
 
-- Using Ingress -> internal Service
+2. Using Ingress → internal Service (e.g. `myapp-internal-service`)
+  - internal service has no `nodePort` and the type should be `type: ClusterIP`
   - must be valid domain address
   - map domain name to Node's IP address, which is the entrypoint
     - (one of the nodes or could be a host machine outside the cluster)
@@ -335,7 +216,7 @@ spec:
 ```
 
 - Ingress controller
-  - implementation of ingress, which is Ingress Controller
+  - implementation of ingress, which is Ingress Controller (Pod)
   - evaluates and processes ingress rules
   - manages redirections
   - entrypoint to cluster
@@ -343,14 +224,20 @@ spec:
     - e.g. k8s Nginx Ingress Controller
   - HAVE TO CONSIDER the environemnt where the k8s cluster is running
     - Cloud Service Provider (AWS, GCP, AZURE)
-      - Cloud Load balancer -> Ingress Controller Pod -> Ingress -> Service -> Pod
+      - External reqeust from the browser →
+        - Cloud Load balancer →
+        - Ingress Controller Pod →
+        - Ingress →
+        - Service →
+        - Pod
+      - using cloud lb, you do not have to implement load balancer yourself
     - Baremetal
       - you need to configure some kind of entrypoint (e.g. metallb)
       - either inside of cluster or outside as separate server
       - software or hardware solution can be used
       - must provide entrypoint
       - e.g. Proxy Server: public ip address and open ports
-        - Proxy server -> Ingress Controller Pod -> Ingress (checks ingress rules) -> Service -> Pod
+        - Proxy server → Ingress Controller Pod → Ingress (checks ingress rules) → Service → Pod
         - no server in k8s cluster is publicly accessible from outside
 
 
@@ -554,6 +441,205 @@ type: kubernetes.io/tls
 
 
 
+- ConfigMap
+  - stored in plaintext format
+  - external configuration of your application
+  - `DB_URL = monngo-db`
+
+- Secret
+  - Caution: "Kubernetes Secrets are, by default, stored unencrypted in the API server's underlying data store (etcd)."
+    - https://kubernetes.io/docs/concepts/configuration/secret/
+  - stored in base64 encoded format
+  - `DB_USER = mongo-user`
+  - `DB_PW = mongo-pw`
+
+- Volume (like an external hdd plugged into cluster)
+  - k8s does not manage data persistence
+  - if database pod dies the data disappears
+  - it requires persistent database
+  - strorage could on:
+    - on Local
+    - on Remote, outside of the cluster
+
+
+- What if pod dies => downtime occurs.
+  - use service as a load balancer which distributes traffic to multiple nodes
+  - Use multi-node and pod replicas(deployment as abstraction for pods)
+  - deployment specifies how many pods are deployed into multiple nodes
+  - BUT, database pods cannot be replicated. it requires to store data into a single storage
+    - use StatefulSet for stateful apps such as Databases
+
+- `Deployemnt` for stateless apps
+  - Deployment is the Abstraction of Pods
+
+- `StatefulSet` for stateFul apps or databases
+  - DB can't be replicated via deployment.
+  - Avoid data inconsistencies
+  - => StatefulSet for STATEFUL apps. e.g. mysql, mongodb, elastic search
+  - But deploying StatefulSet is not easy
+  - `NOTE`: "DB are often hosted outside of k8s cluster"
+
+- Minikube
+  - master and worker process run on a single node
+  - usually via virtual box or other hypervisor
+  - for testing purposes
+
+- deployment
+  - blueprint for creating pods
+  - most basic configuration for deployemnt (name and image to use)
+  - rest defaults
+
+- replicaset
+  - another abstraction of layer
+  - manages the replicas of a pod
+
+```sh
+k create deployment nginx-depl --image=nginx:alpine
+k get replicaset
+```
+
+
+- Layers of Abstraction
+  - Deployment : manages a replicaset
+  - ReplicaSet : manages replicas of pods
+  - Pod : is an abstraction of containers
+  - Container
+
+```sh
+# edit deployement, but not pod directly
+k edit deployment nginx-depl
+```
+
+
+- YAML configuration file
+  - Attributes of `spec` are specific to the `kind`
+  - each configuration file has 3 parts
+    - metadata
+    - specification
+    - status: automatically generated by k8s (desired ==? actual) self-healing feature
+      - k8s gets this status from `etcd`!
+  - Store the YAML config file with your code (git repository)
+  - `template` also has its own `metadata` and `spec`: applies to Pod
+    - blueprint for a Pod
+
+
+- Connecting the component
+  - labels & selectors
+  - `metadata` contains labels, `spec` contains selectors
+    - metadata define key-value pair for label which is matched by the spec selector for pod
+    - pod gets the label through the spec.template blueprint
+    - pod belongs to deployment by label
+    - deployment labels are connected to service's spec.selector
+    - service's spec.selector uses deployment's metadata labels to make connection to deployement(pods)
+  - service expose port (accessible) → forward to service targetPort → deployment's containerPort
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fe-nginx-deployment
+  # NOTE label for deployment which is used by service to make connection to deployement(pods)
+  labels:
+    app: fe-nginx
+spec:
+  replicas: 2
+  selector:
+    # NOTE allows `Deployment` to find and manage Pods with this matching label
+    matchLabels:
+      app: fe-nginx
+  template:
+    metadata:
+      # NOTE sets the labels for the `Pods` created by the Deployment.
+      labels:
+        app: fe-nginx
+    spec:
+      containers:
+      - name: fe-nginx
+        image: jnuho/fe-nginx:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 80
+      #imagePullSecrets:
+      #- name: regcred
+```
+
+
+```sh
+k describe svc serivceName
+  Endpoints: podip:targetPort
+  : this Endpoint ip matches pod ip
+
+k get pod podName -o wide
+k get deploy nginx-depl -o yaml
+  check the status is automatically generated by k8s
+  retrieve result of status from etcd
+```
+
+- Complete Application setup with Kubernetes components
+  - mongodb(internal service; no external requests), mongo-express(Web-app)
+  - mongo express get url,id, pw from configmap and secret to connect to mongodb
+  - mongo express accessible from browser: NodeIp:PortOfExternalService
+  - 2 Deployment / Pod
+  - 2 Service
+  - 1 ConfigMap
+  - 1 Secret
+  - Browser → mongo express external service → mongoexpress pod → mongodb internal service → mongodb pod
+
+
+- Namespace
+  - kube-system: system processes, master and kubectl processes
+  - kube-public: publicly accessible data, configmap, that contains cluster information `k cluster-info`
+  - kube-node-lease: heartbeats of node, determines the availability of a node
+  - default: resources you create
+
+```sh
+kubectl create namespace myNameSpace
+```
+
+- Group applications into namespaces
+  - e.g. database/ logging / monitoring/ nginx-ingress/elastic stack
+  - no need to create namespaces for smaller projects with about 10 users
+  - create namespaces if there are many teams, same application(same name)
+  - staging/development namespace resources use same resource in certain namespaces
+  - blue/green deployment using namespaces (Production green/blue)
+  - access and resource limits on nameaspaces
+
+
+- Each NS must define own ConfigMap/Secret
+  - suppose projectA, projectB namespaces
+  - both namespace must have ConfigMap with exact same content
+
+```yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mysql-configmap
+data:
+  db_url: mysql-service.database
+```
+
+- Components, which can't be created within a namespace
+  - persistent volume
+  - node
+
+```sh
+k api-resources --namespaced=false
+k api-resources --namespaced=true
+```
+
+
+- You can change the active namespace with kubens
+  - without a need to `k get pod -n myNameSpace`
+
+```sh
+brew install kubectx
+kubens
+kubens my-namespace
+  Active namespace is "my-namespace"
+```
+
+
+
 - Helm explained
   - package manage (e.g. apt)
 
@@ -613,8 +699,8 @@ helm install --set version=2.0.0
 - version2:
   - client  (cli)
   - server (tiller)
-  - helm install(cli) -> tiller execute yaml and deploy the cluster
-  - helm install/upgrade/rollback -> tiller create history with revision
+  - helm install(cli) → tiller execute yaml and deploy the cluster
+  - helm install/upgrade/rollback → tiller create history with revision
     - revision 1,2... history is stored
     - downsides: tiller has too much power inside of k8s cluster
       - security risk
@@ -716,7 +802,7 @@ spec:
 
 - Stateful and stateless applications example
   - nodejs(stateless) + mongodb(stateful)
-  - http request (doesn't depend on previous data to handle)-> nodejs
+  - http request (doesn't depend on previous data to handle)→ nodejs
     - handle it based on the payload of request
     - update/query from mongodb app
   - mongodb update data based on previous state / query data
@@ -751,7 +837,7 @@ spec:
     - where node2: 10.2.2.x
     - where node3: 10.2.3.x
     - `k get pod -o wide` to check pod ip
-    - Ingress -> Service(ClusterIP) -> Pods
+    - Ingress → Service(ClusterIP) → Pods
     - Sevice's `spec.selector` : which Pods it forward to
     - Sevice's `spec.ports.targetPort` : which Ports it forward to
     - Pods are identified via selectors
@@ -876,7 +962,7 @@ mongodb-service-headless ClusterIP  None       <none>      27017/TCP
     - `nodePort` range should be: 30000 - 32767
     - `http://ip-address-worker-node:nodePort`
     - When you create NodePort Service, ClusterIP Service is also automatically created because nodePort has to be routed to `port` of Service
-      - `nodePort` -> `port`
+      - `nodePort` → `port`
       - e.g.  `port:3200`, `nodePort:30008`
         - cluster-ip:3200
         - node-ip:30008
@@ -914,8 +1000,8 @@ spec:
 - Wrap-up
   - NodePort Service NOT for external connection! TEST-ONLY
   - two common practice:
-    - Ingress -> Service (ClusterIP)
-    - LoadBalanceri -> Service (ClusterIP)
+    - Ingress → Service (ClusterIP)
+    - LoadBalanceri → Service (ClusterIP)
 
 
 
@@ -1048,7 +1134,7 @@ source .bashrc
   - Ingress rule을 통해 하나의 Ip 주소로 들어오도록 설정
   - Ingress Controller가 실제 traffic route하며, Ingress는 rule을 정의하는 역할
 
-- 이미지 만들기 -> Dockerhub에 push
+- 이미지 만들기 → Dockerhub에 push
 
 ```sh
 # 이미지 만들기
