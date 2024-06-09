@@ -31,6 +31,9 @@ I created a web app using basic [deep learning](https://en.wikipedia.org/wiki/De
 
 My simple application is a basic deep learning image recognizers, one of which was covered in Andrew Ng's coursera course. I created two simple deep learning models to identify cat images and hand-written digits (0-9), respectively.
 
+[↑ top](#image-recognizer-app)
+<br><br>
+
 ### Skills I used
 
 - Kubernetes : 3-master node cluster w/ `microk8s`
@@ -48,6 +51,9 @@ My simple application is a basic deep learning image recognizers, one of which w
   - tailscale exit node VPN
   -->
 
+[↑ top](#image-recognizer-app)
+<br><br>
+
 ### Virtualbox network architecture
 
 I had to construct a virtualbox environment in which my kubernetes cluster and application will be deployed. In the furture I will be trying out Cloud (GCP, AWS) implemntation. 🔥
@@ -56,6 +62,10 @@ I had to construct a virtualbox environment in which my kubernetes cluster and a
 |<img src="../assets/images/virtualbox_NAT.drawio.png" alt="pods" width="500">|
 |:--:| 
 | *NAT network* |
+
+
+[↑ top](#image-recognizer-app)
+<br><br>
 
 
 ### Virtualbox Setup
@@ -118,6 +128,10 @@ sudo ip link set enp0s3 down
 sudo ip link set enp0s3 up
 ```
 
+
+[↑ top](#image-recognizer-app)
+<br><br>
+
 ### Microservices
 
 1. frontend: nginx (nodejs vite in local) + javascript + html + css
@@ -155,6 +169,10 @@ from other origins includes the right CORS headers.
 => Add appropriate headers in golang server.
 ```
 
+
+[↑ top](#image-recognizer-app)
+<br><br>
+
 ### Backend - Golang web server
 
 - `go.mod`, `go.sum` must be in github repo root directory
@@ -176,6 +194,10 @@ go mod tidy
 ```
 
 
+[↑ top](#image-recognizer-app)
+<br><br>
+
+
 ### Backend - Python web server
 
 - Use FastAPI + Unicorn
@@ -191,6 +213,10 @@ go mod tidy
 ```sh
 uvicorn main:app --port 3002
 ```
+
+
+[↑ top](#image-recognizer-app)
+<br><br>
 
 #### Mathematical background for deep learning image recognizer
 
@@ -219,12 +245,20 @@ The basic operations for forward and backward propagations in deep learning algo
   (with initial value $dZ^{[L]} = A^{[L]}-Y$)
 
 
+
+[↑ top](#image-recognizer-app)
+<br><br>
+
 ### Image Classification
 
 - cat vs.non-cat image classification and hand-written digits recognition
 - https://www.youtube.com/watch?v=JgtWVML4Ykg&ab_channel=SheldonVon
 - https://detexify.kirelabs.org/classify.html
 
+
+
+[↑ top](#image-recognizer-app)
+<br><br>
 
 ### Frontend - local setup
 
@@ -272,6 +306,10 @@ npm run dev
   - Edit `main.ts`
 
 
+
+[↑ top](#image-recognizer-app)
+<br><br>
+
 ## Dockerize
 
 **NOTE**: It is crucial to optimize Docker images to be as compact as possible.
@@ -282,6 +320,10 @@ One strategy to achieve this is by utilizing base images that are minimalistic, 
 
 - frontend nginx service
 
+
+
+[↑ top](#image-recognizer-app)
+<br><br>
 
 ### Minikube implementation
 
@@ -299,6 +341,10 @@ sudo dpkg -i minikube_latest_amd64.deb
 #sudo dpkg -r minikube
 ```
 
+
+[↑ top](#image-recognizer-app)
+<br><br>
+
 2. **Start Minikube**: Once installed, you can start a local Kubernetes cluster with the command `minikube start`.
 
 ```sh
@@ -309,6 +355,10 @@ docker context use default
 
 minikube start
 ```
+
+
+[↑ top](#image-recognizer-app)
+<br><br>
 
 3. **Create secret**
 
@@ -330,6 +380,10 @@ k create secret docker-registry regcred \
 k get secret
 ```
 
+
+
+[↑ top](#image-recognizer-app)
+<br><br>
 
 4. **Create Deployment and Service YAML Files**: For each of your microservices (Nginx, Golang, Python), you'll need to create a Deployment and a Service. The Deployment defines your application and the Docker image it uses, while the Service defines how your application is exposed to the network
 
@@ -363,6 +417,10 @@ spec:
 
 ```
 
+
+[↑ top](#image-recognizer-app)
+<br><br>
+
 4-2. service.yaml
 
 ```yaml
@@ -383,7 +441,15 @@ spec:
 ```
 
 
+
+[↑ top](#image-recognizer-app)
+<br><br>
+
 5. **Apply the YAML Files**: Once you've created your YAML files, you can apply them to your Kubernetes cluster with the command `kubectl apply -f <filename.yaml>`.
+
+
+[↑ top](#image-recognizer-app)
+<br><br>
 
 
 6. **Enable Ingress Controller**:
@@ -393,6 +459,10 @@ spec:
 ```sh
 minikube addons enable ingress
 ```
+
+
+[↑ top](#image-recognizer-app)
+<br><br>
 
 6-2. Nginx ingress controller
 
@@ -440,7 +510,14 @@ k get all
 ```
 
 
+[↑ top](#image-recognizer-app)
+<br><br>
+
 7. **Create an Ingress YAML File**: The Ingress YAML file will define the rules for routing external traffic to your services. You'll need to specify the host and path for each service, and the service that should handle traffic to each host/path
+
+
+[↑ top](#image-recognizer-app)
+<br><br>
 
 8. **Apply the Ingress YAML File**: Just like with the Deployment and Service files, you can apply the Ingress file with `kubectl apply -f <ingress-filename.yaml>`.
 
@@ -454,6 +531,10 @@ k get ingress
   NAME               CLASS   HOSTS                ADDRESS        PORTS   AGE
   fe-nginx-ingress   nginx   my-app.example.com   192.168.49.2   80      4m35s
 ```
+
+
+[↑ top](#image-recognizer-app)
+<br><br>
 
 
 9. **Access Your Services**: With the Ingress set up, you should be able to access your services from outside your Kubernetes cluster. You can get the IP address of your Minikube cluster with the command `minikube ip`, and then access your services at that IP
@@ -476,6 +557,10 @@ kubectl port-forward -n <namespace> svc/<service-name> <local-port>:<service-por
 kubectl port-forward -n ingress-nginx svc/ingress-nginx-controller 80:80 3001:3001 3002:3002
 
 ```
+
+
+[↑ top](#image-recognizer-app)
+<br><br>
 
 - Installing Metallb
 
@@ -539,6 +624,10 @@ k get svc
   ingress-nginx-controller             LoadBalancer   10.100.168.236   192.168.49.100   80:32020/TCP,443:31346/TCP   68m
 ```
 
+
+[↑ top](#image-recognizer-app)
+<br><br>
+
 - DNS Setup
   - Finally, you need to set the domain names defined in the ingress rules in your DNS server or hosts file
   - edit hosts file, `C:\Windows\System32\drivers\etc\hosts`
@@ -546,6 +635,10 @@ k get svc
 ```
 192.168.49.100 my-app.example.com
 ```
+
+
+[↑ top](#image-recognizer-app)
+<br><br>
 
 
 ### Using Minikube for image build and local development
@@ -576,6 +669,10 @@ docker build -f dockerfiles/Dockerfile-nginx -t fe-nginx .
 
 ```
 
+
+[↑ top](#image-recognizer-app)
+<br><br>
+
 - deployment.yaml
 
 ```yaml
@@ -593,6 +690,10 @@ spec:
 k apply -f deployment.yaml
 ```
 
+
+[↑ top](#image-recognizer-app)
+<br><br>
+
 - suppose source changed -> change image
 
 ```sh
@@ -601,6 +702,10 @@ docker build -f dockerfiles/Dockerfile-nginx -t fe-nginx .
 k delete -f deployment.yaml
 k apply -f deployment.yaml
 ```
+
+
+[↑ top](#image-recognizer-app)
+<br><br>
 
 - mount data to minikube cluster
   - suppose golang docker container source does:
@@ -650,6 +755,10 @@ spec:
             path: /tmp/data
 ```
 
+
+[↑ top](#image-recognizer-app)
+<br><br>
+
 - apply the changes:
 
 ```sh
@@ -668,6 +777,10 @@ minikube service my-fe-nginx
 
 
 
+[↑ top](#image-recognizer-app)
+<br><br>
+
+
 - dashboard
 
 ```sh
@@ -675,6 +788,10 @@ minikube ip
 minikube dashboard --url
     http://127.0.0.1:45583/api/v1/namespaces/kubernetes-dashboard/services/http:kubernetes-dashboard:/proxy/
 ```
+
+
+[↑ top](#image-recognizer-app)
+<br><br>
 
 - minikube ingress
 
@@ -696,6 +813,10 @@ minikube tunnel
 # Hit the hello-world.info ( or whatever host you configured in the yaml file) in a browser and it should work
 ```
 
+
+[↑ top](#image-recognizer-app)
+<br><br>
+
 Here's a high-level overview of the traffic flow when you access `http://localhost` in your setup:
 
 1. **Browser Request**: When you type `http://localhost` into your browser and hit enter, your browser sends a HTTP request to `localhost`, which is resolved to the IP address `127.0.0.1`.
@@ -712,6 +833,10 @@ Here's a high-level overview of the traffic flow when you access `http://localho
 
 Please note that since you're accessing `localhost` and not `simple-app.com`, the Ingress rule does not apply, and the request will not be routed to your Nginx application. To access your application, you need to either use `simple-app.com` as the host or modify your Ingress rule to match `localhost`.
 
+
+
+[↑ top](#image-recognizer-app)
+<br><br>
 
 ### Microk8s implemntation
 
@@ -787,6 +912,10 @@ vim /var/snap/microk8s/current/var/kubernetes/backend/cluster.yaml
 | *result of a cluster* |
 
 
+
+[↑ top](#image-recognizer-app)
+<br><br>
+
 - Trouble-shooting
   - diagnosis:
     - deployed pods with count of 2 replicas, one on node1 and another on node3
@@ -816,6 +945,10 @@ k describe pod fe-nginx-deployment-7b9c5bb8f8-q6d6m
         Image ID:       docker.io/jnuho/fe-nginx@sha256:48e8995cc2c86a3759ac1156cd954d8f90a1c054ae1fcd67181a77df2ff5492f
 
 ```
+
+
+[↑ top](#image-recognizer-app)
+<br><br>
 
 - Local docker registory
   - https://microk8s.io/docs/registry-images
@@ -851,11 +984,19 @@ telnet localhost 8080
 telnet localhost 3001
 ```
 
+
+[↑ top](#image-recognizer-app)
+<br><br>
+
 - Port forwarding
 
 ```
 host -> virtualbox vm
 ```
+
+
+[↑ top](#image-recognizer-app)
+<br><br>
 
 - ufw setting
 
@@ -863,6 +1004,10 @@ host -> virtualbox vm
 open port 3001
 ```
 
+
+
+[↑ top](#image-recognizer-app)
+<br><br>
 
 ### Pytorch
 
@@ -895,6 +1040,10 @@ print(torch.cuda.is_available())
 
 
 
+[↑ top](#image-recognizer-app)
+<br><br>
+
+
 ### golang `testing`
 
 ```sh
@@ -902,6 +1051,10 @@ cd leetcode
 go test ./...
 ```
 
+
+
+[↑ top](#image-recognizer-app)
+<br><br>
 
 ### GCP implementation
 
@@ -935,6 +1088,10 @@ gcloud compute backend-services update <your-backend-service> \
 gcloud compute ssh --zone "REGION" "INSTANCE_NAME" --project "PROJECT_NAME"
 ```
 
+
+
+[↑ top](#image-recognizer-app)
+<br><br>
 
 - Google Cloud SDK
   - Create Service account
@@ -1014,6 +1171,10 @@ curl 35.184.204.214:8080/hello-world
 ```
 
 
+
+[↑ top](#image-recognizer-app)
+<br><br>
+
 ### docker image tag
 
 - in Kubernetes
@@ -1025,3 +1186,7 @@ curl 35.184.204.214:8080/hello-world
   - fe-nginx-docker
   - be-go-docker
   - be-py
+
+
+[↑ top](#image-recognizer-app)
+<br><br>
