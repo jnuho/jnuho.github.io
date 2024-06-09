@@ -15,7 +15,7 @@
 - [2. Microk8s implemntation](#microk8s-implemntation)
 - [3. GCP implementation](#gcp-implementation)
 
-### ❚ Image recognizer Kubernetes app
+### Image recognizer Kubernetes app
 
 I created a web app using basic [deep learning](https://en.wikipedia.org/wiki/Deep_learning) algoirithm for a backend service, and [kubernetes](https://kubernetes.io/) for [microservices](https://en.wikipedia.org/wiki/Microservices) architecture. My goal is to make it perform binary classification on cat vs. non-cat images from a given image url.
 
@@ -33,7 +33,7 @@ My simple application is a basic deep learning image recognizers, one of which w
 [↑ top](#image-recognizer-kubernetes-app)
 <br><br>
 
-### ❚ Skills I used
+### Skills I used
 
 - Kubernetes : 3-master node cluster w/ `microk8s`
   - also `docker-compose` implementation for initial testing
@@ -53,7 +53,7 @@ My simple application is a basic deep learning image recognizers, one of which w
 [↑ top](#image-recognizer-kubernetes-app)
 <br><br>
 
-### ❚ Virtualbox network architecture
+### Virtualbox network architecture
 
 I had to construct a virtualbox environment in which my kubernetes cluster and application will be deployed. In the furture I will be trying out Cloud (GCP, AWS) implemntation. 🔥
 
@@ -67,7 +67,7 @@ I had to construct a virtualbox environment in which my kubernetes cluster and a
 <br><br>
 
 
-### ❚ Virtualbox Setup
+### Virtualbox Setup
 
 - Download ubuntu iso image
 - Run vm instacne using iso image
@@ -131,7 +131,7 @@ sudo ip link set enp0s3 up
 [↑ top](#image-recognizer-kubernetes-app)
 <br><br>
 
-### ❚ Microservices
+### Microservices
 
 1. frontend: nginx (nodejs vite in local) + javascript + html + css
 2. backend/web: golang (gin framework)
@@ -139,7 +139,7 @@ sudo ip link set enp0s3 up
   - https://fastapi.tiangolo.com/tutorial/
 
 
-### ❚ Communication between services
+### Communication between services
 
 1. **HTTP/REST API**: You can expose a REST API on your Python backend and have the Golang server make HTTP requests to it. This is similar to how your JavaScript frontend communicates with the Golang server
 
@@ -172,7 +172,7 @@ from other origins includes the right CORS headers.
 [↑ top](#image-recognizer-kubernetes-app)
 <br><br>
 
-### ❚ Backend Golang web server
+### Backend Golang web server
 
 - `go.mod`, `go.sum` must be in github repo root directory
 
@@ -197,7 +197,7 @@ go mod tidy
 <br><br>
 
 
-### ❚ Backend Python web server
+### Backend Python web server
 
 - Use FastAPI + Unicorn
   - FastAPI is an ASGI (<b>Asynchronous</b> Server Gateway Interface) framework which requires an ASGI server to run.
@@ -217,7 +217,7 @@ uvicorn main:app --port 3002
 [↑ top](#image-recognizer-kubernetes-app)
 <br><br>
 
-#### ❚ Mathematical background for deep learning image recognizer
+#### Mathematical background for deep learning image recognizer
 
 The basic operations for forward and backward propagations in deep learning algorithm are as follows:
 
@@ -251,7 +251,7 @@ The basic operations for forward and backward propagations in deep learning algo
 [↑ top](#image-recognizer-kubernetes-app)
 <br><br>
 
-### ❚ Image Classification
+### Image Classification
 
 - cat vs.non-cat image classification and hand-written digits recognition
 - https://www.youtube.com/watch?v=JgtWVML4Ykg&ab_channel=SheldonVon
@@ -262,7 +262,7 @@ The basic operations for forward and backward propagations in deep learning algo
 [↑ top](#image-recognizer-kubernetes-app)
 <br><br>
 
-### ❚ Frontend - local setup
+### Frontend - local setup
 
 - Download  & install nodejs 20.12.2
   - for local development using `vite`
@@ -312,7 +312,7 @@ npm run dev
 [↑ top](#image-recognizer-kubernetes-app)
 <br><br>
 
-## ❚ Dockerize
+## Dockerize
 
 **NOTE**: It is crucial to optimize Docker images to be as compact as possible.
 One strategy to achieve this is by utilizing base images that are minimalistic, such as the Alpine image.
@@ -327,7 +327,7 @@ One strategy to achieve this is by utilizing base images that are minimalistic, 
 [↑ top](#image-recognizer-kubernetes-app)
 <br><br>
 
-### ❚ Minikube implementation
+### Minikube implementation
 
 To set up your Nginx, Golang, and Python microservices on Minikube, you'll need to create Kubernetes Deployment and Service YAML files for each of your microservices. You'll also need to set up an Ingress controller to expose your services to the public. Here's a high-level overview of the steps:
 
@@ -643,7 +643,7 @@ k get svc
 <br><br>
 
 
-### ❚ Using Minikube for image build and local development
+### Using Minikube for image build and local development
 
 - https://www.youtube.com/watch?v=_1uWY1GdDVY&ab_channel=GoogleOpenSource
 
@@ -840,7 +840,7 @@ Please note that since you're accessing `localhost` and not `simple-app.com`, th
 [↑ top](#image-recognizer-kubernetes-app)
 <br><br>
 
-### ❚ Microk8s implemntation
+### Microk8s implemntation
 
 - install microk8s (Ubuntu)
 
@@ -1011,7 +1011,7 @@ open port 3001
 [↑ top](#image-recognizer-kubernetes-app)
 <br><br>
 
-### ❚ Pytorch
+### Pytorch
 
 https://youtu.be/EMXfZB8FVUA?si=XL8SckGQi9xQDgtc
 https://pytorch.org/get-started/locally/
@@ -1046,7 +1046,7 @@ print(torch.cuda.is_available())
 <br><br>
 
 
-### ❚ golang `testing`
+### golang `testing`
 
 ```sh
 cd leetcode
@@ -1058,7 +1058,7 @@ go test ./...
 [↑ top](#image-recognizer-kubernetes-app)
 <br><br>
 
-### ❚ GCP implementation
+### GCP implementation
 
 - Create google account to get free credit for gcloud
 
@@ -1177,7 +1177,7 @@ curl 35.184.204.214:8080/hello-world
 [↑ top](#image-recognizer-kubernetes-app)
 <br><br>
 
-### ❚ docker image tag
+### docker image tag
 
 - in Kubernetes
   - fe-nginx-k8s
