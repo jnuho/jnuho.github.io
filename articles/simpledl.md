@@ -20,6 +20,12 @@
 
 I recently focused on testing a 3-master-node [Kubernetes](https://kubernetes.io/) cluster setup using MicroK8s, with basic web service functionality. **My next goal** is to enhance the Python backend service by adding a fundamental deep learning algorithm. Specifically, the Python backend worker will perform binary classification on cat vs. non-cat images from a given image URL. For implementation, I initially explored using `numpy` for backward/forward propagation, and I am currently exploring the `PyTorch` library.
 
+<br>
+My simple application is a basic deep learning image recognizers, one of which was covered in Andrew Ng's coursera course. I plan to test two simple deep learning models to identify cat images and hand-written digits (0-9), respectively.
+
+<br>
+The following image is the result of deployment on **multi-node Kuberentes cluster.**
+
 | <img src="../assets/images/microk8s-result.gif" alt="pods" width="700"> |
 |:--:| 
 | *web application* |
@@ -27,8 +33,6 @@ I recently focused on testing a 3-master-node [Kubernetes](https://kubernetes.io
 |<img src="../assets/images/microk8s-pods.png" alt="pods" width="700"> |
 |:--:| 
 | *Kubernetes resources* |
-
-My simple application is a basic deep learning image recognizers, one of which was covered in Andrew Ng's coursera course. I created two simple deep learning models to identify cat images and hand-written digits (0-9), respectively.
 
 [↑ top](#image-recognizer-kubernetes-app)
 <br><br>
