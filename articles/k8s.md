@@ -1,5 +1,17 @@
 
-### Kubernetes Core Concept
+* Kubernetes Core Concept
+
+
+- [Kubernetes Component](#kubernetes-component)
+  - [Master Node](#master-node)
+  - [Worker Node](#worker-node)
+  - [Pod](#pod)
+  - [Service](#service)
+  - [Ingress](#ingress)
+    - [traffic flow](#traffic-flow)
+    - [Ingress Controller](#ingress-controller)
+    - [Minikube ingress implementation](#minikube-ingress-implementation)
+
 
 While I've been using `kubectl` commands to manage services in a cluster; creating ingress, service, pod components, etc, I've been lacking deeper knowledge of what they are, how they are interconnected and how clients access the cluster via endpoints. So I tried to understand the concept of each component.
 
@@ -8,71 +20,75 @@ While I've been using `kubectl` commands to manage services in a cluster; creati
 - <a href="https://www.youtube.com/watch?v=X48VuDVv0do&t=1594s&ab_channel=TechWorldwithNana" target="_blank">Kuberentes by Nana-3hr</a>
 - <a href="https://medium.com/devops-mojo/kubernetes-objects-resources-overview-introduction-understanding-kubernetes-objects-24d7b47bb018" target="_blank">Kubernetes — Objects</a>
 
+## Kubernetes Component
 
 |<img src="https://kubernetes.io/images/docs/components-of-kubernetes.svg" alt="add-node" width="820">|
 |:--:| 
 | *components-of-kubernetes* |
 
-- Master node
-  - runs the control plane components, monitor and manage overall state of the cluster and resources
-  - schedule and start pods
-  - 4 processes run on every master node:
-  - `kube-apiserver`
-    - exposes the Kubernetes API and provides the front end to the Control Plane.
-    - a single entrypoint (cluster gateway) for interacting with the k8s control plane
-    - handles api requests, authentication, and authorization
-    - acts as a gatekeeper for authentication
-      - request → api server → validates request → other processes → pod creation
-    - UI (dashboard), API(script,sdk), CLI (kubectl)
-  - `kube-scheduler`
-    - schedule new pod → api server → scheduler
-    - → intelligently decide which node to put the new Pods based on resource percentage of nodes being used
-    - scans for newly created pods and assigns them nodes based on a variety of factors
-      - including resource requirements, hardware/software constraints and data locality.
-    - distribute workloads across worker nodes
-  - `kube-controller-manager`
-    - ensures the cluster remains in the desired state
-    - run controllers which run loops to ensure the configuration matches actual state of the running cluster.
-    - these controllers are as follows:
-      - Node controller — Checks and ensures nodes are up and running
-      - Job Controller — Manages one-off tasks
-      - Endpoints Controller — Populates endpoints and joins services and pods.
-      - Service Account and Token Controller — Creation of accounts and API Access tokens.
-    - detect cluster state changes(pods state)
-    - Controller Manager(detect pod state) → Scheduler → Kublet(on worker node)
-  - `cloud-controller-manager`
-  - `etcd`
-    - consistent and highly-available key-value store that maintains cluster state and ensures data consistency
-    - cluster brain!
-    - key-value data store of cluster state
-    - cluster changes get stored in the key value store!
-    - Is the cluster healthy? What resources are available? Did the cluster state change?
-    - NO application data is stored in etcd!
-    - can be replicated
-    - Multiple master nodes for secure storage
-      - api server is load balanced
-      - distributed storage across all the master nodes
-- Worker node
-  - host multiple pods which are the components of the application workload
-  - the following 3 processes must be installed on every node:
-  - `kubelet`
-    - schedules pods and containers
-    - interacts with both the container and node
-    - starts the pod with a container inside
-    - agent running on each node
-    - watches for changes in pod spec and takes action
-    - ensures the pods running on the node are running and are healthy.
-  - `kube-proxy`
-    - forwards requests to services to pods
-    - intelligent and performant forwarding logic that distributes request to pods with low network overhead
-      - it can forward pod request for a service into the pod in the same node instead of forwarding to pods in other nodes, therefore lowers possible network overhead.
-    - a daemon on each node that allows network rules such as load balancing and routing
-    - enables communication between pods and external clients
-    - Proxy network running on the node that manage the network rules
-    - and communication across pods from networks inside or outside of the cluster.
-  - `Container runtime`
-    - responsible for pulling images, creating containers
-    - e.g. containerd
+### Master node
+
+- runs the control plane components, monitor and manage overall state of the cluster and resources
+- schedule and start pods
+- 4 processes run on every master node:
+- `kube-apiserver`
+  - exposes the Kubernetes API and provides the front end to the Control Plane.
+  - a single entrypoint (cluster gateway) for interacting with the k8s control plane
+  - handles api requests, authentication, and authorization
+  - acts as a gatekeeper for authentication
+    - request → api server → validates request → other processes → pod creation
+  - UI (dashboard), API(script,sdk), CLI (kubectl)
+- `kube-scheduler`
+  - schedule new pod → api server → scheduler
+  - → intelligently decide which node to put the new Pods based on resource percentage of nodes being used
+  - scans for newly created pods and assigns them nodes based on a variety of factors
+    - including resource requirements, hardware/software constraints and data locality.
+  - distribute workloads across worker nodes
+- `kube-controller-manager`
+  - ensures the cluster remains in the desired state
+  - run controllers which run loops to ensure the configuration matches actual state of the running cluster.
+  - these controllers are as follows:
+    - Node controller — Checks and ensures nodes are up and running
+    - Job Controller — Manages one-off tasks
+    - Endpoints Controller — Populates endpoints and joins services and pods.
+    - Service Account and Token Controller — Creation of accounts and API Access tokens.
+  - detect cluster state changes(pods state)
+  - Controller Manager(detect pod state) → Scheduler → Kublet(on worker node)
+- `cloud-controller-manager`
+- `etcd`
+  - consistent and highly-available key-value store that maintains cluster state and ensures data consistency
+  - cluster brain!
+  - key-value data store of cluster state
+  - cluster changes get stored in the key value store!
+  - Is the cluster healthy? What resources are available? Did the cluster state change?
+  - NO application data is stored in etcd!
+  - can be replicated
+  - Multiple master nodes for secure storage
+    - api server is load balanced
+    - distributed storage across all the master nodes
+
+### Worker node
+
+- host multiple pods which are the components of the application workload
+- the following 3 processes must be installed on every node:
+- `kubelet`
+  - schedules pods and containers
+  - interacts with both the container and node
+  - starts the pod with a container inside
+  - agent running on each node
+  - watches for changes in pod spec and takes action
+  - ensures the pods running on the node are running and are healthy.
+- `kube-proxy`
+  - forwards requests to services to pods
+  - intelligent and performant forwarding logic that distributes request to pods with low network overhead
+    - it can forward pod request for a service into the pod in the same node instead of forwarding to pods in other nodes, therefore lowers possible network overhead.
+  - a daemon on each node that allows network rules such as load balancing and routing
+  - enables communication between pods and external clients
+  - Proxy network running on the node that manage the network rules
+  - and communication across pods from networks inside or outside of the cluster.
+- `Container runtime`
+  - responsible for pulling images, creating containers
+  - e.g. containerd
 
 - https://kubernetes.io/docs/concepts/architecture/
 
@@ -87,40 +103,46 @@ While I've been using `kubectl` commands to manage services in a cluster; creati
   - Worker node : more resources for running applications
   - can add more Master or Worker nodes
 
-- Pod
-  - "Pods are the smallest deployable units of computing that you can create and manage in Kubernetes."
-  - abstraction over container
-  - usually 1 application(container) per pod
-  - each pod gets its own ip address
-  - ephermeral; new (unique) ip for each re-creation
+### Pod
 
-- Service
-  - <a href="https://youtu.be/s_o8dwzRlu4?si=JA5oLELcsrNUdCYn&t=739" target="_blank">Service & Ingress</a>
-  - Service provide stable(permanent) IP address. Each pod has its own ip address, but are ephemeral.
-  - Load balancing
-  - loose coupling
-  - within & outside cluster
-  - pods communite with each other using services
-  - external service
-    - http://node-ip:port
-  - internal service
-    - http://db-service-ip:port
+- "Pods are the smallest deployable units of computing that you can create and manage in Kubernetes."
+- abstraction over container
+- usually 1 application(container) per pod
+- each pod gets its own ip address
+- ephermeral; new (unique) ip for each re-creation
+
+### Service
+
+- <a href="https://youtu.be/s_o8dwzRlu4?si=JA5oLELcsrNUdCYn&t=739" target="_blank">Service & Ingress</a>
+- Service provide stable(permanent) IP address. Each pod has its own ip address, but are ephemeral.
+- Load balancing
+- loose coupling
+- within & outside cluster
+- pods communite with each other using services
+- external service
+  - http://node-ip:port
+- internal service
+  - http://db-service-ip:port
 
 - ClusterIP services
   - default type
   - microservice app deployed
 
-- Ingress
-  - https://www.youtube.com/watch?v=NPFbYpb0I7w&ab_channel=IBMTechnology
-  - https://youtu.be/80Ew_fsV4rM?si=xAS60zSQzhhAEcnb
-  - https://youtu.be/X48VuDVv0do?si=K1BDcMdSDNyIK1Ck&t=7312
-  - https://www.youtube.com/watch?v=y5-u4jtflic&ab_channel=TTABAE-LEARN
-  - <a href="https://youtu.be/s_o8dwzRlu4?si=JA5oLELcsrNUdCYn&t=739" target="_blank">Service & Ingress</a>
-  - `https://my-app.com` (ingress can configure secure https protocal with domain name) → forwards traffic into `internal` service
-  - [ingress by traefik.io](https://traefik.io/glossary/kubernetes-ingress-and-ingress-controller-101/#:~:text=A%20Kubernetes%20ingress%20controller%20follows,state%20requested%20by%20the%20user)
-  - [gke ingress](https://thenewstack.io/deploy-a-multicluster-ingress-on-google-kubernetes-engine/?ref=traefik.io)
-  - [load balancer and ingress duo](https://medium.com/@rehmanabdul166/explaining-load-balancers-and-ingress-controller-a-powerful-duo-bca7add558ab)
-  - [load balancer vs. ingress](https://medium.com/@thekubeguy/load-balancer-vs-ingress-why-do-we-need-both-for-same-work-3ae2b9afdd5a)
+### Ingress
+
+- https://www.youtube.com/watch?v=NPFbYpb0I7w&ab_channel=IBMTechnology
+- https://youtu.be/80Ew_fsV4rM?si=xAS60zSQzhhAEcnb
+- https://youtu.be/X48VuDVv0do?si=K1BDcMdSDNyIK1Ck&t=7312
+- https://www.youtube.com/watch?v=y5-u4jtflic&ab_channel=TTABAE-LEARN
+- <a href="https://youtu.be/s_o8dwzRlu4?si=JA5oLELcsrNUdCYn&t=739" target="_blank">Service & Ingress</a>
+- `https://my-app.com` (ingress can configure secure https protocal with domain name) → forwards traffic into `internal` service
+- [ingress by traefik.io](https://traefik.io/glossary/kubernetes-ingress-and-ingress-controller-101/#:~:text=A%20Kubernetes%20ingress%20controller%20follows,state%20requested%20by%20the%20user)
+- [gke ingress](https://thenewstack.io/deploy-a-multicluster-ingress-on-google-kubernetes-engine/?ref=traefik.io)
+- [load balancer and ingress duo](https://medium.com/@rehmanabdul166/explaining-load-balancers-and-ingress-controller-a-powerful-duo-bca7add558ab)
+- [load balancer vs. ingress](https://medium.com/@thekubeguy/load-balancer-vs-ingress-why-do-we-need-both-for-same-work-3ae2b9afdd5a)
+
+
+### Traffic flow
 
 - Let's walk through the flow of traffic in a Kubernetes environment with:
   - Ingress
@@ -215,33 +237,34 @@ spec:
       targetPort: 8080
 ```
 
-- Ingress controller
-  - implementation of ingress, which is Ingress Controller (Pod)
-  - evaluates and processes ingress rules
-  - manages redirections
-  - entrypoint to cluster
-  - many third party implementations
-    - e.g. k8s Nginx Ingress Controller
-  - HAVE TO CONSIDER the environemnt where the k8s cluster is running
-    - Cloud Service Provider (AWS, GCP, AZURE)
-      - External reqeust from the browser →
-        - Cloud Load balancer →
-        - Ingress Controller Pod →
-        - Ingress →
-        - Service →
-        - Pod
-      - using cloud lb, you do not have to implement load balancer yourself
-    - Baremetal
-      - you need to configure some kind of entrypoint (e.g. metallb)
-      - either inside of cluster or outside as separate server
-      - software or hardware solution can be used
-      - must provide entrypoint
-      - e.g. Proxy Server: public ip address and open ports
-        - Proxy server → Ingress Controller Pod → Ingress (checks ingress rules) → Service → Pod
-        - no server in k8s cluster is publicly accessible from outside
+### Ingress controller
+
+- implementation of ingress, which is Ingress Controller (Pod)
+- evaluates and processes ingress rules
+- manages redirections
+- entrypoint to cluster
+- many third party implementations
+  - e.g. k8s Nginx Ingress Controller
+- HAVE TO CONSIDER the environemnt where the k8s cluster is running
+  - Cloud Service Provider (AWS, GCP, AZURE)
+    - External reqeust from the browser →
+      - Cloud Load balancer →
+      - Ingress Controller Pod →
+      - Ingress →
+      - Service →
+      - Pod
+    - using cloud lb, you do not have to implement load balancer yourself
+  - Baremetal
+    - you need to configure some kind of entrypoint (e.g. metallb)
+    - either inside of cluster or outside as separate server
+    - software or hardware solution can be used
+    - must provide entrypoint
+    - e.g. Proxy Server: public ip address and open ports
+      - Proxy server → Ingress Controller Pod → Ingress (checks ingress rules) → Service → Pod
+      - no server in k8s cluster is publicly accessible from outside
 
 
-- Minikube ingress implementation
+### Minikube ingress implementation
 
 ```sh
 # nginx implementation of ingress controller
