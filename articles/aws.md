@@ -1,5 +1,6 @@
 
 **Topics**
+- [AWS basics](fc_aws)
 - [AWS CLI](doc_aws_cli)
 - [AWS Networking and  Elasticache](elasticache)
     - [Redis 보안 취약점](redis_hacked)
