@@ -1,15 +1,31 @@
 - Simple Kubernetes app
 
+
+- [Skills used](#skills-i-used)
+- [Virtualbox network architecture](#virtualbox-network-architecture)
+- [Virtualbox Setup](#virtualbox-setup)
+- [Microservices](#microservices)
+- [Backend - Golang web server](#backend-golang-web-server)
+- [Backend - Python web server](#backend-python-web-server)
+- [Mathematical background for deep learning image recognizer](#mathematical-background-for-deep-learning-image-recognizer)
+- [Image Classification](#image-classification)
+- [Frontend - local setup](#frontend-local-setup)
+- [Dockerize](#dockerize)
+- [Minikube implementation](#minikube-implementation)
+- [Microk8s implemntation](#microk8s-implemntation)
+- [Pytorch](#pytorch)
+- [GCP implementation](#gcp-implementation)
+
 ### Image recognizer app
 
 I created a web app using basic [deep learning](https://en.wikipedia.org/wiki/Deep_learning) algoirithm for a backend service, and [kubernetes](https://kubernetes.io/) for [microservices](https://en.wikipedia.org/wiki/Microservices) architecture. My goal is to make it perform binary classification on cat vs. non-cat images from a given image url.
 
 
-| <img src="../assets/images/microk8s-result.gif" alt="pods" width="550"> |
+| <img src="./images/microk8s-result.gif" alt="pods" width="550"> |
 |:--:| 
 | *web application* |
 
-|<img src="../assets/images/microk8s-pods.png" alt="pods" width="600"> |
+|<img src="./images/microk8s-pods.png" alt="pods" width="600"> |
 |:--:| 
 | *Kubernetes resources* |
 
@@ -37,12 +53,36 @@ My simple application is a basic deep learning image recognizers, one of which w
 I had to construct a virtualbox environment in which my kubernetes cluster and application will be deployed. In the furture I will be trying out Cloud (GCP, AWS) implemntation. 🔥
 
 
-|<img src="../assets/images/virtualbox_NAT.drawio.png" alt="pods" width="500">|
+|<img src="./images/virtualbox_NAT.drawio.png" alt="pods" width="500">|
 |:--:| 
 | *NAT network* |
 
+
+### Virtualbox Setup
+
+- Download ubuntu iso image
+- Run vm instacne using iso image
+- Install ubuntu
+
 - Hosts: 10.0.2.3, 10.0.2.4, 10.0.2.5
 - OS: Ubuntu 24.04 server
+
+
+```bat
+vboxmanage list dhcpservers
+vboxmanage list natnetworks
+vboxmanage list vms
+
+VBoxManage dhcpserver remove --netname k8snetwork
+VBoxManage natnetwork remove --netname k8snetwork
+
+VBoxManage unregistervm ubuntu-1 --delete
+VBoxManage unregistervm ubuntu-2 --delete
+VBoxManage unregistervm ubuntu-3 --delete
+
+./vb-create.bat > log.txt 2>&1
+```
+
 
 ```bat
 VBoxManage natnetwork add --netname k8snetwork --network "10.0.2.0/24" --enable --dhcp on
@@ -66,7 +106,17 @@ REM application port
 VBoxManage natnetwork modify --netname k8snetwork --port-forward-4 "Http:tcp:[127.0.0.1]:80:[10.0.2.3]:80"
 ```
 
+```sh
+# ethernet device info
+nmcli d
 
+nmcli d show enp0s3
+
+ip a dev enp0s3
+
+sudo ip link set enp0s3 down
+sudo ip link set enp0s3 up
+```
 
 ### Microservices
 
@@ -105,18 +155,26 @@ from other origins includes the right CORS headers.
 => Add appropriate headers in golang server.
 ```
 
-
 ### Backend - Golang web server
 
+- `go.mod`, `go.sum` must be in github repo root directory
 
 ```sh
-cd simpledl/backend/web
+cd simpledl
+go mod init github.com/jnuho/simpledl
+go mod tidy
 
-go mod init github.com/jnuho/simpledl/backend/web
 
-# download library dependencies specified in main.go
+cd simpledl/pkg
+go mod init github.com/jnuho/simpledl/pkg
+go mod tidy
+
+
+cd simpledl/cmd/backend-web-server
+go mod init github.com/jnuho/simpledl/cmd/backend-web-server
 go mod tidy
 ```
+
 
 ### Backend - Python web server
 
@@ -134,27 +192,38 @@ go mod tidy
 uvicorn main:app --port 3002
 ```
 
-
 #### Mathematical background for deep learning image recognizer
 
 The basic operations for forward and backward propagations in deep learning algorithm are as follows:
 
-<img src="../assets/images/forward.png" alt="add-node" width="500">
-<img src="../assets/images/backward.png" alt="3-node" width="500">
-
-<!--
 - Forward propagation for layer $l$: $a^{[l-1]}\rightarrow a^{[l]}, z^{[l]}, w^{[l]}, b^{[l]}$
+
   $Z^{[l]} = W^{[l]} A^{[l-1]} + b^{[l]}$
+
   $A^{[l]} = g^{[l]} (Z^{[l]})$
+
   (for $i=1,\dots,L$ with initial value $A^{[0]} = X$)
+
 <br>
+
 - Backward propagation for layer $l$: $da^{[l]} \rightarrow da^{[l-1]},dW^{[l]}, db^{[l]}$
+
   $dZ^{[l]} = dA^{[l]} * {g^{[l]}}^{'}(Z^{[l]})$
+
   $dW^{[l]} = \frac{1}{m}dZ^{[l]}{A^{[l-1]}}^T$
+
   $db^{[l]} = \frac{1}{m}np.sum(dZ^{[l]}, axis=1, keepdims=True)$
+
   $dA^{[l-1]} = {W^{[l]}}^T dZ^{[l]} = \frac{dJ}{dA^{[l-1]}} = \frac{dZ^{[l]}}{dA^{[l-1]}} \frac{dJ}{dZ^{[l]}} = \frac{dZ^{[l]}}{dA^{[l-1]}} dZ^{[l]}$
+
   (with initial value $dZ^{[L]} = A^{[L]}-Y$)
--->
+
+
+### Image Classification
+
+- cat vs.non-cat image classification and hand-written digits recognition
+- https://www.youtube.com/watch?v=JgtWVML4Ykg&ab_channel=SheldonVon
+- https://detexify.kirelabs.org/classify.html
 
 
 ### Frontend - local setup
@@ -598,26 +667,6 @@ minikube service my-fe-nginx
 
 
 
-### GCP test
-
-- create ubuntu vm
-- ip restriction
-- install google cloud sdk and init
-
-
-```sh
-gcloud compute security-policies create my-security-policy
-gcloud compute security-policies rules create 1000 \
-  --security-policy my-security-policy \
-  --action allow \
-  --src-ip-ranges <your-home-ip>
-gcloud compute security-policies rules create 2000 
-  --security-policy my-security-policy \
-  --action deny \
-  --src-ip-ranges 0.0.0.0/0
-gcloud compute backend-services update <your-backend-service> \
-  --security-policy my-security-policy
-```
 
 - dashboard
 
@@ -647,20 +696,7 @@ minikube tunnel
 # Hit the hello-world.info ( or whatever host you configured in the yaml file) in a browser and it should work
 ```
 
-
-- GCP console setup
-  - vm instacne : create with machine type(E2- memory 4GB)
-  - VPC network : firewalls > add filewall rule (your ip)
-
-- gcp ssh connect
-
-```sh
-gcloud compute ssh --zone "REGION" "INSTANCE_NAME" --project "PROJECT_NAME"
-```
-
-
-
-here's a high-level overview of the traffic flow when you access `http://localhost` in your setup:
+Here's a high-level overview of the traffic flow when you access `http://localhost` in your setup:
 
 1. **Browser Request**: When you type `http://localhost` into your browser and hit enter, your browser sends a HTTP request to `localhost`, which is resolved to the IP address `127.0.0.1`.
 
@@ -675,41 +711,6 @@ here's a high-level overview of the traffic flow when you access `http://localho
 6. **Pod**: The service then load balances the request to one of the pods that match its selector. In your case, this would be the pod running the Nginx application.
 
 Please note that since you're accessing `localhost` and not `simple-app.com`, the Ingress rule does not apply, and the request will not be routed to your Nginx application. To access your application, you need to either use `simple-app.com` as the host or modify your Ingress rule to match `localhost`.
-
-
-### Virtualbox
-
-- Download ubuntu iso image
-- Run vm instacne using iso image
-- Install ubuntu
-
-```bat
-vboxmanage list dhcpservers
-vboxmanage list natnetworks
-vboxmanage list vms
-
-VBoxManage dhcpserver remove --netname k8snetwork
-VBoxManage natnetwork remove --netname k8snetwork
-
-VBoxManage unregistervm ubuntu-1 --delete
-VBoxManage unregistervm ubuntu-2 --delete
-VBoxManage unregistervm ubuntu-3 --delete
-
-./vb-create.bat > log.txt 2>&1
-```
-
-
-```sh
-# ethernet device info
-nmcli d
-
-nmcli d show enp0s3
-
-ip a dev enp0s3
-
-sudo ip link set enp0s3 down
-sudo ip link set enp0s3 up
-```
 
 
 ### Microk8s implemntation
@@ -777,11 +778,11 @@ vim /var/snap/microk8s/current/var/kubernetes/backend/cluster.yaml
   Role: 0
 ```
 
-|<img src="../assets/images/microk8s-add-node.png" alt="add-node" width="700">|
+|<img src="./images/microk8s-add-node.png" alt="add-node" width="700">|
 |:--:| 
 | *Add node to form 3-master-node microk8s cluster* |
 
-|<img src="../assets/images/microk8s-3-node.png" alt="3-node" width="350">|
+|<img src="./images/microk8s-3-node.png" alt="3-node" width="350">|
 |:--:| 
 | *result of a cluster* |
 
@@ -796,7 +797,7 @@ vim /var/snap/microk8s/current/var/kubernetes/backend/cluster.yaml
     - in result, two pods have different images: one from local repository, another from public docker repository.
 
 
-|<img src="../assets/images/microk8s-cause.png" alt="pods" width="700">|
+|<img src="./images/microk8s-cause.png" alt="pods" width="700">|
 |:--:| 
 | *pod resources* |
 
@@ -861,3 +862,166 @@ host -> virtualbox vm
 ```
 open port 3001
 ```
+
+
+### Pytorch
+
+https://youtu.be/EMXfZB8FVUA?si=XL8SckGQi9xQDgtc
+https://pytorch.org/get-started/locally/
+
+- CPU (Without Nvidia CUDA) only
+
+```sh
+pip3 install torch torchvision torchaudio
+
+# requirements.txt
+torch==2.3.0
+torchaudio==2.3.0
+torchvision==0.18.0
+
+# install using requirements.txt
+python install -r requirements.txt
+```
+
+```python
+import torch
+
+x = torch.rand(3)
+# tensor([.5907, .0781, .3094])
+print(x)
+
+print(torch.cuda.is_available())
+```
+
+
+
+### golang `testing`
+
+```sh
+cd leetcode
+go test ./...
+```
+
+
+### GCP implementation
+
+- Create google account to get free credit for gcloud
+
+- create ubuntu vm
+- ip restriction
+- install google cloud sdk and init
+
+```sh
+gcloud compute security-policies create my-security-policy
+gcloud compute security-policies rules create 1000 \
+  --security-policy my-security-policy \
+  --action allow \
+  --src-ip-ranges <your-home-ip>
+gcloud compute security-policies rules create 2000 
+  --security-policy my-security-policy \
+  --action deny \
+  --src-ip-ranges 0.0.0.0/0
+gcloud compute backend-services update <your-backend-service> \
+  --security-policy my-security-policy
+```
+
+- GCP console setup
+  - vm instacne : create with machine type(E2- memory 4GB)
+  - VPC network : firewalls > add filewall rule (your ip)
+
+- gcp ssh connect
+
+```sh
+gcloud compute ssh --zone "REGION" "INSTANCE_NAME" --project "PROJECT_NAME"
+```
+
+
+- Google Cloud SDK
+  - Create Service account
+    - IAM & Admin > Service accounts (default one will appear)> click 3 dots for 'Key Management'
+    - Create key and download and rename `gcp-sa-key.json`
+
+
+- Google Kubernetes Engine
+  - <a href="https://www.youtube.com/watch?v=P1x1Rk_TzV4" target="_blank">Ingress in 5 Minutes</a>
+  - <a href="https://youtu.be/8RQvtagsrg0?si=IwP0qNMz0kutUOVo" target="_blank">GKE Load Balancing</a>
+  - <a href="https://youtu.be/jW_-KZCjsm0?si=u8-842mszl7O9Kr3" target="_blank">GKE tutorial</a>
+  - https://www.youtube.com/watch?v=QvVmQtO-ftU&ab_channel=GoogleCloudTech
+
+- GKE provides a variety of Kubernetes-native constructs to manage L4 and L7 load balancers on Google Cloud.
+  - Service, Ingress, Gateway, Network endpoint groups
+  - GKE load balancers work by routing traffic to pods based on a set of rules
+  - Exposing services outside of the cluster
+    - NodePort Service
+      - uses GKE Node IP, exposes a service on the "same" port on every Node
+    - Load Balancer Service
+      - L4 routing (TCP/UDP), allocates a routable IP+port to a Cloud Load Balancer and uses a Node Port to forward traffic to backend pods
+    - Ingress/Gateway
+      - L7 routing (HTTP/S), allocates a routable IP + HTTP/S ports to a Cloud Load Balancer and uses Pods' IP address to forward traffic directly
+
+
+0. Create new project and enable Google Kuberentes Engine api
+
+1. Create Kubernetes cluster (console/cli)
+  - in console create a cluster
+  - 3 nodes, 6CPUs 12 GB
+
+```sh
+gcloud container clusters create my-cluster --zone=asia-northeast3-a --num-nodes=3 --machine-type=n1-standard-2
+
+gcloud container clusters list
+```
+
+2. Download and install Google Cloud SDK (gcloud)
+
+```sh
+gcloud version
+gcloud components install kubectl
+```
+
+3. Authenticate with gcloud
+  - authenticate using your google cloud credentials
+
+```sh
+gcloud auth login
+```
+
+4. Configure kubectl to Use Your GKE Cluster
+
+```sh
+# set the default project for all gcloud commands
+gcloud config set project poised-cortex-422112-g5
+
+# Connect to cluster
+# `in console 3 dots > Connect` gives a command:
+gcloud container clusters get-credentials my-cluster --zone asia-northeast3-a --project poised-cortex-422112-g5
+#   > kubeconfig entry generated for my-cluster
+
+# Deploy microservices by creating deployment and service
+kubectl create deployment hello-world-rest-api --image=jnuho/fe-nginx:latest
+
+kubectl expose deployment hello-world-rest-api --type=LoadBalancer --port=8080
+
+kubectl get service
+  TYPE         CLUSTER-IP     EXTERNAL-IP
+  LoadBalancer 10.80.13.230   <pending>
+
+k get svc --watch
+  TYPE         CLUSTER-IP     EXTERNAL-IP
+  LoadBalancer 10.80.13.230   35.184.204.214
+
+curl 35.184.204.214:8080/hello-world
+```
+
+
+### docker image tag
+
+- in Kubernetes
+  - fe-nginx-k8s
+  - be-go-k8s
+  - be-py
+
+- in docker-compose
+  - fe-nginx-docker
+  - be-go-docker
+  - be-py
