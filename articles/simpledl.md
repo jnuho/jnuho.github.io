@@ -21,11 +21,11 @@
 I created a web app using basic [deep learning](https://en.wikipedia.org/wiki/Deep_learning) algoirithm for a backend service, and [kubernetes](https://kubernetes.io/) for [microservices](https://en.wikipedia.org/wiki/Microservices) architecture. My goal is to make it perform binary classification on cat vs. non-cat images from a given image url.
 
 
-| <img src="../assets/images/microk8s-result.gif" alt="pods" width="550"> |
+| <img src="../assets/images/microk8s-result.gif" alt="pods" width="700"> |
 |:--:| 
 | *web application* |
 
-|<img src="../assets/images/microk8s-pods.png" alt="pods" width="600"> |
+|<img src="../assets/images/microk8s-pods.png" alt="pods" width="700"> |
 |:--:| 
 | *Kubernetes resources* |
 
@@ -59,7 +59,7 @@ My simple application is a basic deep learning image recognizers, one of which w
 I had to construct a virtualbox environment in which my kubernetes cluster and application will be deployed. In the furture I will be trying out Cloud (GCP, AWS) implemntation. 🔥
 
 
-|<img src="../assets/images/virtualbox_NAT.drawio.png" alt="pods" width="500">|
+|<img src="../assets/images/virtualbox_NAT.drawio.png" alt="pods" width="700">|
 |:--:| 
 | *NAT network* |
 
@@ -173,7 +173,7 @@ from other origins includes the right CORS headers.
 [↑ top](#image-recognizer-app)
 <br><br>
 
-### Backend - Golang web server
+### Backend Golang web server
 
 - `go.mod`, `go.sum` must be in github repo root directory
 
@@ -198,7 +198,7 @@ go mod tidy
 <br><br>
 
 
-### Backend - Python web server
+### Backend Python web server
 
 - Use FastAPI + Unicorn
   - FastAPI is an ASGI (<b>Asynchronous</b> Server Gateway Interface) framework which requires an ASGI server to run.
@@ -244,6 +244,9 @@ The basic operations for forward and backward propagations in deep learning algo
 
   (with initial value $dZ^{[L]} = A^{[L]}-Y$)
 
+| <img src="../assets/images/latex.png" alt="pods" width="700"> |
+|:--:| 
+| *web application* |
 
 
 [↑ top](#image-recognizer-app)
@@ -907,7 +910,7 @@ vim /var/snap/microk8s/current/var/kubernetes/backend/cluster.yaml
 |:--:| 
 | *Add node to form 3-master-node microk8s cluster* |
 
-|<img src="../assets/images/microk8s-3-node.png" alt="3-node" width="350">|
+|<img src="../assets/images/microk8s-3-node.png" alt="3-node" width="500">|
 |:--:| 
 | *result of a cluster* |
 
