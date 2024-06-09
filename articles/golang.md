@@ -1,7 +1,8 @@
 
 
 **Topics**
-- [Go - Learn](golang_learn)
-- [Leetcode-Go](go_leet)
+- [Basics](golang_basic)
+- [Concurrency](golang_concurrency)
+- [Leetcode](go_leet)
 - [Coding Test-Go](go_coding_test)
-- [Go interview](interview_golang)
+- [interview](interview_golang)
