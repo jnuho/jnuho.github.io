@@ -1,20 +1,20 @@
 - Simple Kubernetes app
 
 
-- [Skills used](#skills-i-used)
+- [Skills I used](#skills-i-used)
 - [Virtualbox network architecture](#virtualbox-network-architecture)
-- [Virtualbox Setup](#virtualbox-setup)
+  - [setup 3 virtual machines and networks using cli](#virtualbox-setup)
 - [Microservices](#microservices)
-- [Backend - Golang web server](#backend-golang-web-server)
-- [Backend - Python web server](#backend-python-web-server)
-- [Mathematical background for deep learning image recognizer](#mathematical-background-for-deep-learning-image-recognizer)
-- [Image Classification](#image-classification)
-- [Frontend - local setup](#frontend-local-setup)
-- [Dockerize](#dockerize)
-- [Minikube implementation](#minikube-implementation)
-- [Microk8s implemntation](#microk8s-implemntation)
-- [Pytorch](#pytorch)
-- [GCP implementation](#gcp-implementation)
+  - [Backend - Golang web server](#backend-golang-web-server)
+  - [Backend - Python web server](#backend-python-web-server)
+    - [Mathematical background for deep learning image recognizer](#mathematical-background-for-deep-learning-image-recognizer)
+    - [Image Classification](#image-classification)
+    - [Pytorch](#pytorch)
+  - [Frontend - local setup](#frontend-local-setup)
+- [Dockerize for image build](#dockerize)
+- [1. Minikube implementation](#minikube-implementation)
+- [2. Microk8s implemntation](#microk8s-implemntation)
+- [3. GCP implementation](#gcp-implementation)
 
 ### Image recognizer app
 
