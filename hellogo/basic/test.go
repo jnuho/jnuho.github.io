@@ -1,8 +1,16 @@
 package main
 
-import "sync"
+import (
+	"fmt"
+	"sync"
+)
 
-func
+func worker(workerId int, jobs <-chan int, results chan<- int) {
+	for job := range jobs {
+		fmt.Printf("Worker %d is working on job %d\n", workerId, job)
+		results <- job * 3.14
+	}
+}
 
 func main() {
 	numOfJobs := 10
@@ -17,10 +25,22 @@ func main() {
 	for i := 1; i <= numOfWorkers; i++ {
 
 		wg.Add(1)
-		go func() {
-
+		go func(workerId int) {
+			defer wg.Done()
+			worker(workerId, jobs, results)
 		}(i)
 	}
 
+	for i := 1; i <= numOfJobs; i++ {
+		jobs <- i
+	}
+	close(jobs)
+
+	go func() {
+		wg.Wait()
+	}()
 	// results
+	for result := range results {
+		fmt.Println(result)
+	}
 }
