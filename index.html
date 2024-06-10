@@ -36,9 +36,16 @@ tagline:
     {% endif %}
     {% endif %}
 
-    {% if post.k8s_arch %}
-      <br><img src="https://d17pwbfgewyq5y.cloudfront.net/simpledl.drawio.png" alt="k8s architecture" width="480">
+    {% if post.preview_simpledl %}
+      <br><br><img src="https://d17pwbfgewyq5y.cloudfront.net/simpledl.drawio.png" alt="k8s architecture" width="400">
     {% endif %}
+    {% if post.preview_k8s %}
+      <br><br><img src="https://kubernetes.io/images/docs/kubernetes-cluster-architecture.svg" alt="k8s architecture" width="400">
+    {% endif %}
+    {% if post.preview_dl %}
+      <br><br><img src="https://d17pwbfgewyq5y.cloudfront.net/LlayerNN_kiank.png" alt="k8s architecture" width="400">
+    {% endif %}
+      
   </div>
 
 </article>
