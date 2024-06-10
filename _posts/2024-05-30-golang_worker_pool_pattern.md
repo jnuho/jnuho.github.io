@@ -10,6 +10,10 @@ preview_worker_pool: true
 ---
 
 
+|<img src="https://d17pwbfgewyq5y.cloudfront.net/worker_pool_pattern.drawio.png" alt="pods" width="650">|
+|:--:| 
+| *Worker pool pattern* |
+
 - The worker pool pattern involves creating a group of worker goroutines to process tasks concurrently,
 - limiting the number of simultaneous operations. This pattern is valuable when you have a large number of tasks to execute.
 - Some examples of using the Worker Pool Pattern in Real-world Applications
