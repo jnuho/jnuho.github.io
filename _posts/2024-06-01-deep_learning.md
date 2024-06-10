@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Deep learning basics
+title: Deep learning - image recognition
 categories: [project]
 tags: [kubernetes]
 fullview: false
