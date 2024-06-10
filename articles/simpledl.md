@@ -1,9 +1,13 @@
+# Image recognizer Kubernetes app
+
 **Contents**
 
-- [app demo](#image-recognizer-kubernetes-app)
-- [Skills I used](#skills-i-used)
-- [Virtualbox network architecture](#virtualbox-network-architecture)
-  - [setup 3 virtual machines and networks using cli](#virtualbox-setup)
+- [System overview](#system-overview)
+  - [Virtualbox network architecture](#virtualbox-network-architecture)
+- [Application demo](#application-demo)
+- [Binary classification](#binary-classification)
+- [Kubernetes setup](#kubernetes-setup)
+- [Virtualbox setup](#virtualbox-setup)
 - [Microservices](#microservices)
   - [Backend - Golang web server](#backend-golang-web-server)
   - [Backend - Python web server](#backend-python-web-server)
@@ -16,14 +20,31 @@
 - [2. Microk8s implemntation](#microk8s-implemntation)
 - [3. GCP implementation](#gcp-implementation)
 
-### Image recognizer Kubernetes app
+## System overview
 
-I recently focused on testing a 3-master-node [Kubernetes](https://kubernetes.io/) cluster setup using MicroK8s, with basic web service functionality. **My next goal** is to enhance the Python backend service by adding a fundamental deep learning algorithm. Specifically, the Python backend worker will perform binary classification on cat vs. non-cat images from a given image URL. For implementation, I initially explored using `numpy` for backward/forward propagation, and I am currently exploring the `PyTorch` library.
+|<img src="../assets/images/simpledl.drawio.png" alt="simpledl architecture" width="550">|
+|:--:| 
+| *kubernetes architecture of my application* |
 
-<br>
-My simple application is a basic deep learning image recognizers, one of which was covered in Andrew Ng's coursera course. I plan to test two simple deep learning models to identify cat images and hand-written digits (0-9), respectively.
+[↑ top](#image-recognizer-kubernetes-app)
+<br><br>
 
-<br>
+### Virtualbox network architecture
+
+I had to construct a virtualbox environment in which my kubernetes cluster and application will be deployed. 🔥
+
+
+|<img src="../assets/images/virtualbox_NAT.drawio.png" alt="pods" width="500">|
+|:--:| 
+| *NAT network* |
+
+
+[↑ top](#image-recognizer-kubernetes-app)
+<br><br>
+
+
+### Application demo
+
 The following image is the result of deployment on **multi-node Kuberentes cluster.**
 
 | <img src="../assets/images/microk8s-result.gif" alt="pods" width="700"> |
@@ -37,34 +58,26 @@ The following image is the result of deployment on **multi-node Kuberentes clust
 [↑ top](#image-recognizer-kubernetes-app)
 <br><br>
 
-### Skills I used
+## Binary classification
 
-- Kubernetes : 3-master node cluster w/ `microk8s`
-  - also `docker-compose` implementation for initial testing
-- Docker (build images using Dockerfiles for each serice)
-- Microservices architecture
-  - Frontend: Nginx (includes static files html,css,js)
-  - Backend: Python, Golang web server
-- TODO: Deep learning algorithm (with basic numpy) for binary classification (cat/non-cat recognizer) **(50% in progress)**
-  - The algorithm includes basic forward and [backward propagation](https://en.wikipedia.org/wiki/Backpropagation) using numpy to calculate mathematic operations. 
-- Virtualbox (cli) to create 3 master nodes (ubuntu) for k8s cluster
-
-<!--6. TODO: Hetzner plus minikube nginx hello world in go Plus tail scale funnel
- - https://tailscale.com/kb/1223/funnel
-  - tailscale exit node VPN
-  -->
+It is a basic deep learning image recognizers, one of which was covered in Andrew Ng's coursera course. I plan to test two simple deep learning models to identify cat images and hand-written digits (0-9), respectively and return the result of identification to the browser.
 
 [↑ top](#image-recognizer-kubernetes-app)
 <br><br>
 
-### Virtualbox network architecture
+## Kubernetes setup
 
-I had to construct a virtualbox environment in which my kubernetes cluster and application will be deployed. In the furture I will be trying out Cloud (GCP, AWS) implemntation. 🔥
+- Kubernetes : 3-node cluster w/ [microk8s](https://microk8s.io/docs/getting-started).
+- Docker and `docker-compose` for testing
+- Microservices architecture
+  - Frontend : Nginx (with html, css, js) as a reverse proxy server
+  - Backend : Python uvicorn, Golang go-gin as backend web server
+- Deep learning algorithm for binary classification using basic `numpy`
+  - includes forward and [backward propagation](https://en.wikipedia.org/wiki/Backpropagation)
+  - TODO: `pytorch` for cat/non-cat recognizer
+- Virtualbox (cli) to create 3 master nodes (ubuntu) for k8s cluster
 
-
-|<img src="../assets/images/virtualbox_NAT.drawio.png" alt="pods" width="700">|
-|:--:| 
-| *NAT network* |
+I recently focused on testing a 3-master-node [Kubernetes](https://kubernetes.io/) cluster setup using MicroK8s, with basic web service functionality. **My next goal** is to enhance the Python backend service by adding a fundamental deep learning algorithm. Specifically, the Python backend worker will perform binary classification on cat vs. non-cat images from a given image URL. For implementation, I initially explored using `numpy` for backward/forward propagation, and I am currently exploring the `PyTorch` library.
 
 
 [↑ top](#image-recognizer-kubernetes-app)
