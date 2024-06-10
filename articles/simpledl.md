@@ -9,6 +9,7 @@ Image recognizer Kubernetes app
 - [Kubernetes setup](#kubernetes-setup)
 - [Virtualbox setup](#virtualbox-setup)
 - [Microservices](#microservices)
+  - [CORS issue](#cors-issue)
   - [Backend - Golang web server](#backend-golang-web-server)
   - [Backend - Python web server](#backend-python-web-server)
     - [Mathematical background for deep learning image recognizer](#mathematical-background-for-deep-learning-image-recognizer)
@@ -156,6 +157,10 @@ sudo ip link set enp0s3 up
   - https://fastapi.tiangolo.com/tutorial/
 
 
+[↑ Back to top](#)
+<br><br>
+
+
 ### Communication between services
 
 1. **HTTP/REST API**: You can expose a REST API on your Python backend and have the Golang server make HTTP requests to it. This is similar to how your JavaScript frontend communicates with the Golang server
@@ -169,8 +174,12 @@ sudo ip link set enp0s3 up
 5. **Database**: If both applications have access to a shared database, you can use the database as a communication medium. One application writes to the database, and the other one reads from it.
 
 
+[↑ Back to top](#)
+<br><br>
 
-- [CORS issue](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS)
+
+
+#### [CORS issue](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS)
 
 When a web application tries to make a request to a server that’s on a different domain, protocol, or port, it encounters a CORS (Cross-Origin Resource Sharing) issue. Add headers to backend server accordingly
 
