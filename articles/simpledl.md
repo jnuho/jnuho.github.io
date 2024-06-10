@@ -247,7 +247,7 @@ uvicorn main:app --port 3002
 
 The basic operations for forward and backward propagations in deep learning algorithm are as follows:
 
-- Forward propagation for layer $l$: $a^{[l-1]}\rightarrow a^{[l]}, z^{[l]}, w^{[l]}, b^{[l]}$
+<!-- - Forward propagation for layer $l$: $a^{[l-1]}\rightarrow a^{[l]}, z^{[l]}, w^{[l]}, b^{[l]}$
 
   $Z^{[l]} = W^{[l]} A^{[l-1]} + b^{[l]}$
 
@@ -267,11 +267,11 @@ The basic operations for forward and backward propagations in deep learning algo
 
   $dA^{[l-1]} = {W^{[l]}}^T dZ^{[l]} = \frac{dJ}{dA^{[l-1]}} = \frac{dZ^{[l]}}{dA^{[l-1]}} \frac{dJ}{dZ^{[l]}} = \frac{dZ^{[l]}}{dA^{[l-1]}} dZ^{[l]}$
 
-  (with initial value $dZ^{[L]} = A^{[L]}-Y$)
+  (with initial value $dZ^{[L]} = A^{[L]}-Y$) -->
 
-| <img src="https://d17pwbfgewyq5y.cloudfront.net/latex.png" alt="pods" width="700"> |
+| <img src="https://d17pwbfgewyq5y.cloudfront.net/latex.png" alt="pods" width="550"> |
 |:--:| 
-| *web application* |
+| *Forward and Backward propagation stepsfor l(layer)=1, 2, ... L where L is the total number of layers* |
 
 
 [↑ Back to top](#)
@@ -279,10 +279,10 @@ The basic operations for forward and backward propagations in deep learning algo
 
 ### Image Classification
 
-- cat vs.non-cat image classification and hand-written digits recognition
-- https://www.youtube.com/watch?v=JgtWVML4Ykg&ab_channel=SheldonVon
-- https://detexify.kirelabs.org/classify.html
-
+1. cat vs.non-cat image classification
+  - [pytorch cat vs. non-cat](https://www.youtube.com/watch?v=JgtWVML4Ykg&ab_channel=SheldonVon)
+2. hand-written digits recognition
+  - similar implementation as [latex drawing recognition](https://detexify.kirelabs.org/classify.html)
 
 
 [↑ Back to top](#)
@@ -340,7 +340,7 @@ npm run dev
 
 ## Dockerize
 
-**NOTE**: It is crucial to optimize Docker images to be as compact as possible.
+**NOTE**: It is crucial to *optimize Docker images* to be as compact as possible.
 One strategy to achieve this is by utilizing base images that are minimalistic, such as the Alpine image.
 
 - [NOTE on defining backend endpoint in frontend](https://stackoverflow.com/a/56375180/23876187)
