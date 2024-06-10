@@ -1,17 +1,14 @@
 ---
 layout: post
-title: worker pool pattern
+title: Worker pool pattern
 categories: [project]
 tags: [Concurrency, golang]
 fullview: false
 comments: true
-shortinfo: worker pool pattern - Golang Concurrency
+shortinfo: Golang Concurrency pattern
 preview_worker_pool: true
 ---
 
-### Worker Pool Pattern
-
-- https://go.dev/blog/pipelines
 
 - The worker pool pattern involves creating a group of worker goroutines to process tasks concurrently,
 - limiting the number of simultaneous operations. This pattern is valuable when you have a large number of tasks to execute.
