@@ -10,9 +10,11 @@ preview_worker_pool: true
 ---
 
 
-|<img src="https://d17pwbfgewyq5y.cloudfront.net/worker_pool_pattern.drawio.png" alt="pods" width="650">|
+|<img src="https://d17pwbfgewyq5y.cloudfront.net/worker_pool_pattern.drawio.png" alt="pods" width="550">|
 |:--:| 
 | *Worker pool pattern* |
+
+<br>
 
 - The worker pool pattern involves creating a group of worker goroutines to process tasks concurrently,
 - limiting the number of simultaneous operations. This pattern is valuable when you have a large number of tasks to execute.
@@ -79,4 +81,8 @@ func main() {
 	}
 }
 ```
+
+[↑ Back to top](#)
+<br><br>
+
 
