@@ -135,15 +135,14 @@ article.home h5,
 article.home h6 {
 	/* font-family: 'Fira Code', sans-serif; */
 	font-family: sans-serif;
-	color: #121582;
+	color: #2C3E50;
 }
 
 article.home h1 a,
 article.home h2 a,
 article.home h3 a,
 article.home h4 a {
-	/* color: ##2C3E50; */
-	color: #121582;
+	color: #2C3E50;
 }
 article.home h1 a:hover,
 article.home h2 a:hover,
