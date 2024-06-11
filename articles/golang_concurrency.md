@@ -1,14 +1,15 @@
 
 ### 고루틴과 동시성 프로그래밍
 
-- [sync.WaitGroup](#syncwaitgroup)
-- [sync.Once](#synconce)
+- [고루틴](#고루틴)
+  - [sync.WaitGroup](#syncwaitgroup)
+  - [sync.Once](#synconce)
 - [고루틴의 동작방법](#고루틴의-동작방법)
   - [동시성 프로그래밍 주의점](#동시성-프로그래밍-주의점)
   - [뮤텍스를 이용한 동시성 문제 해결](#뮤텍스를-이용한-동시성-문제-해결)
   - [뮤텍스의 문제점](#뮤텍스의-문제점)
   - [또 다른 자원 관리 기법](#또-다른-자원-관리-기법)
-- [채널과 컨텍스트](#채널과-컨텍스트)
+- [채널](#채널)
   - [go channel with range and close](#go-channel-with-range-and-close)
   - [채널 크기](#채널-크기)
   - [채널에서 데이터 대기](#채널에서-데이터-대기)
@@ -20,6 +21,9 @@
   - [작업시간 설정한 컨텍스트](#작업시간-설정한-컨텍스트)
   - [작업취소 가능한 컨텍스트](#작업취소-가능한-컨텍스트)
   - [취소도 되면서 값도 설정하는 컨텍스트 만들기](#취소도-되면서-값도-설정하는-컨텍스트-만들기)
+
+
+### 고루틴
 
 - 스레드란?
   - 고루틴: 경량 스레드로 함수나 명령을 동시에 실행 시 사용. main()도 고루틴에 의해 실행 됨
@@ -39,7 +43,6 @@
   - 모든 프로그램은 main()을 고루틴으로 하나 가지고 있음
   - `go 함수호출`로 새로운 고루틴 추가 가능.
   - 현재 고루틴이 아닌 새로운 고루틴에서 함수가 수행 됨
-
 
 - Goroutines
   - Goroutines are lightweight concurrent functions or threads in Go.
@@ -102,7 +105,6 @@ func fetchAPI(ctx context.Context, url string, results chan<- string) {
 [↑ Back to top](#)
 <br><br>
 
-
 - main 고루틴외에 PrintHangul, PrintNumber 고루틴 2개 추가생성
   - 3개 고루틴이 동시에 실행됨(CPU 3코어이상)
   - 1-코어 CPU에서는 동시에 실행되는 것 처럼 보임
@@ -149,7 +151,6 @@ func main() {
 ### sync.WaitGroup
 
 - [synchronization primitives in go](https://medium.com/better-programming/using-synchronization-primitives-in-go-mutex-waitgroup-once-2e50359cb0a7)
-
 
 - 서브 고루틴이 종료될 때까지 기다리기
   - 항상 고루틴의 종료시간에 맞춰 time.Sleep(종료까지걸리는시간) 호출할 수 없음
@@ -608,7 +609,7 @@ func main() {
 <br><br>
 
 
-### 채널과 컨텍스트
+### 채널
 
 - 채널: 고루틴끼리 메시지를 전달 할 수 있는 메시지 큐
   - 메시지큐에 메시지가 쌓이게 되고
