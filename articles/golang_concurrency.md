@@ -7,6 +7,10 @@
 - [고루틴의 동작방법](#고루틴의-동작방법)
   - [동시성 프로그래밍 주의점](#동시성-프로그래밍-주의점)
   - [뮤텍스를 이용한 동시성 문제 해결](#뮤텍스를-이용한-동시성-문제-해결)
+  - [mutex to ensure atomic access to a shared variable](#mutex-to-ensure-atomic-access-to-a-shared-variable)
+    - [Using mutex and WaitGroup](#using-mutex-and-waitgroup)
+    - [Using mutex and done channel](#using-mutex-and-done-channel)
+    - [More done channel example](#more-done-channel-example)
   - [뮤텍스의 문제점](#뮤텍스의-문제점)
   - [또 다른 자원 관리 기법](#또-다른-자원-관리-기법)
 - [채널](#채널)
@@ -16,6 +20,7 @@
   - [SELECT 문](#SELECT-문)
   - [일정간격으로 실행](#일정간격으로-실행)
   - [채널로 생산자 소비자 패턴 구현](#채널로-생산자-소비자-패턴-구현)
+  - [unbuffered vs. buffered channel](#buffered-vs-unbuffered-channel)
 - [컨텍스트](#컨텍스트)
   - [특정 값을 설정한 컨텍스트](#특정-값을-설정한-컨텍스트)
   - [작업시간 설정한 컨텍스트](#작업시간-설정한-컨텍스트)
@@ -471,6 +476,163 @@ func main() {
 [↑ Back to top](#)
 <br><br>
 
+### mutex to ensure atomic access to a shared variable
+
+A mutex helps achieve atomic access by allowing only one thread to hold the lock (mutex) at any given time.
+The following code achieve 1.concurrency and 2.preventing race conditions.
+
+### Using mutex and WaitGroup
+
+```go
+package main
+
+import (
+	"fmt"
+	"sync"
+)
+
+type counter struct {
+	i  int64
+	wg sync.WaitGroup
+	mu sync.Mutex
+}
+
+func (c *counter) increment() {
+	defer c.wg.Done()
+	c.mu.Lock()
+	c.i += 1
+	c.mu.Unlock()
+}
+
+func main() {
+	c := counter{i: 0}
+
+	for i := 0; i < 1000; i++ {
+		c.wg.Add(1)
+		go c.increment()
+	}
+
+	c.wg.Wait()
+
+	fmt.Println("Final Counter Value:", c.i)
+}
+```
+
+[↑ Back to top](#)
+<br><br>
+
+### Using mutex and done channel
+
+- The done channel is used without a sync.WaitGroup.
+- Each worker goroutine sends a signal to the done channel when it completes its task.
+- The main goroutine waits for all workers to finish by receiving from the done channel.
+- This approach allows us to manage concurrency without using a sync.WaitGroup
+
+```go
+package main
+ 
+import (
+    "fmt"
+    "runtime"
+    "sync"
+)
+ 
+const initialValue = -500
+ 
+type counter struct {
+    i int64
+    mu sync.Mutex  // 공유 데이터 i를 보호하기 위한 뮤텍스
+    once sync.Once // 한 번만 수행할 함수를 지정하기 위한 Once 구조체
+}
+ 
+// counter 값을 1씩 증가시킴
+func (c *counter) increment() {
+    // i 값 초기화 작업은 한 번만 수행되도록 once의 Do() 메서드로 실행
+    c.once.Do(func() {
+        c.i = initialValue
+    })
+     
+    c.mu.Lock()   // i 값을 변경하는 부분(임계 영역)을 뮤텍스로 잠금
+    c.i += 1      // 공유 데이터 변경
+    c.mu.Unlock() // i 값을 변경 완료한 후 뮤텍스 잠금 해제
+}
+ 
+// counter의 값을 출력
+func (c *counter) display() {
+    fmt.Println(c.i)
+}
+ 
+func main() {
+    // 모든 CPU를 사용하게 함
+    runtime.GOMAXPROCS(runtime.NumCPU())
+     
+    c := counter{i: 0}          // 카운터 생성
+    done := make(chan struct{}) // 완료 신호 수신용 채널
+   
+    // c.increment()를 실행하는 고루틴 1000개 실행
+    for i := 0; i < 1000; i++ {
+        go func() {
+            c.increment()      // 카운터 값을 1 증가시킴
+            done <- struct{}{} // done 채널에 완료 신호 전송
+        }()
+    }
+     
+    // 모든 고루틴이 완료될 때까지 대기
+    for i := 0; i < 1000; i++ {
+        <-done
+    }
+     
+    c.display() // c의 값 출력
+}
+```
+
+[↑ Back to top](#)
+<br><br>
+
+### More done channel example
+
+https://gobyexample.com/closing-channels
+
+```go
+package main
+
+import "fmt"
+
+func main() {
+    jobs := make(chan int, 5)
+    done := make(chan bool)
+
+    go func() {
+        for {
+            j, more := <-jobs
+            if more {
+                fmt.Println("received job", j)
+            } else {
+                fmt.Println("received all jobs")
+                done <- true
+                return
+            }
+        }
+    }()
+
+    for j := 1; j <= 3; j++ {
+        jobs <- j
+        fmt.Println("sent job", j)
+    }
+    close(jobs)
+    fmt.Println("sent all jobs")
+
+    <-done
+
+    _, ok := <-jobs
+    fmt.Println("received more jobs:", ok)
+}
+```
+
+[↑ Back to top](#)
+<br><br>
+
+
 ### 뮤텍스의 문제점
 
 1. 뮤텍스는 동시성 프로그래밍 성능이점 감소시킴
@@ -665,8 +827,8 @@ func square(wg *sync.WaitGroup, ch chan int) {
   time.Sleep(time.Second)
   fmt.Printf("Square: %d\n", n*n)
 
-  wg.Done()  }
-
+  wg.Done()
+}
 
 // main 고루틴과 square 고루틴이 동시 실행
 // main 루틴에서 채널에 9를 넣어줄때까지 square루틴은 대기상태
@@ -1240,6 +1402,70 @@ func main() {
 [↑ Back to top](#)
 <br><br>
 
+### mutex to ensure atomic access to a shared variable
+
+A mutex helps achieve atomic access by allowing only one thread to hold the lock (mutex) at any given time.
+
+```go
+package main
+
+import (
+	"fmt"
+	"sync"
+)
+
+type counter struct {
+	i  int64
+	wg sync.WaitGroup
+	mu sync.Mutex
+}
+
+func main() {
+	c := counter{i: 0}
+
+	for i := 0; i < 1000; i++ {
+		c.wg.Add(1)
+		go func(num int) {
+			defer c.wg.Done()
+			c.mu.Lock()
+			c.i += 1
+			c.mu.Unlock()
+		}(i)
+	}
+
+	c.wg.Wait()
+
+	fmt.Println("Final Counter Value:", c.i)
+}
+```
+
+[↑ Back to top](#)
+<br><br>
+
+### buffered vs. unbuffered channel
+
+If you don't explicitly close an unbuffered (non-buffered) channel in Go,
+it won't cause any immediate issues. However, there are important implications:
+
+1. **Blocking Behavior**:
+   - If a goroutine tries to receive from an unbuffered channel and no other goroutine is sending to it, the receiver will block indefinitely.
+   - Similarly, if a goroutine tries to send to an unbuffered channel and no other goroutine is receiving from it, the sender will block until another goroutine starts receiving.
+
+2. **Resource Leaks**:
+   - If you forget to close an unbuffered channel, it remains open indefinitely.
+   - This can lead to resource leaks, especially if the channel is used for synchronization or signaling.
+   - Properly closing channels ensures that goroutines can exit gracefully when their work is done.
+
+3. **Signaling Completion**:
+   - Closing an unbuffered channel is often used to signal the end of communication between goroutines.
+   - It allows the receiving goroutine to know that no more values will be sent.
+   - When the sender closes the channel, the receiver can detect this and exit gracefully.
+
+In summary, while not explicitly closing an unbuffered channel won't cause immediate errors, it's good practice to close channels when they are no longer needed. This helps prevent blocking issues and ensures proper resource management. 😊
+
+[↑ Back to top](#)
+<br><br>
+
 ### 컨텍스트
 
 - 컨텍스트 사용하기
@@ -1443,4 +1669,4 @@ ctx = context.WithValue(ctx, "keyword", "Lilly")
 ```
 
 [↑ Back to top](#)
-<br><br>
+<br>

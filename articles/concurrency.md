@@ -1,8 +1,8 @@
 
 Concurrency vs. Parallelism
 
+- [What is the difference between concurrent programming and parallel programming?](https://stackoverflow.com/questions/1897993/what-is-the-difference-between-concurrent-programming-and-parallel-programming)
 - https://www.codeproject.com/Articles/1267757/Concurrency-vs-Parallelism
-- https://stackoverflow.com/questions/1897993/what-is-the-difference-between-concurrent-programming-and-parallel-programming
 - https://go.dev/tour/concurrency/1
 
 If your program is using threads (concurrent programming), it's not necessarily going to be executed as such (parallel execution), since it depends on whether the machine can handle several threads.

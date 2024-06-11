@@ -155,5 +155,3 @@ Using a separate goroutine for `wg.Wait()` and `close(results)` allows the main 
 
 [↑ Back to top](#)
 <br><br>
-
-

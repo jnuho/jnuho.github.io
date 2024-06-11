@@ -2,48 +2,31 @@ package main
 
 import (
 	"fmt"
-	"runtime"
 	"sync"
 )
 
-const initialValue = -500
-
 type counter struct {
-	i    int64
-	mu   sync.Mutex
-	once sync.Once
+	i  int64
+	wg sync.WaitGroup
+	mu sync.Mutex
 }
 
 func (c *counter) increment() {
-	c.once.Do(func() {
-		c.i = initialValue
-	})
-
+	defer c.wg.Done()
 	c.mu.Lock()
-	c.i++
+	c.i += 1
 	c.mu.Unlock()
 }
 
-func (c *counter) display() {
-	fmt.Println(c.i)
-}
-
 func main() {
-	runtime.GOMAXPROCS(runtime.NumCPU())
-
-	c := counter{i: 0}          // 카운터 생성
-	done := make(chan struct{}) // 완료 신호 수신용 채널
+	c := counter{i: 0}
 
 	for i := 0; i < 1000; i++ {
-		go func() {
-			c.increment()
-			done <- struct{}{}
-		}()
+		c.wg.Add(1)
+		go c.increment()
 	}
 
-	for i := 0; i < 1000; i++ {
-		<-done
-	}
+	c.wg.Wait()
 
-	c.display()
+	fmt.Println("Final Counter Value:", c.i)
 }
