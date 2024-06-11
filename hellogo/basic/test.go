@@ -1,45 +1,21 @@
 package main
 
 import (
-	"fmt"
+	"runtime"
 	"sync"
 )
 
-func worker(workerId int, jobs <-chan int, results chan<- int) {
-	for job := range jobs {
-		results <- job
-		fmt.Printf("Worker(%d) is processing job-%d\n", workerId, job)
-	}
+const initialValue = -500
+
+type counter struct {
+	i    int64
+	mu   sync.Mutex
+	once sync.Once
 }
 
 func main() {
-	numOfWorkers := 3
-	numOfJobs := 10
+	runtime.GOMAXPROCS(runtime.NumCPU())
 
-	jobs := make(chan int, numOfJobs)
-	results := make(chan int, numOfJobs)
-
-	var wg sync.WaitGroup
-
-	for i := 1; i <= numOfWorkers; i++ {
-		wg.Add(1)
-		go func(workerId int) {
-			defer wg.Done()
-			worker(workerId, jobs, results)
-		}(i)
-	}
-
-	for i := 1; i <= numOfJobs; i++ {
-		jobs <- i
-	}
-	close(jobs)
-
-	go func() {
-		wg.Wait()
-		close(results)
-	}()
-
-	for result := range results {
-		fmt.Printf("Reading result: job-%d\n", result)
-	}
+	c := counter{i: 0}          // 카운터 생성
+	done := make(chan struct{}) // 완료 신호 수신용 채널
 }
