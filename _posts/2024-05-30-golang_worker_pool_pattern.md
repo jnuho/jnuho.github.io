@@ -33,8 +33,8 @@ import (
 func worker(id int, jobs <-chan int, results chan<- int) {
 	// Process jobs from the jobs channel until it is closed
 	for job := range jobs {
-		fmt.Printf("Worker %d processing job %d\n", id, job)
-		results <- job * 2 // Send the result of the job to the results channel
+		fmt.Printf("Worker %d processing job-%d\n", id, job)
+		results <- job // Send the result of the job to the results channel
 	}
 }
 
@@ -94,7 +94,7 @@ func main() {
 
 	// Process results from the results channel
 	for result := range results {
-		fmt.Printf("Result: %d\n", result)
+		fmt.Printf("Reading result: job-%d\n", result)
 	}
 }
 ```

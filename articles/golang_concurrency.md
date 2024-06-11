@@ -2,7 +2,24 @@
 ### 고루틴과 동시성 프로그래밍
 
 - [sync.WaitGroup](#syncwaitgroup)
-  - [synchronization primitives in go](https://medium.com/better-programming/using-synchronization-primitives-in-go-mutex-waitgroup-once-2e50359cb0a7)
+- [sync.Once](#synconce)
+- [고루틴의 동작방법](#고루틴의-동작방법)
+  - [동시성 프로그래밍 주의점](#동시성-프로그래밍-주의점)
+  - [뮤텍스를 이용한 동시성 문제 해결](#뮤텍스를-이용한-동시성-문제-해결)
+  - [뮤텍스의 문제점](#뮤텍스의-문제점)
+  - [또 다른 자원 관리 기법](#또-다른-자원-관리-기법)
+- [채널과 컨텍스트](#채널과-컨텍스트)
+  - [go channel with range and close](#go-channel-with-range-and-close)
+  - [채널 크기](#채널-크기)
+  - [채널에서 데이터 대기](#채널에서-데이터-대기)
+  - [SELECT 문](#SELECT-문)
+  - [일정간격으로 실행](#일정간격으로-실행)
+  - [채널로 생산자 소비자 패턴 구현](#채널로-생산자-소비자-패턴-구현)
+- [컨텍스트](#컨텍스트)
+  - [특정 값을 설정한 컨텍스트](#특정-값을-설정한-컨텍스트)
+  - [작업시간 설정한 컨텍스트](#작업시간-설정한-컨텍스트)
+  - [작업취소 가능한 컨텍스트](#작업취소-가능한-컨텍스트)
+  - [취소도 되면서 값도 설정하는 컨텍스트 만들기](#취소도-되면서-값도-설정하는-컨텍스트-만들기)
 
 - 스레드란?
   - 고루틴: 경량 스레드로 함수나 명령을 동시에 실행 시 사용. main()도 고루틴에 의해 실행 됨
@@ -131,6 +148,9 @@ func main() {
 
 ### sync.WaitGroup
 
+- [synchronization primitives in go](https://medium.com/better-programming/using-synchronization-primitives-in-go-mutex-waitgroup-once-2e50359cb0a7)
+
+
 - 서브 고루틴이 종료될 때까지 기다리기
   - 항상 고루틴의 종료시간에 맞춰 time.Sleep(종료까지걸리는시간) 호출할 수 없음
   - 고루틴이 끝날때까지 wait할수 있음: sync.WaitGroup 객체
@@ -236,6 +256,13 @@ func main() {
 }
 ```
 
+
+[↑ Back to top](#)
+<br><br>
+
+
+### sync.Once
+
 - `once-example.go`
   - Say you’re building a REST API using the Go net/http package and you want a piece of code to be executed
   - only when the HTTP handler is called (e.g. a get a DB connection).
@@ -275,32 +302,32 @@ func oneTimeOp() {
 ```
 
 
-
 [↑ Back to top](#)
 <br><br>
 
 
 
-- 고루틴은 명령을 수행하는 단일 흐름으로, OS 스레드를 이용하는 경량 스레드
+### 고루틴의 동작방법
 
-- 고루틴의 동작방법 (2-Core 컴퓨터 가정)
-  - Goroutine 1개 일때:
-    - `Core1-OsThread1-GoRoutine1`
-  - Goroutine 2개 일때:
-    - `Core1-OsThread1-GoRoutine1`
-    - `Core2-OsThread2-GoRoutine2`
-  - Goroutine 3개 일때
-    - `Core1-OsThread1-GoRoutine1`
-    - `Core2-OsThread2-GoRoutine2`
-    - 작업끝날때 까지 대기 후 끝난 2코어에 '고루틴_3' 배정됨
-    - `Core1-OsThread1-GoRoutine1`
-    - `Core2-OsThread2-GoRoutine3`
-  - GoRoutine3가 시스템콜 호출 후 네트워크 대기상태 일때:
-    - GoRoutine3가 대기목록으로 빠지고, GoRoutin4가 스레드2를 이용하여 실행됨
-    - `Core1-OsThread1-GoRoutine1`
-    - `Core2-OsThread2-GoRoutine4`
-    - 컨텍스트 스위칭은 CPU가 Thread를 변경할 때 발생하는데, 코어와 스레드는 변경되지않고, 오로지 고루틴만 옮겨 다니기 때문에,
-    - **고루틴을 사용하면, 컨텍스트 스위칭 비용이 발생하지않는다!**
+- 고루틴은 명령을 수행하는 단일 흐름으로, OS 스레드를 이용하는 경량 스레드
+- 2-Core 컴퓨터 가정
+- Goroutine 1개 일때:
+  - `Core1-OsThread1-GoRoutine1`
+- Goroutine 2개 일때:
+  - `Core1-OsThread1-GoRoutine1`
+  - `Core2-OsThread2-GoRoutine2`
+- Goroutine 3개 일때
+  - `Core1-OsThread1-GoRoutine1`
+  - `Core2-OsThread2-GoRoutine2`
+  - 작업끝날때 까지 대기 후 끝난 2코어에 '고루틴_3' 배정됨
+  - `Core1-OsThread1-GoRoutine1`
+  - `Core2-OsThread2-GoRoutine3`
+- GoRoutine3가 시스템콜 호출 후 네트워크 대기상태 일때:
+  - GoRoutine3가 대기목록으로 빠지고, GoRoutin4가 스레드2를 이용하여 실행됨
+  - `Core1-OsThread1-GoRoutine1`
+  - `Core2-OsThread2-GoRoutine4`
+  - 컨텍스트 스위칭은 CPU가 Thread를 변경할 때 발생하는데, 코어와 스레드는 변경되지않고, 오로지 고루틴만 옮겨 다니기 때문에,
+  - **고루틴을 사용하면, 컨텍스트 스위칭 비용이 발생하지않는다!**
 
 
 - 시스템 콜 호출 시 (운영체제가 지원하는 서비스를 호출)
@@ -314,13 +341,14 @@ func oneTimeOp() {
 <br><br>
 
 
-- 동시성 프로그래밍 주의점
-  - 문제점: `하나의/동일한 메모리 자원`에 `여러개 고루틴` 접근!
-    - e.g. 입금1000, 출금1000 을 10개의 고루틴이 동시 실행 하는 상황
-    - 두개 고루틴이 각각 1000원 입금했는데 2000이 아닌 1000이된상태에서 다시 두번 출금시 < 0 : panic!
-    - `race condition`
-  - 해결책: 한 고루틴에서 값을 변경할때 다른 고루틴이 접근하지 못하도록 `mutex` 활용
-    - `mutual exclusion`
+### 동시성 프로그래밍 주의점
+
+- 문제점: `하나의/동일한 메모리 자원`에 `여러개 고루틴` 접근!
+  - e.g. 입금1000, 출금1000 을 10개의 고루틴이 동시 실행 하는 상황
+  - 두개 고루틴이 각각 1000원 입금했는데 2000이 아닌 1000이된상태에서 다시 두번 출금시 < 0 : panic!
+  - `race condition`
+- 해결책: 한 고루틴에서 값을 변경할때 다른 고루틴이 접근하지 못하도록 `mutex` 활용
+  - `mutual exclusion`
 
 - A `race condition` occurs when two or more threads access shared data and attempt to modify it simultaneously. 
   - To prevent race conditions, you typically use locks or synchronization mechanisms.
@@ -374,12 +402,13 @@ func main() {
 [↑ Back to top](#)
 <br><br>
 
-- 뮤텍스를 이용한 동시성 문제 해결
-  - 한 고루틴에서 값을 변경할때 다른 고루틴이 접근하지 못하도록 `mutex` 활용: `mutual exclusion`
-  - `mutex.Lock()`으로 mutex 획득 `mutext.Unlock()`으로 mutex 반납
-  - 다른 고루틴이 이미 뮤텍스를 획득했다면 해당 고루틴이 뮤텍스를 놓을 때(`mutex.Unlock()`) 까지 기다림
-  - 하지만 오직 하나의 고루틴만 공유 자원에 접근하기 때문에 동시성 프로그램 성능 향상 의미가 없어짐..
-  - 또한 `Deadlock` 발생 가능!
+### 뮤텍스를 이용한 동시성 문제 해결
+
+- 한 고루틴에서 값을 변경할때 다른 고루틴이 접근하지 못하도록 `mutex` 활용: `mutual exclusion`
+- `mutex.Lock()`으로 mutex 획득 `mutext.Unlock()`으로 mutex 반납
+- 다른 고루틴이 이미 뮤텍스를 획득했다면 해당 고루틴이 뮤텍스를 놓을 때(`mutex.Unlock()`) 까지 기다림
+- 하지만 오직 하나의 고루틴만 공유 자원에 접근하기 때문에 동시성 프로그램 성능 향상 의미가 없어짐..
+- 또한 `Deadlock` 발생 가능!
 
 - A mutex (short for “mutual exclusion”) is a synchronization primitive used
 - to protect shared resources in concurrent programs. It ensures that
@@ -441,18 +470,24 @@ func main() {
 [↑ Back to top](#)
 <br><br>
 
-- 뮤텍스의 문제점
-  1. 뮤텍스는 동시성 프로그래밍 성능이점 감소시킴
-  2. `데드락` 발생 가능
-  - e.g. 식탁에 A와 B가 각각 수저1, 포크1 집고있음.
-  - A,B가 포크1, 수저1 집으려 할때, A,B 누구하나 양보하지 않아, 밥을 먹을 수 없음: 두개 mutex 각각 차지
-  - `어떤 고루틴도 원하는 만큼 뮤텍스를 확보하지 못해서 무한히 대기하는 경우`; 데드락
-  - 멀티코어 환경에서는 여러 고루틴으로 성능 향상 가능
-  - 같은메모리 접근시 꼬일 수 있음
-  - 뮤텍스로 고루틴 하나만 접근하도록 하여 꼬이는 문제 해결 가능
-  - 하지만, 뮤텍스를 잘못 사용하면 성능향상 없이 데드락 발생가능
-    - 뮤텍스 사용시 좁은 범위에서 사용하여 데드락 발생 방지
-    - 또는 둘다 수저-> 포크 순서로 뮤텍스 락 사용하면 해결 가능
+### 뮤텍스의 문제점
+
+1. 뮤텍스는 동시성 프로그래밍 성능이점 감소시킴
+2. `데드락` 발생 가능
+- e.g. 식탁에 A와 B가 각각 수저1, 포크1 집고있음.
+- A,B가 포크1, 수저1 집으려 할때, A,B 누구하나 양보하지 않아, 밥을 먹을 수 없음: 두개 mutex 각각 차지
+- `어떤 고루틴도 원하는 만큼 뮤텍스를 확보하지 못해서 무한히 대기하는 경우`; 데드락
+- 멀티코어 환경에서는 여러 고루틴으로 성능 향상 가능
+- 같은메모리 접근시 꼬일 수 있음
+- 뮤텍스로 고루틴 하나만 접근하도록 하여 꼬이는 문제 해결 가능
+- 하지만, 뮤텍스를 잘못 사용하면 성능향상 없이 데드락 발생가능
+  - 뮤텍스 사용시 좁은 범위에서 사용하여 데드락 발생 방지
+  - 또는 둘다 수저-> 포크 순서로 뮤텍스 락 사용하면 해결 가능
+
+- 멀티코어 컴퓨터에서는 여러 고루틴을 사용하여 성능 향상
+- 하지만 같은 메모리를 여러 고루틴이 접근하면 프로그램이 꼬일 수 있음
+- 뮤텍스를 이용하면 동시에 고루틴 하나만 접근하도록 저장해 꼬이는 문제를 막을 수 있다.
+- 그러나 뮤텍스를 잘못 사용하면 성능 향상도 못하고 데드락이라는 심각한 문제가 생길 수 있다.
 
 - Deadlock in goroutines (not in using mutex): different scenario than above `mutex` deadlock
   - A deadlock occurs when a group of goroutines are waiting for each other, and none of them can proceed.
@@ -509,13 +544,10 @@ func main() {
 [↑ Back to top](#)
 <br><br>
 
-- 멀티코어 컴퓨터에서는 여러 고루틴을 사용하여 성능 향상
-- 하지만 같은 메모리를 여러 고루틴이 접근하면 프로그램이 꼬일 수 있음
-- 뮤텍스를 이용하면 동시에 고루틴 하나만 접근하도록 저장해 꼬이는 문제를 막을 수 있다.
-- 그러나 뮤텍스를 잘못 사용하면 성능 향상도 못하고 데드락이라는 심각한 문제가 생길 수 있다.
 
 
-- 또 다른 자원 관리 기법
+### 또 다른 자원 관리 기법
+
 - 각 고루틴이 서로 다른 자원에 접근하게 만드는 두가지 방법
 - mutex없이 동시성 프로그래밍 가능
 
@@ -576,7 +608,7 @@ func main() {
 <br><br>
 
 
-### 25.채널과 컨텍스트
+### 채널과 컨텍스트
 
 - 채널: 고루틴끼리 메시지를 전달 할 수 있는 메시지 큐
   - 메시지큐에 메시지가 쌓이게 되고
@@ -702,8 +734,9 @@ func main() {
 [↑ Back to top](#)
 <br><br>
 
-- go channel with `range` and `close()`
-  - https://medium.com/better-programming/manging-go-channels-with-range-and-close-98f93f6e8c0c
+### go channel with range and close
+
+ - https://medium.com/better-programming/manging-go-channels-with-range-and-close-98f93f6e8c0c
 
 ```go
 package main
@@ -904,10 +937,11 @@ func main() {
 <br><br>
 
 
-- 채널 크기
-  - 기본 채널크기 0
-    - 채널크기0: 채널에 데이터 보관할 곳이 없으므로 데이터 빼갈때까지 대기
-  - 채널 만들때 버퍼 크기 설정 가능
+### 채널 크기
+
+- 기본 채널크기 0
+  - 채널크기0: 채널에 데이터 보관할 곳이 없으므로 데이터 빼갈때까지 대기
+- 채널 만들때 버퍼 크기 설정 가능
 
 ```go
 package main
@@ -939,8 +973,9 @@ func main() {
 
 
 
-- 채널에서 데이터 대기
-  - 고루틴에서 데이터를 계속 기다리면서 데이터가 들어오면 작업을 수행
+### 채널에서 데이터 대기
+
+- 고루틴에서 데이터를 계속 기다리면서 데이터가 들어오면 작업을 수행
 
 ```go
 package main
@@ -994,15 +1029,16 @@ func main() {
 [↑ Back to top](#)
 <br><br>
 
-- SELECT 문
-  - 여러 채널을 동시에 기다릴 수 있음.
-  - 어떤 채널이라도 하나의 채널에서 데이터를 읽어오면 해당 구문을 실행하고 select문이 종료됨.
-  - 하나의 case만 처리되면 종료되기 때문에, 반복해서 데이터를 처리하고 싶다면 for문과 함께 사용 해야함
-  - 채널에 데이터가 들어오길 기다리는 대신, 다른작업 수행하거나, 여러채널 동시대기
-  - 여러개 채널을 동시에 기다림. 하나의 케이스만 처리되면 종료됨
-  - 반복된 데이터 처리를 하려면 for문도 같이 사용
-  - ch채널과 quit채널을 모두 기다림, ch채널먼저 시도하기 때문에
-    - ch채널 먼저 읽다가 모두 읽고나서 quit에 true가 들어와서 읽으면서 return 실행
+### SELECT 문
+
+- 여러 채널을 동시에 기다릴 수 있음.
+- 어떤 채널이라도 하나의 채널에서 데이터를 읽어오면 해당 구문을 실행하고 select문이 종료됨.
+- 하나의 case만 처리되면 종료되기 때문에, 반복해서 데이터를 처리하고 싶다면 for문과 함께 사용 해야함
+- 채널에 데이터가 들어오길 기다리는 대신, 다른작업 수행하거나, 여러채널 동시대기
+- 여러개 채널을 동시에 기다림. 하나의 케이스만 처리되면 종료됨
+- 반복된 데이터 처리를 하려면 for문도 같이 사용
+- ch채널과 quit채널을 모두 기다림, ch채널먼저 시도하기 때문에
+  - ch채널 먼저 읽다가 모두 읽고나서 quit에 true가 들어와서 읽으면서 return 실행
 
 ```go
 package main
@@ -1049,7 +1085,7 @@ func main() {
 [↑ Back to top](#)
 <br><br>
 
-- 일정간격으로 실행
+### 일정간격으로 실행
 
 ```go
 package main
@@ -1106,9 +1142,10 @@ func main() {
 [↑ Back to top](#)
 <br><br>
 
-- 채널로 생산자 소비자 패턴 구현
-  - 역할 나누는 방법
-    - 컨베이어벨트: 차체생산->바퀴설치->도색->완성
+### 채널로 생산자 소비자 패턴 구현
+
+- 역할 나누는 방법
+  - 컨베이어벨트: 차체생산->바퀴설치->도색->완성
 
 ```go
 package main
@@ -1271,8 +1308,9 @@ func fetchAPI(ctx context.Context, url string, results chan<- string) {
 <br><br>
 
 
-- 작업취소 가능한 컨텍스트
-  - 이 컨텍스트를 만들어, 작업자에게 전달하면 작업 지시한 지시자가 원할때 작업취소 알릴 수 있음
+### 작업취소 가능한 컨텍스트
+
+- 이 컨텍스트를 만들어, 작업자에게 전달하면 작업 지시한 지시자가 원할때 작업취소 알릴 수 있음
 
 ```go
 package main
@@ -1322,13 +1360,13 @@ func main() {
 [↑ Back to top](#)
 <br><br>
 
+### 작업시간 설정한 컨텍스트
 
-- 작업시간 설정한 컨텍스트
-  - 일정시간 동안만 작업을 지시할 수 있는 컨텍스트 생성
-  - WithTimeout() 두번째 인수로 시간을 설정하면, 그시간이 지난 뒤
-  - 컨텍스트의 Done()채널에 시그널을 보내서 작업 종료
-  - WithTimeout() 역시 두번째 반환값으로 cancel함수 반환하기 때문에
-  - 작업 시작전에 원하면 언제든지 작업 취소 가능
+- 일정시간 동안만 작업을 지시할 수 있는 컨텍스트 생성
+- WithTimeout() 두번째 인수로 시간을 설정하면, 그시간이 지난 뒤
+- 컨텍스트의 Done()채널에 시그널을 보내서 작업 종료
+- WithTimeout() 역시 두번째 반환값으로 cancel함수 반환하기 때문에
+- 작업 시작전에 원하면 언제든지 작업 취소 가능
 
 ```go
 func main() {
@@ -1345,10 +1383,11 @@ func main() {
 [↑ Back to top](#)
 <br><br>
 
-- 특정 값을 설정한 컨텍스트
-  - 작업자에게 지시할때 별도의 지시사항 추가 가능
-  - 컨텍스트에 특정키로 값을 읽어오도록 설정 가능
-  - context.WithValue()로 컨텍스트에 값 설정 가능
+### 특정 값을 설정한 컨텍스트
+
+- 작업자에게 지시할때 별도의 지시사항 추가 가능
+- 컨텍스트에 특정키로 값을 읽어오도록 설정 가능
+- context.WithValue()로 컨텍스트에 값 설정 가능
 
 ```go
 package main
@@ -1389,11 +1428,12 @@ func main() {
 <br><br>
 
 
-- 취소도 되면서 값도 설정하는 컨텍스트 만들기
-  - 컨텍스트를 만들때 항상 상위 컨텍스트 객체를 인수로 넣어줘야 했음
-  - 일반적으로 context.Background()를 넣어줬는데, 여기에 이미 만들어진 컨텍스트 객체 넣어도 됨
-  - 이를통해 여러 값을 설정하거나, 기능을 설정할 수 있음
-  - 구글: "golang concurrency patterns"
+### 취소도 되면서 값도 설정하는 컨텍스트 만들기
+
+- 컨텍스트를 만들때 항상 상위 컨텍스트 객체를 인수로 넣어줘야 했음
+- 일반적으로 context.Background()를 넣어줬는데, 여기에 이미 만들어진 컨텍스트 객체 넣어도 됨
+- 이를통해 여러 값을 설정하거나, 기능을 설정할 수 있음
+- 구글: "golang concurrency patterns"
 
 ```go
 ctx, cancel := context.WithCancel(context.Background())
