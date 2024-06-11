@@ -1,5 +1,8 @@
 
-### 24.고루틴과 동시성 프로그래밍
+### 고루틴과 동시성 프로그래밍
+
+- [sync.WaitGroup](#syncwaitgroup)
+  - [synchronization primitives in go](https://medium.com/better-programming/using-synchronization-primitives-in-go-mutex-waitgroup-once-2e50359cb0a7)
 
 - 스레드란?
   - 고루틴: 경량 스레드로 함수나 명령을 동시에 실행 시 사용. main()도 고루틴에 의해 실행 됨
@@ -19,6 +22,69 @@
   - 모든 프로그램은 main()을 고루틴으로 하나 가지고 있음
   - `go 함수호출`로 새로운 고루틴 추가 가능.
   - 현재 고루틴이 아닌 새로운 고루틴에서 함수가 수행 됨
+
+
+- Goroutines
+  - Goroutines are lightweight concurrent functions or threads in Go.
+  - They allow you to perform multiple tasks concurrently, leveraging parallelism on multi-core systems.
+  - Unlike traditional threads, Goroutines are managed by the Go runtime, which dynamically allocates and manages their stack size.
+  - Goroutines communicate using channels, which prevent race conditions when accessing shared memory.
+  - Example: Fetching data from multiple APIs concurrently using Goroutines:
+
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+	"net/http"
+	"time"
+)
+
+func main() {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	urls := []string{
+		"https://api.example.com/users",
+		"https://api.example.com/products",
+		"https://api.example.com/orders",
+	}
+
+	results := make(chan string)
+
+	for _, url := range urls {
+		go fetchAPI(ctx, url, results)
+	}
+
+	for range urls {
+		fmt.Println(<-results)
+	}
+}
+
+func fetchAPI(ctx context.Context, url string, results chan<- string) {
+	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
+	if err != nil {
+		results <- fmt.Sprintf("Error creating request for %s: %s", url, err.Error())
+		return
+	}
+
+	client := http.DefaultClient
+	resp, err := client.Do(req)
+	if err != nil {
+		results <- fmt.Sprintf("Error making request to %s: %s", url, err.Error())
+		return
+	}
+	defer resp.Body.Close()
+
+	results <- fmt.Sprintf("Response from %s: %d", url, resp.StatusCode)
+}
+```
+
+
+[↑ Back to top](#)
+<br><br>
+
 
 - main 고루틴외에 PrintHangul, PrintNumber 고루틴 2개 추가생성
   - 3개 고루틴이 동시에 실행됨(CPU 3코어이상)
@@ -59,6 +125,11 @@ func main() {
   time.Sleep(3*time.Second)
 }
 ```
+
+[↑ Back to top](#)
+<br><br>
+
+### sync.WaitGroup
 
 - 서브 고루틴이 종료될 때까지 기다리기
   - 항상 고루틴의 종료시간에 맞춰 time.Sleep(종료까지걸리는시간) 호출할 수 없음
@@ -115,6 +186,10 @@ func main() {
   fmt.Println("모든 계산이 완료됐습니다.")
 }
 ```
+
+
+[↑ Back to top](#)
+<br><br>
 
 - synchronization primitives in go
   - https://medium.com/better-programming/using-synchronization-primitives-in-go-mutex-waitgroup-once-2e50359cb0a7
@@ -201,6 +276,9 @@ func oneTimeOp() {
 
 
 
+[↑ Back to top](#)
+<br><br>
+
 
 
 - 고루틴은 명령을 수행하는 단일 흐름으로, OS 스레드를 이용하는 경량 스레드
@@ -230,6 +308,10 @@ func oneTimeOp() {
   - 네트워크 수신 대기상태인 고루틴이 대기목록으로 빠지고, 대기중이던 다른 고루틴이 OS 스레드를 이용하여 실행 됨
   - 코어와 스레드 변경(컨텍스트 스위칭) 없이 고루틴이 옮겨다니기 때문에 효율적
   - 코어가 스레드 옮겨다니는 컨텍스트 스위칭을 하지 않고, 대신 고루틴이 직접 대기상태 <-> 실행상태 스위칭 옮겨다녀서 효율적
+
+
+[↑ Back to top](#)
+<br><br>
 
 
 - 동시성 프로그래밍 주의점
@@ -287,6 +369,10 @@ func main() {
   wg.Wait()
 }
 ```
+
+
+[↑ Back to top](#)
+<br><br>
 
 - 뮤텍스를 이용한 동시성 문제 해결
   - 한 고루틴에서 값을 변경할때 다른 고루틴이 접근하지 못하도록 `mutex` 활용: `mutual exclusion`
@@ -350,6 +436,10 @@ func main() {
   
 }
 ```
+
+
+[↑ Back to top](#)
+<br><br>
 
 - 뮤텍스의 문제점
   1. 뮤텍스는 동시성 프로그래밍 성능이점 감소시킴
@@ -415,6 +505,10 @@ func main() {
 }
 ```
 
+
+[↑ Back to top](#)
+<br><br>
+
 - 멀티코어 컴퓨터에서는 여러 고루틴을 사용하여 성능 향상
 - 하지만 같은 메모리를 여러 고루틴이 접근하면 프로그램이 꼬일 수 있음
 - 뮤텍스를 이용하면 동시에 고루틴 하나만 접근하도록 저장해 꼬이는 문제를 막을 수 있다.
@@ -476,6 +570,10 @@ func main() {
 }
 ```
 
+
+
+[↑ Back to top](#)
+<br><br>
 
 
 ### 25.채널과 컨텍스트
@@ -600,6 +698,10 @@ func main() {
 }
 ```
 
+
+[↑ Back to top](#)
+<br><br>
+
 - go channel with `range` and `close()`
   - https://medium.com/better-programming/manging-go-channels-with-range-and-close-98f93f6e8c0c
 
@@ -654,6 +756,10 @@ func main() {
 	<-e
 }
 ```
+
+
+[↑ Back to top](#)
+<br><br>
 
 - Modify above so that it works without using `signal.Notify`
   - 1. use `done` channel of type struct{}
@@ -781,6 +887,10 @@ func main() {
 }
 ```
 
+
+[↑ Back to top](#)
+<br><br>
+
 - Both producer and consumer goroutine do not have to coexist
   - i.e. even if the producer goroutine finishes (and closes the channel),
 	- the consumer goroutine range loop will receive all the values.
@@ -788,6 +898,10 @@ func main() {
 - We can simulate this scenario by using a combination of:
   - A buffered channel in the producer
   - Delaying the consumer goroutine by adding a time.Sleep()
+
+
+[↑ Back to top](#)
+<br><br>
 
 
 - 채널 크기
@@ -813,6 +927,10 @@ func main() {
   fmt.Println("Never print")
 }
 ```
+
+
+[↑ Back to top](#)
+<br><br>
 
 - 버퍼 가진 채널
   - `var chan string messages = make(chan string, 2)`
@@ -872,6 +990,10 @@ func main() {
 }
 ```
 
+
+[↑ Back to top](#)
+<br><br>
+
 - SELECT 문
   - 여러 채널을 동시에 기다릴 수 있음.
   - 어떤 채널이라도 하나의 채널에서 데이터를 읽어오면 해당 구문을 실행하고 select문이 종료됨.
@@ -922,6 +1044,10 @@ func main() {
   wg.Wait()
 }
 ```
+
+
+[↑ Back to top](#)
+<br><br>
 
 - 일정간격으로 실행
 
@@ -975,6 +1101,10 @@ func main() {
   wg.Wait()
 }
 ```
+
+
+[↑ Back to top](#)
+<br><br>
 
 - 채널로 생산자 소비자 패턴 구현
   - 역할 나누는 방법
@@ -1068,10 +1198,77 @@ func main() {
 }
 ```
 
+
+[↑ Back to top](#)
+<br><br>
+
+### 컨텍스트
+
 - 컨텍스트 사용하기
   - 컨텍스트는 작업을 지시할때 작업가능 시간, 작업 취소 등의 조건을 지시할 수 있는 작업명세서 역할
   - 새로운 고루틴으로 작업 시작할떄 일정시간 동안만 작업지시하거나, 외부에서 작업 취소시 사용.
   - 작업 설정에 대한 데이터도 전달 가능
+  - The `context` package provides tools for managing concurrent operations.
+  - It allows you to control the lifecycle, cancellation, and propagation of requests across multiple Goroutines.
+  - Key features:
+    - Cancellation: Propagate cancellation signals across Goroutines.
+    - Deadlines: Set deadlines for operations.
+    - Values: Pass request-scoped data down the chain.
+  - Example: Managing timeouts for API requests using context.WithTimeout.
+
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+	"net/http"
+	"time"
+)
+
+func main() {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	urls := []string{
+		"https://api.example.com/users",
+		"https://api.example.com/products",
+		"https://api.example.com/orders",
+	}
+
+	results := make(chan string)
+
+	for _, url := range urls {
+		go fetchAPI(ctx, url, results)
+	}
+
+	for range urls {
+		fmt.Println(<-results)
+	}
+}
+
+func fetchAPI(ctx context.Context, url string, results chan<- string) {
+	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
+	if err != nil {
+		results <- fmt.Sprintf("Error creating request for %s: %s", url, err.Error())
+		return
+	}
+
+	client := http.DefaultClient
+	resp, err := client.Do(req)
+	if err != nil {
+		results <- fmt.Sprintf("Error making request to %s: %s", url, err.Error())
+		return
+	}
+	defer resp.Body.Close()
+
+	results <- fmt.Sprintf("Response from %s: %d", url, resp.StatusCode)
+}
+```
+
+
+[↑ Back to top](#)
+<br><br>
 
 
 - 작업취소 가능한 컨텍스트
@@ -1122,6 +1319,10 @@ func main() {
 ```
 
 
+[↑ Back to top](#)
+<br><br>
+
+
 - 작업시간 설정한 컨텍스트
   - 일정시간 동안만 작업을 지시할 수 있는 컨텍스트 생성
   - WithTimeout() 두번째 인수로 시간을 설정하면, 그시간이 지난 뒤
@@ -1140,6 +1341,9 @@ func main() {
   wg.Wait()
 }
 ```
+
+[↑ Back to top](#)
+<br><br>
 
 - 특정 값을 설정한 컨텍스트
   - 작업자에게 지시할때 별도의 지시사항 추가 가능
@@ -1181,6 +1385,10 @@ func main() {
 }
 ```
 
+[↑ Back to top](#)
+<br><br>
+
+
 - 취소도 되면서 값도 설정하는 컨텍스트 만들기
   - 컨텍스트를 만들때 항상 상위 컨텍스트 객체를 인수로 넣어줘야 했음
   - 일반적으로 context.Background()를 넣어줬는데, 여기에 이미 만들어진 컨텍스트 객체 넣어도 됨
@@ -1193,3 +1401,5 @@ ctx = context.WithValue(ctx, "number", 9)
 ctx = context.WithValue(ctx, "keyword", "Lilly")
 ```
 
+[↑ Back to top](#)
+<br><br>

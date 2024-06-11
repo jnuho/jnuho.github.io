@@ -10,7 +10,7 @@ preview_worker_pool: true
 ---
 
 
-|<img src="https://d17pwbfgewyq5y.cloudfront.net/worker_pool_pattern.drawio.png" alt="pods" width="550">|
+|<img src="https://i.imgur.com/vPEfkbp.png" alt="pods" width="550">|
 |:--:| 
 | *Worker pool pattern* |
 

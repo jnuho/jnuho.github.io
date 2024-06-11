@@ -7558,7 +7558,7 @@ By adjusting weights based on gradients, the model gradually improves its predic
 <p>Also, we have a Loss function $L = -YlogA -(1-Y)log(1-A)$</p>
 <img alt="No description has been provided for this image" src="https://d17pwbfgewyq5y.cloudfront.net/2layerNN_kiank.png" style="width:650px;height:400px;"/>
 <caption><center> <u>Figure 2</u>: 2-layer neural network. <br/> The model can be summarized as: ***INPUT -&gt; LINEAR -&gt; RELU -&gt; LINEAR -&gt; SIGMOID -&gt; OUTPUT***. </center></caption>
-<img alt="No description has been provided for this image" src="https://d17pwbfgewyq5y.cloudfront.net/LlayerNN_kiank.png" style="width:650px;height:400px;"/>
+<img alt="No description has been provided for this image" src="https://i.imgur.com/XPElFUZ.png" style="width:650px;height:400px;"/>
 <caption><center> <u>Figure 3</u>: L-layer neural network. <br/> The model can be summarized as: ***[LINEAR -&gt; RELU] $\times$ (L-1) -&gt; LINEAR -&gt; SIGMOID***</center></caption>
 <h3 id="Objective">Objective<a class="anchor-link" href="#Objective">¶</a></h3><p>In the following Jupyter notebook, I go through what I've learned from Andrew Ng's deep learning specialization course.</p>
 <p>I revisit the model for training L-layer deep neural network that can identify cats as binary ouput of 0(non-cat) and 1(cat). The training and test data are provided from the lecture. Here are the list of methods that I'm going to implement:</p>
@@ -7952,7 +7952,7 @@ test_x's shape: (12288, 50)
 <li>Finally, you take the sigmoid of the result. If it is greater than 0.5, you classify it to be a cat.</li>
 </ul>
 <h3 id="3.2---L-layer-deep-neural-network">3.2 - L-layer deep neural network<a class="anchor-link" href="#3.2---L-layer-deep-neural-network">¶</a></h3><p>It is hard to represent an L-layer deep neural network with the above representation. However, here is a simplified network representation:</p>
-<img alt="No description has been provided for this image" src="https://d17pwbfgewyq5y.cloudfront.net/LlayerNN_kiank.png" style="width:650px;height:400px;"/>
+<img alt="No description has been provided for this image" src="https://i.imgur.com/XPElFUZ.png" style="width:650px;height:400px;"/>
 <caption><center> <u>Figure 3</u>: L-layer neural network. <br/> The model can be summarized as: ***[LINEAR -&gt; RELU] $\times$ (L-1) -&gt; LINEAR -&gt; SIGMOID***</center></caption>
 <p><u>Detailed Architecture of figure 3</u>:</p>
 <ul>
