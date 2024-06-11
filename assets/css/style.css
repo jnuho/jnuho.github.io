@@ -37,10 +37,10 @@ a.nav-link i{
 a.nav-link:hover { color: #777; }
 
 #bio {
-	font-family: Courier, monospace;
-	font-size: 14px;
+	font-family: 'Fira Code', Courier, monospace;
+	font-size: 13px;
 	margin: 0 auto;
-	margin-bottom: 10px;
+	margin-bottom: 5px;
 }
 
 #contact-list li .fa,
