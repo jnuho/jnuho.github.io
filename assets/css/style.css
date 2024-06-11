@@ -133,7 +133,8 @@ article.home h3,
 article.home h4,
 article.home h5,
 article.home h6 {
-	font-family: 'Fira Code', sans-serif;
+	/* font-family: 'Fira Code', sans-serif; */
+	font-family: sans-serif;
 	color: #121582;
 }
 
