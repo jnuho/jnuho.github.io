@@ -18,7 +18,8 @@
   - [채널 크기](#채널-크기)
   - [채널에서 데이터 대기](#채널에서-데이터-대기)
   - [SELECT 문](#SELECT-문)
-  - [일정간격으로 실행](#일정간격으로-실행)
+    - [일정간격으로 실행](#일정간격으로-실행)
+    - [SELECT 패턴](#SELECT-패턴)
   - [채널로 생산자 소비자 패턴 구현](#채널로-생산자-소비자-패턴-구현)
   - [unbuffered vs. buffered channel](#buffered-vs-unbuffered-channel)
 - [컨텍스트](#컨텍스트)
@@ -1196,7 +1197,7 @@ func main() {
 
 - 여러 채널을 동시에 기다릴 수 있음.
 - 어떤 채널이라도 하나의 채널에서 데이터를 읽어오면 해당 구문을 실행하고 select문이 종료됨.
-- 하나의 case만 처리되면 종료되기 때문에, 반복해서 데이터를 처리하고 싶다면 for문과 함께 사용 해야함
+- 하나의 case만 처리되면 종료되기 때문에, 반복해서 데이터를 처리하고 싶다면 `for` 문과 함께 사용 해야함
 - 채널에 데이터가 들어오길 기다리는 대신, 다른작업 수행하거나, 여러채널 동시대기
 - 여러개 채널을 동시에 기다림. 하나의 케이스만 처리되면 종료됨
 - 반복된 데이터 처리를 하려면 for문도 같이 사용
@@ -1300,6 +1301,214 @@ func main() {
   wg.Wait()
 }
 ```
+
+### SELECT 패턴
+
+- [select 패턴](https://hamait.tistory.com/1017)
+- [channel with select](https://velog.io/@moonyoung/golang-channel-with-select-헷갈리는-케이스-정리하기)
+
+
+#### 1-1. switch
+
+```go
+func main() {
+  i:= "korea"
+  switch(i) {
+  case "korea":
+    fmt.Println("korea")
+  case "usa":
+    fmt.Println("usa")
+  case "japan":
+    fmt.Println("japan")
+  }
+}
+```
+
+#### 1-2. switch
+
+```go
+func main() {
+  t:= time.Now()
+  switch i {
+  case t.Hour() < 12:
+    fmt.Println("It's before noon")
+  default:
+    fmt.Println("It's after noon")
+  }
+}
+```
+
+#### 1-3. switch
+
+```go
+func WhiteSpace(c rune) bool {
+  switch c {
+    case ' ', '\t', '\n', '\f', '\r':
+      return true
+  }
+  return false
+}
+```
+
+#### 1-4. switch
+
+```go
+func main() {
+
+Loop:
+  for _, ch := range "a b\nc" {
+    switch ch {
+      case ' ':
+        break
+      case '\n':
+        break Loop
+      default:
+        fmt.Println("%c\n", ch)
+    }
+  }
+}
+```
+
+
+#### 1-1. select
+
+- case문의 채널에 값이 들어올 때까지 select문에서 block 됨
+- c1 채널 값이 없으면 c2 프린트
+- c1, c2 둘다 없으면, default 프린트
+- default 케이스 정의 안하면 select문 block됨
+
+```go
+package main
+
+import (
+	"fmt"
+	"time"
+)
+
+func main() {
+	c1 := make(chan string)
+	c2 := make(chan string)
+
+	go func() {
+		for {
+			time.Sleep(2 * time.Second)
+			c1 <- "one"
+		}
+	}()
+
+	go func() {
+		for {
+			time.Sleep(4 * time.Second)
+			c2 <- "two"
+		}
+	}()
+
+	for {
+		select {
+		case r1 := <-c1:
+			fmt.Printf("received: %s\n", r1)
+		case r2 := <-c2:
+			fmt.Printf("received: %s\n", r2)
+		default:
+			time.Sleep(1 * time.Second)
+			fmt.Printf("--default--\n")
+		}
+	}
+}
+
+```
+
+
+#### 1-2. select
+
+- 생산자가 결과를 줄 때 까지 기다리는 방식.
+- 결과 받으면 return
+
+```go
+package main
+
+import (
+	"fmt"
+	"time"
+)
+
+func process(ch chan string) {
+	time.Sleep(10 * time.Second)
+	ch <- "process successful"
+}
+
+func scheduling() {
+	//do something
+}
+func main() {
+	ch := make(chan string)
+	go process(ch)
+	for {
+		time.Sleep(1 * time.Second)
+		select {
+		case v := <-ch:
+			fmt.Println("received value: ", v)
+			return
+		default:
+			fmt.Println("no value received")
+		}
+
+		scheduling()
+	}
+}
+
+```
+
+#### 1-3. select
+
+- case s1 이 선택될지, s2가 선택될지는 모릅니다. 랜덤 선택으로 사용 될 수 있습니다.
+
+
+```go
+package main
+
+func server1(ch chan string) {
+	ch <- "from server1"
+}
+
+func server2(ch chan string) {
+	ch <- "from server2"
+}
+
+func main() {
+  output1 := make(chan string)
+  output2 := make(chan string)
+
+  go server1(output1)
+  go server2(output2)
+  time.Sleep(1 * time.Second)
+
+  select {
+  case s1 := <-output1:
+  	fmt.Println(s1)
+  case s2 := <-output2:
+  	fmt.Println(s2)
+  }
+}
+```
+
+
+
+#### 1-4. select
+
+- 5초 이내 이름 입력받기
+
+```go
+package main
+
+
+func main() {
+
+}
+```
+
+
+
 
 
 [↑ Back to top](#)

@@ -2,31 +2,26 @@ package main
 
 import (
 	"fmt"
-	"sync"
+	"time"
 )
 
-type counter struct {
-	i  int64
-	wg sync.WaitGroup
-	mu sync.Mutex
+func server1(ch chan string) {
+	ch <- "from server1"
 }
-
-func (c *counter) increment() {
-	defer c.wg.Done()
-	c.mu.Lock()
-	c.i += 1
-	c.mu.Unlock()
+func server2(ch chan string) {
+	ch <- "from server2"
 }
 
 func main() {
-	c := counter{i: 0}
-
-	for i := 0; i < 1000; i++ {
-		c.wg.Add(1)
-		go c.increment()
+	output1 := make(chan string)
+	output2 := make(chan string)
+	go server1(output1)
+	go server2(output2)
+	time.Sleep(1 * time.Second)
+	select {
+	case s1 := <-output1:
+		fmt.Println(s1)
+	case s2 := <-output2:
+		fmt.Println(s2)
 	}
-
-	c.wg.Wait()
-
-	fmt.Println("Final Counter Value:", c.i)
 }
