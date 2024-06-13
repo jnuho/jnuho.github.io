@@ -17,7 +17,7 @@
   - [go channel with range and close](#go-channel-with-range-and-close)
   - [채널 크기](#채널-크기)
   - [채널에서 데이터 대기](#채널에서-데이터-대기)
-  - [SELECT 문](#SELECT-문)
+  - [SELECT 문](#select-문)
     - [일정간격으로 실행](#일정간격으로-실행)
     - [SELECT 패턴](#SELECT-패턴)
   - [채널로 생산자 소비자 패턴 구현](#채널로-생산자-소비자-패턴-구현)

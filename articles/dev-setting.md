@@ -817,6 +817,11 @@ vim /home/foo/.local/share/applications/wine/카카오톡.desktop
 - yt-dlp
   - https://github.com/yt-dlp/yt-dlp#format-selection
 
+
 ```sh
+# AUDIO + VIDEO
 yt-dlp --merge-output-format mp4 -f "bestvideo+bestaudio[ext=m4a]/best" https://www.youtube.com/live/u6s7WVNuhrw?si=mixUGFw0msShQPkK
+
+# AUDIO
+yt-dlp -f 'ba' -x --audio-format mp3 https://youtu.be/P48QELwruQs?si=GuK1j4TrHdGnX4Lo
 ```
