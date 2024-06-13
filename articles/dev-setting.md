@@ -824,4 +824,7 @@ yt-dlp --merge-output-format mp4 -f "bestvideo+bestaudio[ext=m4a]/best" https://
 
 # AUDIO
 yt-dlp -f 'ba' -x --audio-format mp3 https://youtu.be/P48QELwruQs?si=GuK1j4TrHdGnX4Lo
+
+# CROP
+ffmpeg -i input.mp3 -ss 00:00:00 -to 01:00:00 -c copy output.mp3
 ```
